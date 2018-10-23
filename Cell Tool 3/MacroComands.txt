@@ -1,0 +1,45 @@
+﻿Macro comand list:
+
+open('dir') -> open file from directory dir
+SelectImage('dir') -> select opened image and makes it active;
+SelectImageIndex(n) -> select opened image and makes it active;
+ChangeT(n) -> cange selected image frame
+ChangeZ(n) -> cange selected image zValue
+ChangeC(n) -> cange selected image frame
+B&C(chanelN,min,max) -> change image brightness and contrast
+B&C(auto) -> auto detect image brightness and contrast
+LUT(chanelN,color-HTML) -> change LUT
+enableColorChanel(chanelN,bool) -> turn on/off chanel
+enableMethodView(code,bool) -> turn on/off methods chanel
+segmentation.ChangeMethod(chanelN,index) -> select method for segmentation
+segmentation.SetThreshOld(chanelN,ThresholdN,val) -> set threshold
+segmentation.SetColor(chanelN,ThresholdN,HTML color) -> set segmentation color
+segmentation.SpotDetector(chanelN,ThreshVal, Sensitivity ,HTML color, tail type, Selected Thresh, thresh type) -> set spotdetector
+TrackingParameters(chanelN,MaxSize,MinSize,MaxSpeed) -> setups the conditions for tracking
+//RoiManager
+roi.delete(chanelN,roiID) -> delete roi
+roi.change(chanelN,roiID,imageN,stat = val) -> stat can be "W,H,Stack,D,Lication(x\ty),fromT,toT,fromZ,toZ" 
+roi.resize(chanelN,roiID,imageN,W,H,Location)
+
+roi.new(chanelN,roiID, RoiInfo as string) -> add roi
+
+RoiInfo = {
+RoiShape + "\n"
+RoiType + "\n"
+W + "\n"
+H + "\n"
+stack + "\n"
+D + "\n"
+fromT + "\n"
+toT + "\n"
+fromZ + "\n"
+toZ + "\n"
+locationP -> each row contains all points for the frame separated by \t
+}
+
+//Chart
+Chart.XAxisType(n) -> n is xAxisTB selected index
+Chart.YAxisType(n) -> n is yAxisTB selected index
+
+Chart.SetSeriesColor(chanel,roiID, index, color.HTML) -> change the color of the series
+Chart.SetSeriesChecked(chanel,roiID, index, bool) -> enable/disable
