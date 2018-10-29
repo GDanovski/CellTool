@@ -29,6 +29,15 @@ namespace Cell_Tool_3
 {
     class KMeansSegmentation
     {
+        /*
+         * The code was based on the K-means algorithm developed by:
+         * Arif_Khan
+         * 11 Aug 2009
+         * Australia  Australia 
+         * https://www.codeproject.com/Articles/38888/Computer-Vision-Applications-with-C-Part-IV
+         * My Website: http://www.puresolutions-online.com
+         */
+
         ImageAnalyser IA;
         public KMeansSegmentation(ImageAnalyser IA)
         {

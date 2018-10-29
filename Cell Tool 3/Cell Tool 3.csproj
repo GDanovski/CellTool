@@ -127,6 +127,10 @@
     <Reference Include="CellToolDK">
       <HintPath>..\..\CellToolDK\CellToolDK\bin\Debug\CellToolDK.dll</HintPath>
     </Reference>
+    <Reference Include="IKVM.OpenJDK.Charsets, Version=7.2.4630.5, Culture=neutral, PublicKeyToken=13235d27fcbfff58, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\..\CellTool3 additional info\References\IKVM.OpenJDK.Charsets.dll</HintPath>
+    </Reference>
     <Reference Include="IKVM.OpenJDK.Core">
       <HintPath>..\..\..\Downloads\Programs\Jar to dll\ikvm-7.2.4630.5\bin\IKVM.OpenJDK.Core.dll</HintPath>
     </Reference>
@@ -238,7 +242,6 @@
     </Compile>
     <None Include="app.manifest" />
     <None Include="Cell Tool 3_TemporaryKey.pfx" />
-    <None Include="ClassDiagram1.cd" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
