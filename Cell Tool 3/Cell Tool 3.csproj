@@ -33,7 +33,7 @@
     <SuiteName>CellTool</SuiteName>
     <AutorunEnabled>true</AutorunEnabled>
     <ApplicationRevision>1</ApplicationRevision>
-    <ApplicationVersion>1.1.0.1</ApplicationVersion>
+    <ApplicationVersion>1.2.0.1</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
     <PublishWizardCompleted>true</PublishWizardCompleted>
@@ -257,6 +257,7 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Resources\Citation.rtf" />
     <None Include="Resources\CT_done.ico" />
   </ItemGroup>
   <ItemGroup>

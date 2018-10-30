@@ -53,7 +53,7 @@ namespace Cell_Tool_3
                 msgForm.Text = "CellTool License Agreement";
 
                 RichTextBox rtb = new RichTextBox();
-
+                rtb.LinkClicked += new System.Windows.Forms.LinkClickedEventHandler(link_LinkClicked);
                 rtb.Dock = DockStyle.Fill;
                 rtb.ReadOnly = true;
                 rtb.Text = Properties.Resources.LicenseAgreementCT;
@@ -101,6 +101,10 @@ namespace Cell_Tool_3
             {
                 Environment.Exit(0);
             }
+        }
+        private static void link_LinkClicked(object sender, LinkClickedEventArgs e)
+        {
+            System.Diagnostics.Process.Start(e.LinkText);
         }
         private static void CheckForUpdateWhenStarts()
         {

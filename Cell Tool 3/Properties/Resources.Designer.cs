@@ -19,7 +19,7 @@ namespace Cell_Tool_3.Properties {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "4.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     internal class Resources {
@@ -169,6 +169,17 @@ namespace Cell_Tool_3.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to {\rtf1\adeflang1025\ansi\ansicpg1252\uc1\adeff0\deff0\stshfdbch31506\stshfloch31506\stshfhich31506\stshfbi31507\deflang1033\deflangfe1033\themelang1033\themelangfe0\themelangcs0{\fonttbl{\f0\fbidi \froman\fcharset204\fprq2{\*\panose 02020603050405020304}Times New Roman;}
+        ///{\f34\fbidi \froman\fcharset204\fprq2{\*\panose 02040503050406030204}Cambria Math;}{\f39\fbidi \fswiss\fcharset204\fprq2{\*\panose 020f0502020204030204}Calibri;}
+        ///{\flomajor\f31500\fbidi \froman\fcharset204\fprq2{\*\panose 0202060305040502 [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string Citation {
+            get {
+                return ResourceManager.GetString("Citation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
         /// </summary>
         internal static System.Drawing.Icon CT_done {
@@ -302,9 +313,17 @@ namespace Cell_Tool_3.Properties {
         /// <summary>
         ///   Looks up a localized string similar to LICENSE AGREEMENT
         ///
-        ///This Software is licensed to Georgi Todorov Danovski and may only be used under the following restrictions. Georgi Todorov Danovski reserves all rights not expressively released to the User.
+        ///CellTool - software for bio-image analysis
+        ///https://dnarepair.bas.bg/software/CellTool
+        ///Copyright (C) 2018  Georgi Danovski
         ///
-        ///Restrictions in User rights. The Software is protected by copyright laws. The User overbinds not to in any way recreate the Software&apos;s source code so that it can be apprehended by the User or anyone else. The User may not change, adapt, translate, sub-let, lease or sell with profit the Software o [rest of string was truncated]&quot;;.
+        ///This program is free software: you can redistribute it and/or modify
+        ///it under the terms of the GNU General Public License as published by
+        ///the Free Software Foundation, either version 3 of the License, or
+        ///(at your option) any later version.
+        ///
+        ///This program is distributed in the hope that it will be useful,
+        ///but WITHOUT ANY WARRANTY; without even the implied wa [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string LicenseAgreementCT {
             get {

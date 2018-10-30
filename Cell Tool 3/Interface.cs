@@ -822,6 +822,12 @@ namespace Cell_Tool_3
 
                 SmartBtnToolStripMenuItem.Text = "Smart Buttons";
                 HelpToolStripMenuItem.DropDownItems.Add(SmartBtnToolStripMenuItem);
+
+                
+                ToolStripMenuItem CiteUsMenuItem = new ToolStripMenuItem();
+                CiteUsMenuItem.Text = "Cite us";
+                CiteUsMenuItem.Click += CiteUsMenuItem_Click;
+                HelpToolStripMenuItem.DropDownItems.Add(CiteUsMenuItem);
             }
             //Account
             {
@@ -870,7 +876,7 @@ namespace Cell_Tool_3
             msgForm.Text = "CellTool";
 
             RichTextBox rtb = new RichTextBox();
-
+            rtb.LinkClicked += new System.Windows.Forms.LinkClickedEventHandler(link_LinkClicked);
             rtb.Dock = DockStyle.Fill;
             rtb.ReadOnly = true;
             rtb.Text = Properties.Resources.LicenseAgreementCT;
@@ -903,6 +909,29 @@ namespace Cell_Tool_3
                 msgForm.ShowDialog();
             }
         }
+        
+        void CiteUsMenuItem_Click(object sender, EventArgs e)
+        {
+            Form msgForm = new Form();
+
+            msgForm.Height = 600;
+            msgForm.Width = 600;
+            msgForm.Icon = Properties.Resources.CT_done;
+            msgForm.Text = "Cite us";
+
+            RichTextBox rtb = new RichTextBox();
+            rtb.LinkClicked += new System.Windows.Forms.LinkClickedEventHandler(link_LinkClicked);
+            rtb.Dock = DockStyle.Fill;
+            rtb.ReadOnly = true;
+            rtb.Rtf = Properties.Resources.Citation;
+
+            msgForm.Controls.Add(rtb);
+            msgForm.ShowDialog();
+        }
+        private void link_LinkClicked(object sender, LinkClickedEventArgs e)
+        {
+            System.Diagnostics.Process.Start(e.LinkText);
+        }
         void AccordLicense_Click(object sender, EventArgs e)
         {
             Form msgForm = new Form();
@@ -913,7 +942,7 @@ namespace Cell_Tool_3
             msgForm.Text = "CellTool";
 
             RichTextBox rtb = new RichTextBox();
-
+            rtb.LinkClicked += new System.Windows.Forms.LinkClickedEventHandler(link_LinkClicked);
             rtb.Dock = DockStyle.Fill;
             rtb.ReadOnly = true;
             rtb.Text = Properties.Resources.AccordLicence;
@@ -931,7 +960,7 @@ namespace Cell_Tool_3
             msgForm.Text = "CellTool";
 
             RichTextBox rtb = new RichTextBox();
-
+            rtb.LinkClicked += new System.Windows.Forms.LinkClickedEventHandler(link_LinkClicked);
             rtb.Dock = DockStyle.Fill;
             rtb.ReadOnly = true;
             rtb.Text = Properties.Resources.NcalcLicense;
@@ -949,7 +978,7 @@ namespace Cell_Tool_3
             msgForm.Text = "CellTool";
 
             RichTextBox rtb = new RichTextBox();
-
+            rtb.LinkClicked += new System.Windows.Forms.LinkClickedEventHandler(link_LinkClicked);
             rtb.Dock = DockStyle.Fill;
             rtb.ReadOnly = true;
             rtb.Text = Properties.Resources.LicenseAgreementLibTif;
@@ -967,7 +996,7 @@ namespace Cell_Tool_3
             msgForm.Text = "CellTool";
 
             RichTextBox rtb = new RichTextBox();
-
+            rtb.LinkClicked += new System.Windows.Forms.LinkClickedEventHandler(link_LinkClicked);
             rtb.Dock = DockStyle.Fill;
             rtb.ReadOnly = true;
             rtb.Text = Properties.Resources.BioFormats;
@@ -985,7 +1014,7 @@ namespace Cell_Tool_3
             msgForm.Text = "CellTool";
 
             RichTextBox rtb = new RichTextBox();
-
+            rtb.LinkClicked += new System.Windows.Forms.LinkClickedEventHandler(link_LinkClicked);
             rtb.Dock = DockStyle.Fill;
             rtb.ReadOnly = true;
             rtb.Text = Properties.Resources.ikvm;
@@ -1004,7 +1033,7 @@ namespace Cell_Tool_3
             msgForm.Text = "CellTool";
 
             RichTextBox rtb = new RichTextBox();
-
+            rtb.LinkClicked += new System.Windows.Forms.LinkClickedEventHandler(link_LinkClicked);
             rtb.Dock = DockStyle.Fill;
             rtb.ReadOnly = true;
             rtb.Text = Properties.Resources.OpenTK;
