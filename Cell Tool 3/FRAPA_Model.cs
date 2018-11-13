@@ -24,7 +24,8 @@ using Microsoft.SolverFoundation.Services;
 using Accord.Statistics.Models.Regression.Linear;
 using System.Windows.Forms;
 using System.IO;
-using Accord;
+//using Accord;//Accord.Math.Bessel
+using MathNet;
 
 namespace Cell_Tool_3
 {
@@ -1703,7 +1704,7 @@ namespace Cell_Tool_3
                                                                           //res[1][frame] = I * Math.Pow(1 - wSq / (wSq + K * (Xvals[frame] - startT)), 0.5);//diffusion
                         double K = wSq / (Xvals[frame] - startT);
 
-                        res[1][frame] = I * Math.Exp(-K) * (Accord.Math.Bessel.I0(K) + Accord.Math.Bessel.I(K));//diffusion}
+                        res[1][frame] = I * Math.Exp(-K) * (MathNet.Numerics.SpecialFunctions.BesselI0(K) + MathNet.Numerics.SpecialFunctions.BesselI1(K));//diffusion}
                     }
                 }
 
@@ -2047,7 +2048,7 @@ namespace Cell_Tool_3
 
                         double K = wSq / (Xvals[frame] - startT);
                         
-                        res[1][frame] = I * Math.Exp(-K) * ( Accord.Math.Bessel.I0(K) + Accord.Math.Bessel.I(K));//diffusion}
+                        res[1][frame] = I * Math.Exp(-K) * (MathNet.Numerics.SpecialFunctions.BesselI0(K) + MathNet.Numerics.SpecialFunctions.BesselI1(K));//diffusion}
                     }
                 }
 
@@ -2474,7 +2475,7 @@ namespace Cell_Tool_3
                 {
                     double K1 = K / newXvals[i];
                     Sum += Math.Pow((newYvals[i] - (
-                         I * Math.Exp(-K1) * (Accord.Math.Bessel.I0(K1) + Accord.Math.Bessel.I(K1))//diffusion eq.
+                         I * Math.Exp(-K1) * (MathNet.Numerics.SpecialFunctions.BesselI0(K1) + MathNet.Numerics.SpecialFunctions.BesselI1(K1))//diffusion eq.
                         )), 2);
                 }
                 

@@ -1,0 +1,10 @@
+Math.NET Numerics
+https://github.com/mathnet/mathnet-numerics
+
+Math.NET Numerics is an opensource numerical library for .Net, Silverlight and Mono.
+
+Math.NET Numerics is the numerical foundation of the Math.NET initiative, aiming to provide methods and algorithms for numerical computations in science, engineering and every day use. Covered topics include special functions, linear algebra, probability models, random numbers, statistics, interpolation, integration, regression, curve fitting, integral transforms (FFT) and more.
+
+In addition to the core .NET package (which is written entirely in C#), Numerics specifically supports F# with idiomatic extension modules and maintains mathematical data structures like BigRational that originated in the F# PowerPack. If a performance boost is needed, the managed-code provider backing its linear algebra routines and decompositions can be exchanged with wrappers for optimized native implementations such as Intel MKL.
+
+Math.NET Numerics is covered under the terms of the MIT/X11 license. You may therefore link to it and use it in both opensource and proprietary software projects. We accept contributions!

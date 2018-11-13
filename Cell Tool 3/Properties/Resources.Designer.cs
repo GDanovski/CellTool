@@ -169,9 +169,9 @@ namespace Cell_Tool_3.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to {\rtf1\adeflang1025\ansi\ansicpg1252\uc1\adeff0\deff0\stshfdbch31506\stshfloch31506\stshfhich31506\stshfbi31507\deflang1033\deflangfe1033\themelang1033\themelangfe0\themelangcs0{\fonttbl{\f0\fbidi \froman\fcharset204\fprq2{\*\panose 02020603050405020304}Times New Roman;}
+        ///   Looks up a localized string similar to {\rtf1\adeflang1025\ansi\ansicpg1252\uc1\adeff0\deff0\stshfdbch0\stshfloch31506\stshfhich31506\stshfbi31506\deflang1033\deflangfe1033\themelang1033\themelangfe0\themelangcs0{\fonttbl{\f0\fbidi \froman\fcharset204\fprq2{\*\panose 02020603050405020304}Times New Roman;}
         ///{\f34\fbidi \froman\fcharset204\fprq2{\*\panose 02040503050406030204}Cambria Math;}{\f39\fbidi \fswiss\fcharset204\fprq2{\*\panose 020f0502020204030204}Calibri;}
-        ///{\flomajor\f31500\fbidi \froman\fcharset204\fprq2{\*\panose 0202060305040502 [rest of string was truncated]&quot;;.
+        ///{\flomajor\f31500\fbidi \froman\fcharset204\fprq2{\*\panose 02020603050405020304 [rest of string was truncated]&quot;;.
         /// </summary>
         internal static string Citation {
             get {
@@ -360,6 +360,20 @@ namespace Cell_Tool_3.Properties {
             get {
                 object obj = ResourceManager.GetObject("magic", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Math.NET Numerics
+        ///https://github.com/mathnet/mathnet-numerics
+        ///
+        ///Math.NET Numerics is an opensource numerical library for .Net, Silverlight and Mono.
+        ///
+        ///Math.NET Numerics is the numerical foundation of the Math.NET initiative, aiming to provide methods and algorithms for numerical computations in science, engineering and every day use. Covered topics include special functions, linear algebra, probability models, random numbers, statistics, interpolation, integration, regression, curve fitting, integral tra [rest of string was truncated]&quot;;.
+        /// </summary>
+        internal static string MathNET_NumericsLicense {
+            get {
+                return ResourceManager.GetString("MathNET_NumericsLicense", resourceCulture);
             }
         }
         

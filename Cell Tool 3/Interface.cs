@@ -805,6 +805,11 @@ namespace Cell_Tool_3
                         LibrariesToolStripMenuItem.DropDownItems.Add(AccordToolStripMenuItem);
                         AccordToolStripMenuItem.Click += new EventHandler(AccordLicense_Click);
 
+                        ToolStripMenuItem MathNetToolStripMenuItem = new ToolStripMenuItem();
+                        MathNetToolStripMenuItem.Text = "Math.NET Numerics";
+                        LibrariesToolStripMenuItem.DropDownItems.Add(MathNetToolStripMenuItem);
+                        MathNetToolStripMenuItem.Click += new EventHandler(MathNET_NumericsLicense_Click);
+
                     }
                     ToolStripMenuItem SupportToolStripMenuItem = new ToolStripMenuItem();
                     SupportToolStripMenuItem.Text = "Support";
@@ -946,6 +951,24 @@ namespace Cell_Tool_3
             rtb.Dock = DockStyle.Fill;
             rtb.ReadOnly = true;
             rtb.Text = Properties.Resources.AccordLicence;
+
+            msgForm.Controls.Add(rtb);
+            msgForm.ShowDialog();
+        }
+        void MathNET_NumericsLicense_Click(object sender, EventArgs e)
+        {
+            Form msgForm = new Form();
+
+            msgForm.Height = 300;
+            msgForm.Width = 300;
+            msgForm.Icon = Properties.Resources.CT_done;
+            msgForm.Text = "CellTool";
+
+            RichTextBox rtb = new RichTextBox();
+            rtb.LinkClicked += new System.Windows.Forms.LinkClickedEventHandler(link_LinkClicked);
+            rtb.Dock = DockStyle.Fill;
+            rtb.ReadOnly = true;
+            rtb.Text = Properties.Resources.MathNET_NumericsLicense;
 
             msgForm.Controls.Add(rtb);
             msgForm.ShowDialog();
