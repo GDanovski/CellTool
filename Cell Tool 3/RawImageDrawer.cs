@@ -1168,7 +1168,8 @@ namespace Cell_Tool_3
                     coRect[2][i] = newRect;
                     //size
                     sizeH += (int) (fi.sizeY + interval);
-                    if (biggestW < fi.sizeX) { biggestW = fi.sizeX; }
+                    // if (biggestW < fi.sizeX) { biggestW = fi.sizeX; }
+                    if (biggestW < newRect.Width) { biggestW = newRect.Width; }
                 }
             }
             if (biggestW != interval)
@@ -1180,7 +1181,7 @@ namespace Cell_Tool_3
             #endregion Chart - index 1
             //Calculate Field
             Rectangle result = new Rectangle(0, 0, (int)sizeW, (int)biggestH);
-
+            
             return result;
 
         }

@@ -25,6 +25,7 @@ using System.Reflection;
 using System.Windows.Forms;
 using CellToolDK;
 using System.ComponentModel;
+using System.Drawing;
 
 namespace Cell_Tool_3
 {
@@ -221,12 +222,43 @@ namespace Cell_Tool_3
                         try
                         {
                             if (fi != null && oldFI != null)
+                            {
+                                if (fi.sizeC != oldFI.sizeC)
+                                {
+                                    oldFI.sizeC = fi.sizeC;
+                                    FI_reduseC(fi);
+                                    FI_reduseC(oldFI);
+                                }
+
                                 CellToolDKtoFI(fi, oldFI);
+                                
+                                if (oldFI.sizeZ > 1)
+                                {
+                                    IA.TabPages.zTrackBar.Refresh(oldFI.zValue + 1, 1, oldFI.sizeZ);
+                                    IA.TabPages.zTrackBar.Panel.Visible = true;
+                                }
+                                else
+                                {
+                                    IA.TabPages.zTrackBar.Panel.Visible = false;
+                                }
+
+                                if (oldFI.sizeT > 1)
+                                {
+                                    IA.TabPages.tTrackBar.Refresh(oldFI.frame + 1, 1, oldFI.sizeT);
+                                    IA.TabPages.tTrackBar.Panel.Visible = true;
+                                }
+                                else
+                                {
+                                    IA.TabPages.tTrackBar.Panel.Visible = false;
+                                }
+                                 
+                            }
                         }
-                        catch { MessageBox.Show("Error with report back!"); }
+                        catch { MessageBox.Show("Error with reporting back!"); }
+                       
                         IA.ReloadImages();
                     });
-
+                    
                     var c = Activator.CreateInstance(type);
 
                     try
@@ -239,6 +271,121 @@ namespace Cell_Tool_3
                 catch { }
             }
            
+        }
+        private void FI_reduseC(CellToolDK.TifFileInfo fi)
+        {
+            List<Color> l = new List<Color>();
+
+            for (int i = 0; i < fi.sizeC; i++)
+                if (i < fi.LutList.Count)
+                    l.Add(fi.LutList[i]);
+                else
+                    l.Add(System.Drawing.Color.White);
+
+            fi.LutList = l;
+
+            fi.cValue = 0;
+
+            #region Segmentation variables
+            fi.histogramArray = null;
+            fi.adjustedLUT = null;
+            fi.MaxBrightness = null;
+            fi.MinBrightness = null;
+            fi.SegmentationCBoxIndex = new int[fi.sizeC];
+            fi.SegmentationProtocol = new int[fi.sizeC];
+            fi.thresholdsCBoxIndex = new int[fi.sizeC];
+            fi.sumHistogramChecked = new bool[fi.sizeC];
+            fi.thresholdValues = new int[fi.sizeC][];
+            fi.thresholdColors = new Color[fi.sizeC][];
+            fi.RefThresholdColors = new Color[fi.sizeC][];
+            fi.thresholds = new int[fi.sizeC];
+            fi.SpotColor = new Color[fi.sizeC];
+            fi.RefSpotColor = new Color[fi.sizeC];
+            fi.SelectedSpotThresh = new int[fi.sizeC];
+            fi.SpotThresh = new int[fi.sizeC];
+            fi.typeSpotThresh = new int[fi.sizeC];
+            fi.SpotTailType = new string[fi.sizeC];
+            fi.spotSensitivity = new int[fi.sizeC];
+            fi.roiList = new List<CellToolDK.ROI>[fi.sizeC];
+            fi.tracking_MaxSize = new int[fi.sizeC];
+            fi.tracking_MinSize = new int[fi.sizeC];
+            fi.tracking_Speed = new int[fi.sizeC];
+            for (int i = 0; i < fi.sizeC; i++)
+            {
+                fi.sumHistogramChecked[i] = false;
+                fi.thresholdValues[i] = new int[5];
+                fi.thresholdColors[i] = new Color[]
+                { Color.Transparent,Color.Transparent,Color.Transparent,Color.Transparent,Color.Transparent };
+                fi.RefThresholdColors[i] = new Color[]
+                {Color.Black,Color.Orange,Color.Green,Color.Blue,Color.Magenta};
+                fi.SpotColor[i] = Color.Red;
+                fi.RefSpotColor[i] = Color.Red;
+                fi.SpotTailType[i] = "<";
+                fi.spotSensitivity[i] = 100;
+                fi.tracking_MaxSize[i] = 10000;
+                fi.tracking_MinSize[i] = 5;
+                fi.tracking_Speed[i] = 5;
+            }
+            #endregion Segmentation variables
+        }
+        private void FI_reduseC(TifFileInfo fi)
+        {
+            List<Color> l = new List<Color>();
+
+            for (int i = 0; i < fi.sizeC; i++)
+                if (i < fi.LutList.Count)
+                    l.Add(fi.LutList[i]);
+                else
+                    l.Add(System.Drawing.Color.White);
+
+            fi.LutList = l;
+
+            fi.cValue = 0;
+
+            #region Segmentation variables
+            fi.histogramArray = null;
+            fi.adjustedLUT = null;
+            fi.MaxBrightness = null;
+            fi.MinBrightness = null;
+            fi.SegmentationCBoxIndex = new int[fi.sizeC];
+            fi.SegmentationProtocol = new int[fi.sizeC];
+            fi.thresholdsCBoxIndex = new int[fi.sizeC];
+            fi.sumHistogramChecked = new bool[fi.sizeC];
+            fi.thresholdValues = new int[fi.sizeC][];
+            fi.thresholdColors = new Color[fi.sizeC][];
+            fi.RefThresholdColors = new Color[fi.sizeC][];
+            fi.thresholds = new int[fi.sizeC];
+            fi.SpotColor = new Color[fi.sizeC];
+            fi.RefSpotColor = new Color[fi.sizeC];
+            fi.SelectedSpotThresh = new int[fi.sizeC];
+            fi.SpotThresh = new int[fi.sizeC];
+            fi.typeSpotThresh = new int[fi.sizeC];
+            fi.SpotTailType = new string[fi.sizeC];
+            fi.spotSensitivity = new int[fi.sizeC];
+            fi.roiList = new List<ROI>[fi.sizeC];
+            fi.tracking_MaxSize = new int[fi.sizeC];
+            fi.tracking_MinSize = new int[fi.sizeC];
+            fi.tracking_Speed = new int[fi.sizeC];
+            for (int i = 0; i < fi.sizeC; i++)
+            {
+                fi.sumHistogramChecked[i] = false;
+                fi.thresholdValues[i] = new int[5];
+                fi.thresholdColors[i] = new Color[]
+                { Color.Transparent,Color.Transparent,Color.Transparent,Color.Transparent,Color.Transparent };
+                fi.RefThresholdColors[i] = new Color[]
+                {Color.Black,Color.Orange,Color.Green,Color.Blue,Color.Magenta};
+                fi.SpotColor[i] = Color.Red;
+                fi.RefSpotColor[i] = Color.Red;
+                fi.SpotTailType[i] = "<";
+                fi.spotSensitivity[i] = 100;
+                fi.tracking_MaxSize[i] = 10000;
+                fi.tracking_MinSize[i] = 5;
+                fi.tracking_Speed[i] = 5;
+            }
+            #endregion Segmentation variables
+
+            fi.tpTaskbar.AddColorBtn();
+            fi.tpTaskbar.VisualizeColorBtns();
         }
         private void InstallPlugIn_Click(object sender, EventArgs e)
         {
@@ -284,8 +431,7 @@ namespace Cell_Tool_3
                             }
                             else if (a.ProgressPercentage == 1)
                             {
-                                MessageBox.Show("Plugin already installed!\nTo update close CellTool and paste the .CTPlugIn.DLL file to:\n" 
-                                    + Application.StartupPath + "\\PlugIns\\"
+                                MessageBox.Show("Plugin already installed!"
                                     );
                             }
                             IA.FileBrowser.StatusLabel.Text = "Ready";
