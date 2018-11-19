@@ -104,8 +104,16 @@ namespace Cell_Tool_3
                 foreach(TreeNode n in rtb.Nodes)
                 if(n.Checked && File.Exists((string)n.Tag))
                 {
-                        File.Delete((string)n.Tag);
-                        unisntalled = true;
+                        try
+                        {
+                            File.Delete((string)n.Tag);
+                            unisntalled = true;
+                        }
+                        catch
+                        {
+                            MessageBox.Show(
+                                "To uninstall the PlugIn, restart the program and try again!");
+                        }
                 }
 
                 msgForm.Close();

@@ -954,6 +954,15 @@ namespace Cell_Tool_3
                             {
                                 IA.TabPages.tTrackBar.Panel.Visible = true;
                             }
+                            
+                            if (fi.roiList != null)
+                                foreach (List<ROI> l in fi.roiList)
+                                    if (l != null)
+                                        foreach (ROI r in l)
+                                        {
+                                            if (fi.sizeT < r.ToT) r.ToT = fi.sizeT;
+                                            if (fi.sizeT < r.FromT) r.FromT = fi.sizeT;
+                                        }
 
                             IA.ReloadImages();
                             IA.MarkAsNotSaved();
@@ -1010,6 +1019,15 @@ namespace Cell_Tool_3
                             {
                                 IA.TabPages.zTrackBar.Panel.Visible = true;
                             }
+
+                            if (fi.roiList != null)
+                                foreach (List<ROI> l in fi.roiList)
+                                    if (l != null)
+                                        foreach (ROI r in l)
+                                        {
+                                            if (fi.sizeZ < r.ToZ) r.ToZ = fi.sizeZ;
+                                            if (fi.sizeZ < r.FromZ) r.FromZ = fi.sizeZ;
+                                        }
 
                             IA.ReloadImages();
                             IA.MarkAsNotSaved();

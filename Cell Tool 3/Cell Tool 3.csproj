@@ -32,8 +32,8 @@
     <PublisherName>Georgi Danovski</PublisherName>
     <SuiteName>CellTool</SuiteName>
     <AutorunEnabled>true</AutorunEnabled>
-    <ApplicationRevision>3</ApplicationRevision>
-    <ApplicationVersion>1.2.0.3</ApplicationVersion>
+    <ApplicationRevision>4</ApplicationRevision>
+    <ApplicationVersion>1.2.0.4</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
     <PublishWizardCompleted>true</PublishWizardCompleted>
@@ -118,8 +118,8 @@
       <HintPath>..\packages\Accord.Statistics.3.8.2-alpha\lib\net45\Accord.Statistics.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="bioformats_package">
-      <HintPath>..\..\..\Downloads\Programs\Jar to dll\ikvm-7.2.4630.5\bin\bioformats_package.dll</HintPath>
+    <Reference Include="bioformats_package_5.9.2">
+      <HintPath>C:\bioformats\ikvm-7.2.4630.5\bin\5.9.2\bioformats_package_5.9.2.dll</HintPath>
     </Reference>
     <Reference Include="BitMiracle.LibTiff.NET">
       <HintPath>..\..\Cell Tool\Cell Tool\bin\Debug\BitMiracle.LibTiff.NET.dll</HintPath>
