@@ -47,7 +47,8 @@ namespace Cell_Tool_3
             suf.Remove(".bmp");
             suf.Remove(".txt");
             suf.Remove(".xml");
-            
+            suf.Remove(".csv");
+
             return suf;
         }
        
@@ -364,7 +365,7 @@ namespace Cell_Tool_3
                     bool check = true;
                     foreach (TabPage tp1 in Collection)
                     {
-                        if (tp1.tifFI.available == false)
+                        if (tp1.tifFI!= null && tp1.tifFI.available == false)
                         {
                             check = false;
                             break;

@@ -158,15 +158,19 @@ namespace Cell_Tool_3
         }
         public void ClearImage()
         {
-            //Activate Control
-            IA.GLControl1.MakeCurrent();
-            //Load background
-            GL.ClearColor(IA.FileBrowser.BackGround2Color1);
-            GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
-            //Prepare MatrixMode
-            GL.MatrixMode(MatrixMode.Projection);
-            GL.LoadIdentity();
-            IA.GLControl1.SwapBuffers();
+            try
+            {
+                //Activate Control
+                IA.GLControl1.MakeCurrent();
+                //Load background
+                GL.ClearColor(IA.FileBrowser.BackGround2Color1);
+                GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
+                //Prepare MatrixMode
+                GL.MatrixMode(MatrixMode.Projection);
+                GL.LoadIdentity();
+                IA.GLControl1.SwapBuffers();
+            }
+            catch { }
         }
         public void DrawToScreen()
         {

@@ -75,7 +75,7 @@ namespace Cell_Tool_3
         public ToolStripButton ReDoBtn = new ToolStripButton();
         public ToolStripButton UnDoBtn = new ToolStripButton();
         //File options
-        public ToolStripDropDownButton NewBtn = new ToolStripDropDownButton();
+        public ToolStripButton NewBtn = new ToolStripButton();
         public ToolStripButton OpenBtn = new ToolStripButton();
         public ToolStripButton SaveBtn = new ToolStripButton();
         public ToolStripButton SaveAsBtn = new ToolStripButton();
@@ -390,6 +390,11 @@ namespace Cell_Tool_3
                         e.Handled = true;
                         e.SuppressKeyPress = true;
                         break;
+                    case Keys.N:
+                        NewToolStripMenuItem.PerformClick();
+                        e.Handled = true;
+                        e.SuppressKeyPress = true;
+                        break;
                     case Keys.O:
                         e.Handled = true;
                         e.SuppressKeyPress = true;
@@ -600,13 +605,13 @@ namespace Cell_Tool_3
                 FileToolStripMenuItem.DropDownOpened += new EventHandler(menuItem_Opened);
                 FileToolStripMenuItem.DropDownClosed += new EventHandler(menuItem_Closed);
                 StartMenu.Items.Add(FileToolStripMenuItem);
-                /*
-                NewToolStripMenuItem.Text = "New";
-                NewToolStripMenuItem.ShortcutKeys = Keys.Control | Keys.N;
+                
+                NewToolStripMenuItem.Text = "New Results Extractor";
+                //NewToolStripMenuItem.ShortcutKeys = Keys.Control | Keys.N;
                 NewToolStripMenuItem.ShortcutKeyDisplayString = "(Ctrl + N)";
                 NewToolStripMenuItem.ShowShortcutKeys = true;
                 FileToolStripMenuItem.DropDownItems.Add(NewToolStripMenuItem);
-               */
+               
                 OpenToolStripMenuItem.Text = "Open";
                 //OpenToolStripMenuItem.ShortcutKeys = Keys.Control | Keys.P;
                 OpenToolStripMenuItem.ShortcutKeyDisplayString = "(Ctrl + O)";
@@ -1114,14 +1119,14 @@ namespace Cell_Tool_3
                 Separator1.Margin = new System.Windows.Forms.Padding(8, 1, 8, 2);
                 taskTS.Items.Add(Separator1);
                 {
-                    /*
+                    
                     NewBtn.DisplayStyle = ToolStripItemDisplayStyle.Image;
                     NewBtn.Margin = new System.Windows.Forms.Padding(3, 1, 3, 2);
-                    NewBtn.Text = "New (Ctrl + N)";
+                    NewBtn.Text = "New Results Extractor (Ctrl + N)";
                     NewBtn.BackColor = TaskBtnColor;
                     NewBtn.Image = Properties.Resources.NewFile;
                     taskTS.Items.Add(NewBtn);
-                    */
+                    
 
                     OpenBtn.DisplayStyle = ToolStripItemDisplayStyle.Image;
                     OpenBtn.Margin = new System.Windows.Forms.Padding(3, 1, 3, 2);

@@ -208,6 +208,7 @@ namespace Cell_Tool_3
         {
             if (IA.TabPages.SelectedIndex < 0) { return; }
             TifFileInfo fi = IA.TabPages.TabCollections[IA.TabPages.SelectedIndex].tifFI;
+            if (fi == null) return;
 
             string str = IA.TabPages.FileNameFromDir(fi.Dir);
             RefreshTagField(str, fileName);

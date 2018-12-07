@@ -33,15 +33,17 @@ namespace Cell_Tool_3
 {
    class ResultsExtractor
     {
-        public void Input(TifFileInfo fi, ImageAnalyser IA)
+        public Panel myPanel = null;
+        public Panel Input(string dir, ImageAnalyser IA)
         {
-            //this.t = t;
-            //this.fi = fi;
-            string dir = "";
-            if (fi != null) dir = fi.Dir;
-            //CreateDialog();
             MyForm form1 = new MyForm(dir,IA);
-            form1.Show();
+            this.myPanel = form1;
+
+            if (File.Exists(dir))
+                ResultsExtractor.FileSaver.ReadCTDataFile(form1, dir);
+
+            return form1;
+            //form1.Show();
         }
         public class Parametars
         {
@@ -53,7 +55,7 @@ namespace Cell_Tool_3
             public static Color TaskBtnColor = Color.DarkGray;
             public static Color TitlePanelColor = Color.CornflowerBlue;
         }
-        public class MyForm : Form
+        public class MyForm : Panel
         {
             public ImageAnalyser IA;
             /// StatusBar
@@ -84,6 +86,7 @@ namespace Cell_Tool_3
             public RadioButton NormFrom0To1 = new RadioButton();
             public CheckBox StDevCB = new CheckBox();
             public CheckBox SubsetCB = new CheckBox();
+            
             public MyForm(string dir, ImageAnalyser IA)
             {
                 this.IA = IA;
@@ -783,7 +786,7 @@ namespace Cell_Tool_3
                 StatusPanel.Height = 30;
                 StatusPanel.Dock = DockStyle.Bottom;
                 StatusPanel.BackColor = Parametars.BackGroundColor;
-                this.Controls.Add(StatusPanel);
+                //this.Controls.Add(StatusPanel);
                 StatusPanel.BringToFront();
 
                 StatusStrip MainStatusBar = new StatusStrip();
@@ -813,6 +816,8 @@ namespace Cell_Tool_3
 
             private void StatusLabel_TextChange(object sender, EventArgs e)
             {
+                IA.FileBrowser.StatusLabel.Text = StatusLabel.Text;
+                /*
                 if (StatusLabel.Text == "Ready")
                 {
                     this.Cursor = Cursors.Default;
@@ -831,7 +836,7 @@ namespace Cell_Tool_3
                         StatusProgressBar.Style = ProgressBarStyle.Marquee;
                     }
                     StatusProgressBar.Visible = true;
-                }
+                }*/
             }
         }
 
@@ -1163,16 +1168,14 @@ namespace Cell_Tool_3
             {
                 FolderBrowserDialog fbd = new FolderBrowserDialog();
                 fbd.Description = "Add work directory:";
-
+                
                 if (dir != "" && dir.IndexOf("\\") > -1 &&
-                    File.Exists(dir) &&
                     !Directory.Exists(dir))
                     dir = dir.Substring(0, dir.LastIndexOf("\\"));
                 else if (lastDir != "" && lastDir.IndexOf("\\") > -1 &&
-                    File.Exists(lastDir) &&
                     !Directory.Exists(lastDir))
                     dir = lastDir.Substring(0, lastDir.LastIndexOf("\\"));
-
+                
                 if (Directory.Exists(dir))
                 {
                     fbd.SelectedPath = dir;
@@ -1924,6 +1927,88 @@ namespace Cell_Tool_3
 
         public class FileSaver
         {
+            public static void ReadCTDataFile(MyForm form1, string dir)
+            {
+                form1.dataTV.Nodes.Clear();
+                form1.filterTV.Nodes.Clear();
+                form1.solverClass.fitData.Nodes.Clear();
+
+                foreach (var ser in form1.solverClass.fitChart1.Series)
+                {
+                    ser.Points.Clear();
+                }
+
+                TreeNode filters = new TreeNode();
+                //Add event for projection here
+
+                using (StreamReader sr = new StreamReader(dir))
+                {
+                    string str = sr.ReadToEnd();
+                    form1.dataTV.Store.Clear();
+                    form1.SubsetCB.Checked = false;
+                    form1.dNormCB.Checked = false;
+                    form1.SubsetCB.Text = "Subset";
+                    form1.SubsetCB.Tag = null;
+
+                    foreach (string strLine in str.Split(new string[] { ";" }, StringSplitOptions.None))
+                    {
+                        StrTranslator(strLine, form1, filters);
+                    }
+                }
+
+                form1.dataTV.SuspendLayout();
+                foreach (TreeNode n in filters.Nodes)
+                    form1.filterTV.Nodes.Add(n);
+
+                filters = null;
+
+                foreach (TreeNode n in form1.dataTV.Store)
+                {
+
+                    n.ExpandAll();
+
+                    form1.dataTV.StoreToNodes(n);
+
+                }
+
+                form1.dataTV.BindColorsToNodes();
+
+                form1.CheckCounter_Count(form1.dataTV, new EventArgs());
+
+                form1.repeatsCh.DrawToScreen();
+
+                form1.dataTV.ResumeLayout();
+
+                #region subset
+                if (form1.SubsetCB.Tag != null)
+                {
+                    CheckBox cb = form1.SubsetCB;
+                    double[] range = (double[])form1.SubsetCB.Tag;
+                    cb.Text = "Subset(" + range[0].ToString() + " - " + range[1].ToString() + ")";
+                    cb.Width = TextRenderer.MeasureText(cb.Text, cb.Font).Width + 50;
+                    foreach (var parent in form1.dataTV.Store)
+                    {
+                        form1.dataTV.Xaxis = FileReader.Subset(parent, form1.dataTV.OriginalXaxis, range);
+                    }
+
+                    foreach (var parent in form1.dataTV.Store)
+                    {
+                        FileReader.Normalize(parent, (int)form1.NormCB.Tag);
+                    }
+
+                    form1.repeatsCh.DrawToScreen();
+                    form1.resultsCh.AddData();
+                }
+                #endregion subset
+                if (form1.solverClass.fitData.Nodes.Count > 0)
+                {
+                    form1.solverClass.parametersPanel.LoadFitFromHistory(
+                        form1.solverClass.fitData.GetFitSetingsFromNode(form1.solverClass.fitData.Nodes[0]));
+                    form1.solverClass.parametersPanel.LoadFitFromHistory(
+                        form1.solverClass.fitData.GetFitSetingsFromNode(form1.solverClass.fitData.Nodes[0]));
+                }
+
+            }
             public static void Open(MyForm form1)
             {
                 OpenFileDialog ofd = new OpenFileDialog();
@@ -1938,85 +2023,7 @@ namespace Cell_Tool_3
 
                 if (ofd.ShowDialog() == DialogResult.OK)
                 {
-                    form1.dataTV.Nodes.Clear();
-                    form1.filterTV.Nodes.Clear();
-                    form1.solverClass.fitData.Nodes.Clear();
-
-                    foreach(var ser in form1.solverClass.fitChart1.Series)
-                    {
-                        ser.Points.Clear();
-                    }
-
-                    TreeNode filters = new TreeNode();
-                    //Add event for projection here
-
-                    using (StreamReader sr = new StreamReader(ofd.FileName))
-                    {
-                        string str = sr.ReadToEnd();
-                        form1.dataTV.Store.Clear();
-                        form1.SubsetCB.Checked = false;
-                        form1.dNormCB.Checked = false;
-                        form1.SubsetCB.Text = "Subset";
-                        form1.SubsetCB.Tag = null;
-                        
-                        foreach (string strLine in str.Split(new string[] { ";" }, StringSplitOptions.None))
-                        {
-                            StrTranslator(strLine, form1, filters);
-                        }
-                    }
-
-                    form1.dataTV.SuspendLayout();
-                    foreach (TreeNode n in filters.Nodes)
-                        form1.filterTV.Nodes.Add(n);
-
-                    filters = null;
-                    
-                    foreach (TreeNode n in form1.dataTV.Store)
-                    {
-
-                        n.ExpandAll();
-
-                        form1.dataTV.StoreToNodes(n);
-
-                    }
-
-                    form1.dataTV.BindColorsToNodes();
-
-                    form1.CheckCounter_Count(form1.dataTV, new EventArgs());
-
-                    form1.repeatsCh.DrawToScreen();
-
-                    form1.dataTV.ResumeLayout();
-
-                    #region subset
-                    if (form1.SubsetCB.Tag != null)
-                    {
-                        CheckBox cb = form1.SubsetCB;
-                        double[] range = (double[])form1.SubsetCB.Tag;
-                        cb.Text = "Subset(" + range[0].ToString() + " - " + range[1].ToString() + ")";
-                        cb.Width = TextRenderer.MeasureText(cb.Text, cb.Font).Width + 50;
-                        foreach (var parent in form1.dataTV.Store)
-                        {
-                            form1.dataTV.Xaxis = FileReader.Subset(parent, form1.dataTV.OriginalXaxis, range);
-                        }
-                        
-                        foreach (var parent in form1.dataTV.Store)
-                        {
-                            FileReader.Normalize(parent, (int)form1.NormCB.Tag);
-                        }
-
-                        form1.repeatsCh.DrawToScreen();
-                        form1.resultsCh.AddData();
-                    }
-                    #endregion subset
-                    if (form1.solverClass.fitData.Nodes.Count > 0)
-                    {
-                        form1.solverClass.parametersPanel.LoadFitFromHistory(
-                            form1.solverClass.fitData.GetFitSetingsFromNode(form1.solverClass.fitData.Nodes[0]));
-                        form1.solverClass.parametersPanel.LoadFitFromHistory(
-                            form1.solverClass.fitData.GetFitSetingsFromNode(form1.solverClass.fitData.Nodes[0]));
-                    }
-                    
+                    ReadCTDataFile(form1, ofd.FileName);
                 }
             }
             private static void StrTranslator(string str, MyForm form1, TreeNode filters)
@@ -2153,99 +2160,104 @@ namespace Cell_Tool_3
                 if (saveFileDialog1.ShowDialog() == DialogResult.OK)
                 {
                     string dir = saveFileDialog1.FileName;
-                    if (dir.EndsWith(formatMiniStr) == false)
-                        dir += formatMiniStr;
-
-                    try
-                    {
-                        if (File.Exists(dir))
-                            File.Delete(dir);
-                    }
-                    catch
-                    {
-                        MessageBox.Show("Save error!\nFile is opened in other program!");
-                        return;
-                    }
-
-                    List<string> strL = new List<string>();
-
-                    //background worker
-                    var bgw = new BackgroundWorker();
-                    bgw.WorkerReportsProgress = true;
-                    //Add event for projection here
-                    bgw.DoWork += new DoWorkEventHandler(delegate (Object o, DoWorkEventArgs a)
-                    {
-                        strL.Add("XaxisTitle=" + form1.dataTV.XaxisTitle);
-                        strL.Add("YaxisTitle=" + form1.dataTV.YaxisTitle);
-                        strL.Add("lastDir=" + form1.dataTV.lastDir);
-                        strL.Add("XaxisVals=" + string.Join("\t", form1.dataTV.OriginalXaxis));
-                        strL.Add("NormCB=" + form1.NormCB.Checked.ToString());
-                        strL.Add("NormTo1=" + form1.NormTo1.Checked.ToString());
-                        strL.Add("NormFrom0To1=" + form1.NormFrom0To1.Checked.ToString());
-                        strL.Add("IndNormCB=" + ((int)form1.NormCB.Tag).ToString());
-                        strL.Add("dNormCB=" + form1.dNormCB.Checked.ToString());
-
-                        if (form1.SubsetCB.Checked == true)
-                        {
-                            double[] set =(double[]) form1.SubsetCB.Tag;
-                            strL.Add("Subset=" + set[0].ToString() + "\t" + set[1].ToString());
-                        }
-                        strL.Add("StDevCB=" + form1.StDevCB.Checked.ToString());
-
-                        List<string> filtL = new List<string>();
-                        foreach (TreeNode node in form1.filterTV.Nodes)
-                        {
-                            filtL.Add(node.Text);
-                            filtL.Add(node.Checked.ToString());
-                        }
-                        strL.Add("Filters=" + string.Join("\t", filtL));
-
-                        List<string> wdL = new List<string>();
-                        foreach (TreeNode node in form1.dataTV.Store)
-                        {
-                            wdL.Add(node.Text);
-                            wdL.Add((string)node.Tag);
-                            wdL.Add(node.Checked.ToString());
-                        }
-                        strL.Add("WorkDirs=" + string.Join("\n", wdL));
-
-                        for (int i = 0; i < form1.dataTV.Store.Count; i++)
-                            foreach (TreeNode n in form1.dataTV.Store[i].Nodes)
-                            {
-                                DataNode node = (DataNode)n;
-
-                                List<string> nodeTag = new List<string>();
-                                nodeTag.Add(i.ToString());
-                                nodeTag.Add(node.Text);
-                                nodeTag.Add((string)node.Tag);
-                                nodeTag.Add(node.Checked.ToString());
-                                nodeTag.Add(node.Comment);
-                                nodeTag.Add(node.RoiName);
-                                nodeTag.Add(string.Join("\t", node.OriginalSeries));
-                                nodeTag.Add(string.Join("\t", node.NormSeries));
-
-                                strL.Add("DataNode=" + string.Join("\n", nodeTag));
-                            }
-                        ((BackgroundWorker)o).ReportProgress(0);
-                    });
-
-                    bgw.ProgressChanged += new ProgressChangedEventHandler(delegate (Object o, ProgressChangedEventArgs a)
-                    {
-                        if (a.ProgressPercentage == 0)
-                        {
-                            //Export fits
-                            strL.Add("FitData=" + form1.solverClass.fitData.DataToString());
-                            strL.Add("FitF=" + GetUsedFormulas(form1));
-                            //Save file
-                            File.WriteAllText(dir, string.Join(";", strL));
-                        }
-                        form1.StatusLabel.Text = "Ready";
-                    });
-                    //Start background worker
-                    form1.StatusLabel.Text = "Saving...";
-                    //start bgw
-                    bgw.RunWorkerAsync();
+                    SaveCTDataFile(form1, dir);
                 }
+            }
+            public static BackgroundWorker SaveCTDataFile(MyForm form1, string dir)
+            {
+                if (!dir.EndsWith(".CTData"))
+                    dir += ".CTData";
+
+                try
+                {
+                    if (File.Exists(dir))
+                        File.Delete(dir);
+                }
+                catch
+                {
+                    MessageBox.Show("Save error!\nFile is opened in other program!");
+                    return null;
+                }
+
+                List<string> strL = new List<string>();
+
+                //background worker
+                var bgw = new BackgroundWorker();
+                bgw.WorkerReportsProgress = true;
+                //Add event for projection here
+                bgw.DoWork += new DoWorkEventHandler(delegate (Object o, DoWorkEventArgs a)
+                {
+                    strL.Add("XaxisTitle=" + form1.dataTV.XaxisTitle);
+                    strL.Add("YaxisTitle=" + form1.dataTV.YaxisTitle);
+                    strL.Add("lastDir=" + form1.dataTV.lastDir);
+                    strL.Add("XaxisVals=" + string.Join("\t", form1.dataTV.OriginalXaxis));
+                    strL.Add("NormCB=" + form1.NormCB.Checked.ToString());
+                    strL.Add("NormTo1=" + form1.NormTo1.Checked.ToString());
+                    strL.Add("NormFrom0To1=" + form1.NormFrom0To1.Checked.ToString());
+                    strL.Add("IndNormCB=" + ((int)form1.NormCB.Tag).ToString());
+                    strL.Add("dNormCB=" + form1.dNormCB.Checked.ToString());
+
+                    if (form1.SubsetCB.Checked == true)
+                    {
+                        double[] set = (double[])form1.SubsetCB.Tag;
+                        strL.Add("Subset=" + set[0].ToString() + "\t" + set[1].ToString());
+                    }
+                    strL.Add("StDevCB=" + form1.StDevCB.Checked.ToString());
+
+                    List<string> filtL = new List<string>();
+                    foreach (TreeNode node in form1.filterTV.Nodes)
+                    {
+                        filtL.Add(node.Text);
+                        filtL.Add(node.Checked.ToString());
+                    }
+                    strL.Add("Filters=" + string.Join("\t", filtL));
+
+                    List<string> wdL = new List<string>();
+                    foreach (TreeNode node in form1.dataTV.Store)
+                    {
+                        wdL.Add(node.Text);
+                        wdL.Add((string)node.Tag);
+                        wdL.Add(node.Checked.ToString());
+                    }
+                    strL.Add("WorkDirs=" + string.Join("\n", wdL));
+
+                    for (int i = 0; i < form1.dataTV.Store.Count; i++)
+                        foreach (TreeNode n in form1.dataTV.Store[i].Nodes)
+                        {
+                            DataNode node = (DataNode)n;
+
+                            List<string> nodeTag = new List<string>();
+                            nodeTag.Add(i.ToString());
+                            nodeTag.Add(node.Text);
+                            nodeTag.Add((string)node.Tag);
+                            nodeTag.Add(node.Checked.ToString());
+                            nodeTag.Add(node.Comment);
+                            nodeTag.Add(node.RoiName);
+                            nodeTag.Add(string.Join("\t", node.OriginalSeries));
+                            nodeTag.Add(string.Join("\t", node.NormSeries));
+
+                            strL.Add("DataNode=" + string.Join("\n", nodeTag));
+                        }
+                    ((BackgroundWorker)o).ReportProgress(0);
+                });
+
+                bgw.ProgressChanged += new ProgressChangedEventHandler(delegate (Object o, ProgressChangedEventArgs a)
+                {
+                    if (a.ProgressPercentage == 0)
+                    {
+                        //Export fits
+                        strL.Add("FitData=" + form1.solverClass.fitData.DataToString());
+                        strL.Add("FitF=" + GetUsedFormulas(form1));
+                        //Save file
+                        File.WriteAllText(dir, string.Join(";", strL));
+                    }
+                    form1.StatusLabel.Text = "Ready";
+                });
+                //Start background worker
+                form1.StatusLabel.Text = "Saving...";
+                //start bgw
+                bgw.RunWorkerAsync();
+                return bgw;
             }
             private static string GetUsedFormulas(MyForm form1)
             {

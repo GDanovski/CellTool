@@ -149,7 +149,7 @@ namespace Cell_Tool_3
 
             DeveloperToolStripMenuItem.DropDownItems.Add(new ToolStripSeparator());
 
-            AddResultsExtractor();
+           // AddResultsExtractor();
 
             // string path = Application.StartupPath + "\\PlugIns";
             string path = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\CellToolPlugIns";
@@ -192,7 +192,7 @@ namespace Cell_Tool_3
                 ResultsExtractor resExtr = new ResultsExtractor();
 
                     
-                resExtr.Input(oldFI,IA);
+                //resExtr.Input(oldFI,IA);
                     
             });
 

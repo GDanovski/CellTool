@@ -116,13 +116,14 @@ namespace Cell_Tool_3
         }
         public void UpdateUndoBtns()
         {
-                ReDoBtn.Enabled = false;
-                UnDoBtn.Enabled = false;
+            ReDoBtn.Enabled = false;
+            UnDoBtn.Enabled = false;
+            if (TabPages.TabCollections[TabPages.SelectedIndex].tifFI != null)
                 if (TabPages.TabCollections[TabPages.SelectedIndex].tifFI.History != null)
                 {
                     if (TabPages.TabCollections[TabPages.SelectedIndex].tifFI.History.Count > 0)
                     {
-                        if ((TabPages.TabCollections[TabPages.SelectedIndex].tifFI.HistoryPlace >= -1 & undo == false)|
+                        if ((TabPages.TabCollections[TabPages.SelectedIndex].tifFI.HistoryPlace >= -1 & undo == false) |
                         (TabPages.TabCollections[TabPages.SelectedIndex].tifFI.HistoryPlace >= 1))
                         {
                             UnDoBtn.Enabled = true;
@@ -136,11 +137,13 @@ namespace Cell_Tool_3
                         }
                     }
                 }
-            
+
         }
         public void DeleteFromHistory()
         {
             //undo - redo restore
+            if (TabPages.TabCollections[TabPages.SelectedIndex].tifFI == null) return;
+
             if ((redo == true | undo == true) & delHist == true)
             {
                 if (undo == true) { TabPages.TabCollections[TabPages.SelectedIndex].tifFI.HistoryPlace -= 2; }
@@ -166,6 +169,7 @@ namespace Cell_Tool_3
         public void undo_Click(object sender, EventArgs e)
         {
             TifFileInfo fi = TabPages.TabCollections[TabPages.SelectedIndex].tifFI;
+            if (fi == null) return;
             if (!fi.available)
             {
                 MessageBox.Show("Image is not avaliable now!\nTry again later.");
@@ -191,6 +195,7 @@ namespace Cell_Tool_3
         public void redo_Click(object sender, EventArgs e)
         {
             TifFileInfo fi = TabPages.TabCollections[TabPages.SelectedIndex].tifFI;
+            if (fi == null) return;
             if (!fi.available)
             {
                 MessageBox.Show("Image is not avaliable now!\nTry again later.");

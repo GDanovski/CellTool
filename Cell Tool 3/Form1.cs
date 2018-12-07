@@ -134,6 +134,7 @@ namespace Cell_Tool_3
         }
         private void CellToolMainForm_Load(object sender, EventArgs e)
         {
+            this.SuspendLayout();
             //Hide main form
             this.Hide();
             this.AllowDrop = true;
@@ -166,7 +167,11 @@ namespace Cell_Tool_3
             //Load Account Settings
             LoadAccountSettings();
             //Start File 
+            Interface.TabPages.ImageMainPanel.Visible = false;
+
+            this.ResumeLayout(true);
             Form_StartWithFile();
+
         }
         private void Form1_Resize(object sender, EventArgs e)
         {
@@ -436,6 +441,7 @@ namespace Cell_Tool_3
             //Rename File from TreeView
             Interface.FileBrowser.renameLabel.TextChanged += new EventHandler(Interface.TabPages.treeNode_Rename);
             //Menu
+            Interface.NewToolStripMenuItem.Click += new EventHandler(Interface.TabPages.OpenEmptyResultsExtractor);
             Interface.CloseToolStripMenuItem.Click += new EventHandler(Interface.TabPages.DeleteSelected);
             Interface.CloseAllToolStripMenuItem.Click += new EventHandler(Interface.TabPages.DeleteAll);
             Interface.OpenToolStripMenuItem.Click += new EventHandler(OpenFile);
@@ -443,9 +449,12 @@ namespace Cell_Tool_3
             Interface.SaveAllToolStripMenuItem.Click += new EventHandler(Interface.TabPages.SaveAllFile);
             Interface.SaveAsToolStripMenuItem.Click += new EventHandler(Interface.TabPages.saveAs);
             Interface.ExportToolStripMenuItem.Click += Interface.IA.RoiMan.ExportRoiAsIJMacro;
+            Interface.ExportToolStripMenuItem.Click += Interface.TabPages.ExportResultsExtractorData;
             Interface.ExportBtn.Click += Interface.IA.RoiMan.ExportRoiAsIJMacro;
-            Interface.ExportAllBtn.Click += Interface.IA.RoiMan.ExportAllResults; 
+            Interface.ExportBtn.Click += Interface.TabPages.ExportResultsExtractorData;
+            Interface.ExportAllBtn.Click += Interface.IA.RoiMan.ExportAllResults;
             //taskBar
+            Interface.NewBtn.Click += new EventHandler(Interface.TabPages.OpenEmptyResultsExtractor);
             Interface.OpenBtn.Click += new EventHandler(OpenFile);
             Interface.SaveBtn.Click += new EventHandler(Interface.TabPages.SaveFile);
             Interface.SaveAsBtn.Click += new EventHandler(Interface.TabPages.saveAs);

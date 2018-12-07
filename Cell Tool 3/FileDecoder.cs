@@ -49,6 +49,7 @@ namespace Cell_Tool_3
             Formats.Add(".tif");
             Formats.Add(".RoiSet");
             Formats.Add(".CTPlugIn.dll");
+            Formats.Add(".CTData");
             Formats.Add(".png");
             Formats.Add(".jpg");
             Formats.Add(".bmp");
@@ -78,7 +79,7 @@ namespace Cell_Tool_3
             Boolean hideStatusBar = true;
             foreach (TabPage tp in tabCollection)
             {
-                if (tp.tifFI.available == false & tp.tifFI.selected == true)
+                if (tp.tifFI != null && tp.tifFI.available == false && tp.tifFI.selected == true)
                 {
                     if (tp.tifFI.imageCount > tp.tifFI.openedImages)
                     {
@@ -87,14 +88,8 @@ namespace Cell_Tool_3
                     }
                 }
             }
-            if (hideStatusBar == true)
-            {
-                StatusBar.Visible = false;
-            }
-            else
-            {
-                StatusBar.Visible = true;
-            }
+
+            StatusBar.Visible = !hideStatusBar;
         }
         public Panel OpenFile(List<TabPage> Collection,string path,int FileTypeIndex, ImageAnalyser IA1)
         {
@@ -109,12 +104,18 @@ namespace Cell_Tool_3
                     {
                         return null;
                     }
+                    path = tp.tifFI.Dir;
                     break;
                 
                 case 1:
                     return null;
                 case 2:
                     return null;
+                case 3:
+                    ResultsExtractor resExtr = new ResultsExtractor();
+                    tp.CorePanel = resExtr.Input(path, IA);
+                    tp.ResultsExtractor = resExtr;
+                    break;
                     /*
                 case 3:
                     if (OpenBitmap(Collection, path, tp, IA1) == false)
@@ -138,12 +139,12 @@ namespace Cell_Tool_3
                     
                 //Add new open hendler for new file format
             }
-            
+            tp.dir = path;
             Collection.Add(tp);
             tabCollection = Collection;
             loadingTimer.Start();
 
-            tp.CorePanel.Tag = tp.tifFI.Dir;
+            tp.CorePanel.Tag = path;
 
             return tp.CorePanel;
         }
@@ -338,7 +339,7 @@ namespace Cell_Tool_3
             StatusLabel.Text = "Reading Metadata...";
             
             //Check for CellTool 3 format
-            try
+            //try
             {
                 if (CellTool3_ReadMetadata(path, Collection, tp, IA1)) return true;
                 else if (CellTool2_ReadMetadata(path, Collection, tp, IA1)) return true;
@@ -346,7 +347,7 @@ namespace Cell_Tool_3
                 else StatusLabel.Text = "Ready";
 
             }
-            catch { }
+            //catch { }
 
             StatusLabel.Text = "Ready";
             return false;
@@ -1601,7 +1602,7 @@ namespace Cell_Tool_3
                         bool check = true;
                         foreach (TabPage tp1 in Collection)
                         {
-                            if (tp1.tifFI.available == false)
+                            if (tp1.tifFI != null && tp1.tifFI.available == false)
                             {
                                 check = false;
                                 break;
@@ -1878,7 +1879,7 @@ namespace Cell_Tool_3
                     bool check = true;
                     foreach (TabPage tp1 in Collection)
                     {
-                        if (tp1.tifFI.available == false)
+                        if (tp1.tifFI!= null && tp1.tifFI.available == false)
                         {
                             check = false;
                             break;
