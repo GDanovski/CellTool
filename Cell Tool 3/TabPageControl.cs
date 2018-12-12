@@ -768,6 +768,7 @@ namespace Cell_Tool_3
         }
         private void OpenPanel_VisibleChange(object sender, EventArgs e)
         {
+            /*
             try
             {
                 OpenPanel.Location = ImageMainPanel.Location;
@@ -777,7 +778,10 @@ namespace Cell_Tool_3
             catch { }
             if (zTrackBar.Panel.Visible == true) OpenPanel.Height += zTrackBar.Panel.Height;
             if (tTrackBar.Panel.Visible == true) OpenPanel.Height += tTrackBar.Panel.Height;
-            
+            */
+            OpenPanel.Location = new Point(0, TitlePanel.Height + 2);
+            OpenPanel.Width = Body.Width;
+            OpenPanel.Height = Body.Height - TitlePanel.Height-2;
         }
         public void OpenEmptyResultsExtractor(object sender, EventArgs e)
         {
