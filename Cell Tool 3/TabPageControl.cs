@@ -1236,7 +1236,7 @@ namespace Cell_Tool_3
                     fi.Dir = dir;
                     TabCollections[SelectedIndex].dir = dir;
 
-                    SaveItem(SelectedIndex);
+                    SaveItem(SelectedIndex, true);
 
                     try
                     {
@@ -1270,7 +1270,7 @@ namespace Cell_Tool_3
                     
                     TabCollections[SelectedIndex].dir = dir;
 
-                    SaveItem(SelectedIndex);
+                    SaveItem(SelectedIndex, true);
 
                     try
                     {
@@ -1297,9 +1297,9 @@ namespace Cell_Tool_3
                 }
             }
         }
-        private void SaveItem(int i)
+        private void SaveItem(int i, bool newFile = false)
         {
-            if (TabCollections[i].ResultsExtractor != null && !System.IO.File.Exists(TabCollections[i].dir))
+            if (!newFile && TabCollections[i].ResultsExtractor != null && !System.IO.File.Exists(TabCollections[i].dir))
             {
                 saveAs(new object(), new EventArgs());
                 return;
