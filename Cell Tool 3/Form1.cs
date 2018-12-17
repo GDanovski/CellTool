@@ -22,6 +22,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -134,6 +135,8 @@ namespace Cell_Tool_3
         }
         private void CellToolMainForm_Load(object sender, EventArgs e)
         {
+            Thread.CurrentThread.CurrentCulture = CultureInfo.CreateSpecificCulture("en-GB");
+
             this.SuspendLayout();
             //Hide main form
             this.Hide();

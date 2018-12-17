@@ -28,6 +28,8 @@ using OpenTK;
 using System.Drawing.Imaging;
 using System.Windows.Forms.DataVisualization.Charting;
 using NCalc;
+using System.Threading;
+using System.Globalization;
 
 namespace Cell_Tool_3
 {
@@ -1711,6 +1713,8 @@ namespace Cell_Tool_3
 
                 Parallel.For(0, data.Length, index =>
                 {
+                    Thread.CurrentThread.CurrentCulture = CultureInfo.CreateSpecificCulture("en-GB");
+
                     List<DataNode> curData = data[index];
                     string dir = dirs[index];
                     string str = "";
@@ -1929,6 +1933,8 @@ namespace Cell_Tool_3
         {
             public static void ReadCTDataFile(MyForm form1, string dir)
             {
+                Thread.CurrentThread.CurrentCulture = CultureInfo.CreateSpecificCulture("en-GB");
+
                 form1.dataTV.Nodes.Clear();
                 form1.filterTV.Nodes.Clear();
                 form1.solverClass.fitData.Nodes.Clear();
@@ -2165,6 +2171,7 @@ namespace Cell_Tool_3
             }
             public static BackgroundWorker SaveCTDataFile(MyForm form1, string dir)
             {
+                
                 if (!dir.EndsWith(".CTData"))
                     dir += ".CTData";
 
@@ -2187,6 +2194,8 @@ namespace Cell_Tool_3
                 //Add event for projection here
                 bgw.DoWork += new DoWorkEventHandler(delegate (Object o, DoWorkEventArgs a)
                 {
+                    Thread.CurrentThread.CurrentCulture = CultureInfo.CreateSpecificCulture("en-GB");
+
                     strL.Add("XaxisTitle=" + form1.dataTV.XaxisTitle);
                     strL.Add("YaxisTitle=" + form1.dataTV.YaxisTitle);
                     strL.Add("lastDir=" + form1.dataTV.lastDir);

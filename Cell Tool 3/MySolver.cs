@@ -16,6 +16,8 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 using System.Collections.Generic;
+using System.Globalization;
+using System.Threading;
 using Microsoft.SolverFoundation.Services;
 
 namespace Cell_Tool_3
@@ -233,6 +235,8 @@ namespace Cell_Tool_3
 
             public void SolverFit()
             {
+                Thread.CurrentThread.CurrentCulture = CultureInfo.CreateSpecificCulture("en-GB");
+
                 string val = "";
 
                 string formulaIf = this.formulaIf;
