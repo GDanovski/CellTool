@@ -219,7 +219,7 @@ namespace Cell_Tool_3
             MainForm.KeyDown += new KeyEventHandler(Form1_KeyPress);
             
             // Show form on the screen
-            MainForm.ResumeLayout();
+            MainForm.ResumeLayout(true);
             MainForm.Show();
             //Animation
             InitializeAnimations();

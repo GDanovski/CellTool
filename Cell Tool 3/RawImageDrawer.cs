@@ -66,6 +66,8 @@ namespace Cell_Tool_3
 
             GLControl1.Dock = DockStyle.Fill;
             TabPageControl tpContr = IA.TabPages;
+            tpContr.ImageMainPanel.SuspendLayout();
+
             tpContr.ImageMainPanel.Controls.Add(GLControl1);
             //ScrollBars
             Panel VertPanel = IA.GLControl1_VerticalPanel;
@@ -114,7 +116,7 @@ namespace Cell_Tool_3
             //Top Bar
             corePanel.Dock = DockStyle.Top;
             tpContr.ImageMainPanel.Controls.Add(corePanel);
-            
+            tpContr.ImageMainPanel.ResumeLayout(true);
         }
         private void HorizontalScroll_ValueChanged(object sender, EventArgs e)
         {

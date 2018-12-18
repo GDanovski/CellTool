@@ -68,7 +68,7 @@ namespace Cell_Tool_3
         private int MoveTabIndex = -1;
         //Resize Properties panel
         public Panel PropertiesBody = new Panel();
-        private Boolean propertiesPanel_Resize = false;
+        private bool propertiesPanel_Resize = false;
         private Panel ResizePanel = new Panel();
         private int oldX;
         //Frames and Zstack trackbars
@@ -80,6 +80,13 @@ namespace Cell_Tool_3
         {
             this.MainForm = MainForm;
             Body.SuspendLayout();
+            OpenPanel.SuspendLayout();
+            TitlePanel.SuspendLayout();
+            ImageMainPanel.SuspendLayout();
+            ResultsExtractorMainPanel.SuspendLayout();
+            PropertiesBody.SuspendLayout();
+            ResizePanel.SuspendLayout();
+
             BackGroundColor1 = BackGroundColor;
             BackGround2Color1 = BackGround2Color;
             ShriftColor1 = ShriftColor;
@@ -91,7 +98,7 @@ namespace Cell_Tool_3
             OpenPanel.BackColor = BackGround2Color1;
             OpenPanel.VisibleChanged += new EventHandler(OpenPanel_VisibleChange);
 
-            Body.BackColor = BackGroundColor;
+            Body.BackColor = BackGround2Color;
             Body.ForeColor = ShriftColor;
             Body.Dock = DockStyle.Fill;
             MainPanel1.Controls.Add(Body);
@@ -103,7 +110,6 @@ namespace Cell_Tool_3
             Body.Controls.Add(TitlePanel);
             TitlePanel.BringToFront();
             TitlePanel.Resize += new EventHandler(TitlePanel_Resize);
-
 
             Panel LinePanel = new Panel();
             LinePanel.Dock = DockStyle.Top;
@@ -307,7 +313,15 @@ namespace Cell_Tool_3
             ResultsExtractorMainPanel.Visible = false;
             //ImageMainPanel.Visible = false;
             propertiesPanel.Visible = false;
-            Body.ResumeLayout(true);
+
+            Body.ResumeLayout(false);
+            OpenPanel.ResumeLayout(false);
+            TitlePanel.ResumeLayout(false);
+            ImageMainPanel.ResumeLayout(false);
+            ResultsExtractorMainPanel.ResumeLayout(false);
+            PropertiesBody.ResumeLayout(false);
+            ResizePanel.ResumeLayout(false);
+
         }
         private void ImageMainPanel_VisibleChanged(object sender, EventArgs e)
         {
