@@ -79,6 +79,7 @@ namespace Cell_Tool_3
         public void Initialize(Form MainForm, int ActiveAccountIndex1, Panel MainPanel1, Color BackGroundColor, Color BackGround2Color, Color ShriftColor, Color TitlePanelColor, Color TaskBtnColor, Color TaskBtnClickColor)
         {
             this.MainForm = MainForm;
+            
             Body.SuspendLayout();
             OpenPanel.SuspendLayout();
             TitlePanel.SuspendLayout();
@@ -313,7 +314,7 @@ namespace Cell_Tool_3
             ResultsExtractorMainPanel.Visible = false;
             //ImageMainPanel.Visible = false;
             propertiesPanel.Visible = false;
-
+            
             Body.ResumeLayout(false);
             OpenPanel.ResumeLayout(false);
             TitlePanel.ResumeLayout(false);

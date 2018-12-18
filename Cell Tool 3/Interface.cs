@@ -220,7 +220,8 @@ namespace Cell_Tool_3
             
             // Show form on the screen
             MainForm.ResumeLayout(true);
-            MainForm.Show();
+            
+            //MainForm.Show();
             //Animation
             InitializeAnimations();
         }

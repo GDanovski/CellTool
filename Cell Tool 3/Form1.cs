@@ -173,6 +173,7 @@ namespace Cell_Tool_3
             Interface.TabPages.ImageMainPanel.Visible = false;
 
             this.ResumeLayout(true);
+            this.Show();
 
             Form_StartWithFile();
 
