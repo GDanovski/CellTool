@@ -178,6 +178,9 @@
     </Compile>
     <Compile Include="BioFormats_Reader.cs" />
     <Compile Include="BrightnessAndContrast.cs" />
+    <Compile Include="BrightnessAndContrast_Chart.cs">
+      <SubType>Component</SubType>
+    </Compile>
     <Compile Include="ChangeValueControl.cs" />
     <Compile Include="ChartSolverSettings.cs" />
     <Compile Include="ColorFractureRoiMeasure.cs" />
