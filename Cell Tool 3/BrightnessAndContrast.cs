@@ -23,7 +23,6 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Drawing;
-using System.Windows.Forms.DataVisualization.Charting;
 
 namespace Cell_Tool_3
 {
@@ -33,12 +32,11 @@ namespace Cell_Tool_3
         private PropertiesPanel_Item PropPanel = new PropertiesPanel_Item();
         public Panel panel;
         //Chart
-        public Chart Chart1 = new Chart();
-        public Series Values = new Series();
-        public Series ValuesUp = new Series();
-        public Series ValuesDown = new Series();
-        public Series MinSer = new Series();
-        public Series MaxSer = new Series();
+        public BrightnessAndContrast_ChartPanel Chart1 = new BrightnessAndContrast_ChartPanel();
+        public BrightnessAndContrast_ChartPanel.BrightnessAndContrast_Chart.Series Values = new BrightnessAndContrast_ChartPanel.BrightnessAndContrast_Chart.Series();
+        public BrightnessAndContrast_ChartPanel.BrightnessAndContrast_Chart.Series ValuesUp = new BrightnessAndContrast_ChartPanel.BrightnessAndContrast_Chart.Series();
+        public BrightnessAndContrast_ChartPanel.BrightnessAndContrast_Chart.Series ValuesDown = new BrightnessAndContrast_ChartPanel.BrightnessAndContrast_Chart.Series();
+        
         //CheckBoxes
         public CheckBox applyToAll = new CheckBox();
         public CheckBox autoDetect = new CheckBox();
@@ -114,72 +112,37 @@ namespace Cell_Tool_3
                 applyToAll.Location = new Point(x1, 3);
             });
             //Chart
-            ChartArea CA = new ChartArea();
+            BrightnessAndContrast_ChartPanel.BrightnessAndContrast_Chart CA = Chart1.CA;
             //CA.BackColor = PropPanel.Body.BackColor;
-            CA.BackColor = IA.FileBrowser.BackGroundColor1;
-                        
-            CA.AxisX.MajorGrid.Enabled = false;
-            CA.AxisY.MajorGrid.Enabled = false;
-            CA.AxisX.MinorGrid.Enabled = false;
-            CA.AxisY.MinorGrid.Enabled = false;
-            CA.AxisX.MajorTickMark.Enabled = false;
-            CA.AxisY.MajorTickMark.Enabled = false;
-            CA.AxisX.MinorTickMark.Enabled = false;
-            CA.AxisY.MinorTickMark.Enabled = false;
-            //CA.AxisX.LabelStyle.Enabled = false;
-            CA.AxisX.LabelStyle.ForeColor = IA.FileBrowser.ShriftColor1;
-            CA.AxisY.LabelStyle.Enabled = false;
-            CA.AxisX.LineColor = PropPanel.Body.BackColor;
-            CA.AxisY.LineColor = PropPanel.Body.BackColor;
-            
-            Chart1.ChartAreas.Add(CA);
-            Chart1.ChartAreas[0].AxisY.Minimum = 0;
+            CA.BackGroundColor = IA.FileBrowser.BackGroundColor1;
+            CA.ShowMinAndMax = true;
+             
             CA.Visible = true;
             
             Values.Enabled = true;
-            Values.ChartType = SeriesChartType.SplineArea;
-            Values.BorderWidth = 1;
+            Values.UseGradientStyle = true;
             Values.BorderColor = Color.White;
-            Values.BackGradientStyle = System.Windows.Forms.DataVisualization.Charting.GradientStyle.LeftRight;
             Values.BackSecondaryColor = Color.White;
             Values.Color = Color.Black;
             Chart1.Series.Add(Values);
 
             ValuesUp.Enabled = true;
-            ValuesUp.ChartType = SeriesChartType.SplineArea;
-            ValuesUp.BorderWidth = 1;
             ValuesUp.BorderColor = Color.White;
             ValuesUp.Color = Color.White;
             Chart1.Series.Add(ValuesUp);
 
             ValuesDown.Enabled = true;
-            ValuesDown.ChartType = SeriesChartType.SplineArea;
-            ValuesDown.BorderWidth = 1;
             ValuesDown.BorderColor = Color.White;
             ValuesDown.Color = Color.Black;
             Chart1.Series.Add(ValuesDown);
-
-            MinSer.Enabled = true;
-            MinSer.ChartType = SeriesChartType.Spline;
-            MinSer.BorderWidth = 1;
-            MinSer.Color = Color.White;
-            MinSer.BorderColor = Color.White;
-            Chart1.Series.Add(MinSer);
-
-            MaxSer.Enabled = true;
-            MaxSer.ChartType = SeriesChartType.Spline;
-            MaxSer.BorderWidth = 1;
-            MaxSer.Color = Color.White;
-            MaxSer.BorderColor = Color.White;
-            Chart1.Series.Add(MaxSer);
-
+            
             Chart1.Dock = DockStyle.Fill;
             Chart1.BackColor = PropPanel.Body.BackColor;
             PropPanel.Panel.Controls.Add(Chart1);
-            Chart1.MouseMove += new MouseEventHandler(Chart1_MouseMove);
-            Chart1.MouseDown += new MouseEventHandler(Chart1_MouseDown);
-            Chart1.MouseUp += new MouseEventHandler(Chart1_MouseUp);
-            Chart1.MouseClick += new MouseEventHandler(Chart1_MouseClick);
+            CA.MouseMove += new MouseEventHandler(Chart1_MouseMove);
+            CA.MouseDown += new MouseEventHandler(Chart1_MouseDown);
+            CA.MouseUp += new MouseEventHandler(Chart1_MouseUp);
+            CA.MouseClick += new MouseEventHandler(Chart1_MouseClick);
             //Chart1.MouseHover += new MouseEventHandler(Chart1_MouseHover);
             Chart1.BringToFront();
            
@@ -483,8 +446,8 @@ namespace Cell_Tool_3
          }
         private void Chart1_MouseDown(object sender, MouseEventArgs e)
         {
-            double min = Chart1.ChartAreas[0].AxisX.ValueToPixelPosition(lastMin);
-            double max = Chart1.ChartAreas[0].AxisX.ValueToPixelPosition(lastMax);
+            double min = Chart1.CA.ValueToPixelPosition(lastMin);
+            double max = Chart1.CA.ValueToPixelPosition(lastMax);
             MinPrew = lastMin;
             MaxPrew = lastMax;
 
@@ -557,9 +520,12 @@ namespace Cell_Tool_3
                 fi.cValue = curC;
                 calculateHistogramArray(fi, true);
             }
+
+            Chart1.DrawToScreen(fi);
             Chart1.Update();
             Chart1.PerformLayout();
-            IA.ReloadImages();            
+
+            IA.ReloadImages();
         }
         private void Chart1_MouseMove(object sender, MouseEventArgs e)
         {
@@ -571,11 +537,11 @@ namespace Cell_Tool_3
                 {
                    //higher then max
                     int MineX = e.X;
-                    int maxeX = Convert.ToInt32(Chart1.ChartAreas[0].AxisX.ValueToPixelPosition(oldFI.MaxBrightness[oldFI.cValue]) - 1);
+                    int maxeX = Convert.ToInt32(Chart1.CA.ValueToPixelPosition(oldFI.MaxBrightness[oldFI.cValue]) - 1);
                     if (e.X > maxeX) { MineX = maxeX; }
                     //lower then min
                     if (MineX < 0) { MineX = 0; }
-                    int newMin = Convert.ToInt32(Chart1.ChartAreas[0].AxisX.PixelPositionToValue(MineX));
+                    int newMin = Convert.ToInt32(Chart1.CA.PixelPositionToValue(MineX));
                     //calculate
                     if (newMin != oldFI.MinBrightness[oldFI.cValue] & newMin < oldFI.MaxBrightness[oldFI.cValue] & newMin >= 0)
                     {
@@ -587,11 +553,7 @@ namespace Cell_Tool_3
                         }
 
                         oldFI.MinBrightness[oldFI.cValue] = newMin;
-                        MinSer.Points.Clear();
-
-                        MinSer.Points.AddXY(oldFI.MinBrightness[oldFI.cValue], Chart1.ChartAreas[0].AxisY.Minimum);
-                        MinSer.Points.AddXY(oldFI.MinBrightness[oldFI.cValue], Chart1.ChartAreas[0].AxisY.Maximum);
-
+                        
                         // IA.MarkAsNotSaved();
                         Chart1_MouseMoveImageReload();
                     }
@@ -607,12 +569,12 @@ namespace Cell_Tool_3
 
                     if (fi.bitsPerPixel != 8) absMax = ushort.MaxValue;
                     //bigger then max
-                    int maxeX = Convert.ToInt32(Chart1.ChartAreas[0].AxisX.ValueToPixelPosition(Chart1.ChartAreas[0].AxisX.Maximum));
+                    int maxeX = Convert.ToInt32(Chart1.CA.Width);
                     if (e.X < maxeX) { maxeX = e.X; }
                     //lower then min
-                    int mineX = Convert.ToInt32(Chart1.ChartAreas[0].AxisX.ValueToPixelPosition(oldFI.MinBrightness[oldFI.cValue])) + 1;
+                    int mineX = Convert.ToInt32(Chart1.CA.ValueToPixelPosition(oldFI.MinBrightness[oldFI.cValue])) + 1;
                     if (e.X < mineX) { maxeX = mineX; }
-                    int newMax = Convert.ToInt32(Chart1.ChartAreas[0].AxisX.PixelPositionToValue(maxeX));
+                    int newMax = Convert.ToInt32(Chart1.CA.PixelPositionToValue(maxeX));
                    
                     //calculate max
                     if (newMax != oldFI.MaxBrightness[oldFI.cValue] & newMax > oldFI.MinBrightness[oldFI.cValue] & newMax <= absMax)
@@ -626,25 +588,12 @@ namespace Cell_Tool_3
 
                         oldFI.MaxBrightness[oldFI.cValue] = newMax;
 
-                        MaxSer.Points.Clear();
-
-                        MaxSer.Points.AddXY(oldFI.MaxBrightness[oldFI.cValue], Chart1.ChartAreas[0].AxisY.Minimum);
-                        MaxSer.Points.AddXY(oldFI.MaxBrightness[oldFI.cValue], Chart1.ChartAreas[0].AxisY.Maximum);
-                        /*
-                        if(newMax > 0.9 * Chart1.ChartAreas[0].AxisX.Maximum)
-                        {
-                            //reload
-                            calculateHistogramArray(oldFI, true);
-                            IA.ReloadImages();
-                            Thread.Sleep(100);
-                        }*/
-                        //IA.MarkAsNotSaved();
                         Chart1_MouseMoveImageReload();
                     }
                 }
                 else {
-                    double min = Chart1.ChartAreas[0].AxisX.ValueToPixelPosition(lastMin);
-                    double max = Chart1.ChartAreas[0].AxisX.ValueToPixelPosition(lastMax);
+                    double min = Chart1.CA.ValueToPixelPosition(lastMin);
+                    double max = Chart1.CA.ValueToPixelPosition(lastMax);
                     if ((e.X > min - 2 & e.X < min + 2) | (e.X > max - 2 & e.X < max + 2))
                     {
                         Chart1.Cursor = Cursors.SizeWE;
@@ -858,45 +807,8 @@ namespace Cell_Tool_3
             //Color
             Values.BackSecondaryColor = fi.LutList[fi.cValue];
             ValuesUp.Color = fi.LutList[fi.cValue];
-
-            Chart1.ChartAreas[0].AxisX.Minimum = 0;
-            Chart1.ChartAreas[0].AxisX.Maximum = fi.MaxBrightness[fi.cValue] + correction;
-            //find Y max
-            double Ymax = 0;
-            foreach (var p in Values.Points)
-            {
-                if(p.YValues[0] > Ymax)
-                {
-                    Ymax = p.YValues[0];
-                }
-            }
-            foreach (var p in ValuesUp.Points)
-            {
-                if (p.YValues[0] > Ymax)
-                {
-                    Ymax = p.YValues[0];
-                }
-            }
-            foreach (var p in ValuesDown.Points)
-            {
-                if (p.YValues[0] > Ymax)
-                {
-                    Ymax = p.YValues[0];
-                }
-            }
-            Ymax *= 1.1;
-            Chart1.ChartAreas[0].AxisY.Maximum = Ymax + 10;
             
-            //Add Min and Max ser
-
-            MaxSer.Points.Clear();
-            MinSer.Points.Clear();
-
-            MinSer.Points.AddXY(fi.MinBrightness[fi.cValue], Chart1.ChartAreas[0].AxisY.Minimum);
-            MinSer.Points.AddXY(fi.MinBrightness[fi.cValue], Ymax);
-
-            MaxSer.Points.AddXY(fi.MaxBrightness[fi.cValue], Chart1.ChartAreas[0].AxisY.Minimum);
-            MaxSer.Points.AddXY(fi.MaxBrightness[fi.cValue], Ymax);
+            Chart1.DrawToScreen(fi);
  
         }
        
