@@ -23,7 +23,6 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Drawing;
 using System.ComponentModel;
-using System.Windows.Forms.DataVisualization.Charting;
 
 namespace Cell_Tool_3
 {
@@ -45,12 +44,10 @@ namespace Cell_Tool_3
         //histogram Panel
         private PropertiesPanel_Item HistogramPropPanel;
         public Panel HistogramPanel;
-        private Chart Chart1 = new Chart();
-        private Series Values = new Series();
-        private Series ValuesUp = new Series();
-        private Series ValuesDown = new Series();
-        private Series[] Otsu1dSeries = new Series[5];
-        private Series Spots = new Series();
+        private BrightnessAndContrast_ChartPanel Chart1 = new BrightnessAndContrast_ChartPanel();
+        private BrightnessAndContrast_ChartPanel.BrightnessAndContrast_Chart.Series Values = new BrightnessAndContrast_ChartPanel.BrightnessAndContrast_Chart.Series();
+        private BrightnessAndContrast_ChartPanel.BrightnessAndContrast_Chart.Series[] Otsu1dSeries = new BrightnessAndContrast_ChartPanel.BrightnessAndContrast_Chart.Series[5];
+        private BrightnessAndContrast_ChartPanel.BrightnessAndContrast_Chart.Series Spots = new BrightnessAndContrast_ChartPanel.BrightnessAndContrast_Chart.Series();
 
         //Segmentation Panel
         private PropertiesPanel_Item tresholdsPropPanel;
@@ -493,57 +490,22 @@ namespace Cell_Tool_3
             HistogramPanel.Visible = false;
             
             //Chart
-            ChartArea CA = new ChartArea();
-            CA.BackColor = IA.FileBrowser.BackGroundColor1;
-
-            CA.AxisX.MajorGrid.Enabled = false;
-            CA.AxisY.MajorGrid.Enabled = false;
-            CA.AxisX.MinorGrid.Enabled = false;
-            CA.AxisY.MinorGrid.Enabled = false;
-            CA.AxisX.MajorTickMark.Enabled = false;
-            CA.AxisY.MajorTickMark.Enabled = false;
-            CA.AxisX.MinorTickMark.Enabled = false;
-            CA.AxisY.MinorTickMark.Enabled = false;
-            CA.AxisX.LabelStyle.ForeColor = IA.FileBrowser.ShriftColor1;
-            CA.AxisY.LabelStyle.Enabled = false;
-            CA.AxisX.LineColor = IA.FileBrowser.BackGround2Color1;
-            CA.AxisY.LineColor = IA.FileBrowser.BackGround2Color1;
-
-            Chart1.ChartAreas.Add(CA);
-            Chart1.ChartAreas[0].AxisY.Minimum = 0;
-            CA.Visible = true;
-
+            Chart1.CA.BackGroundColor = IA.FileBrowser.BackGroundColor1;
+            Chart1.ForeColor = IA.FileBrowser.ShriftColor1;
             //Chart series
             Values.Enabled = true;
-            Values.ChartType = SeriesChartType.SplineArea;
-            Values.BorderWidth = 1;
+            Values.UseGradientStyle = true;
             Values.BorderColor = Color.White;
-            Values.BackGradientStyle = System.Windows.Forms.DataVisualization.Charting.GradientStyle.LeftRight;
             Values.BackSecondaryColor = Color.White;
             Values.Color = Color.Black;
             Chart1.Series.Add(Values);
             
-            ValuesUp.Enabled = true;
-            ValuesUp.ChartType = SeriesChartType.SplineArea;
-            ValuesUp.BorderWidth = 1;
-            ValuesUp.BorderColor = Color.White;
-            ValuesUp.Color = Color.White;
-            Chart1.Series.Add(ValuesUp);
-
-            ValuesDown.Enabled = true;
-            ValuesDown.ChartType = SeriesChartType.SplineArea;
-            ValuesDown.BorderWidth = 1;
-            ValuesDown.BorderColor = Color.White;
-            ValuesDown.Color = Color.Black;
-            Chart1.Series.Add(ValuesDown);
-
             //1DOtsu colors btns
             for(int i = 0; i < Otsu1dSeries.Length;i++)
             {
-                Series ser = new Series();
+                var ser = new BrightnessAndContrast_ChartPanel.BrightnessAndContrast_Chart.Series();
                 ser.Enabled = true;
-                ser.ChartType = SeriesChartType.SplineArea;
-                ser.BorderWidth = 1;
+                Values.UseGradientStyle = false;
                 ser.BorderColor = Color.White;
                 ser.Color = Color.White;
                 Chart1.Series.Add(ser);
@@ -551,10 +513,9 @@ namespace Cell_Tool_3
             }
             //Spot Detector
             {
-                Series ser = new Series();
+                var ser = new BrightnessAndContrast_ChartPanel.BrightnessAndContrast_Chart.Series();
                 ser.Enabled = true;
-                ser.ChartType = SeriesChartType.SplineArea;
-                ser.BorderWidth = 1;
+                Values.UseGradientStyle = false;
                 ser.BorderColor = Color.White;
                 ser.Color = Color.White;
                 Chart1.Series.Add(ser);
@@ -1199,13 +1160,11 @@ namespace Cell_Tool_3
             }
             //add values
             if (Values.Points.Count > 0) { Values.Points.Clear(); }
-            if (ValuesUp.Points.Count > 0) { ValuesUp.Points.Clear(); }
-            if (ValuesDown.Points.Count > 0) { ValuesDown.Points.Clear(); }
             //1dOtsu
             int[] otsu1dColorList = new int[6];
             for (int i = 0; i < Otsu1dSeries.Length; i++)
             {
-                Series ser = Otsu1dSeries[i];
+                var ser = Otsu1dSeries[i];
                 if (ser.Points.Count > 0)
                 {
                     ser.Points.Clear();
@@ -1251,54 +1210,28 @@ namespace Cell_Tool_3
                     {
                         val += histArray[j];
                     }
-
                 }
-                if (i <= fi.MaxBrightness[fi.cValue] & 
-                    i >= fi.MinBrightness[fi.cValue])
-                    Values.Points.AddXY(i, val);
-
-                if (i >= fi.MaxBrightness[fi.cValue])
-                    ValuesUp.Points.AddXY(i, val);
-
-                if (i <= fi.MinBrightness[fi.cValue])
-                    ValuesDown.Points.AddXY(i, val); 
+                
+                Values.Points.AddXY(i, val);
+                
                 //1dOtsu
                 for (int z = 0; z < Otsu1dSeries.Length; z++)
                 {
-                    Series ser = Otsu1dSeries[z];
-                    if (i <= otsu1dColorList[z+1] & i >= otsu1dColorList[z] 
-                        & ser.Color != Color.Transparent)
+                    var ser = Otsu1dSeries[z];
+                    if (i <= otsu1dColorList[z+1] && i >= otsu1dColorList[z] 
+                        && ser.Color != Color.Transparent)
                         ser.Points.AddXY(i, val);
                 }
                 //spot detector
-                if (i <= SpotDiapason[1] & i >= SpotDiapason[0]
-                        & Spots.Color != Color.Transparent)
+                if (i <= SpotDiapason[1] && i >= SpotDiapason[0]
+                        && Spots.Color != Color.Transparent)
                     Spots.Points.AddXY(i, val);
             }
 
             //Color
             Values.BackSecondaryColor = fi.LutList[fi.cValue];
-            ValuesUp.Color = fi.LutList[fi.cValue];
-
-            Chart1.ChartAreas[0].AxisX.Minimum = 0;
-            Chart1.ChartAreas[0].AxisX.Maximum = MaxBrightness;
-            //find Y max
-            double Ymax = 0;
-            foreach (var p in Values.Points)
-                if (p.YValues[0] > Ymax)
-                    Ymax = p.YValues[0];
-               
-            foreach (var p in ValuesUp.Points)
-                if (p.YValues[0] > Ymax)
-                    Ymax = p.YValues[0];
-                
-            foreach (var p in ValuesDown.Points)
-                if (p.YValues[0] > Ymax)
-                    Ymax = p.YValues[0];
-
-            Ymax *= 1.1;
-            Chart1.ChartAreas[0].AxisY.Maximum = Ymax + 10;
-           
+            Values.UseGradientStyle = true;
+            Chart1.DrawToScreen(fi);
         }
         
         private int[] calculateHistogram8bit(TifFileInfo fi, int frame)

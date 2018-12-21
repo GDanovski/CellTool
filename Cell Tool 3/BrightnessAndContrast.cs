@@ -34,8 +34,6 @@ namespace Cell_Tool_3
         //Chart
         public BrightnessAndContrast_ChartPanel Chart1 = new BrightnessAndContrast_ChartPanel();
         public BrightnessAndContrast_ChartPanel.BrightnessAndContrast_Chart.Series Values = new BrightnessAndContrast_ChartPanel.BrightnessAndContrast_Chart.Series();
-        public BrightnessAndContrast_ChartPanel.BrightnessAndContrast_Chart.Series ValuesUp = new BrightnessAndContrast_ChartPanel.BrightnessAndContrast_Chart.Series();
-        public BrightnessAndContrast_ChartPanel.BrightnessAndContrast_Chart.Series ValuesDown = new BrightnessAndContrast_ChartPanel.BrightnessAndContrast_Chart.Series();
         
         //CheckBoxes
         public CheckBox applyToAll = new CheckBox();
@@ -125,17 +123,7 @@ namespace Cell_Tool_3
             Values.BackSecondaryColor = Color.White;
             Values.Color = Color.Black;
             Chart1.Series.Add(Values);
-
-            ValuesUp.Enabled = true;
-            ValuesUp.BorderColor = Color.White;
-            ValuesUp.Color = Color.White;
-            Chart1.Series.Add(ValuesUp);
-
-            ValuesDown.Enabled = true;
-            ValuesDown.BorderColor = Color.White;
-            ValuesDown.Color = Color.Black;
-            Chart1.Series.Add(ValuesDown);
-            
+                        
             Chart1.Dock = DockStyle.Fill;
             Chart1.BackColor = PropPanel.Body.BackColor;
             PropPanel.Panel.Controls.Add(Chart1);
@@ -783,8 +771,6 @@ namespace Cell_Tool_3
             }
             //add values
             if (Values.Points.Count > 0){ Values.Points.Clear();}
-            if (ValuesUp.Points.Count > 0) { ValuesUp.Points.Clear(); }
-            if (ValuesDown.Points.Count > 0) { ValuesDown.Points.Clear(); }
 
             int length = fi.histogramArray[fi.cValue].Length;
             for (int i = 0; i <= fi.MaxBrightness[fi.cValue] + correction; i+=step)
@@ -799,14 +785,13 @@ namespace Cell_Tool_3
                     }
                     
                 }
-                if(i <= fi.MaxBrightness[fi.cValue] & i >= fi.MinBrightness[fi.cValue]) { Values.Points.AddXY(i, val); }
-                if (i >= fi.MaxBrightness[fi.cValue]) { ValuesUp.Points.AddXY(i, val); }
-                if (i <= fi.MinBrightness[fi.cValue]) { ValuesDown.Points.AddXY(i, val); }
+                Values.Points.AddXY(i, val);
+               
             }
            
             //Color
             Values.BackSecondaryColor = fi.LutList[fi.cValue];
-            ValuesUp.Color = fi.LutList[fi.cValue];
+            
             
             Chart1.DrawToScreen(fi);
  
