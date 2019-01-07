@@ -930,7 +930,7 @@ namespace Cell_Tool_3
 
             Button NameBtn = new Button();
             NameBtn.Tag = node;
-            NameBtn.Text = FileNameFromDir(dir.Substring(0, end) + ".CTData");
+            NameBtn.Text = FileNameFromDir(dir.Substring(0, end) + ".tif");
             NameBtn.BackColor = TitlePanelColor1;
             NameBtn.FlatStyle = FlatStyle.Flat;
             NameBtn.FlatAppearance.BorderSize = 0;
