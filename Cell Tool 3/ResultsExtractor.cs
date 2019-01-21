@@ -26,7 +26,6 @@ using System.ComponentModel;
 using OpenTK.Graphics.OpenGL;
 using OpenTK;
 using System.Drawing.Imaging;
-using System.Windows.Forms.DataVisualization.Charting;
 using NCalc;
 using System.Threading;
 using System.Globalization;
@@ -1939,7 +1938,7 @@ namespace Cell_Tool_3
                 form1.filterTV.Nodes.Clear();
                 form1.solverClass.fitData.Nodes.Clear();
 
-                foreach (var ser in form1.solverClass.fitChart1.Series)
+                foreach (var ser in form1.solverClass.fitChart1.ChartSeries)
                 {
                     ser.Points.Clear();
                 }
@@ -2850,53 +2849,37 @@ namespace Cell_Tool_3
                 return new double[][] { ser, dev };
             }
         }
-        public class ResultsChart : Chart
+        public class ResultsChart : ResultsExtractor_CTChart
         {
             private MyForm form1;
-            public Series Navg;
-            private Series StDev;
-            private Series Samp;
+            public ResultsExtractor_CTChart.Series Navg;
+            private ResultsExtractor_CTChart.Series StDev;
+            private ResultsExtractor_CTChart.Series Samp;
             public ResultsChart(MyForm form1)
             {
                 this.Visible = false;
                 this.form1 = form1;
+                this.Build(form1);
                 //Chart
-                ChartArea CA = new ChartArea();
-                this.ChartAreas.Add(CA);
 
-                CA.Visible = true;
-                CA.AxisX.MajorGrid.Enabled = false;
-                CA.AxisY.MajorGrid.Enabled = false;
-                CA.AxisX.MinorGrid.Enabled = false;
-                CA.AxisY.MinorGrid.Enabled = false;
-
-                Navg = new Series();
-                Navg.BorderWidth = 1;
-                Navg.ChartType = SeriesChartType.Spline;
-                Navg.Color = Color.Blue;
-                this.Series.Add(Navg);
-
-                StDev = new Series();
+                StDev = new ResultsExtractor_CTChart.Series();
                 StDev.Color = Color.FromArgb(50, Color.Blue);
-                StDev.BorderWidth = 1;
-                StDev.ChartType = SeriesChartType.ErrorBar;
-                StDev.IsVisibleInLegend = false;
-                this.Series.Add(StDev);
+                StDev.ErrorBar = true;
+                this.ChartSeries.Add(StDev);
 
-                Samp = new Series();
-                Samp.BorderWidth = 1;
-                Samp.ChartType = SeriesChartType.Spline;
+                Navg = new ResultsExtractor_CTChart.Series();
+                Navg.Color = Color.Blue;
+                this.ChartSeries.Add(Navg);
+                
+                Samp = new ResultsExtractor_CTChart.Series();
                 Samp.Color = Color.Blue;
-                this.Series.Add(Samp);
+                this.ChartSeries.Add(Samp);
             }
             public void AddData()
             {
-                this.ChartAreas[0].AxisX.Title = form1.dataTV.XaxisTitle;
-
-                this.SuspendLayout();
-
                 Navg.Points.Clear();
                 StDev.Points.Clear();
+                StDev.ErrorVals.Clear();
                 Samp.Points.Clear();
 
                 if (form1.dataTV.Xaxis == null) return;
@@ -2962,7 +2945,10 @@ namespace Cell_Tool_3
                 {
                     Navg.Points.AddXY(Xdata[i], ser[i]);
                     if (form1.StDevCB.Checked)
-                        StDev.Points.AddXY(Xdata[i], ser[i], ser[i] - dev[i], ser[i] + dev[i]);
+                    {
+                        StDev.Points.AddXY(Xdata[i], ser[i]);
+                        StDev.ErrorVals.Add(dev[i]);
+                    }
                 }
 
                 if (form1.dataTV.SelectedNode != null &&
@@ -2990,10 +2976,10 @@ namespace Cell_Tool_3
                 }
 
                 this.Dock = DockStyle.Fill;
-                this.ResumeLayout();
                 this.Visible = true;
+                this.GLDrawing_Start();
             }
-        }
+        } 
         public class RepeatsChart : GLControl
         {
             MyForm form1;
@@ -3409,7 +3395,7 @@ namespace Cell_Tool_3
             {
                 //Load texture from file
                 Bitmap texture_source = bmp;
-
+                
                 //Link empty texture to texture2d
                 GL.BindTexture(TextureTarget.Texture2D, id);
 

@@ -239,9 +239,9 @@ namespace Cell_Tool_3
                 {
                     return;
                 }
-
+                
                 if (GLControl1.Visible == false) { GLControl1.Visible = true; }
-
+                
                 Rectangle fieldRect = coRect_Calculate(GLControl1);
 
                 //Calculate B&C
@@ -351,7 +351,7 @@ namespace Cell_Tool_3
                 drawRoi(fi);
                 if (IA.RoiMan.current != null) drawCurrentRoi(fi);
 
-                GLControl1.SwapBuffers();
+                GLControl1.SwapBuffers();                
             }
             catch { }
         }

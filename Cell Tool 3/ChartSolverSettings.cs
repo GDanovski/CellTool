@@ -21,7 +21,6 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Windows.Forms.DataVisualization.Charting;
 using NCalc;
 using System.Windows.Forms;
 using System.ComponentModel;
@@ -1079,15 +1078,16 @@ namespace Cell_Tool_3
 
                 cmbBox.SelectedIndex = SolverFunctions1.dialog.tw.Nodes.IndexOf(n1)+4;
             }
-            private void CopyArray(Series Navg)
+            private void CopyArray(ResultsExtractor_CTChart.Series Navg)
             {
                 double[] Xvals = new double[Navg.Points.Count];
                 double[] Yvals = new double[Navg.Points.Count];
                 for (int i = 0; i < Navg.Points.Count; i++)
                 {
-                    Xvals[i] = Navg.Points[i].XValue;
-                    Yvals[i] = Navg.Points[i].YValues[0];
+                    Xvals[i] = Navg.Points[i].X;
+                    Yvals[i] = Navg.Points[i].Y;
                 }
+
                 current.XVals = Xvals;
                 current.YVals = Yvals;
             }
@@ -1346,13 +1346,13 @@ namespace Cell_Tool_3
         }   
 
 
-    public class FitChart : Chart
+    public class FitChart : ResultsExtractor_CTChart
         {
-            private Series Raw;
-            private Series Fit;
-            private Series RawNavg;
-            private Series FitNavg;
-            private List<Series> FitFormulas;
+            private ResultsExtractor_CTChart.Series Raw;
+            private ResultsExtractor_CTChart.Series Fit;
+            private ResultsExtractor_CTChart.Series RawNavg;
+            private ResultsExtractor_CTChart.Series FitNavg;
+            private List<ResultsExtractor_CTChart.Series> FitFormulas;
 
             string[] colMatrix = new string[] {"#00b300", "#b300b3", "#00bfff", "#ffcc00", "#ff471a", "#cc6699", "#39e600"
                 , "#00b3b3", "#ffcc66", "#7575a3", "#ff1a1a", "#ff0055", "#8a00e6", "#bf8040",
@@ -1360,44 +1360,28 @@ namespace Cell_Tool_3
             public FitChart()
             {
                 this.Dock = DockStyle.Fill;
-                this.Titles.Add("");
+                this.Build(null);
                 //Chart
-                ChartArea CA = new ChartArea();
-                this.ChartAreas.Add(CA);
-
-                CA.Visible = true;
-                CA.AxisX.MajorGrid.Enabled = false;
-                CA.AxisY.MajorGrid.Enabled = false;
-                CA.AxisX.MinorGrid.Enabled = false;
-                CA.AxisY.MinorGrid.Enabled = false;
-               
-                Raw = new Series();
-                Raw.BorderWidth = 2;
-                Raw.ChartType = SeriesChartType.Spline;
+                               
+                Raw = new ResultsExtractor_CTChart.Series();
                 Raw.Color = Color.Blue;
-                this.Series.Add(Raw);
+                this.ChartSeries.Add(Raw);
 
-                Fit = new Series();
-                Fit.BorderWidth = 2;
-                Fit.ChartType = SeriesChartType.Spline;
+                Fit = new ResultsExtractor_CTChart.Series();
                 Fit.Color = Color.Red;
-                this.Series.Add(Fit);
+                this.ChartSeries.Add(Fit);
 
-                RawNavg = new Series();
-                RawNavg.BorderWidth = 2;
-                RawNavg.ChartType = SeriesChartType.Spline;
+                RawNavg = new ResultsExtractor_CTChart.Series();
                 RawNavg.Color = Color.Green;
-                this.Series.Add(RawNavg);
+                this.ChartSeries.Add(RawNavg);
 
-                FitNavg = new Series();
-                FitNavg.BorderWidth = 2;
-                FitNavg.ChartType = SeriesChartType.Spline;
+                FitNavg = new ResultsExtractor_CTChart.Series();
                 FitNavg.Color = Color.Yellow;
-                this.Series.Add(FitNavg);
+                this.ChartSeries.Add(FitNavg);
 
-                FitFormulas = new List<System.Windows.Forms.DataVisualization.Charting.Series>();
+                FitFormulas = new List<ResultsExtractor_CTChart.Series>();
             }
-            public void LoadData( MySolver.FitSettings curFit)
+            public void LoadData(MySolver.FitSettings curFit)
             {
                 this.SuspendLayout();
                 
@@ -1452,13 +1436,13 @@ namespace Cell_Tool_3
 
                     //this.Series.Add(Raw);
                     //this.Series.Add(Fit);
-
+                    /*
                     if (Fit.Points.Count > 0)
                         this.Titles[0] = new Title("Root mean square deviation = " + curFit.StDev +
                             "\n\nR-squared = " +Math.Pow(FRAPA_Model.ComputeCorelationCoeff(Yvals,YFitVals.ToArray()),2));
                     else
                         this.Titles[0] = new Title("");
-
+*/
                     YFitVals = null;
 
                     SubFormulas_Load(curFit);
@@ -1484,11 +1468,11 @@ namespace Cell_Tool_3
                         StDev += Math.Pow(Yvals[i] - val, 2);
                     }
                     */
-
+                    this.GLDrawing_Start();
                 }
                 else
                 {
-                    this.Titles[0] = new Title("");
+                    //this.Titles[0] = new Title("");
                     this.ResumeLayout();
                 }
             }
@@ -1511,11 +1495,9 @@ namespace Cell_Tool_3
                         ser = FitFormulas[i];
                     else
                     {
-                        ser = new Series();
-                        ser.BorderWidth = 2;
-                        ser.ChartType = SeriesChartType.Spline;
+                        ser = new ResultsExtractor_CTChart.Series();
                         ser.Color = ColorTranslator.FromHtml(colMatrix[ColorIndex(i)]);
-                        this.Series.Add(ser);
+                        this.ChartSeries.Add(ser);
                         FitFormulas.Add(ser);
                     }
 
@@ -1540,6 +1522,7 @@ namespace Cell_Tool_3
                         ser.Points.AddXY(Xvals[i1], val);
                     }
                 }
+                this.GLDrawing_Start();
             }
             private void LoadFRAPAData(MySolver.FitSettings curFit)
             {
@@ -1565,10 +1548,8 @@ namespace Cell_Tool_3
                     else
                     {
                         ser = new Series();
-                        ser.BorderWidth = 2;
-                        ser.ChartType = SeriesChartType.Spline;
                         ser.Color = ColorTranslator.FromHtml(colMatrix[ColorIndex(i)]);
-                        this.Series.Add(ser);
+                        this.ChartSeries.Add(ser);
                         FitFormulas.Add(ser);
                     }
                     
@@ -1589,11 +1570,11 @@ namespace Cell_Tool_3
                 FitFormulas[0].Color = Color.Green;
                 FitFormulas[1].Color = Color.Magenta;
 
-                this.Titles[0] = new Title("Root mean square deviation:\nFRAP eq.(green) = " + StDev[0] +
-                    "\nDiffusion eq. (magenta) = " + StDev[1] +
-                    "\n\nR-squared:\nFRAP eq.(green) = " + Math.Pow(FRAPA_Model.ComputeCorelationCoeff(Yvals, CalcFitVals[0],frame),2) +
-                    "\nDiffusion eq. (magenta) = " + Math.Pow(FRAPA_Model.ComputeCorelationCoeff(Yvals, CalcFitVals[1], frame),2));
-                
+                //this.Titles[0] = new Title("Root mean square deviation:\nFRAP eq.(green) = " + StDev[0] +
+                //    "\nDiffusion eq. (magenta) = " + StDev[1] +
+                 //   "\n\nR-squared:\nFRAP eq.(green) = " + Math.Pow(FRAPA_Model.ComputeCorelationCoeff(Yvals, CalcFitVals[0],frame),2) +
+                  //  "\nDiffusion eq. (magenta) = " + Math.Pow(FRAPA_Model.ComputeCorelationCoeff(Yvals, CalcFitVals[1], frame),2));
+                this.GLDrawing_Start();
             }
             private int ColorIndex(int i)
             {

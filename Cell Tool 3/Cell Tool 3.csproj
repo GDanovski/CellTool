@@ -220,6 +220,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RawImageDrawer.cs" />
     <Compile Include="ResultsExtractor.cs" />
+    <Compile Include="ResultsExtractor_CTChart.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
     <Compile Include="ROI.cs" />
     <Compile Include="RoiManager.cs" />
     <Compile Include="RoiMeasure.cs" />
