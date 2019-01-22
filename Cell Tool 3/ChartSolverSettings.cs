@@ -1348,6 +1348,7 @@ namespace Cell_Tool_3
 
     public class FitChart : ResultsExtractor_CTChart
         {
+            public ListBox Titles;
             private ResultsExtractor_CTChart.Series Raw;
             private ResultsExtractor_CTChart.Series Fit;
             private ResultsExtractor_CTChart.Series RawNavg;
@@ -1359,6 +1360,15 @@ namespace Cell_Tool_3
                 "#53c68c", "#ace600", "#b33c00", "#ff6666"};
             public FitChart()
             {
+                Titles = new ListBox();
+                Titles.Dock = DockStyle.Top;
+                Titles.Font = new Font("Arial", 8);
+                Titles.SelectionMode = SelectionMode.None;
+                Titles.Height = 10;
+                Titles.BackColor = Color.White;
+                Titles.ForeColor = Color.Black;
+                Titles.BorderStyle = BorderStyle.None;
+               
                 this.Dock = DockStyle.Fill;
                 this.Build(null);
                 //Chart
@@ -1436,13 +1446,22 @@ namespace Cell_Tool_3
 
                     //this.Series.Add(Raw);
                     //this.Series.Add(Fit);
-                    /*
+
+                    this.Titles.Items.Clear();
+                    
                     if (Fit.Points.Count > 0)
-                        this.Titles[0] = new Title("Root mean square deviation = " + curFit.StDev +
-                            "\n\nR-squared = " +Math.Pow(FRAPA_Model.ComputeCorelationCoeff(Yvals,YFitVals.ToArray()),2));
+                    {
+                        Titles.Height = 50;
+                        this.Titles.Items.AddRange(new string[]{
+                            "",
+                            "\tRoot mean square deviation = " + curFit.StDev ,
+                             "\tR-squared = " + Math.Pow(FRAPA_Model.ComputeCorelationCoeff(Yvals, YFitVals.ToArray()), 2) });
+                    }
                     else
-                        this.Titles[0] = new Title("");
-*/
+                    {
+                        Titles.Height = 10;
+                    }
+
                     YFitVals = null;
 
                     SubFormulas_Load(curFit);
@@ -1472,7 +1491,8 @@ namespace Cell_Tool_3
                 }
                 else
                 {
-                    //this.Titles[0] = new Title("");
+                    this.Titles.Items.Clear();
+                    Titles.Height = 10;
                     this.ResumeLayout();
                 }
             }
@@ -1570,10 +1590,17 @@ namespace Cell_Tool_3
                 FitFormulas[0].Color = Color.Green;
                 FitFormulas[1].Color = Color.Magenta;
 
-                //this.Titles[0] = new Title("Root mean square deviation:\nFRAP eq.(green) = " + StDev[0] +
-                //    "\nDiffusion eq. (magenta) = " + StDev[1] +
-                 //   "\n\nR-squared:\nFRAP eq.(green) = " + Math.Pow(FRAPA_Model.ComputeCorelationCoeff(Yvals, CalcFitVals[0],frame),2) +
-                  //  "\nDiffusion eq. (magenta) = " + Math.Pow(FRAPA_Model.ComputeCorelationCoeff(Yvals, CalcFitVals[1], frame),2));
+                this.Titles.Items.Clear();
+                Titles.Height = 120;
+                this.Titles.Items.AddRange(new string[]{
+                    "",
+                    "\tRoot mean square deviation:",
+                    "\tFRAP eq.(green) = " + StDev[0] ,
+                    "\tDiffusion eq. (magenta) = " + StDev[1] ,
+                    "",
+                   "\tR-squared:",
+                    "\tFRAP eq.(green) = " + Math.Pow(FRAPA_Model.ComputeCorelationCoeff(Yvals, CalcFitVals[0],frame),2) ,
+                    "\tDiffusion eq. (magenta) = " + Math.Pow(FRAPA_Model.ComputeCorelationCoeff(Yvals, CalcFitVals[1], frame),2) });
                 this.GLDrawing_Start();
             }
             private int ColorIndex(int i)

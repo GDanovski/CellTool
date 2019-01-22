@@ -297,6 +297,7 @@ namespace Cell_Tool_3
                 propertiesPanel.Controls.Add(FitChartPanel.Panel);
 
                 FitChartPanel.Body.Controls.Add(solverClass.fitChart1);
+                FitChartPanel.Body.Controls.Add(solverClass.fitChart1.Titles);
                 
                 /*
                 PropertiesPanel_Item DataPanel = new PropertiesPanel_Item();
