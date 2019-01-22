@@ -442,7 +442,7 @@ namespace Cell_Tool_3
             //load series
             double stepX = rect.Width / MaxX;
             double stepY = rect.Height / (MaxY - MinY);
-
+            GL.Enable(EnableCap.LineSmooth);
             for (int i = 0; i < data.Count; i++)
             {
                 GL.Begin(PrimitiveType.LineStrip);
@@ -456,6 +456,7 @@ namespace Cell_Tool_3
 
                 GL.End();
             }
+            GL.Disable(EnableCap.LineSmooth);
         }
         public RectangleF renderChartArea(Rectangle rect, TifFileInfo fi, double minY, double maxY, double maxX)
         {

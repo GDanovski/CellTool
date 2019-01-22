@@ -3182,7 +3182,7 @@ namespace Cell_Tool_3
                 //load series
                 stepX = rect.Width / MaxX;
                 stepY = rect.Height / (MaxY - MinY);
-
+                GL.Enable(EnableCap.LineSmooth);
                 foreach (TreeNode parent in form1.dataTV.Nodes)
                     foreach (TreeNode node in parent.Nodes)
                         if (node.Checked)
@@ -3262,6 +3262,7 @@ namespace Cell_Tool_3
 
 
                 }
+                GL.Disable(EnableCap.LineSmooth);
             }
             private RectangleF renderChartArea(Rectangle rect, double minY, double maxY, double maxX)
             {

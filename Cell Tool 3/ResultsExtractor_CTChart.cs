@@ -40,11 +40,11 @@ namespace Cell_Tool_3
                 this._Series = value;
             }
         }
-
+        
         public void Build(ResultsExtractor.MyForm form1)
         {
             this.form1 = form1;
-
+            
             //this.MakeCurrent();
 
             ReserveTextureID();
@@ -99,8 +99,8 @@ namespace Cell_Tool_3
             GL.MatrixMode(MatrixMode.Modelview);
             //Set viewpoint
             GL.Viewport(0, 0, this.Width, this.Height);
-            //draw chart
             
+            //draw chart            
             try
             {
                 Render();
@@ -203,6 +203,8 @@ namespace Cell_Tool_3
 
         private void Render()
         {
+           
+
             Rectangle OldRect = new Rectangle(0, 0, this.Width, this.Height);
 
             double MaxY = double.MinValue;
@@ -240,23 +242,42 @@ namespace Cell_Tool_3
             stepY = rect.Height / (MaxY - MinY);
 
             double lineW = 1;
-
+            double[] y;
+            double[] x;
             foreach (Series ser in _Series)
                 if (ser.Enabled && ser.Points.Count() > 0)
                     if (!ser.ErrorBar)
                     {
-                        GL.Begin(PrimitiveType.LineStrip);
-                        GL.Color3(ser.Color);
+                        GL.Enable(EnableCap.LineSmooth);
 
-                        foreach (PointF p in ser.Points)
+                        x = new double[ser.Points.Count];
+                        y = new double[ser.Points.Count];
+
+                        for (int i = 0; i< ser.Points.Count; i++)
                         {
-                            GL.Vertex2(rect.X + p.X * stepX, rect.Y + rect.Height - (p.Y - MinY) * stepY);
+                            x[i] = rect.X + ser.Points[i].X * stepX;
+                            y[i] = rect.Y + rect.Height - (ser.Points[i].Y - MinY) * stepY;
+                        }
+                        
+                        for (float cor = -0.5f; cor < 1.0f; cor++)
+                        {
+                            GL.Begin(PrimitiveType.LineStrip);
+                            GL.Color4(ser.Color);
+                            if (ser.Points.Count == 1)
+                            {
+                                GL.Vertex2(x[0] + cor, y[0]);
+                                GL.Vertex2(x[0] + cor, rect.Y + rect.Height);
+                            }
+                            else
+                            {
+                                for (int i = 0; i < x.Length; i++)
+                                    GL.Vertex2(x[i], y[i] + cor);
+                            }
+                            
+                            GL.End();
                         }
 
-                        if (ser.Points.Count == 1)
-                            GL.Vertex2(rect.X + ser.Points[0].X * stepX, rect.Y + rect.Height);
-
-                        GL.End();
+                        GL.Disable(EnableCap.LineSmooth);
                     }
                     else
                     {
@@ -264,7 +285,8 @@ namespace Cell_Tool_3
                         GL.BlendFunc(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.OneMinusSrcAlpha);
                         
                         PointF p;
-                        double dev;
+                        double dev, Ydown, Yup, X;
+
 
                         GL.Begin(PrimitiveType.Lines);
                         GL.Color4(ser.Color.R, ser.Color.G , ser.Color.B, ser.Color.A);
@@ -273,9 +295,9 @@ namespace Cell_Tool_3
                             p = ser.Points[i];
                             dev = ser.ErrorVals[i];
 
-                            double Ydown = rect.Y + rect.Height - ((p.Y + dev) - MinY) * stepY;
-                            double Yup = rect.Y + rect.Height - ((p.Y - dev) - MinY) * stepY;
-                            double X = rect.X + p.X * stepX;
+                            Ydown = rect.Y + rect.Height - ((p.Y + dev) - MinY) * stepY;
+                            Yup = rect.Y + rect.Height - ((p.Y - dev) - MinY) * stepY;
+                            X = rect.X + p.X * stepX;
 
                             GL.Vertex2(X-lineW, Ydown);
                             GL.Vertex2(X + lineW, Ydown);
@@ -293,6 +315,7 @@ namespace Cell_Tool_3
 
                         GL.Disable(EnableCap.Blend);
                     }
+            
         }
         private RectangleF renderChartArea(Rectangle rect, double minY, double maxY, double maxX)
         {
@@ -368,18 +391,7 @@ namespace Cell_Tool_3
             return microRect;
 
         }
-        /*
-        private void Render()
-        {
-            //GL.ShadeModel(ShadingModel.Flat);
-            foreach (Series ser in _Series)
-                if (ser.Enabled && ser.Points.Count() > 0)
-                {
-                   // GL.BlendFunc(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.One);
-                   DrawSeries(ser);
-                }
-            
-        }*/
+       
 
         private void DrawSeries(Series ser)
         {
