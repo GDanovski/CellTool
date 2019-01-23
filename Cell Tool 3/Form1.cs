@@ -163,7 +163,7 @@ namespace Cell_Tool_3
             
             //resize
             this.Resize += new EventHandler(Form1_Resize);
-            this.MinimumSize = new Size(300, 300);
+            this.MinimumSize = new Size(400, 400);
             //Add Account settings Hendlers
             Interface.LogOutToolStripMenuItem.Click += new EventHandler(LogOut_event);
             Interface.ChangePassToolStripMenuItem.Click += new EventHandler(ChangePass_event);

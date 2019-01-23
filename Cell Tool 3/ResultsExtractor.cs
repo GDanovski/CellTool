@@ -72,7 +72,7 @@ namespace Cell_Tool_3
             PropertiesPanel_Item FiltersPanel = new PropertiesPanel_Item();
             PropertiesPanel_Item DataPanel = new PropertiesPanel_Item();
             Panel ExtrPropertiesPanel = new Panel();
-
+            
             private bool resizing = false;
             public FilterTV filterTV;
             public DataTV dataTV;
@@ -99,8 +99,7 @@ namespace Cell_Tool_3
 
                 this.BackColor = Parametars.BackGroundColor;
                 this.Width = 800;
-                this.Height = 500;
-                this.MinimumSize = new Size(300, 300);
+                this.Height = 500;                
                 this.Text = "Results Extractor";
                 this.SuspendLayout();
 
@@ -117,29 +116,23 @@ namespace Cell_Tool_3
             }
             private void AddResizeHandlers()
             {
-                this.SizeChanged += Resize_AllOthers;
-                this.FitPropertiesPanel.SizeChanged += Resize_AllOthers;
-                this.ExtrPropertiesPanel.SizeChanged += Resize_AllOthers;
-
                 this.FiltersPanel.Panel.SizeChanged += Resize_propPan;
                 this.ResultPanel.Panel.SizeChanged += Resize_propPan;
                 this.FitChartPanel.Panel.SizeChanged += Resize_propPan;
                 this.FitHistoryPanel.Panel.SizeChanged += Resize_propPan;
             }
+            
             private void Resize_propPan(object sender, EventArgs e)
             {
-                if(((Panel)sender).Height > 30)
+                if (((Panel)sender).Height > 30)
                 {
                     SaveSize();
                 }
             }
-            private void Resize_AllOthers(object sender, EventArgs e)
-            {
-                    SaveSize();
-            }
+           
             public void AdjustSize()
             {
-                if(Properties.Settings.Default.ResultsExtractorSizes[IA.FileBrowser.ActiveAccountIndex] == "@")
+                if (Properties.Settings.Default.ResultsExtractorSizes[IA.FileBrowser.ActiveAccountIndex] == "@")
                 {
                     SaveSize();
                     return;
@@ -151,7 +144,7 @@ namespace Cell_Tool_3
                 this.Height = int.Parse(vals[1]);
 
                 this.FiltersPanel.Height = int.Parse(vals[2]);
-                if(this.FiltersPanel.Panel.Height > 30)
+                if (this.FiltersPanel.Panel.Height > 30)
                     this.FiltersPanel.Panel.Height = int.Parse(vals[2]);
 
                 this.ExtrPropertiesPanel.Width = int.Parse(vals[3]);
@@ -169,9 +162,19 @@ namespace Cell_Tool_3
                 this.FitHistoryPanel.Height = int.Parse(vals[7]);
                 if (this.FitHistoryPanel.Panel.Height > 30)
                     this.FitHistoryPanel.Panel.Height = int.Parse(vals[7]);
+
+                //Check sizes
+                if (this.Width - (this.FitPropertiesPanel.Width + this.ExtrPropertiesPanel.Width) < 60)
+                {
+                    int W = (int)(this.Width / 2) - 60;
+                    this.FitPropertiesPanel.Width = W;
+                    this.ExtrPropertiesPanel.Width = W;
+                }
             }
             public void SaveSize()
             {
+                if (this.Dock != DockStyle.Fill || this.Parent==null || !this.Parent.Visible) return;
+
                 string[] vals = new string[]
                 {
                     this.Width.ToString(),
@@ -187,6 +190,7 @@ namespace Cell_Tool_3
                 Properties.Settings.Default.ResultsExtractorSizes[IA.FileBrowser.ActiveAccountIndex] =
                     string.Join("\t",vals);
                 Properties.Settings.Default.Save();
+                
             }
             private void AddCharts()
             {
@@ -195,7 +199,7 @@ namespace Cell_Tool_3
                 chartPanel.Dock = DockStyle.Fill;
                 this.Controls.Add(chartPanel);
                 chartPanel.BringToFront();
-                chartPanel.MinimumSize = new Size(100, 100);
+                //chartPanel.MinimumSize = new Size(60, 100);
 
                 PropertiesPanel_Item RepeatsChartPanel = new PropertiesPanel_Item();
                 RepeatsChartPanel.Initialize(chartPanel);
@@ -701,7 +705,7 @@ namespace Cell_Tool_3
                 rP.Location = source.Location;
                 //source.Tag = rP;
                 this.Controls.Add(rP);
-                rP.BringToFront();
+                rP.BringToFront();                
             }
             private void Resize_MouseMove(object sender, MouseEventArgs e)
             {
@@ -716,13 +720,38 @@ namespace Cell_Tool_3
             {
                 if (!resizing) return;
                 resizing = false;
-
+                int X = 0;
                 Panel source = (Panel)sender;
-                if(source.Dock == DockStyle.Left)
-                    ((Panel)source.Tag).Width = e.X + source.Location.X;
-                else if (source.Dock == DockStyle.Right)
-                    ((Panel)source.Tag).Width -= e.X;
+               
+                if (source.Dock == DockStyle.Left)
+                {
+                    //((Panel)source.Tag).Width = e.X + source.Location.X;
+                    X = e.X + source.Location.X;
 
+                    if (this.Width - (this.FitPropertiesPanel.Width + X) < 60)
+                        X = this.Width - (this.FitPropertiesPanel.Width + 60);
+
+                    if (X > 0)
+                    {
+                        this.ExtrPropertiesPanel.Width = X;
+                        SaveSize();
+                    }
+                }
+                else if (source.Dock == DockStyle.Right)
+                {
+                    // ((Panel)source.Tag).Width -= e.X;
+                    X = this.FitPropertiesPanel.Width - e.X;
+
+                    if (this.Width - (this.ExtrPropertiesPanel.Width + X) < 60)
+                        X = this.Width - (this.ExtrPropertiesPanel.Width + 60);
+
+                    if (X > 0)
+                    {
+                        this.FitPropertiesPanel.Width = X;
+                        SaveSize();
+                    }
+                }
+                
                 rP.Dispose();
             }
             private void AddMenuStrip()
