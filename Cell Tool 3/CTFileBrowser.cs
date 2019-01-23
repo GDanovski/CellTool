@@ -1338,7 +1338,7 @@ namespace Cell_Tool_3
                   "", MessageBoxButtons.YesNo) == System.Windows.Forms.DialogResult.No)
                     { return; }
                 }
-                Microsoft.VisualBasic.FileIO.FileSystem.CopyFile(node.Tag.ToString(), dir, Microsoft.VisualBasic.FileIO.UIOption.AllDialogs, Microsoft.VisualBasic.FileIO.UICancelOption.DoNothing);
+                OSFileManager.CopyFile(node.Tag.ToString(), dir);
 
             }
         }
@@ -1370,7 +1370,7 @@ namespace Cell_Tool_3
 
                         if (saveInd == true && node.Tag.ToString() != dir)
                         {
-                            Microsoft.VisualBasic.FileIO.FileSystem.CopyFile(node.Tag.ToString(), dir, Microsoft.VisualBasic.FileIO.UIOption.AllDialogs, Microsoft.VisualBasic.FileIO.UICancelOption.DoNothing);
+                            OSFileManager.CopyFile(node.Tag.ToString(), dir);
                             count++;
                         }
                     }
@@ -1407,7 +1407,7 @@ namespace Cell_Tool_3
 
                         if (saveInd == true & node.Tag.ToString() != dir)
                         {
-                            Microsoft.VisualBasic.FileIO.FileSystem.CopyFile(node.Tag.ToString(), dir, Microsoft.VisualBasic.FileIO.UIOption.AllDialogs, Microsoft.VisualBasic.FileIO.UICancelOption.DoNothing);
+                            OSFileManager.CopyFile(node.Tag.ToString(), dir);
                             count++;
                         }
                     }
@@ -1599,11 +1599,11 @@ namespace Cell_Tool_3
                 {
                     if (Directory.Exists(Dir) == true)
                     {
-                        Microsoft.VisualBasic.FileIO.FileSystem.MoveDirectory(Dir, NewDir, Microsoft.VisualBasic.FileIO.UIOption.AllDialogs, Microsoft.VisualBasic.FileIO.UICancelOption.DoNothing);
+                        OSFileManager.MoveDirectory(Dir, NewDir);
                     }
                     else if (File.Exists(Dir) == true)
                     {
-                        Microsoft.VisualBasic.FileIO.FileSystem.MoveFile(Dir, NewDir, Microsoft.VisualBasic.FileIO.UIOption.AllDialogs, Microsoft.VisualBasic.FileIO.UICancelOption.DoNothing);
+                       OSFileManager.MoveFile(Dir, NewDir);
                     }
 
                 }
@@ -1611,11 +1611,11 @@ namespace Cell_Tool_3
                 {
                     if (Directory.Exists(Dir) == true)
                     {
-                        Microsoft.VisualBasic.FileIO.FileSystem.CopyDirectory(Dir, NewDir, Microsoft.VisualBasic.FileIO.UIOption.AllDialogs, Microsoft.VisualBasic.FileIO.UICancelOption.DoNothing);
+                        OSFileManager.CopyDirectory(Dir, NewDir);
                     }
                     else if (File.Exists(Dir) == true)
                     {
-                        Microsoft.VisualBasic.FileIO.FileSystem.CopyFile(Dir, NewDir, Microsoft.VisualBasic.FileIO.UIOption.AllDialogs, Microsoft.VisualBasic.FileIO.UICancelOption.DoNothing);
+                        OSFileManager.CopyFile(Dir, NewDir);
                     }
                 }
 
@@ -1851,17 +1851,11 @@ namespace Cell_Tool_3
                             if (Directory.Exists(node.Tag.ToString()) == true)
                             {
                                 //Directory.Delete(TreeViewExp.SelectedNode.Tag.ToString(), true);
-                                Microsoft.VisualBasic.FileIO.FileSystem.DeleteDirectory(node.Tag.ToString(),
-                                                                      Microsoft.VisualBasic.FileIO.UIOption.AllDialogs,
-                                                                        Microsoft.VisualBasic.FileIO.RecycleOption.SendToRecycleBin,
-                                                                        Microsoft.VisualBasic.FileIO.UICancelOption.DoNothing);
+                                OSFileManager.DeleteDirectory(node.Tag.ToString());
                             }
                             else if (File.Exists(node.Tag.ToString()) == true)
                             {
-                                Microsoft.VisualBasic.FileIO.FileSystem.DeleteFile(node.Tag.ToString(),
-                                                                     Microsoft.VisualBasic.FileIO.UIOption.AllDialogs,
-                                                                       Microsoft.VisualBasic.FileIO.RecycleOption.SendToRecycleBin,
-                                                                       Microsoft.VisualBasic.FileIO.UICancelOption.DoNothing);
+                                OSFileManager.DeleteFile(node.Tag.ToString());
                                 //File.Delete(TreeViewExp.SelectedNode.Tag.ToString());
                             }
                             Vbox_RemoveItem(node);
@@ -1910,19 +1904,13 @@ namespace Cell_Tool_3
 
                                 }
                                 //Directory.Delete(TreeViewExp.SelectedNode.Tag.ToString(), true);
-                                Microsoft.VisualBasic.FileIO.FileSystem.DeleteDirectory(node.Tag.ToString(),
-                                                                      Microsoft.VisualBasic.FileIO.UIOption.AllDialogs,
-                                                                        Microsoft.VisualBasic.FileIO.RecycleOption.SendToRecycleBin,
-                                                                        Microsoft.VisualBasic.FileIO.UICancelOption.DoNothing);
+                                OSFileManager.DeleteDirectory(node.Tag.ToString());
 
 
                             }
                             else if (File.Exists(node.Tag.ToString()) == true)
                             {
-                                Microsoft.VisualBasic.FileIO.FileSystem.DeleteFile(node.Tag.ToString(),
-                                                                     Microsoft.VisualBasic.FileIO.UIOption.AllDialogs,
-                                                                       Microsoft.VisualBasic.FileIO.RecycleOption.SendToRecycleBin,
-                                                                       Microsoft.VisualBasic.FileIO.UICancelOption.DoNothing);
+                                OSFileManager.DeleteFile(node.Tag.ToString());
                                 //File.Delete(TreeViewExp.SelectedNode.Tag.ToString());
                             }
                             Vbox_RemoveItem(node);
@@ -1979,17 +1967,11 @@ namespace Cell_Tool_3
                             if (Directory.Exists(node.Tag.ToString()) == true)
                             {
                                 //Directory.Delete(TreeViewExp.SelectedNode.Tag.ToString(), true);
-                                Microsoft.VisualBasic.FileIO.FileSystem.DeleteDirectory(node.Tag.ToString(),
-                                                                      Microsoft.VisualBasic.FileIO.UIOption.AllDialogs,
-                                                                        Microsoft.VisualBasic.FileIO.RecycleOption.SendToRecycleBin,
-                                                                        Microsoft.VisualBasic.FileIO.UICancelOption.DoNothing);
+                                OSFileManager.DeleteDirectory(node.Tag.ToString());
                             }
                             else if (File.Exists(node.Tag.ToString()) == true)
                             {
-                                Microsoft.VisualBasic.FileIO.FileSystem.DeleteFile(node.Tag.ToString(),
-                                                                     Microsoft.VisualBasic.FileIO.UIOption.AllDialogs,
-                                                                       Microsoft.VisualBasic.FileIO.RecycleOption.SendToRecycleBin,
-                                                                       Microsoft.VisualBasic.FileIO.UICancelOption.DoNothing);
+                                OSFileManager.DeleteFile(node.Tag.ToString());
                                 //File.Delete(TreeViewExp.SelectedNode.Tag.ToString());
                             }
                             Vbox_RemoveItem(node);
@@ -2038,19 +2020,13 @@ namespace Cell_Tool_3
 
                                 }
                                 //Directory.Delete(TreeViewExp.SelectedNode.Tag.ToString(), true);
-                                Microsoft.VisualBasic.FileIO.FileSystem.DeleteDirectory(node.Tag.ToString(),
-                                                                      Microsoft.VisualBasic.FileIO.UIOption.AllDialogs,
-                                                                        Microsoft.VisualBasic.FileIO.RecycleOption.SendToRecycleBin,
-                                                                        Microsoft.VisualBasic.FileIO.UICancelOption.DoNothing);
+                                OSFileManager.DeleteDirectory(node.Tag.ToString());
 
 
                             }
                             else if (File.Exists(node.Tag.ToString()) == true)
                             {
-                                Microsoft.VisualBasic.FileIO.FileSystem.DeleteFile(node.Tag.ToString(),
-                                                                     Microsoft.VisualBasic.FileIO.UIOption.AllDialogs,
-                                                                       Microsoft.VisualBasic.FileIO.RecycleOption.SendToRecycleBin,
-                                                                       Microsoft.VisualBasic.FileIO.UICancelOption.DoNothing);
+                                OSFileManager.DeleteFile(node.Tag.ToString());
                                 //File.Delete(TreeViewExp.SelectedNode.Tag.ToString());
                             }
                             Vbox_RemoveItem(node);
@@ -3201,16 +3177,12 @@ namespace Cell_Tool_3
 
                         }
                         //Directory.Delete(TreeViewExp.SelectedNode.Tag.ToString(), true);
-                        Microsoft.VisualBasic.FileIO.FileSystem.DeleteDirectory(TreeViewExp.SelectedNode.Tag.ToString(),
-                                                              Microsoft.VisualBasic.FileIO.UIOption.AllDialogs,
-                                                                Microsoft.VisualBasic.FileIO.RecycleOption.SendToRecycleBin, Microsoft.VisualBasic.FileIO.UICancelOption.DoNothing);
+                        OSFileManager.DeleteDirectory(TreeViewExp.SelectedNode.Tag.ToString());
 
                     }
                     else if (File.Exists(TreeViewExp.SelectedNode.Tag.ToString()) == true)
                     {
-                        Microsoft.VisualBasic.FileIO.FileSystem.DeleteFile(TreeViewExp.SelectedNode.Tag.ToString(),
-                                                             Microsoft.VisualBasic.FileIO.UIOption.AllDialogs,
-                                                               Microsoft.VisualBasic.FileIO.RecycleOption.SendToRecycleBin, Microsoft.VisualBasic.FileIO.UICancelOption.DoNothing);
+                        OSFileManager.DeleteFile(TreeViewExp.SelectedNode.Tag.ToString());
                         //File.Delete(TreeViewExp.SelectedNode.Tag.ToString());
 
                     }

@@ -32,8 +32,8 @@
     <PublisherName>Georgi Danovski</PublisherName>
     <SuiteName>CellTool</SuiteName>
     <AutorunEnabled>true</AutorunEnabled>
-    <ApplicationRevision>8</ApplicationRevision>
-    <ApplicationVersion>1.3.0.8</ApplicationVersion>
+    <ApplicationRevision>9</ApplicationRevision>
+    <ApplicationVersion>1.3.0.9</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
     <PublishWizardCompleted>true</PublishWizardCompleted>
@@ -213,6 +213,7 @@
     <Compile Include="MySolver.cs" />
     <Compile Include="MyWatershed.cs" />
     <Compile Include="Ncalc_Adapter.cs" />
+    <Compile Include="OSFileManager.cs" />
     <Compile Include="OSStringConverter.cs" />
     <Compile Include="PlugInEngine.cs" />
     <Compile Include="Program.cs" />

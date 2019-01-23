@@ -903,21 +903,7 @@ namespace Cell_Tool_3
             }
             catch
             {
-                Form msgForm = new Form();
-
-                msgForm.Height = 500;
-                msgForm.Width = 500;
-                msgForm.Icon = Properties.Resources.CT_done;
-                msgForm.Text = "CellTool";
-
-                WebBrowser rtb = new WebBrowser();
-
-                rtb.Dock = DockStyle.Fill;
-                rtb.AllowNavigation = true;
-                rtb.Navigate("https://dnarepair.bas.bg/software/CellTool/tutorials.html");
-
-                msgForm.Controls.Add(rtb);
-                msgForm.ShowDialog();
+                
             }
         }
         
