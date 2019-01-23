@@ -385,6 +385,9 @@
     <Content Include="ikvm-native-win32-x64.dll">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="ikvm-native-win32-x86.dll">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="MacroComands.txt" />
     <None Include="Resources\MathNET_NumericsLicense.txt" />
     <None Include="Resources\AccordLicence.txt" />
