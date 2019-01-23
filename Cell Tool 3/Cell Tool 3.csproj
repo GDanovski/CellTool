@@ -156,6 +156,12 @@
     <Reference Include="OpenTK.GLControl">
       <HintPath>..\..\..\Downloads\Library\opentk-2014-07-23\Binaries\OpenTK\Release\OpenTK.GLControl.dll</HintPath>
     </Reference>
+    <Reference Include="Plugin.Settings, Version=3.1.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Xam.Plugins.Settings.3.1.1\lib\net45\Plugin.Settings.dll</HintPath>
+    </Reference>
+    <Reference Include="Plugin.Settings.Abstractions, Version=3.1.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Xam.Plugins.Settings.3.1.1\lib\net45\Plugin.Settings.Abstractions.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
     <Reference Include="System.Numerics" />
@@ -206,6 +212,7 @@
     </Compile>
     <Compile Include="FrameCalculator.cs" />
     <Compile Include="FRAPA_Model.cs" />
+    <Compile Include="Helpers\Settings.cs" />
     <Compile Include="ImageAnalyser.cs" />
     <Compile Include="Interface.cs" />
     <Compile Include="KMeans.cs" />
