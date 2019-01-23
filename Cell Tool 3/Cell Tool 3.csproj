@@ -213,6 +213,7 @@
     <Compile Include="MySolver.cs" />
     <Compile Include="MyWatershed.cs" />
     <Compile Include="Ncalc_Adapter.cs" />
+    <Compile Include="OSStringConverter.cs" />
     <Compile Include="PlugInEngine.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="PropertiesPanel_Item.cs" />

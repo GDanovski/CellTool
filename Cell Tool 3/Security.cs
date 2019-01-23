@@ -292,7 +292,7 @@ namespace Cell_Tool_3
                 NewAccPanel.ForeColor = Color.White;
                 NewAccPanel.Dock = DockStyle.Fill;
                 NewAccPanel.Visible = false;
-                AccForm.Controls.Add(NewAccPanel);
+                //AccForm.Controls.Add(NewAccPanel);
 
                 //labels
                 Label accLabel = new Label();
@@ -366,7 +366,7 @@ namespace Cell_Tool_3
                 AccListPanel.ForeColor = Color.White;
                 AccListPanel.Dock = DockStyle.Fill;
                 AccListPanel.Visible = false;
-                AccForm.Controls.Add(AccListPanel);
+                //AccForm.Controls.Add(AccListPanel);
                 //Add ListBox
                 AccListBox.Dock = DockStyle.Top;
                 AccListBox.BackColor = Color.DimGray;
@@ -488,7 +488,19 @@ namespace Cell_Tool_3
                 ChangeBtn.Click += new EventHandler(ChangePassBtn_click);
                 ChPassPanel.Controls.Add(ChangeBtn);
             }
+
+            AccListPanel.VisibleChanged += Panel_VisibleChange;
+            PassPanel.VisibleChanged += Panel_VisibleChange;
+            NewAccPanel.VisibleChanged += Panel_VisibleChange;
+
             AccForm.ShowDialog();
+        }
+        private void Panel_VisibleChange(object sender, EventArgs e)
+        {
+            if (!((Panel)sender).Visible) return;
+
+            AccForm.Controls.Clear();
+            AccForm.Controls.Add((Panel)sender);
         }
         private void changeAdminPass_ShowDialog(object sender, EventArgs e)
         {
