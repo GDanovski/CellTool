@@ -47,6 +47,9 @@ namespace Cell_Tool_3.Helpers
 
         public static void LoadSettings()
         {
+            if (System.Environment.OSVersion.Platform != PlatformID.MacOSX &&
+                    System.Environment.OSVersion.Platform != PlatformID.Unix) return;
+
             Properties.Settings MSSettings = Properties.Settings.Default;
             //Properties.Settings.Default.Reset();
             //Properties.Settings.Default.Save();
@@ -118,6 +121,9 @@ namespace Cell_Tool_3.Helpers
 
         public static void SaveSettings()
         {
+            if (System.Environment.OSVersion.Platform != PlatformID.MacOSX &&
+                    System.Environment.OSVersion.Platform != PlatformID.Unix) return;
+
             Properties.Settings MSSettings = Properties.Settings.Default;
            
             TrialActive = SaveSetting(MSSettings.TrialActive);
