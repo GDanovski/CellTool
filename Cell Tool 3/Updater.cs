@@ -38,6 +38,9 @@ namespace Cell_Tool_3
                 Properties.Settings.Default.UpdateSettings = false;
                 Properties.Settings.Default.Save();
             }
+            
+            //Load settings for MacOS/LinuxOS
+            Helpers.Settings.LoadSettings();
             //Check for update
             CheckForUpdateWhenStarts();
         }

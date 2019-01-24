@@ -352,6 +352,7 @@ namespace Cell_Tool_3
         private void CloseProgram(object sander, FormClosingEventArgs e)
         {
             if (update) return;
+            Helpers.Settings.SaveSettings();
             // Check is it ok to close the program
             string message = "Do you want to exit the program?";
             string caption = "CellTool";

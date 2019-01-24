@@ -136,7 +136,7 @@ namespace Cell_Tool_3
         private void CellToolMainForm_Load(object sender, EventArgs e)
         {
             Thread.CurrentThread.CurrentCulture = CultureInfo.CreateSpecificCulture("en-GB");
-
+            
             this.SuspendLayout();
             //Hide main form
             this.Hide();
@@ -146,6 +146,7 @@ namespace Cell_Tool_3
             //Show Log0
             Updater.UpdateSettings();
             Interface.ShowLogo();
+
             //Security control check - is It ok to continue with initializing the program
             SecurityControl.Initialize();
             SecurityControl.ChooseAccount();
@@ -176,7 +177,6 @@ namespace Cell_Tool_3
             this.Show();
 
             Form_StartWithFile();
-
         }
         private void Form1_Resize(object sender, EventArgs e)
         {
