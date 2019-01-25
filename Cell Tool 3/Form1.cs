@@ -485,6 +485,7 @@ namespace Cell_Tool_3
                        
             if (ofd.ShowDialog() == DialogResult.OK)
             {
+                
                 TreeNode node = Interface.FileBrowser.CheckForFile(ofd.FileName);
                 if(node != null) { Interface.FileBrowser.Openlabel.Tag = node; }
                 Interface.FileBrowser.Openlabel.Text = "'" + ofd.FileName + "'";

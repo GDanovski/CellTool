@@ -48,13 +48,13 @@ namespace Cell_Tool_3.Helpers
         public static void LoadSettings()
         {
             if (System.Environment.OSVersion.Platform != PlatformID.MacOSX &&
-                    System.Environment.OSVersion.Platform != PlatformID.Unix) return;
-
+            System.Environment.OSVersion.Platform != PlatformID.Unix) return;
+            
             Properties.Settings MSSettings = Properties.Settings.Default;
-            //Properties.Settings.Default.Reset();
+           // Properties.Settings.Default.Reset();
             //Properties.Settings.Default.Save();
             
-            if (!MSSettings.ShowLicense) return; //Prevends overwriting on first loading
+            //if (!MSSettings.ShowLicense) return; //Prevends overwriting on first loading
             
             MSSettings.TrialActive = LoadSetting(MSSettings.TrialActive, TrialActive);
             MSSettings.UpdateSettings = LoadSetting(MSSettings.UpdateSettings, UpdateSettings);
@@ -227,48 +227,45 @@ namespace Cell_Tool_3.Helpers
         private const string VBoxVisibleKey = "VBoxVisible";
         private const string EndTrialDateKey = "EndTrialDate";
 
-
-        private static readonly string TrialActiveDefault = string.Empty;
-        private static readonly string UpdateSettingsDefault = string.Empty;
-        private static readonly string ShowLicenseDefault = string.Empty;
-        private static readonly string BlockProgramDefault = string.Empty;
-        private static readonly string IncorrectPassDefault = string.Empty;
-        private static readonly string AutoProtocolSettingsDefault = string.Empty;
-        private static readonly string AccPassDefault = string.Empty;
-        private static readonly string CTChart_SeriesHeightDefault = string.Empty;
-        private static readonly string BandCVisDefault = string.Empty;
-        private static readonly string CTChart_FunctionsDefault = string.Empty;
-        private static readonly string DataSourcesPanelValuesDefault = string.Empty;
-        private static readonly string DataSourcesPanelVisibleDefault = string.Empty;
-        private static readonly string CTChart_PropertiesVisDefault = string.Empty;
-        private static readonly string HotKeysDefault = string.Empty;
-        private static readonly string CTChart_SeriesVisDefault = string.Empty;
-        private static readonly string MetaDefault = string.Empty;
-        private static readonly string MetaVisDefault = string.Empty;
-        private static readonly string OldWorkDirDefault = string.Empty;
-        private static readonly string CustomColorsDefault = string.Empty;
-        private static readonly string PropertiesPanelWidthDefault = string.Empty;
-        private static readonly string AccListDefault = string.Empty;
-        private static readonly string ResultsExtractorFiltersDefault = string.Empty;
-        private static readonly string ResultsExtractorSizesDefault = string.Empty;
-        private static readonly string RoiManHeightDefault = string.Empty;
-        private static readonly string RoiManVisDefault = string.Empty;
-        private static readonly string SegmentDataPanelVisDefault = string.Empty;
-        private static readonly string SegmentHistPanelHeightDefault = string.Empty;
-        private static readonly string SegmentHistPanelVisDefault = string.Empty;
-        private static readonly string SegmentLibPanelVisDefault = string.Empty;
-        private static readonly string SegmentSpotDetPanelVisDefault = string.Empty;
-        private static readonly string PropertiesPanelVisibleDefault = string.Empty;
-        private static readonly string SmartBtnsDefault = string.Empty;
-        private static readonly string SolverFunctionsDefault = string.Empty;
-        private static readonly string TrackingVisDefault = string.Empty;
-        private static readonly string TreeViewContentDefault = string.Empty;
-        private static readonly string TreeViewSizeDefault = string.Empty;
-        private static readonly string TreeViewVisibleDefault = string.Empty;
-        private static readonly string ProtocolSettingsListDefault = string.Empty;
-        private static readonly string VBoxVisibleDefault = string.Empty;
-        private static readonly string EndTrialDateDefault = string.Empty;
-
+        private static readonly string TrialActiveDefault = "False";
+        private static readonly string UpdateSettingsDefault = "True";
+        private static readonly string ShowLicenseDefault = "True";
+        private static readonly string BlockProgramDefault = "False";
+        private static readonly string IncorrectPassDefault = "0";
+        private static readonly string AutoProtocolSettingsDefault = "true";
+        private static readonly string AccPassDefault = "123456";
+        private static readonly string CTChart_SeriesHeightDefault = "200";
+        private static readonly string BandCVisDefault = "y";
+        private static readonly string CTChart_FunctionsDefault = "@";
+        private static readonly string DataSourcesPanelValuesDefault = "300";
+        private static readonly string DataSourcesPanelVisibleDefault = "y";
+        private static readonly string CTChart_PropertiesVisDefault = "y";
+        private static readonly string HotKeysDefault = "@";
+        private static readonly string CTChart_SeriesVisDefault = "y";
+        private static readonly string MetaDefault = "130";
+        private static readonly string MetaVisDefault = "y";
+        private static readonly string OldWorkDirDefault = "@";
+        private static readonly string CustomColorsDefault = "@";
+        private static readonly string PropertiesPanelWidthDefault = "300";
+        private static readonly string AccListDefault = "Admin";
+        private static readonly string ResultsExtractorFiltersDefault = "@";
+        private static readonly string ResultsExtractorSizesDefault = "@";
+        private static readonly string RoiManHeightDefault = "300";
+        private static readonly string RoiManVisDefault = "y";
+        private static readonly string SegmentDataPanelVisDefault = "y";
+        private static readonly string SegmentHistPanelHeightDefault = "200";
+        private static readonly string SegmentHistPanelVisDefault = "y";
+        private static readonly string SegmentLibPanelVisDefault = "y";
+        private static readonly string SegmentSpotDetPanelVisDefault = "y";
+        private static readonly string PropertiesPanelVisibleDefault = "y";
+        private static readonly string SmartBtnsDefault = "@";
+        private static readonly string SolverFunctionsDefault = "@";
+        private static readonly string TrackingVisDefault = "y";
+        private static readonly string TreeViewContentDefault = "@";
+        private static readonly string TreeViewSizeDefault = "200";
+        private static readonly string TreeViewVisibleDefault = "y";
+        private static readonly string ProtocolSettingsListDefault = "@";
+        private static readonly string VBoxVisibleDefault = "y";
 
         #endregion SettingsConstants
 
