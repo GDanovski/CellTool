@@ -489,18 +489,23 @@ namespace Cell_Tool_3
                 ChPassPanel.Controls.Add(ChangeBtn);
             }
 
-            //AccListPanel.VisibleChanged += Panel_VisibleChange;
-            //PassPanel.VisibleChanged += Panel_VisibleChange;
-           // NewAccPanel.VisibleChanged += Panel_VisibleChange;
+            AccListPanel.VisibleChanged += Panel_VisibleChange;
+            PassPanel.VisibleChanged += Panel_VisibleChange;
+           NewAccPanel.VisibleChanged += Panel_VisibleChange;
 
             AccForm.ShowDialog();
         }
         private void Panel_VisibleChange(object sender, EventArgs e)
         {
+            Panel pnl = (Panel)sender;
+
+            foreach (Control ctr in pnl.Controls)
+                ctr.Visible = pnl.Visible;
+            /*
             if (!((Panel)sender).Visible) return;
 
             AccForm.Controls.Clear();
-            AccForm.Controls.Add((Panel)sender);
+            AccForm.Controls.Add((Panel)sender);*/
         }
         private void changeAdminPass_ShowDialog(object sender, EventArgs e)
         {
