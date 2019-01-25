@@ -44,59 +44,64 @@ namespace Cell_Tool_3.Helpers
 
         #region MySettings
 
-
+        private static bool IsRunningOnMono()
+        {
+            return Type.GetType("Mono.Runtime") != null;
+        }
         public static void LoadSettings()
         {
-            if (System.Environment.OSVersion.Platform != PlatformID.MacOSX &&
-            System.Environment.OSVersion.Platform != PlatformID.Unix) return;
-            
-            Properties.Settings MSSettings = Properties.Settings.Default;
-           // Properties.Settings.Default.Reset();
-            //Properties.Settings.Default.Save();
-            
-            //if (!MSSettings.ShowLicense) return; //Prevends overwriting on first loading
-            
-            MSSettings.TrialActive = LoadSetting(MSSettings.TrialActive, TrialActive);
-            MSSettings.UpdateSettings = LoadSetting(MSSettings.UpdateSettings, UpdateSettings);
-            MSSettings.ShowLicense = LoadSetting(MSSettings.ShowLicense, ShowLicense);
-            MSSettings.BlockProgram = LoadSetting(MSSettings.BlockProgram, BlockProgram);
-            MSSettings.IncorrectPass = LoadSetting(MSSettings.IncorrectPass, IncorrectPass);
-            MSSettings.AutoProtocolSettings = LoadSetting(MSSettings.AutoProtocolSettings, AutoProtocolSettings);
-            MSSettings.AccPass = LoadSetting(MSSettings.AccPass, AccPass);
-            MSSettings.CTChart_SeriesHeight = LoadSetting(MSSettings.CTChart_SeriesHeight, CTChart_SeriesHeight);
-            MSSettings.BandCVis = LoadSetting(MSSettings.BandCVis, BandCVis);
-            MSSettings.CTChart_Functions = LoadSetting(MSSettings.CTChart_Functions, CTChart_Functions);
-            MSSettings.DataSourcesPanelValues = LoadSetting(MSSettings.DataSourcesPanelValues, DataSourcesPanelValues);
-            MSSettings.DataSourcesPanelVisible = LoadSetting(MSSettings.DataSourcesPanelVisible, DataSourcesPanelVisible);
-            MSSettings.CTChart_PropertiesVis = LoadSetting(MSSettings.CTChart_PropertiesVis, CTChart_PropertiesVis);
-            MSSettings.HotKeys = LoadSetting(MSSettings.HotKeys, HotKeys);
-            MSSettings.CTChart_SeriesVis = LoadSetting(MSSettings.CTChart_SeriesVis, CTChart_SeriesVis);
-            MSSettings.Meta = LoadSetting(MSSettings.Meta, Meta);
-            MSSettings.MetaVis = LoadSetting(MSSettings.MetaVis, MetaVis);
-            MSSettings.OldWorkDir = LoadSetting(MSSettings.OldWorkDir, OldWorkDir);
-            MSSettings.CustomColors = LoadSetting(MSSettings.CustomColors, CustomColors);
-            MSSettings.PropertiesPanelWidth = LoadSetting(MSSettings.PropertiesPanelWidth, PropertiesPanelWidth);
-            MSSettings.AccList = LoadSetting(MSSettings.AccList, AccList);
-            MSSettings.ResultsExtractorFilters = LoadSetting(MSSettings.ResultsExtractorFilters, ResultsExtractorFilters);
-            MSSettings.ResultsExtractorSizes = LoadSetting(MSSettings.ResultsExtractorSizes, ResultsExtractorSizes);
-            MSSettings.RoiManHeight = LoadSetting(MSSettings.RoiManHeight, RoiManHeight);
-            MSSettings.RoiManVis = LoadSetting(MSSettings.RoiManVis, RoiManVis);
-            MSSettings.SegmentDataPanelVis = LoadSetting(MSSettings.SegmentDataPanelVis, SegmentDataPanelVis);
-            MSSettings.SegmentHistPanelHeight = LoadSetting(MSSettings.SegmentHistPanelHeight, SegmentHistPanelHeight);
-            MSSettings.SegmentHistPanelVis = LoadSetting(MSSettings.SegmentHistPanelVis, SegmentHistPanelVis);
-            MSSettings.SegmentLibPanelVis = LoadSetting(MSSettings.SegmentLibPanelVis, SegmentLibPanelVis);
-            MSSettings.SegmentSpotDetPanelVis = LoadSetting(MSSettings.SegmentSpotDetPanelVis, SegmentSpotDetPanelVis);
-            MSSettings.PropertiesPanelVisible = LoadSetting(MSSettings.PropertiesPanelVisible, PropertiesPanelVisible);
-            MSSettings.SmartBtns = LoadSetting(MSSettings.SmartBtns, SmartBtns);
-            MSSettings.SolverFunctions = LoadSetting(MSSettings.SolverFunctions, SolverFunctions);
-            MSSettings.TrackingVis = LoadSetting(MSSettings.TrackingVis, TrackingVis);
-            MSSettings.TreeViewContent = LoadSetting(MSSettings.TreeViewContent, TreeViewContent);
-            MSSettings.TreeViewSize = LoadSetting(MSSettings.TreeViewSize, TreeViewSize);
-            MSSettings.TreeViewVisible = LoadSetting(MSSettings.TreeViewVisible, TreeViewVisible);
-            MSSettings.ProtocolSettingsList = LoadSetting(MSSettings.ProtocolSettingsList, ProtocolSettingsList);
-            MSSettings.VBoxVisible = LoadSetting(MSSettings.VBoxVisible, VBoxVisible);
-            //MSSettings.EndTrialDate = LoadSetting(MSSettings.EndTrialDate, EndTrialDate);
+            if (!IsRunningOnMono()) return;
 
+            Properties.Settings MSSettings = Properties.Settings.Default;
+            //Properties.Settings.Default.Reset();
+            //Properties.Settings.Default.Save();
+
+            if (!MSSettings.ShowLicense) return; //Prevends overwriting on first loading
+
+            try
+            {
+                MSSettings.TrialActive = LoadSetting(MSSettings.TrialActive, TrialActive);
+                MSSettings.UpdateSettings = LoadSetting(MSSettings.UpdateSettings, UpdateSettings);
+                MSSettings.ShowLicense = LoadSetting(MSSettings.ShowLicense, ShowLicense);
+                MSSettings.BlockProgram = LoadSetting(MSSettings.BlockProgram, BlockProgram);
+                MSSettings.IncorrectPass = LoadSetting(MSSettings.IncorrectPass, IncorrectPass);
+                MSSettings.AutoProtocolSettings = LoadSetting(MSSettings.AutoProtocolSettings, AutoProtocolSettings);
+                MSSettings.AccPass = LoadSetting(MSSettings.AccPass, AccPass);
+                MSSettings.CTChart_SeriesHeight = LoadSetting(MSSettings.CTChart_SeriesHeight, CTChart_SeriesHeight);
+                MSSettings.BandCVis = LoadSetting(MSSettings.BandCVis, BandCVis);
+                MSSettings.CTChart_Functions = LoadSetting(MSSettings.CTChart_Functions, CTChart_Functions);
+                MSSettings.DataSourcesPanelValues = LoadSetting(MSSettings.DataSourcesPanelValues, DataSourcesPanelValues);
+                MSSettings.DataSourcesPanelVisible = LoadSetting(MSSettings.DataSourcesPanelVisible, DataSourcesPanelVisible);
+                MSSettings.CTChart_PropertiesVis = LoadSetting(MSSettings.CTChart_PropertiesVis, CTChart_PropertiesVis);
+                MSSettings.HotKeys = LoadSetting(MSSettings.HotKeys, HotKeys);
+                MSSettings.CTChart_SeriesVis = LoadSetting(MSSettings.CTChart_SeriesVis, CTChart_SeriesVis);
+                MSSettings.Meta = LoadSetting(MSSettings.Meta, Meta);
+                MSSettings.MetaVis = LoadSetting(MSSettings.MetaVis, MetaVis);
+                MSSettings.OldWorkDir = LoadSetting(MSSettings.OldWorkDir, OldWorkDir);
+                MSSettings.CustomColors = LoadSetting(MSSettings.CustomColors, CustomColors);
+                MSSettings.PropertiesPanelWidth = LoadSetting(MSSettings.PropertiesPanelWidth, PropertiesPanelWidth);
+                MSSettings.AccList = LoadSetting(MSSettings.AccList, AccList);
+                MSSettings.ResultsExtractorFilters = LoadSetting(MSSettings.ResultsExtractorFilters, ResultsExtractorFilters);
+                MSSettings.ResultsExtractorSizes = LoadSetting(MSSettings.ResultsExtractorSizes, ResultsExtractorSizes);
+                MSSettings.RoiManHeight = LoadSetting(MSSettings.RoiManHeight, RoiManHeight);
+                MSSettings.RoiManVis = LoadSetting(MSSettings.RoiManVis, RoiManVis);
+                MSSettings.SegmentDataPanelVis = LoadSetting(MSSettings.SegmentDataPanelVis, SegmentDataPanelVis);
+                MSSettings.SegmentHistPanelHeight = LoadSetting(MSSettings.SegmentHistPanelHeight, SegmentHistPanelHeight);
+                MSSettings.SegmentHistPanelVis = LoadSetting(MSSettings.SegmentHistPanelVis, SegmentHistPanelVis);
+                MSSettings.SegmentLibPanelVis = LoadSetting(MSSettings.SegmentLibPanelVis, SegmentLibPanelVis);
+                MSSettings.SegmentSpotDetPanelVis = LoadSetting(MSSettings.SegmentSpotDetPanelVis, SegmentSpotDetPanelVis);
+                MSSettings.PropertiesPanelVisible = LoadSetting(MSSettings.PropertiesPanelVisible, PropertiesPanelVisible);
+                MSSettings.SmartBtns = LoadSetting(MSSettings.SmartBtns, SmartBtns);
+                MSSettings.SolverFunctions = LoadSetting(MSSettings.SolverFunctions, SolverFunctions);
+                MSSettings.TrackingVis = LoadSetting(MSSettings.TrackingVis, TrackingVis);
+                MSSettings.TreeViewContent = LoadSetting(MSSettings.TreeViewContent, TreeViewContent);
+                MSSettings.TreeViewSize = LoadSetting(MSSettings.TreeViewSize, TreeViewSize);
+                MSSettings.TreeViewVisible = LoadSetting(MSSettings.TreeViewVisible, TreeViewVisible);
+                MSSettings.ProtocolSettingsList = LoadSetting(MSSettings.ProtocolSettingsList, ProtocolSettingsList);
+                MSSettings.VBoxVisible = LoadSetting(MSSettings.VBoxVisible, VBoxVisible);
+                //MSSettings.EndTrialDate = LoadSetting(MSSettings.EndTrialDate, EndTrialDate);
+            }
+            catch { }
             MSSettings.Save();
         }
         private static bool LoadSetting(bool MSsetting,string setting)
@@ -121,8 +126,7 @@ namespace Cell_Tool_3.Helpers
 
         public static void SaveSettings()
         {
-            if (System.Environment.OSVersion.Platform != PlatformID.MacOSX &&
-                    System.Environment.OSVersion.Platform != PlatformID.Unix) return;
+            if (!IsRunningOnMono()) return;
 
             Properties.Settings MSSettings = Properties.Settings.Default;
            
@@ -270,487 +274,447 @@ namespace Cell_Tool_3.Helpers
         #endregion SettingsConstants
 
 
-
         public static string TrialActive
         {
             get
             {
-                return AppSettings.GetValueOrDefault(TrialActiveKey, SettingsDefault);
+                return AppSettings.GetValueOrDefault(TrialActiveKey, TrialActiveDefault);
             }
             set
             {
                 AppSettings.AddOrUpdateValue(TrialActiveKey, value);
             }
         }
-
         public static string UpdateSettings
         {
             get
             {
-                return AppSettings.GetValueOrDefault(UpdateSettingsKey, SettingsDefault);
+                return AppSettings.GetValueOrDefault(UpdateSettingsKey, UpdateSettingsDefault);
             }
             set
             {
                 AppSettings.AddOrUpdateValue(UpdateSettingsKey, value);
             }
         }
-
         public static string ShowLicense
         {
             get
             {
-                return AppSettings.GetValueOrDefault(ShowLicenseKey, SettingsDefault);
+                return AppSettings.GetValueOrDefault(ShowLicenseKey, ShowLicenseDefault);
             }
             set
             {
                 AppSettings.AddOrUpdateValue(ShowLicenseKey, value);
             }
         }
-
         public static string BlockProgram
         {
             get
             {
-                return AppSettings.GetValueOrDefault(BlockProgramKey, SettingsDefault);
+                return AppSettings.GetValueOrDefault(BlockProgramKey, BlockProgramDefault);
             }
             set
             {
                 AppSettings.AddOrUpdateValue(BlockProgramKey, value);
             }
         }
-
         public static string IncorrectPass
         {
             get
             {
-                return AppSettings.GetValueOrDefault(IncorrectPassKey, SettingsDefault);
+                return AppSettings.GetValueOrDefault(IncorrectPassKey, IncorrectPassDefault);
             }
             set
             {
                 AppSettings.AddOrUpdateValue(IncorrectPassKey, value);
             }
         }
-
         public static string AutoProtocolSettings
         {
             get
             {
-                return AppSettings.GetValueOrDefault(AutoProtocolSettingsKey, SettingsDefault);
+                return AppSettings.GetValueOrDefault(AutoProtocolSettingsKey, AutoProtocolSettingsDefault);
             }
             set
             {
                 AppSettings.AddOrUpdateValue(AutoProtocolSettingsKey, value);
             }
         }
-
         public static string AccPass
         {
             get
             {
-                return AppSettings.GetValueOrDefault(AccPassKey, SettingsDefault);
+                return AppSettings.GetValueOrDefault(AccPassKey, AccPassDefault);
             }
             set
             {
                 AppSettings.AddOrUpdateValue(AccPassKey, value);
             }
         }
-
         public static string CTChart_SeriesHeight
         {
             get
             {
-                return AppSettings.GetValueOrDefault(CTChart_SeriesHeightKey, SettingsDefault);
+                return AppSettings.GetValueOrDefault(CTChart_SeriesHeightKey, CTChart_SeriesHeightDefault);
             }
             set
             {
                 AppSettings.AddOrUpdateValue(CTChart_SeriesHeightKey, value);
             }
         }
-
         public static string BandCVis
         {
             get
             {
-                return AppSettings.GetValueOrDefault(BandCVisKey, SettingsDefault);
+                return AppSettings.GetValueOrDefault(BandCVisKey, BandCVisDefault);
             }
             set
             {
                 AppSettings.AddOrUpdateValue(BandCVisKey, value);
             }
         }
-
         public static string CTChart_Functions
         {
             get
             {
-                return AppSettings.GetValueOrDefault(CTChart_FunctionsKey, SettingsDefault);
+                return AppSettings.GetValueOrDefault(CTChart_FunctionsKey, CTChart_FunctionsDefault);
             }
             set
             {
                 AppSettings.AddOrUpdateValue(CTChart_FunctionsKey, value);
             }
         }
-
         public static string DataSourcesPanelValues
         {
             get
             {
-                return AppSettings.GetValueOrDefault(DataSourcesPanelValuesKey, SettingsDefault);
+                return AppSettings.GetValueOrDefault(DataSourcesPanelValuesKey, DataSourcesPanelValuesDefault);
             }
             set
             {
                 AppSettings.AddOrUpdateValue(DataSourcesPanelValuesKey, value);
             }
         }
-
         public static string DataSourcesPanelVisible
         {
             get
             {
-                return AppSettings.GetValueOrDefault(DataSourcesPanelVisibleKey, SettingsDefault);
+                return AppSettings.GetValueOrDefault(DataSourcesPanelVisibleKey, DataSourcesPanelVisibleDefault);
             }
             set
             {
                 AppSettings.AddOrUpdateValue(DataSourcesPanelVisibleKey, value);
             }
         }
-
         public static string CTChart_PropertiesVis
         {
             get
             {
-                return AppSettings.GetValueOrDefault(CTChart_PropertiesVisKey, SettingsDefault);
+                return AppSettings.GetValueOrDefault(CTChart_PropertiesVisKey, CTChart_PropertiesVisDefault);
             }
             set
             {
                 AppSettings.AddOrUpdateValue(CTChart_PropertiesVisKey, value);
             }
         }
-
         public static string HotKeys
         {
             get
             {
-                return AppSettings.GetValueOrDefault(HotKeysKey, SettingsDefault);
+                return AppSettings.GetValueOrDefault(HotKeysKey, HotKeysDefault);
             }
             set
             {
                 AppSettings.AddOrUpdateValue(HotKeysKey, value);
             }
         }
-
         public static string CTChart_SeriesVis
         {
             get
             {
-                return AppSettings.GetValueOrDefault(CTChart_SeriesVisKey, SettingsDefault);
+                return AppSettings.GetValueOrDefault(CTChart_SeriesVisKey, CTChart_SeriesVisDefault);
             }
             set
             {
                 AppSettings.AddOrUpdateValue(CTChart_SeriesVisKey, value);
             }
         }
-
         public static string Meta
         {
             get
             {
-                return AppSettings.GetValueOrDefault(MetaKey, SettingsDefault);
+                return AppSettings.GetValueOrDefault(MetaKey, MetaDefault);
             }
             set
             {
                 AppSettings.AddOrUpdateValue(MetaKey, value);
             }
         }
-
         public static string MetaVis
         {
             get
             {
-                return AppSettings.GetValueOrDefault(MetaVisKey, SettingsDefault);
+                return AppSettings.GetValueOrDefault(MetaVisKey, MetaVisDefault);
             }
             set
             {
                 AppSettings.AddOrUpdateValue(MetaVisKey, value);
             }
         }
-
         public static string OldWorkDir
         {
             get
             {
-                return AppSettings.GetValueOrDefault(OldWorkDirKey, SettingsDefault);
+                return AppSettings.GetValueOrDefault(OldWorkDirKey, OldWorkDirDefault);
             }
             set
             {
                 AppSettings.AddOrUpdateValue(OldWorkDirKey, value);
             }
         }
-
         public static string CustomColors
         {
             get
             {
-                return AppSettings.GetValueOrDefault(CustomColorsKey, SettingsDefault);
+                return AppSettings.GetValueOrDefault(CustomColorsKey, CustomColorsDefault);
             }
             set
             {
                 AppSettings.AddOrUpdateValue(CustomColorsKey, value);
             }
         }
-
         public static string PropertiesPanelWidth
         {
             get
             {
-                return AppSettings.GetValueOrDefault(PropertiesPanelWidthKey, SettingsDefault);
+                return AppSettings.GetValueOrDefault(PropertiesPanelWidthKey, PropertiesPanelWidthDefault);
             }
             set
             {
                 AppSettings.AddOrUpdateValue(PropertiesPanelWidthKey, value);
             }
         }
-
         public static string AccList
         {
             get
             {
-                return AppSettings.GetValueOrDefault(AccListKey, SettingsDefault);
+                return AppSettings.GetValueOrDefault(AccListKey, AccListDefault);
             }
             set
             {
                 AppSettings.AddOrUpdateValue(AccListKey, value);
             }
         }
-
         public static string ResultsExtractorFilters
         {
             get
             {
-                return AppSettings.GetValueOrDefault(ResultsExtractorFiltersKey, SettingsDefault);
+                return AppSettings.GetValueOrDefault(ResultsExtractorFiltersKey, ResultsExtractorFiltersDefault);
             }
             set
             {
                 AppSettings.AddOrUpdateValue(ResultsExtractorFiltersKey, value);
             }
         }
-
         public static string ResultsExtractorSizes
         {
             get
             {
-                return AppSettings.GetValueOrDefault(ResultsExtractorSizesKey, SettingsDefault);
+                return AppSettings.GetValueOrDefault(ResultsExtractorSizesKey, ResultsExtractorSizesDefault);
             }
             set
             {
                 AppSettings.AddOrUpdateValue(ResultsExtractorSizesKey, value);
             }
         }
-
         public static string RoiManHeight
         {
             get
             {
-                return AppSettings.GetValueOrDefault(RoiManHeightKey, SettingsDefault);
+                return AppSettings.GetValueOrDefault(RoiManHeightKey, RoiManHeightDefault);
             }
             set
             {
                 AppSettings.AddOrUpdateValue(RoiManHeightKey, value);
             }
         }
-
         public static string RoiManVis
         {
             get
             {
-                return AppSettings.GetValueOrDefault(RoiManVisKey, SettingsDefault);
+                return AppSettings.GetValueOrDefault(RoiManVisKey, RoiManVisDefault);
             }
             set
             {
                 AppSettings.AddOrUpdateValue(RoiManVisKey, value);
             }
         }
-
         public static string SegmentDataPanelVis
         {
             get
             {
-                return AppSettings.GetValueOrDefault(SegmentDataPanelVisKey, SettingsDefault);
+                return AppSettings.GetValueOrDefault(SegmentDataPanelVisKey, SegmentDataPanelVisDefault);
             }
             set
             {
                 AppSettings.AddOrUpdateValue(SegmentDataPanelVisKey, value);
             }
         }
-
         public static string SegmentHistPanelHeight
         {
             get
             {
-                return AppSettings.GetValueOrDefault(SegmentHistPanelHeightKey, SettingsDefault);
+                return AppSettings.GetValueOrDefault(SegmentHistPanelHeightKey, SegmentHistPanelHeightDefault);
             }
             set
             {
                 AppSettings.AddOrUpdateValue(SegmentHistPanelHeightKey, value);
             }
         }
-
         public static string SegmentHistPanelVis
         {
             get
             {
-                return AppSettings.GetValueOrDefault(SegmentHistPanelVisKey, SettingsDefault);
+                return AppSettings.GetValueOrDefault(SegmentHistPanelVisKey, SegmentHistPanelVisDefault);
             }
             set
             {
                 AppSettings.AddOrUpdateValue(SegmentHistPanelVisKey, value);
             }
         }
-
         public static string SegmentLibPanelVis
         {
             get
             {
-                return AppSettings.GetValueOrDefault(SegmentLibPanelVisKey, SettingsDefault);
+                return AppSettings.GetValueOrDefault(SegmentLibPanelVisKey, SegmentLibPanelVisDefault);
             }
             set
             {
                 AppSettings.AddOrUpdateValue(SegmentLibPanelVisKey, value);
             }
         }
-
         public static string SegmentSpotDetPanelVis
         {
             get
             {
-                return AppSettings.GetValueOrDefault(SegmentSpotDetPanelVisKey, SettingsDefault);
+                return AppSettings.GetValueOrDefault(SegmentSpotDetPanelVisKey, SegmentSpotDetPanelVisDefault);
             }
             set
             {
                 AppSettings.AddOrUpdateValue(SegmentSpotDetPanelVisKey, value);
             }
         }
-
         public static string PropertiesPanelVisible
         {
             get
             {
-                return AppSettings.GetValueOrDefault(PropertiesPanelVisibleKey, SettingsDefault);
+                return AppSettings.GetValueOrDefault(PropertiesPanelVisibleKey, PropertiesPanelVisibleDefault);
             }
             set
             {
                 AppSettings.AddOrUpdateValue(PropertiesPanelVisibleKey, value);
             }
         }
-
         public static string SmartBtns
         {
             get
             {
-                return AppSettings.GetValueOrDefault(SmartBtnsKey, SettingsDefault);
+                return AppSettings.GetValueOrDefault(SmartBtnsKey, SmartBtnsDefault);
             }
             set
             {
                 AppSettings.AddOrUpdateValue(SmartBtnsKey, value);
             }
         }
-
         public static string SolverFunctions
         {
             get
             {
-                return AppSettings.GetValueOrDefault(SolverFunctionsKey, SettingsDefault);
+                return AppSettings.GetValueOrDefault(SolverFunctionsKey, SolverFunctionsDefault);
             }
             set
             {
                 AppSettings.AddOrUpdateValue(SolverFunctionsKey, value);
             }
         }
-
         public static string TrackingVis
         {
             get
             {
-                return AppSettings.GetValueOrDefault(TrackingVisKey, SettingsDefault);
+                return AppSettings.GetValueOrDefault(TrackingVisKey, TrackingVisDefault);
             }
             set
             {
                 AppSettings.AddOrUpdateValue(TrackingVisKey, value);
             }
         }
-
         public static string TreeViewContent
         {
             get
             {
-                return AppSettings.GetValueOrDefault(TreeViewContentKey, SettingsDefault);
+                return AppSettings.GetValueOrDefault(TreeViewContentKey, TreeViewContentDefault);
             }
             set
             {
                 AppSettings.AddOrUpdateValue(TreeViewContentKey, value);
             }
         }
-
         public static string TreeViewSize
         {
             get
             {
-                return AppSettings.GetValueOrDefault(TreeViewSizeKey, SettingsDefault);
+                return AppSettings.GetValueOrDefault(TreeViewSizeKey, TreeViewSizeDefault);
             }
             set
             {
                 AppSettings.AddOrUpdateValue(TreeViewSizeKey, value);
             }
         }
-
         public static string TreeViewVisible
         {
             get
             {
-                return AppSettings.GetValueOrDefault(TreeViewVisibleKey, SettingsDefault);
+                return AppSettings.GetValueOrDefault(TreeViewVisibleKey, TreeViewVisibleDefault);
             }
             set
             {
                 AppSettings.AddOrUpdateValue(TreeViewVisibleKey, value);
             }
         }
-
         public static string ProtocolSettingsList
         {
             get
             {
-                return AppSettings.GetValueOrDefault(ProtocolSettingsListKey, SettingsDefault);
+                return AppSettings.GetValueOrDefault(ProtocolSettingsListKey, ProtocolSettingsListDefault);
             }
             set
             {
                 AppSettings.AddOrUpdateValue(ProtocolSettingsListKey, value);
             }
         }
-
         public static string VBoxVisible
         {
             get
             {
-                return AppSettings.GetValueOrDefault(VBoxVisibleKey, SettingsDefault);
+                return AppSettings.GetValueOrDefault(VBoxVisibleKey, VBoxVisibleDefault);
             }
             set
             {
                 AppSettings.AddOrUpdateValue(VBoxVisibleKey, value);
             }
         }
-
+        /*
         public static string EndTrialDate
         {
             get
             {
-                return AppSettings.GetValueOrDefault(EndTrialDateKey, SettingsDefault);
+                return AppSettings.GetValueOrDefault(EndTrialDateKey, EndTrialDateDefault);
             }
             set
             {
                 AppSettings.AddOrUpdateValue(EndTrialDateKey, value);
             }
-        }
-        
+        }*/
         #endregion My Settings
     }
 }
