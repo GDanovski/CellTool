@@ -31,14 +31,15 @@ namespace Cell_Tool_3
     {
         public static void UpdateSettings()
         {
+            
             //This will load settings from the previous version
+
             if (Properties.Settings.Default.UpdateSettings)
             {
                 Properties.Settings.Default.Upgrade();
                 Properties.Settings.Default.UpdateSettings = false;
                 Properties.Settings.Default.Save();
             }
-            
             //Load settings for MacOS/LinuxOS
             Helpers.Settings.LoadSettings();
             //Check for update
