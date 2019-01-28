@@ -3,7 +3,6 @@
 using Plugin.Settings;
 using Plugin.Settings.Abstractions;
 using System;
-using System.Text;
 
 namespace Cell_Tool_3.Helpers
 {
@@ -229,7 +228,7 @@ namespace Cell_Tool_3.Helpers
         private const string TreeViewVisibleKey = "TreeViewVisible";
         private const string ProtocolSettingsListKey = "ProtocolSettingsList";
         private const string VBoxVisibleKey = "VBoxVisible";
-        private const string EndTrialDateKey = "EndTrialDate";
+        //private const string EndTrialDateKey = "EndTrialDate";
 
         private static readonly string TrialActiveDefault = "False";
         private static readonly string UpdateSettingsDefault = "True";

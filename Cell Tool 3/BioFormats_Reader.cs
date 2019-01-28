@@ -62,7 +62,7 @@ namespace Cell_Tool_3
             
             try
             {
-                FirstReader.setId(path);
+                FirstReader.setId(OSStringConverter.StringToDir(path));
             }
             catch
             {
@@ -217,7 +217,7 @@ namespace Cell_Tool_3
                 if (isLibTifCompatible(path) && !isRGB)
                 {
                     int[] dimOrder = GetFrameIndexes(reader, fi);
-                    Tiff image = Tiff.Open(path, "r");
+                    Tiff image = Tiff.Open(OSStringConverter.StringToDir(path), "r");
                     //prepare array and read file
                     int midFrame = fi.sizeC * fi.sizeZ;
                     switch (fi.bitsPerPixel)
@@ -441,7 +441,7 @@ namespace Cell_Tool_3
         {
             if (!dir.EndsWith(".tif")) return false;
 
-            using (Tiff tif = Tiff.Open(dir, "r"))
+            using (Tiff tif = Tiff.Open(OSStringConverter.StringToDir(dir), "r"))
             {
                 if (tif == null)
                 {
@@ -469,7 +469,7 @@ namespace Cell_Tool_3
         private static string getLibTifFileDescription(string dir)
         {
             string des = "";
-            using (Tiff tif = Tiff.Open(dir, "r"))
+            using (Tiff tif = Tiff.Open(OSStringConverter.StringToDir(dir), "r"))
             {
                 if (tif == null)
                     return "";

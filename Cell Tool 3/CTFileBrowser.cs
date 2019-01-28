@@ -1325,14 +1325,15 @@ namespace Cell_Tool_3
             saveFileDialog1.Filter = formatStr;
             saveFileDialog1.FilterIndex = 1;
             saveFileDialog1.RestoreDirectory = false;
-            saveFileDialog1.InitialDirectory = node.Tag.ToString().Substring(0, node.Tag.ToString().Length - (node.Text.Length + 1));
+            saveFileDialog1.InitialDirectory = OSStringConverter.StringToDir(
+                node.Tag.ToString().Substring(0, node.Tag.ToString().Length - (node.Text.Length + 1)));
             saveFileDialog1.FileName = node.Text;
             saveFileDialog1.OverwritePrompt = false;
             if (saveFileDialog1.ShowDialog() == DialogResult.OK)
             {
                 string dir = saveFileDialog1.FileName;
 
-                if (File.Exists(node.Tag.ToString()) == false)
+                if (File.Exists(OSStringConverter.StringToDir(node.Tag.ToString())) == false)
                 {
                     if (MessageBox.Show("Missing file: << " + node.Tag.ToString() + " >>",
                   "", MessageBoxButtons.YesNo) == System.Windows.Forms.DialogResult.No)
@@ -1348,7 +1349,8 @@ namespace Cell_Tool_3
             TreeNode n = Vbox.SelectedNode;
             FolderBrowserDialog fbd = new FolderBrowserDialog();
             fbd.Description = "Export checked items to:";
-            fbd.SelectedPath = n.Tag.ToString().Substring(0, n.Tag.ToString().Length - (n.Text.Length + 1));
+            fbd.SelectedPath = OSStringConverter.StringToDir(
+                n.Tag.ToString().Substring(0, n.Tag.ToString().Length - (n.Text.Length + 1)));
 
             DialogResult result = fbd.ShowDialog();
             // OK button was pressed.
@@ -1359,9 +1361,9 @@ namespace Cell_Tool_3
                 {
                     if (node.Checked == true && node != Vbox.Nodes[0])
                     {
-                        string dir = fbd.SelectedPath + "\\" + node.Text;
+                        string dir = OSStringConverter.GetWinString(fbd.SelectedPath) + "\\" + node.Text;
                         bool saveInd = true;
-                        if (File.Exists(node.Tag.ToString()) == false)
+                        if (File.Exists(OSStringConverter.StringToDir(node.Tag.ToString())) == false)
                         {
                             if (MessageBox.Show("Missing file: << " + node.Tag.ToString() + " >>",
                           "", MessageBoxButtons.YesNo) == System.Windows.Forms.DialogResult.No)
@@ -1385,7 +1387,8 @@ namespace Cell_Tool_3
             TreeNode n = Vbox.SelectedNode;
             FolderBrowserDialog fbd = new FolderBrowserDialog();
             fbd.Description = "Export searched items to:";
-            fbd.SelectedPath = n.Tag.ToString().Substring(0, n.Tag.ToString().Length - (n.Text.Length + 1));
+            fbd.SelectedPath = OSStringConverter.StringToDir(
+                n.Tag.ToString().Substring(0, n.Tag.ToString().Length - (n.Text.Length + 1)));
 
             DialogResult result = fbd.ShowDialog();
             // OK button was pressed.
@@ -1396,9 +1399,9 @@ namespace Cell_Tool_3
                 {
                     if (node.BackColor == Color.Green)
                     {
-                        string dir = fbd.SelectedPath + "\\" + node.Text;
+                        string dir = OSStringConverter.GetWinString(fbd.SelectedPath) + "\\" + node.Text;
                         Boolean saveInd = true;
-                        if (File.Exists(node.Tag.ToString()) == false)
+                        if (File.Exists(OSStringConverter.StringToDir(node.Tag.ToString())) == false)
                         {
                             if (MessageBox.Show("Missing file: << " + node.Tag.ToString() + " >>",
                           "", MessageBoxButtons.YesNo) == System.Windows.Forms.DialogResult.No)
@@ -1581,7 +1584,7 @@ namespace Cell_Tool_3
 
                 string Dir = sourceNode.Tag.ToString();
                 string NewDir = targetNode.Tag.ToString();
-                if (Directory.Exists(NewDir) != true)
+                if (Directory.Exists(OSStringConverter.StringToDir(NewDir)) != true)
                 {
                     MessageBox.Show("Target directory is not existing!");
                     ((BackgroundWorker)o).ReportProgress(1);
@@ -1597,11 +1600,11 @@ namespace Cell_Tool_3
 
                 if (SaveSource == false)
                 {
-                    if (Directory.Exists(Dir) == true)
+                    if (Directory.Exists(OSStringConverter.StringToDir(Dir)) == true)
                     {
                         OSFileManager.MoveDirectory(Dir, NewDir);
                     }
-                    else if (File.Exists(Dir) == true)
+                    else if (File.Exists(OSStringConverter.StringToDir(Dir)) == true)
                     {
                        OSFileManager.MoveFile(Dir, NewDir);
                     }
@@ -1609,11 +1612,11 @@ namespace Cell_Tool_3
                 }
                 else
                 {
-                    if (Directory.Exists(Dir) == true)
+                    if (Directory.Exists(OSStringConverter.StringToDir(Dir)) == true)
                     {
                         OSFileManager.CopyDirectory(Dir, NewDir);
                     }
-                    else if (File.Exists(Dir) == true)
+                    else if (File.Exists(OSStringConverter.StringToDir(Dir)) == true)
                     {
                         OSFileManager.CopyFile(Dir, NewDir);
                     }
@@ -1848,12 +1851,12 @@ namespace Cell_Tool_3
                     {
                         if (node.BackColor == Color.Green)
                         {
-                            if (Directory.Exists(node.Tag.ToString()) == true)
+                            if (Directory.Exists(OSStringConverter.StringToDir(node.Tag.ToString())) == true)
                             {
                                 //Directory.Delete(TreeViewExp.SelectedNode.Tag.ToString(), true);
                                 OSFileManager.DeleteDirectory(node.Tag.ToString());
                             }
-                            else if (File.Exists(node.Tag.ToString()) == true)
+                            else if (File.Exists(OSStringConverter.StringToDir(node.Tag.ToString())) == true)
                             {
                                 OSFileManager.DeleteFile(node.Tag.ToString());
                                 //File.Delete(TreeViewExp.SelectedNode.Tag.ToString());
@@ -1882,7 +1885,7 @@ namespace Cell_Tool_3
                         TreeNode node = TreeViewExp.Nodes[i];
                         if (node.BackColor == Color.Green)
                         {
-                            if (Directory.Exists(node.Tag.ToString()) == true)
+                            if (Directory.Exists(OSStringConverter.StringToDir(node.Tag.ToString())) == true)
                             {
                                 if (node.Parent == null)
                                 {
@@ -1908,7 +1911,7 @@ namespace Cell_Tool_3
 
 
                             }
-                            else if (File.Exists(node.Tag.ToString()) == true)
+                            else if (File.Exists(OSStringConverter.StringToDir(node.Tag.ToString())) == true)
                             {
                                 OSFileManager.DeleteFile(node.Tag.ToString());
                                 //File.Delete(TreeViewExp.SelectedNode.Tag.ToString());
@@ -1964,12 +1967,12 @@ namespace Cell_Tool_3
                     {
                         if (node.Checked == true)
                         {
-                            if (Directory.Exists(node.Tag.ToString()) == true)
+                            if (Directory.Exists(OSStringConverter.StringToDir(node.Tag.ToString())) == true)
                             {
                                 //Directory.Delete(TreeViewExp.SelectedNode.Tag.ToString(), true);
                                 OSFileManager.DeleteDirectory(node.Tag.ToString());
                             }
-                            else if (File.Exists(node.Tag.ToString()) == true)
+                            else if (File.Exists(OSStringConverter.StringToDir(node.Tag.ToString())) == true)
                             {
                                 OSFileManager.DeleteFile(node.Tag.ToString());
                                 //File.Delete(TreeViewExp.SelectedNode.Tag.ToString());
@@ -1998,7 +2001,7 @@ namespace Cell_Tool_3
                         TreeNode node = TreeViewExp.Nodes[i];
                         if (node.Checked == true)
                         {
-                            if (Directory.Exists(node.Tag.ToString()) == true)
+                            if (Directory.Exists(OSStringConverter.StringToDir(node.Tag.ToString())) == true)
                             {
                                 if (node.Parent == null)
                                 {
@@ -2024,7 +2027,7 @@ namespace Cell_Tool_3
 
 
                             }
-                            else if (File.Exists(node.Tag.ToString()) == true)
+                            else if (File.Exists(OSStringConverter.StringToDir(node.Tag.ToString())) == true)
                             {
                                 OSFileManager.DeleteFile(node.Tag.ToString());
                                 //File.Delete(TreeViewExp.SelectedNode.Tag.ToString());
@@ -2168,8 +2171,15 @@ namespace Cell_Tool_3
 
         private void Explorer_Open(object sender, EventArgs e)
         {
-            string dir = (TreeViewContextMenu.Tag as TreeNode).Tag.ToString();
-            System.Diagnostics.Process.Start("explorer.exe", dir);
+            try
+            {
+                string dir = OSStringConverter.StringToDir((TreeViewContextMenu.Tag as TreeNode).Tag.ToString());
+                System.Diagnostics.Process.Start("explorer.exe", dir);
+            }
+            catch
+            {
+                MessageBox.Show("This option is avaliable only for OS Windows!");
+            }
         }
         private void ExpandAllMenuBtn_Click(object sender, EventArgs e)
         {
@@ -2391,16 +2401,16 @@ namespace Cell_Tool_3
                 int count = 1;
                 while (cont == false)
                 {
-                    if (Directory.Exists(path + "\\New Folder") == false)
+                    if (Directory.Exists(OSStringConverter.StringToDir(path + "\\New Folder")) == false)
                     {
-                        Directory.CreateDirectory(path + "\\New Folder");
+                        Directory.CreateDirectory(OSStringConverter.StringToDir(path + "\\New Folder"));
                         TreeNode n = TreeNod_AddFolderNode(TreeViewExp.SelectedNode, path + "\\New Folder");
                         TreeViewExp.SelectedNode = n;
                         cont = true;
                     }
-                    else if (Directory.Exists(path + "\\New Folder" + count.ToString()) == false)
+                    else if (Directory.Exists(OSStringConverter.StringToDir(path + "\\New Folder" + count.ToString())) == false)
                     {
-                        Directory.CreateDirectory(path + "\\New Folder" + count.ToString());
+                        Directory.CreateDirectory(OSStringConverter.StringToDir(path + "\\New Folder" + count.ToString()));
                         TreeNode n = TreeNod_AddFolderNode(TreeViewExp.SelectedNode, path + "\\New Folder" + count.ToString());
                         TreeViewExp.SelectedNode = n;
                         cont = true;
@@ -2473,13 +2483,15 @@ namespace Cell_Tool_3
                 }
             }
 
-            if(Directory.Exists(node.Tag.ToString().Substring(0, node.Tag.ToString().Length - node.Text.Length) + name))
+            if(Directory.Exists(OSStringConverter.StringToDir(
+                node.Tag.ToString().Substring(0, node.Tag.ToString().Length - node.Text.Length) + name)))
             {
                 RenameTb.Visible = false;
                 MessageBox.Show("Directory exists!");
                 return;
             }
-            else if (File.Exists(node.Tag.ToString().Substring(0, node.Tag.ToString().Length - node.Text.Length) + name))
+            else if (File.Exists(OSStringConverter.StringToDir(
+                node.Tag.ToString().Substring(0, node.Tag.ToString().Length - node.Text.Length) + name)))
             {
                 RenameTb.Visible = false;
                 MessageBox.Show("File exists!");
@@ -2591,7 +2603,7 @@ namespace Cell_Tool_3
             tb.Visible = true;
             tv.Controls.Add(tb);
             tb.Focus();
-            if (!String.IsNullOrEmpty(tb.Text))
+            if (!string.IsNullOrEmpty(tb.Text))
             {
                 tb.SelectionStart = 0;
                 tb.SelectionLength = tb.Text.Length;
@@ -2675,11 +2687,11 @@ namespace Cell_Tool_3
             {
                 if (TreeViewExp.SelectedNode != null & TreeViewExp.ContainsFocus == true)
                 {
-                    ShowFileProperties(TreeViewExp.SelectedNode.Tag.ToString());
+                    ShowFileProperties(OSStringConverter.StringToDir(TreeViewExp.SelectedNode.Tag.ToString()));
                 }
                 else if (Vbox.SelectedNode != null & Vbox.ContainsFocus == true & Vbox.SelectedNode.Tag.ToString() != "All")
                 {
-                    ShowFileProperties(Vbox.SelectedNode.Tag.ToString());
+                    ShowFileProperties(OSStringConverter.StringToDir(Vbox.SelectedNode.Tag.ToString()));
                 }
                 else
                 {
@@ -3155,7 +3167,8 @@ namespace Cell_Tool_3
                 if (MessageBox.Show("Do you want to delete " + TreeViewExp.SelectedNode.Tag.ToString() + "?",
                     "", MessageBoxButtons.YesNo) == System.Windows.Forms.DialogResult.Yes)
                 {
-                    if (Directory.Exists(TreeViewExp.SelectedNode.Tag.ToString()) == true)
+                    if (Directory.Exists(OSStringConverter.StringToDir(
+                        TreeViewExp.SelectedNode.Tag.ToString())) == true)
                     {
                         if (TreeViewExp.SelectedNode.Parent == null)
                         {
@@ -3180,7 +3193,8 @@ namespace Cell_Tool_3
                         OSFileManager.DeleteDirectory(TreeViewExp.SelectedNode.Tag.ToString());
 
                     }
-                    else if (File.Exists(TreeViewExp.SelectedNode.Tag.ToString()) == true)
+                    else if (File.Exists(OSStringConverter.StringToDir(
+                        TreeViewExp.SelectedNode.Tag.ToString())) == true)
                     {
                         OSFileManager.DeleteFile(TreeViewExp.SelectedNode.Tag.ToString());
                         //File.Delete(TreeViewExp.SelectedNode.Tag.ToString());
@@ -3209,9 +3223,9 @@ namespace Cell_Tool_3
             Properties.Settings settings = Properties.Settings.Default;
             FolderBrowserDialog fbd = new FolderBrowserDialog();
             fbd.Description = "Add work directory:";
-            if (Directory.Exists(settings.OldWorkDir[ActiveAccountIndex]))
+            if (Directory.Exists(OSStringConverter.StringToDir(settings.OldWorkDir[ActiveAccountIndex])))
             {
-                fbd.SelectedPath = settings.OldWorkDir[ActiveAccountIndex];
+                fbd.SelectedPath = OSStringConverter.StringToDir(settings.OldWorkDir[ActiveAccountIndex]);
             }
             DialogResult result = fbd.ShowDialog();
             // OK button was pressed.
@@ -3219,12 +3233,13 @@ namespace Cell_Tool_3
             {
                 StatusLabel.Text = "Adding work directory...";
                 TreeViewExp.SuspendLayout();
-                if (TreeViewExp_AddFolderNode(fbd.SelectedPath) == true)
+                if (TreeViewExp_AddFolderNode(OSStringConverter.GetWinString(fbd.SelectedPath)) == true)
                 {
-                    settings.OldWorkDir[ActiveAccountIndex] = fbd.SelectedPath;
-                    settings.TreeViewContent[ActiveAccountIndex] += "\t" + fbd.SelectedPath;
+                    settings.OldWorkDir[ActiveAccountIndex] = OSStringConverter.GetWinString(fbd.SelectedPath);
+                    settings.TreeViewContent[ActiveAccountIndex] += "\t" + OSStringConverter.GetWinString(fbd.SelectedPath);
                     settings.Save();
                 }
+                
                 TreeViewExp.ResumeLayout();
                 StatusLabel.Text = "Ready";
             }
@@ -3238,7 +3253,7 @@ namespace Cell_Tool_3
                 Boolean exists = false;
                 foreach (var directory in directoryInfo.GetDirectories())
                 {
-                    if (node.Tag.ToString() == directory.FullName)
+                    if (node.Tag.ToString() == OSStringConverter.GetWinString(directory.FullName))
                     {
                         exists = true;
                         TreeViewExp_populate(node);
@@ -3247,7 +3262,7 @@ namespace Cell_Tool_3
 
                 foreach (var file in directoryInfo.GetFiles())
                 {
-                    if (node.Tag.ToString() == file.FullName)
+                    if (node.Tag.ToString() == OSStringConverter.GetWinString(file.FullName))
                     {
                         exists = true;
                     }
@@ -3273,33 +3288,33 @@ namespace Cell_Tool_3
         {
 
             string Dir = node.Tag.ToString();
-            if (Directory.Exists(Dir) == false) { return; }
+            if (Directory.Exists(OSStringConverter.StringToDir(Dir)) == false) { return; }
             
-            DirectoryInfo directoryInfo = new DirectoryInfo(Dir);
+            DirectoryInfo directoryInfo = new DirectoryInfo(OSStringConverter.StringToDir(Dir));
             // Delete missing files and directories and populate existing ones
             TreeNode_DeleteMissingAndPopulateExisting(directoryInfo, node);
             //var directoryNode = new TreeNode(Dir);
             foreach (var directory in directoryInfo.GetDirectories())
             {
-                if (TreeNode_NodeExists(directory.FullName, node) == false)
+                if (TreeNode_NodeExists(OSStringConverter.GetWinString(directory.FullName), node) == false)
                 {
-                    TreeNode n = TreeNod_AddFolderNode(node, directory.FullName);
+                    TreeNode n = TreeNod_AddFolderNode(node, OSStringConverter.GetWinString(directory.FullName));
                     TreeViewExp_populate(n);
                 }
             }
 
             foreach (var file in directoryInfo.GetFiles())
             {
-                if (TreeNode_NodeExists(file.FullName, node) == false)
+                if (TreeNode_NodeExists(OSStringConverter.GetWinString(file.FullName), node) == false)
                 {
-                    TreeNod_AddFileNode(node, file.FullName);
+                    TreeNod_AddFileNode(node, OSStringConverter.GetWinString(file.FullName));
                 }
             }
             Vbox_Refresh();
         }
-        private Boolean TreeNode_NodeExists(string Dir, TreeNode Parent)
+        private bool TreeNode_NodeExists(string Dir, TreeNode Parent)
         {
-            Boolean exists = false;
+            bool exists = false;
             foreach (TreeNode node in Parent.Nodes)
             {
                 if (Dir == node.Tag.ToString())
@@ -3690,7 +3705,8 @@ namespace Cell_Tool_3
         {
             string dir = node.Tag.ToString();
             int end = dir.LastIndexOf(".");
-            if (File.Exists(dir.Replace(dir.Substring(end, dir.Length - end), ".txt")) == true)
+            if (File.Exists(OSStringConverter.StringToDir(
+                dir.Replace(dir.Substring(end, dir.Length - end), ".txt"))) == true)
             {
                 return true;
             }

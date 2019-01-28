@@ -678,7 +678,7 @@ namespace Cell_Tool_3
                     case 8:
                     Parallel.For(midFrame, (int)image1.NumberOfDirectories(), i =>
                     {
-                        using (Tiff image = Tiff.Open(path, "r"))
+                        using (Tiff image = Tiff.Open(OSStringConverter.StringToDir(path), "r"))
                         {
                             Image8bit_readFrame(i, image, fi, dimOrder);
                             image.Close();
@@ -689,7 +689,7 @@ namespace Cell_Tool_3
                     Parallel.For(midFrame, (int)image1.NumberOfDirectories(), i =>
                     {
                         
-                        using (Tiff image = Tiff.Open(path, "r"))
+                        using (Tiff image = Tiff.Open(OSStringConverter.StringToDir(path), "r"))
                         {
                             Image16bit_readFrame(i, image, fi, dimOrder);
                             image.Close();
@@ -705,7 +705,7 @@ namespace Cell_Tool_3
             newPath = newPath.Substring(0, newPath.Length - 4);
 
             string curPath = FileEncoder.FileChain_GetName(0, newPath);
-            if (!File.Exists(curPath)) return false;
+            if (!File.Exists(OSStringConverter.StringToDir(curPath))) return false;
             //Tiff.ByteArrayToShorts
             int height = fi.sizeY;
             int BitsPerPixel = fi.bitsPerPixel;
@@ -715,7 +715,7 @@ namespace Cell_Tool_3
                 case 8:
                     Parallel.For(midFrame, (int)image1.NumberOfDirectories(), i =>
                     {
-                        using (Tiff image = Tiff.Open(curPath, "r"))
+                        using (Tiff image = Tiff.Open(OSStringConverter.StringToDir(curPath), "r"))
                         {
                             Image8bit_readFrame(i, image, fi);
                             image.Close();
@@ -728,7 +728,7 @@ namespace Cell_Tool_3
                     Parallel.For(midFrame, (int)image1.NumberOfDirectories(), i =>
                     {
 
-                        using (Tiff image = Tiff.Open(curPath, "r"))
+                        using (Tiff image = Tiff.Open(OSStringConverter.StringToDir(curPath), "r"))
                         {
                             Image16bit_readFrame(i, image, fi);
                             image.Close();
@@ -741,10 +741,10 @@ namespace Cell_Tool_3
             int chainN = 1;
             curPath = FileEncoder.FileChain_GetName(chainN, newPath);
 
-            while (File.Exists(curPath))
+            while (File.Exists(OSStringConverter.StringToDir(curPath)))
             {
                 int NumbOfDirs = 0;
-                using (Tiff image = Tiff.Open(curPath, "r"))
+                using (Tiff image = Tiff.Open(OSStringConverter.StringToDir(curPath), "r"))
                 {
                     NumbOfDirs = (int)image.NumberOfDirectories();
                     image.Close();
@@ -755,7 +755,7 @@ namespace Cell_Tool_3
                     case 8:
                         Parallel.For(0, NumbOfDirs, i =>
                         {
-                            using (Tiff image = Tiff.Open(curPath, "r"))
+                            using (Tiff image = Tiff.Open(OSStringConverter.StringToDir(curPath), "r"))
                             {
                                 Image8bit_FileChains(i + midFrame, i, image, fi);
                                 image.Close();
@@ -767,7 +767,7 @@ namespace Cell_Tool_3
                     case 16:
                         Parallel.For(0, NumbOfDirs, i =>
                         {
-                            using (Tiff image = Tiff.Open(curPath, "r"))
+                            using (Tiff image = Tiff.Open(OSStringConverter.StringToDir(curPath), "r"))
                             {
                                 Image16bit_FileChains(i+midFrame,i, image, fi);
                                 image.Close();
@@ -1334,7 +1334,7 @@ namespace Cell_Tool_3
                 fi.original = false;
 
                 string[] vals = null;
-                Tiff image = Tiff.Open(path, "r");
+                Tiff image = Tiff.Open(OSStringConverter.StringToDir(path), "r");
                 {
                     fi.sizeX = int.Parse(image.GetField(TiffTag.IMAGEWIDTH)[0].ToString());
                     fi.sizeY = int.Parse(image.GetField(TiffTag.IMAGELENGTH)[0].ToString());
@@ -1664,7 +1664,7 @@ namespace Cell_Tool_3
         private void readWholeFile(string path)
         {
             // read bytes of an image
-            byte[] buffer = File.ReadAllBytes(path);
+            byte[] buffer = File.ReadAllBytes(OSStringConverter.StringToDir(path));
 
             // create a memory stream out of them
             MemoryStream ms = new MemoryStream(buffer);
@@ -1687,14 +1687,14 @@ namespace Cell_Tool_3
                 newPath = newPath.Substring(0, newPath.Length - 4);
 
                 string curPath = FileEncoder.FileChain_GetName(0, newPath);
-                if (File.Exists(curPath))
+                if (File.Exists(OSStringConverter.StringToDir(curPath)))
                 {
                     path = curPath;
                     isFileChain = true;
                 }
             }
             
-            Tiff image = Tiff.Open(path, "r");
+            Tiff image = Tiff.Open(OSStringConverter.StringToDir(path), "r");
             {
                 try
                 {

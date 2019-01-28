@@ -224,9 +224,9 @@ namespace Cell_Tool_3
                     if (dir.Length > 5)
                     {
                         if (dir.Substring(dir.Length - 4, 4) != ".exe") {
-                            TreeNode node = Interface.FileBrowser.CheckForFile(dir);
+                            TreeNode node = Interface.FileBrowser.CheckForFile(OSStringConverter.GetWinString(dir));
                             if (node != null) { Interface.FileBrowser.Openlabel.Tag = node; }
-                            Interface.FileBrowser.Openlabel.Text = "'" + dir + "'";
+                            Interface.FileBrowser.Openlabel.Text = "'" + OSStringConverter.GetWinString(dir) + "'";
                             Interface.FileBrowser.Openlabel.Text = "";
                         }
                     }
@@ -243,9 +243,9 @@ namespace Cell_Tool_3
            string[] dirList = e.Data.GetData(DataFormats.FileDrop) as string[];
          foreach (string dir in dirList)
             {
-                TreeNode node = Interface.FileBrowser.CheckForFile(dir);
+                TreeNode node = Interface.FileBrowser.CheckForFile(OSStringConverter.GetWinString(dir));
                 if (node != null) { Interface.FileBrowser.Openlabel.Tag = node; }
-                Interface.FileBrowser.Openlabel.Text = "'" + dir + "'";
+                Interface.FileBrowser.Openlabel.Text = "'" + OSStringConverter.GetWinString(dir) + "'";
                 Interface.FileBrowser.Openlabel.Text = "";
             }
         }
@@ -486,9 +486,9 @@ namespace Cell_Tool_3
             if (ofd.ShowDialog() == DialogResult.OK)
             {
                 
-                TreeNode node = Interface.FileBrowser.CheckForFile(ofd.FileName);
+                TreeNode node = Interface.FileBrowser.CheckForFile(OSStringConverter.GetWinString(ofd.FileName));
                 if(node != null) { Interface.FileBrowser.Openlabel.Tag = node; }
-                Interface.FileBrowser.Openlabel.Text = "'" + ofd.FileName + "'";
+                Interface.FileBrowser.Openlabel.Text = "'" + OSStringConverter.GetWinString(ofd.FileName) + "'";
                 Interface.FileBrowser.Openlabel.Text = "";
             }
         }
