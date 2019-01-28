@@ -13,6 +13,9 @@ namespace Cell_Tool_3
     {
         public static void CopyFile(string Dir, string NewDir)
         {
+            Dir = OSStringConverter.StringToDir(Dir);
+            NewDir = OSStringConverter.StringToDir(NewDir);
+
             if (!File.Exists(Dir)) return;
             try
             {
@@ -51,6 +54,8 @@ namespace Cell_Tool_3
         }
         public static void CopyDirectory(string Dir, string NewDir)
         {
+            Dir = OSStringConverter.StringToDir(Dir);
+            NewDir = OSStringConverter.StringToDir(NewDir);
             if (!Directory.Exists(Dir)) return;
             try
             {
@@ -92,6 +97,7 @@ namespace Cell_Tool_3
        
         public static void DeleteDirectory(string Dir)
         {
+            Dir = OSStringConverter.StringToDir(Dir);
             if (!Directory.Exists(Dir)) return;
             try
             {
@@ -120,7 +126,8 @@ namespace Cell_Tool_3
 
         }
         public static void DeleteFile(string Dir)
-        {
+        { 
+            Dir = OSStringConverter.StringToDir(Dir);
             if (!File.Exists(Dir)) return;
             try
             {
@@ -150,6 +157,8 @@ namespace Cell_Tool_3
         }
         public static void MoveFile(string Dir, string NewDir)
         {
+            Dir = OSStringConverter.StringToDir(Dir);
+            NewDir = OSStringConverter.StringToDir(NewDir);
             if (!File.Exists(Dir)) return;
             try
             { 
@@ -188,6 +197,8 @@ namespace Cell_Tool_3
         }
         public static void MoveDirectory(string Dir, string NewDir)
         {
+            Dir = OSStringConverter.StringToDir(Dir);
+            NewDir = OSStringConverter.StringToDir(NewDir);
             if (!Directory.Exists(Dir)) return;
             try
             { 

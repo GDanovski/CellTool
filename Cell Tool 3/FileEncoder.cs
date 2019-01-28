@@ -71,7 +71,7 @@ namespace Cell_Tool_3
             int writersCount = NumberOfTiffWriters(fi);
             if (writersCount == 1)
             {
-                using (Tiff output = Tiff.Open(fileName, "w"))
+                using (Tiff output = Tiff.Open(OSStringConverter.StringToDir(fileName), "w"))
                 {
                     for (int page = 0; page < numberOfPages; page++)
                     {
@@ -116,7 +116,8 @@ namespace Cell_Tool_3
                         {
                             int start = ind * pageMaxPerWriter;
                             int stop = start + pageMaxPerWriter;
-                            using (Tiff output = Tiff.Open(FileChain_GetName(ind, newFileName), "w"))
+                            using (Tiff output = Tiff.Open(OSStringConverter.StringToDir(
+                                FileChain_GetName(ind, newFileName)), "w"))
                             {
                                 for (int page = 0; start < numberOfPages && start < stop; page++, start++)
                                 {
@@ -165,7 +166,7 @@ namespace Cell_Tool_3
             int samplesPerPixel = 1;
             int bitsPerSample = fi.bitsPerPixel;
 
-                using (Tiff output = Tiff.Open(fileName, "w"))
+            using (Tiff output = Tiff.Open(OSStringConverter.StringToDir(fileName), "w"))
             {
                 for (int page = 0; page < numberOfPages; page++)
                 {
@@ -274,7 +275,7 @@ namespace Cell_Tool_3
             int writersCount = NumberOfTiffWriters(fi);
             if (writersCount == 1)
             {
-                using (Tiff output = Tiff.Open(fileName, "w"))
+                using (Tiff output = Tiff.Open(OSStringConverter.StringToDir(fileName), "w"))
                 {
                     for (int page = 0; page < numberOfPages; page++)
                     {
@@ -327,7 +328,7 @@ namespace Cell_Tool_3
                 {
                     int start = ind * pageMaxPerWriter;
                     int stop = start + pageMaxPerWriter;
-                    using (Tiff output = Tiff.Open(FileChain_GetName(ind, newFileName), "w"))
+                    using (Tiff output = Tiff.Open(OSStringConverter.StringToDir(FileChain_GetName(ind, newFileName)), "w"))
                     {
                         for (int page = 0; start < numberOfPages && start < stop; page++, start++)
                         {

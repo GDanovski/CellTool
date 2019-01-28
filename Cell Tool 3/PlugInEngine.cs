@@ -43,7 +43,7 @@ namespace Cell_Tool_3
         private void UnInstallPlugIn_Click(object sender, EventArgs e)
         {
             Form msgForm = new Form();
-
+ 
             msgForm.Height = 600;
             msgForm.Width = 600;
             msgForm.Icon = Properties.Resources.CT_done;
@@ -54,7 +54,8 @@ namespace Cell_Tool_3
             rtb.ShowLines = false;
             rtb.Dock = DockStyle.Fill;
             //Fill the box with names
-            string path = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\CellToolPlugIns";
+            string path = OSStringConverter.StringToDir(
+                Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\CellToolPlugIns");
             bool unisntalled = false;
 
             if (!Directory.Exists(path))
@@ -152,7 +153,8 @@ namespace Cell_Tool_3
            // AddResultsExtractor();
 
             // string path = Application.StartupPath + "\\PlugIns";
-            string path = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\CellToolPlugIns";
+            string path = OSStringConverter.StringToDir(
+                Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\CellToolPlugIns");
 
 
             if (!Directory.Exists(path))
@@ -413,15 +415,17 @@ namespace Cell_Tool_3
             }
         }
         public void InstallPlugIn(string path)
-        {
+        { 
+            path = OSStringConverter.GetWinString(path);
             //background worker
             var bgw = new BackgroundWorker();
             bgw.WorkerReportsProgress = true;
             //Add event for projection here
             bgw.DoWork += new DoWorkEventHandler(delegate (Object o, DoWorkEventArgs a)
             {
-                string newPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\CellToolPlugIns\\" +
-                path.Substring(path.LastIndexOf("\\") + 1, path.Length - path.LastIndexOf("\\") - 1);
+                string newPath = OSStringConverter.StringToDir(
+                    Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\CellToolPlugIns\\" +
+                path.Substring(path.LastIndexOf("\\") + 1, path.Length - path.LastIndexOf("\\") - 1));
                 if (File.Exists(newPath))
                     ((BackgroundWorker)o).ReportProgress(1);
                 else {

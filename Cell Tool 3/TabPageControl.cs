@@ -930,7 +930,7 @@ namespace Cell_Tool_3
         public void OpenFile_Event(string dir, TreeNode node)
         {
             Body.SuspendLayout();
-
+            
             bool showResultsExtractorMainPanel = ResultsExtractorMainPanel.Visible;
             bool showImageMainPanel = ImageMainPanel.Visible;
             //Decode File Type
@@ -1082,7 +1082,7 @@ namespace Cell_Tool_3
             xBtn.Click += new EventHandler(DeleteTabbtn_Click);
 
             Collections.Add(smallCollection);
-
+            
             inactivate_Tabs();
             SelectedIndex = Collections.Count - 1;
             selectTab_event(SelectedIndex);
@@ -1309,7 +1309,7 @@ namespace Cell_Tool_3
             {
                 if (TabCollections[SelectedIndex].tifFI != null)
                 {
-                    string dir = saveFileDialog1.FileName;
+                    string dir = OSStringConverter.GetWinString(saveFileDialog1.FileName);
                     int end = dir.LastIndexOf(".");
                     dir = dir.Substring(0, end) + ".tif";
 
@@ -1319,7 +1319,7 @@ namespace Cell_Tool_3
                     TabCollections[SelectedIndex].dir = dir;
 
                     SaveItem(SelectedIndex, true);
-
+                    
                     try
                     {
                         dir = fi.Dir;
@@ -1381,7 +1381,8 @@ namespace Cell_Tool_3
         }
         private void SaveItem(int i, bool newFile = false)
         {
-            if (!newFile && TabCollections[i].ResultsExtractor != null && !System.IO.File.Exists(TabCollections[i].dir))
+            if (!newFile && TabCollections[i].ResultsExtractor != null &&
+                !System.IO.File.Exists(OSStringConverter.StringToDir(TabCollections[i].dir)))
             {
                 saveAs(new object(), new EventArgs());
                 return;

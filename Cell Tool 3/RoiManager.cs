@@ -247,7 +247,8 @@ namespace Cell_Tool_3
             saveFileDialog1.Filter = formatStr;
             saveFileDialog1.FilterIndex = 1;
             saveFileDialog1.RestoreDirectory = false;
-            saveFileDialog1.InitialDirectory = node.Tag.ToString().Substring(0, node.Tag.ToString().Length - (node.Text.Length + 1));
+            saveFileDialog1.InitialDirectory = OSStringConverter.StringToDir(
+                node.Tag.ToString().Substring(0, node.Tag.ToString().Length - (node.Text.Length + 1)));
             saveFileDialog1.FileName = node.Text.Replace(".tif", "");
             saveFileDialog1.OverwritePrompt = true;
             saveFileDialog1.Title = "Measure ROIs to:";
@@ -496,7 +497,7 @@ namespace Cell_Tool_3
             catch { return; }
             if (fi == null) { return; }
 
-            using (StreamReader sr = new StreamReader(dir))
+            using (StreamReader sr = new StreamReader(OSStringConverter.StringToDir(dir)))
             {
                 string str = sr.ReadToEnd();
                 foreach (string val in str.Split(new string[] { "\r\n" }, StringSplitOptions.None))
@@ -552,8 +553,9 @@ namespace Cell_Tool_3
             saveFileDialog1.Filter = formatStr;
             saveFileDialog1.FilterIndex = 1;
             saveFileDialog1.RestoreDirectory = false;
-            saveFileDialog1.InitialDirectory = node.Tag.ToString().Substring(0, node.Tag.ToString().Length - (node.Text.Length + 1));
-            saveFileDialog1.FileName = node.Text;
+            saveFileDialog1.InitialDirectory = OSStringConverter.StringToDir(
+                node.Tag.ToString().Substring(0, node.Tag.ToString().Length - (node.Text.Length + 1)));
+            saveFileDialog1.FileName = node.Text.Replace(".tif", "");
 
             if(node.Text.LastIndexOf(".")>-1)
                 saveFileDialog1.FileName = node.Text.Substring(0, node.Text.LastIndexOf("."));
@@ -967,11 +969,11 @@ namespace Cell_Tool_3
             string name = fi.Dir.Substring(fi.Dir.LastIndexOf("\\") + 1, fi.Dir.Length - fi.Dir.LastIndexOf("\\") - 1);
             List<string> roiInfo = new List<string>();
 
-            if (!File.Exists(dir + "\\RoiInfo.txt")) return;
+            if (!File.Exists(OSStringConverter.StringToDir(dir + "\\RoiInfo.txt"))) return;
 
             try
             {
-                using (StreamReader sr = new StreamReader(dir + "\\RoiInfo.txt"))
+                using (StreamReader sr = new StreamReader(OSStringConverter.StringToDir(dir + "\\RoiInfo.txt")))
                 {
                     string str = sr.ReadLine();
                     while (str != null)
@@ -3856,7 +3858,7 @@ namespace Cell_Tool_3
             saveFileDialog1.FilterIndex = 1;
             saveFileDialog1.RestoreDirectory = false;
             //saveFileDialog1.InitialDirectory = node.Tag.ToString().Substring(0, node.Tag.ToString().Length - (node.Text.Length + 1));
-            saveFileDialog1.InitialDirectory = fi.Dir.Substring(0, fi.Dir.LastIndexOf("\\"));
+            saveFileDialog1.InitialDirectory = OSStringConverter.StringToDir(fi.Dir.Substring(0, fi.Dir.LastIndexOf("\\")));
             saveFileDialog1.FileName = node.Text.Replace(".tif", "");
             saveFileDialog1.OverwritePrompt = true;
             saveFileDialog1.Title = "Mesure ROIs to:";
@@ -3890,7 +3892,7 @@ namespace Cell_Tool_3
             TreeNode node = IA.TabPages.Collections[IA.TabPages.SelectedIndex][0].Tag as TreeNode;
 
             //string dir = node.Tag.ToString().Replace(".tif", "");
-            string dir = fi.Dir.Replace(".tif", "");
+            string dir = OSStringConverter.StringToDir(fi.Dir.Replace(".tif", ""));
 
             //background worker
 
