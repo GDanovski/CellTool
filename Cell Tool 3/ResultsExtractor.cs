@@ -40,7 +40,7 @@ namespace Cell_Tool_3
             MyForm form1 = new MyForm(dir,IA);
             this.myPanel = form1;
 
-            if (File.Exists(dir))
+            if (File.Exists(OSStringConverter.StringToDir(dir)))
                 ResultsExtractor.FileSaver.ReadCTDataFile(form1, dir);
 
             return form1;
@@ -1201,15 +1201,15 @@ namespace Cell_Tool_3
                 fbd.Description = "Add work directory:";
                 
                 if (dir != "" && dir.IndexOf("\\") > -1 &&
-                    !Directory.Exists(dir))
+                    !Directory.Exists(OSStringConverter.StringToDir(dir)))
                     dir = dir.Substring(0, dir.LastIndexOf("\\"));
                 else if (lastDir != "" && lastDir.IndexOf("\\") > -1 &&
-                    !Directory.Exists(lastDir))
+                    !Directory.Exists(OSStringConverter.StringToDir(lastDir)))
                     dir = lastDir.Substring(0, lastDir.LastIndexOf("\\"));
                 
-                if (Directory.Exists(dir))
+                if (Directory.Exists(OSStringConverter.StringToDir(dir)))
                 {
-                    fbd.SelectedPath = dir;
+                    fbd.SelectedPath = OSStringConverter.StringToDir(dir);
                     lastDir = dir;
                 }
 
@@ -1217,7 +1217,7 @@ namespace Cell_Tool_3
                 // OK button was pressed.
                 if (result == DialogResult.OK)
                 {
-                    dir = fbd.SelectedPath;
+                    dir = OSStringConverter.GetWinString(fbd.SelectedPath);
                     TreeNode n = new TreeNode();
                     n.Tag = dir;
                     n.Checked = true;
@@ -1453,13 +1453,13 @@ namespace Cell_Tool_3
             {
                 List<string> l = new List<string>();
 
-                if (!Directory.Exists(Dir)) { return l; }
+                if (!Directory.Exists(OSStringConverter.StringToDir(Dir))) { return l; }
 
-                DirectoryInfo directoryInfo = new DirectoryInfo(Dir);
-
+                DirectoryInfo directoryInfo = new DirectoryInfo(OSStringConverter.StringToDir(Dir));
+                
                 foreach (var directory in directoryInfo.GetDirectories())
                 {
-                    l.Add(directory.FullName);
+                    l.Add(OSStringConverter.GetWinString(directory.FullName));
                 }
 
                 foreach (var file in directoryInfo.GetFiles())
@@ -1476,7 +1476,7 @@ namespace Cell_Tool_3
                                 for (int i = 1; i < titles.Length; i++)
                                 {
                                     DataNode n1 = new DataNode();
-                                    n1.Tag = file.FullName;
+                                    n1.Tag = OSStringConverter.GetWinString(file.FullName);
                                     n1.Text = file.Name + "\t" + titles[i];
                                     n1.Comment = comments[i];
                                     n1.RoiName = titles[i];
@@ -1748,15 +1748,15 @@ namespace Cell_Tool_3
                     string dir = dirs[index];
                     string str = "";
 
-                    if (File.Exists(dir))
+                    if (File.Exists(OSStringConverter.StringToDir(dir)))
                     {
                         List<string> vals = new List<string>();
-                        using (StreamReader sr = new StreamReader(dir))
+                        using (StreamReader sr = new StreamReader(OSStringConverter.StringToDir(dir)))
                         {
                             str = sr.ReadLine();
                             while (str != null)
                             {
-                                if(str!="") vals.Add(str);
+                                if (str != "") vals.Add(str);
 
                                 str = sr.ReadLine();
                             }
@@ -1821,7 +1821,7 @@ namespace Cell_Tool_3
                     form1.dataTV.Xaxis = new double[data[a][0].Series.Length];
                     form1.dataTV.OriginalXaxis = new double[data[a][0].Series.Length];
 
-                    if (File.Exists((string)data[a][0].Tag))
+                    if (File.Exists(OSStringConverter.StringToDir((string)data[a][0].Tag)))
                     {
                         string str = "";
                         /*
@@ -1839,13 +1839,13 @@ namespace Cell_Tool_3
                         }
                         */
                         List<string> allRowsList = new List<string>();
-                        using (StreamReader sr = new StreamReader((string)data[a][0].Tag))
+                        using (StreamReader sr = new StreamReader(OSStringConverter.StringToDir((string)data[a][0].Tag)))
                         {
                             str = sr.ReadLine();
                             while (str != null)
                             {
                                 if (str != "") allRowsList.Add(str);
-                                 str = sr.ReadLine();
+                                str = sr.ReadLine();
                             }
                         }
 
@@ -1976,7 +1976,7 @@ namespace Cell_Tool_3
                 TreeNode filters = new TreeNode();
                 //Add event for projection here
 
-                using (StreamReader sr = new StreamReader(dir))
+                using (StreamReader sr = new StreamReader(OSStringConverter.StringToDir(dir)))
                 {
                     string str = sr.ReadToEnd();
                     form1.dataTV.Store.Clear();
@@ -2058,7 +2058,7 @@ namespace Cell_Tool_3
 
                 if (ofd.ShowDialog() == DialogResult.OK)
                 {
-                    ReadCTDataFile(form1, ofd.FileName);
+                    ReadCTDataFile(form1, OSStringConverter.GetWinString(ofd.FileName));
                 }
             }
             private static void StrTranslator(string str, MyForm form1, TreeNode filters)
@@ -2194,7 +2194,7 @@ namespace Cell_Tool_3
 
                 if (saveFileDialog1.ShowDialog() == DialogResult.OK)
                 {
-                    string dir = saveFileDialog1.FileName;
+                    string dir = OSStringConverter.GetWinString(saveFileDialog1.FileName);
                     SaveCTDataFile(form1, dir);
                 }
             }
@@ -2206,8 +2206,8 @@ namespace Cell_Tool_3
 
                 try
                 {
-                    if (File.Exists(dir))
-                        File.Delete(dir);
+                    if (File.Exists(OSStringConverter.StringToDir(dir)))
+                        File.Delete(OSStringConverter.StringToDir(dir));
                 }
                 catch
                 {
@@ -2287,7 +2287,7 @@ namespace Cell_Tool_3
                         strL.Add("FitData=" + form1.solverClass.fitData.DataToString());
                         strL.Add("FitF=" + GetUsedFormulas(form1));
                         //Save file
-                        File.WriteAllText(dir, string.Join(";", strL));
+                        File.WriteAllText(OSStringConverter.StringToDir(dir), string.Join(";", strL));
                     }
                     form1.StatusLabel.Text = "Ready";
                 });
@@ -2341,14 +2341,14 @@ namespace Cell_Tool_3
 
                 if (saveFileDialog1.ShowDialog() == DialogResult.OK)
                 {
-                    string dir = saveFileDialog1.FileName;
+                    string dir = OSStringConverter.GetWinString( saveFileDialog1.FileName);
                     if (dir.EndsWith(formatMiniStr) == false)
                         dir += formatMiniStr;
 
                     try
                     {
-                        if (File.Exists(dir))
-                            File.Delete(dir);
+                        if (File.Exists(OSStringConverter.StringToDir(dir)))
+                            File.Delete(OSStringConverter.StringToDir(dir));
                     }
                     catch
                     {
@@ -2454,7 +2454,7 @@ namespace Cell_Tool_3
                         if (a.ProgressPercentage == 0)
                         {
                             //Save file
-                            using (StreamWriter write = new StreamWriter(dir))
+                            using (StreamWriter write = new StreamWriter(OSStringConverter.StringToDir(dir)))
                             {
                                 for (int i = 0; i < res.Length; i++)
                                 {
@@ -2484,14 +2484,15 @@ namespace Cell_Tool_3
 
                 if (saveFileDialog1.ShowDialog() == DialogResult.OK)
                 {
-                    string dir = saveFileDialog1.FileName;
+                    string dir = OSStringConverter.GetWinString(saveFileDialog1.FileName);
+
                     if (dir.EndsWith(formatMiniStr) == false)
                         dir += formatMiniStr;
 
                     try
                     {
-                        if (File.Exists(dir))
-                            File.Delete(dir);
+                        if (File.Exists(OSStringConverter.StringToDir(dir)))
+                            File.Delete(OSStringConverter.StringToDir(dir));
                     }
                     catch
                     {
@@ -2773,7 +2774,7 @@ namespace Cell_Tool_3
                     #endregion Filter Data
 
                     #region Save file
-                    using (StreamWriter write = new StreamWriter(dir))
+                    using (StreamWriter write = new StreamWriter(OSStringConverter.StringToDir(dir)))
                     {
                         max = 0;
 
