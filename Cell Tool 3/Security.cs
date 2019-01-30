@@ -501,6 +501,14 @@ namespace Cell_Tool_3
 
             foreach (Control ctr in pnl.Controls)
                 ctr.Visible = pnl.Visible;
+
+            pnl.Update();
+            pnl.Invalidate();
+            pnl.Refresh();
+
+            AccForm.Update();
+            AccForm.Invalidate();
+            AccForm.Refresh();
             /*
             if (!((Panel)sender).Visible) return;
 
