@@ -491,7 +491,7 @@ namespace Cell_Tool_3
 
             AccListPanel.VisibleChanged += Panel_VisibleChange;
             PassPanel.VisibleChanged += Panel_VisibleChange;
-           NewAccPanel.VisibleChanged += Panel_VisibleChange;
+            NewAccPanel.VisibleChanged += Panel_VisibleChange;
 
             AccForm.ShowDialog();
         }
@@ -575,9 +575,9 @@ namespace Cell_Tool_3
             //Auto commence
             AutoComenceTbox();
             //Panels settings
-            PassPanel.Visible = true;
             NewAccPanel.Visible = false;
             AccListPanel.Visible = false;
+            PassPanel.Visible = true;
         }
         private void Login_Event(object sender,EventArgs e)
         {
@@ -625,9 +625,10 @@ namespace Cell_Tool_3
                 AccListBox.Items.Add(Str);
             }
             AccForm.Height = 180;
-            AccListPanel.Visible = true;
+            
             PassPanel.Visible = false;
             NewAccPanel.Visible = false;
+            AccListPanel.Visible = true;
         }
         private void CreateAccount()
         {

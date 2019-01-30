@@ -1441,7 +1441,7 @@ namespace Cell_Tool_3
                 TabCollections[index].Visible(true);
 
                 SelectedIndex = index;
-                if (TabCollections[index].tifFI != null && TabCollections[index].tifFI.tpTaskbar != null)
+                if (TabCollections[index].tifFI != null && TabCollections[index].tifFI.loaded && TabCollections[index].tifFI.tpTaskbar != null)
                 {
 
                     TabCollections[index].tifFI.selected = true;
