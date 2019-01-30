@@ -1513,15 +1513,18 @@ namespace Cell_Tool_3
             Body.SuspendLayout();
             ResultsExtractorMainPanel.Controls.Clear();
            
-            if (Collections.Count > index) {
+            if (Collections.Count > index)
+            {
                 Collections[index][0].BackColor = TitlePanelColor1;
                 Collections[index][1].BackColor = TitlePanelColor1;
                 TabCollections[index].Visible(true);
 
                 SelectedIndex = index;
-                if (TabCollections[index].tifFI != null)
+                if (TabCollections[index].tifFI != null && TabCollections[index].tifFI.tpTaskbar != null)
                 {
+
                     TabCollections[index].tifFI.selected = true;
+
                     TabCollections[index].tifFI.tpTaskbar.TopBar.BackColor = BackGroundColor1;
 
 
@@ -1563,6 +1566,7 @@ namespace Cell_Tool_3
                         IA.GLControl1.Focus();
                     }
                     catch { };
+
                 }
                 else if (TabCollections[index].ResultsExtractor != null)
                 {
@@ -1575,7 +1579,12 @@ namespace Cell_Tool_3
                     IA.UpdateUndoBtns();
                 }
             }
+
             Body.ResumeLayout(true);
+
+            Body.Update();
+            Body.Invalidate();
+            Body.Refresh();
         }
         public void treeNode_Rename(object sender, EventArgs e)
         {
