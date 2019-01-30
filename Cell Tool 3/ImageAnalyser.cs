@@ -667,8 +667,16 @@ namespace Cell_Tool_3
                 Segmentation.LibPanel.Height = 50;
             }
 
-            TabPages.PropertiesBody.ResumeLayout();
-            TabPages.propertiesPanel.ResumeLayout();
+            TabPages.PropertiesBody.ResumeLayout(true);
+            TabPages.PropertiesBody.Update();
+            TabPages.PropertiesBody.Invalidate();
+            TabPages.PropertiesBody.Refresh();
+
+            TabPages.propertiesPanel.ResumeLayout(true);
+            TabPages.propertiesPanel.Update();
+            TabPages.propertiesPanel.Invalidate();
+            TabPages.propertiesPanel.Refresh();
+
         }
         
         private void ChangeT(string Val)
