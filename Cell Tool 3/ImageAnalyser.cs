@@ -397,6 +397,10 @@ namespace Cell_Tool_3
 
             if (fi != null)
             {
+                if (fi.loaded && fi.tpTaskbar != null 
+                    && fi.tpTaskbar.TopBar.BackColor != FileBrowser.BackGroundColor1)
+                    fi.tpTaskbar.TopBar.BackColor = FileBrowser.BackGroundColor1;
+
                 //Chart properties refresh
                 chart.Properties.LoadFI(fi);
                 chart.Series.LoadFI(fi);
