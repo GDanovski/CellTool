@@ -52,7 +52,7 @@ namespace Cell_Tool_3
             this.DialogForm.BackColor = CTInterface.FileBrowser.BackGroundColor1;
             this.DialogForm.ForeColor = CTInterface.FileBrowser.ShriftColor1;
             this.DialogForm.FormClosing += new FormClosingEventHandler(
-                delegate (object o, FormClosingEventArgs a) 
+                delegate (object o, FormClosingEventArgs a)
                 {
                     DialogForm.Hide();
                     a.Cancel = true;
@@ -78,7 +78,7 @@ namespace Cell_Tool_3
             Cancel.ForeColor = Color.Black;
             Cancel.Text = "Cancel";
             Cancel.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            Cancel.Location = new Point(DialogForm.Width/2 + 5, 10);
+            Cancel.Location = new Point(DialogForm.Width / 2 + 5, 10);
             p1.Controls.Add(Cancel);
             Cancel.Click += new EventHandler(delegate (object o, EventArgs a)
             {
@@ -113,15 +113,15 @@ namespace Cell_Tool_3
 
             //Get the names of the controls
             string[] strArr = GetControlNames();
-            
+
             //Load to memory
-            foreach(string str in strArr)
+            foreach (string str in strArr)
             {
                 //create memory unit
                 MemoryUnit mu = new MemoryUnit(str);
                 //set associated control
                 SetAssociatedControl(mu);
-                if (mu.GetAssociatedControl == null) continue;                
+                if (mu.GetAssociatedControl == null) continue;
                 //add to memory
                 Memory.Add(str, mu);
             }
@@ -129,24 +129,24 @@ namespace Cell_Tool_3
             foreach (Object o in CTInterface.DeveloperToolStripMenuItem.DropDownItems)
                 if (o is ToolStripMenuItem)
                 {
-                //create memory unit
-                MemoryUnit mu = new MemoryUnit(((ToolStripMenuItem)o).Text);
-                //set associated control
-                mu.SetAssociatedControl = o;
-                if (mu.GetAssociatedControl == null) continue;
-                //add to memory
-                Memory.Add(((ToolStripMenuItem)o).Text, mu);
-            }
+                    //create memory unit
+                    MemoryUnit mu = new MemoryUnit(((ToolStripMenuItem)o).Text);
+                    //set associated control
+                    mu.SetAssociatedControl = o;
+                    if (mu.GetAssociatedControl == null) continue;
+                    //add to memory
+                    Memory.Add(((ToolStripMenuItem)o).Text, mu);
+                }
             //Clear data
             strArr = null;
-            
+
         }
         private void BuildForm()
         {
             Panel p = (Panel)DialogForm.Tag;
             p.SuspendLayout();
             p.Controls.Clear();
-            
+
             for (int i = Memory.Count - 1; i >= 0; i--)
             {
                 Memory.ElementAt(i).Value.RefreshKey();
@@ -154,15 +154,15 @@ namespace Cell_Tool_3
             }
 
             #region  Load auto settings macros
-            foreach(var val in AutoSettingsMemory)
+            foreach (var val in AutoSettingsMemory)
             {
                 val.Value.GetPanel.Dispose();
             }
             AutoSettingsMemory.Clear();
 
-            for (int i = 1; i< CTInterface.IA.Segmentation.AutoSetUp.LibTB.Items.Count; i++)
+            for (int i = 1; i < CTInterface.IA.Segmentation.AutoSetUp.LibTB.Items.Count; i++)
             {
-                string str = CTInterface.IA.Segmentation.AutoSetUp.LibTB.Items[i].ToString();                
+                string str = CTInterface.IA.Segmentation.AutoSetUp.LibTB.Items[i].ToString();
                 //create memory unit
                 MemoryUnit mu = new MemoryUnit(str);
                 //set associated control
@@ -172,7 +172,7 @@ namespace Cell_Tool_3
                     btn.Click += AutoSetUpBtn_Click;
                     mu.SetAssociatedControl = btn;
                 }
-                
+
                 if (mu.GetAssociatedControl == null) continue;
                 //add to memory
                 if (!AutoSettingsMemory.ContainsKey(str))
@@ -185,7 +185,7 @@ namespace Cell_Tool_3
 
             foreach (var val in AutoSettingsMemory)
                 foreach (var ref1 in KeyMemory)
-                    if(ref1.Value.GetName == val.Value.GetName)
+                    if (ref1.Value.GetName == val.Value.GetName)
                     {
                         val.Value.SetKey = ref1.Value.GetKey;
                         ref1.Value.SetAssociatedControl = val.Value.GetAssociatedControl;
@@ -197,7 +197,7 @@ namespace Cell_Tool_3
         }
         public void AutoSetUpBtn_Click(object sender, EventArgs e)
         {
-            if (!CTInterface.IA.Segmentation.AutoSetUp.LibTB.Items.Contains((string)((Button)sender).Tag))return;
+            if (!CTInterface.IA.Segmentation.AutoSetUp.LibTB.Items.Contains((string)((Button)sender).Tag)) return;
 
             int ind = CTInterface.IA.Segmentation.AutoSetUp.LibTB.Items.IndexOf((string)((Button)sender).Tag);
             CTInterface.IA.Segmentation.AutoSetUp.LibTB.Focus();
@@ -217,7 +217,7 @@ namespace Cell_Tool_3
             string[] forbKeys = GetForbidenKeys();
             //check for duplicated keys
             foreach (var val in Memory)
-                if ( forbKeys.Contains(val.Value.GetKey) || newKeys.ContainsKey(val.Value.GetKey))
+                if (forbKeys.Contains(val.Value.GetKey) || newKeys.ContainsKey(val.Value.GetKey))
                 {
                     MessageBox.Show("Key \"" + val.Value.GetKey + "\" is binded to more then one operations!");
                     newKeys = null;
@@ -246,13 +246,13 @@ namespace Cell_Tool_3
             //apply changes
             foreach (var val in Memory)
             {
-                val.Value.ApplyKey();                
+                val.Value.ApplyKey();
             }
 
             this.KeyMemory = newKeys;
             //save to profile settings
             string str = "@";
-            foreach(var val in this.KeyMemory)
+            foreach (var val in this.KeyMemory)
             {
                 str += "\t" + val.Value.GetName + "#" + val.Value.GetKey;
             }
@@ -298,7 +298,7 @@ namespace Cell_Tool_3
             //read settings
             string[] propArr = Properties.Settings.Default.
                 HotKeys[CTInterface.FileBrowser.ActiveAccountIndex].Split('\t');
-            foreach(string str in propArr)
+            foreach (string str in propArr)
                 if (str != "@")
                 {
                     string[] strArr = str.Split('#');
@@ -312,8 +312,8 @@ namespace Cell_Tool_3
                 }
             propArr = null;
             //OldKeys.Add("Export processed image","K");
-            
-            foreach(var val in Memory)
+
+            foreach (var val in Memory)
             {
                 //Add hot key
                 if (OldKeys.ContainsKey(val.Key))
@@ -729,7 +729,7 @@ namespace Cell_Tool_3
                         btn.Click += SetThresholdBtn_Click;
                         mu.SetAssociatedControl = btn;
                     }
-                    break;                
+                    break;
                 default:
                     MessageBox.Show("Error loading: " + mu.GetName);
                     break;
@@ -760,14 +760,14 @@ namespace Cell_Tool_3
         {
             int ind = (int)((Button)sender).Tag;
             CTInterface.IA.Segmentation.Otsu1D.thresholdsNumCB.Focus();
-           CTInterface.IA.Segmentation.Otsu1D.thresholdsNumCB.SelectedIndex = ind;
+            CTInterface.IA.Segmentation.Otsu1D.thresholdsNumCB.SelectedIndex = ind;
         }
         public void HotKeysToolStripMenuItem_Click(object sender, EventArgs e)
         {
             BuildForm();
             DialogForm.ShowDialog();
         }
-        
+
         public class MemoryUnit
         {
             private string Key;
@@ -796,12 +796,12 @@ namespace Cell_Tool_3
                 KeyTB = new TextBox();
                 KeyTB.Text = Key;
                 KeyTB.Width = 90;
-                KeyTB.Location = new Point( 260,3);
+                KeyTB.Location = new Point(260, 3);
                 KeyTB.KeyDown += KeyTB_KeyPressed;
                 KeyTB.TextChanged += KeyTB_TextChanged;
                 Container.Controls.Add(KeyTB);
             }
-            
+
             public string GetKey
             {
                 get
@@ -828,7 +828,7 @@ namespace Cell_Tool_3
                 }
             }
             public string GetName
-            {                
+            {
                 get { return Name; }
             }
             public string SetName
@@ -897,7 +897,7 @@ namespace Cell_Tool_3
                 if (KeyTB.Text != buffer)
                 {
                     KeyTB.Text = buffer;
-                }               
+                }
             }
         }
 
