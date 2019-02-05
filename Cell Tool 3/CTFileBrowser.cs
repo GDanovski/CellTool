@@ -2996,7 +2996,11 @@ namespace Cell_Tool_3
             {
                 if (line != "@")
                 {
-                    TreeViewExp_AddFolderNode(line);
+                    try
+                    {
+                        TreeViewExp_AddFolderNode(line);
+                    }
+                    catch { };
                 }
             }
         }
