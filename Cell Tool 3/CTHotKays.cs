@@ -299,8 +299,12 @@ namespace Cell_Tool_3
                 if (str != "@")
                 {
                     string[] strArr = str.Split('#');
-                    if(!OldKeys.ContainsKey(strArr[0]))
-                        OldKeys.Add(strArr[0], strArr[1]);
+                    try
+                    {
+                        if (!OldKeys.ContainsKey(strArr[0]) && !GetForbidenKeys().Contains(strArr[0]))
+                            OldKeys.Add(strArr[0], strArr[1]);
+                    }
+                    catch { }
                     strArr = null;
                 }
             propArr = null;
