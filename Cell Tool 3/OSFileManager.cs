@@ -13,11 +13,16 @@ namespace Cell_Tool_3
     {
         public static void CopyFile(string Dir, string NewDir)
         {
-            Dir = OSStringConverter.StringToDir(Dir);
-            NewDir = OSStringConverter.StringToDir(NewDir);
-
             if (!File.Exists(Dir)) return;
-            if (File.Exists(NewDir)) File.Delete(NewDir);
+            try
+            {
+                if (File.Exists(NewDir)) File.Delete(NewDir);
+            }
+            catch
+            {
+                MessageBox.Show("Target directory is not avaliable!");
+                return;
+            }
 
             try
             {
@@ -46,18 +51,27 @@ namespace Cell_Tool_3
         }
         public static void CopyDirectory(string Dir, string NewDir)
         {
-            Dir = OSStringConverter.StringToDir(Dir);
-            NewDir = OSStringConverter.StringToDir(NewDir);
             if (!Directory.Exists(Dir)) return;
-            if (Directory.Exists(NewDir)) Directory.Delete(NewDir,true);
+            try
+            {
+                if (Directory.Exists(NewDir)) Directory.Delete(NewDir, true);
+            }
+            catch
+            {
+                MessageBox.Show("Target directory is not avaliable!");
+                return;
+            }
+
             try
             {
                 if (System.Environment.OSVersion.Platform != PlatformID.MacOSX &&
                     System.Environment.OSVersion.Platform != PlatformID.Unix)
                 {
+
                     Microsoft.VisualBasic.FileIO.FileSystem.CopyDirectory(Dir, NewDir,
                 Microsoft.VisualBasic.FileIO.UIOption.AllDialogs,
                 Microsoft.VisualBasic.FileIO.UICancelOption.DoNothing);
+
                     return;
                 }
             }
@@ -75,10 +89,9 @@ namespace Cell_Tool_3
             form.SetUp("Copy Directory", Dir, NewDir, bgw);
 
         }
-       
+
         public static void DeleteDirectory(string Dir)
         {
-            Dir = OSStringConverter.StringToDir(Dir);
             if (!Directory.Exists(Dir)) return;
             try
             {
@@ -107,8 +120,7 @@ namespace Cell_Tool_3
 
         }
         public static void DeleteFile(string Dir)
-        { 
-            Dir = OSStringConverter.StringToDir(Dir);
+        {
             if (!File.Exists(Dir)) return;
             try
             {
@@ -138,10 +150,17 @@ namespace Cell_Tool_3
         }
         public static void MoveFile(string Dir, string NewDir)
         {
-            Dir = OSStringConverter.StringToDir(Dir);
-            NewDir = OSStringConverter.StringToDir(NewDir);
             if (!File.Exists(Dir)) return;
-            if (File.Exists(NewDir)) File.Delete(NewDir);
+            try
+            {
+                if (File.Exists(NewDir)) File.Delete(NewDir);
+            }
+            catch
+            {
+                MessageBox.Show("Target directory is not avaliable!");
+                return;
+            }
+
             try
             {
                 if (System.Environment.OSVersion.Platform != PlatformID.MacOSX &&
@@ -169,10 +188,17 @@ namespace Cell_Tool_3
         }
         public static void MoveDirectory(string Dir, string NewDir)
         {
-            Dir = OSStringConverter.StringToDir(Dir);
-            NewDir = OSStringConverter.StringToDir(NewDir);
             if (!Directory.Exists(Dir)) return;
-            if (Directory.Exists(NewDir)) Directory.Delete(NewDir,true);
+            try
+            {
+                if (Directory.Exists(NewDir)) Directory.Delete(NewDir, true);
+            }
+            catch
+            {
+                MessageBox.Show("Target directory is not avaliable!");
+                return;
+            }
+
             try
             {
                 if (System.Environment.OSVersion.Platform != PlatformID.MacOSX &&
@@ -233,7 +259,7 @@ namespace Cell_Tool_3
                 }
             }
         }
-        private class InfoForm:Form
+        private class InfoForm : Form
         {
             private Label lab_From;
             private Label lab_To;

@@ -60,6 +60,13 @@ namespace Cell_Tool_3
 
                 bgw.DoWork += new DoWorkEventHandler(delegate (Object o, DoWorkEventArgs a)
                 {
+                    //check is the directory exist
+                    if (dir.IndexOf("\\") > -1)
+                    {
+                        string checkDir = dir.Substring(0, dir.LastIndexOf("\\"));
+                        checkDir = OSStringConverter.StringToDir(checkDir);
+                        if (!System.IO.Directory.Exists(checkDir)) System.IO.Directory.CreateDirectory(checkDir);
+                    }
                     FileEncoder.SaveTif(tifFI, dir, IA);
                 //report progress
                 ((BackgroundWorker)o).ReportProgress(0);
@@ -95,6 +102,14 @@ namespace Cell_Tool_3
             }
             else if(ResultsExtractor != null)
             {
+                //check is the directory exist
+                if (dir.IndexOf("\\") > -1)
+                {
+                    string checkDir = dir.Substring(0, dir.LastIndexOf("\\"));
+                    checkDir = OSStringConverter.StringToDir(checkDir);
+                    if (!System.IO.Directory.Exists(checkDir)) System.IO.Directory.CreateDirectory(checkDir);
+                }
+
                 var bgw = ResultsExtractor.FileSaver.SaveCTDataFile(
                     (Cell_Tool_3.ResultsExtractor.MyForm)
                     this.ResultsExtractor.myPanel, dir);
