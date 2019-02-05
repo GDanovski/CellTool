@@ -281,7 +281,8 @@ namespace Cell_Tool_3
                 Keys.X.ToString(),
                 Keys.V.ToString(),
                 Keys.F2.ToString(),
-                Keys.F5.ToString()
+                Keys.F5.ToString(),
+                Keys.N.ToString()
             };
         }
         public void LoadAccountSettings()
@@ -298,7 +299,8 @@ namespace Cell_Tool_3
                 if (str != "@")
                 {
                     string[] strArr = str.Split('#');
-                    OldKeys.Add(strArr[0], strArr[1]);
+                    if(!OldKeys.ContainsKey(strArr[0]))
+                        OldKeys.Add(strArr[0], strArr[1]);
                     strArr = null;
                 }
             propArr = null;
