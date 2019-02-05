@@ -175,9 +175,12 @@ namespace Cell_Tool_3
 
                 if (mu.GetAssociatedControl == null) continue;
                 //add to memory
-                AutoSettingsMemory.Add(str, mu);
-                p.Controls.Add(mu.GetPanel);
-                mu.GetPanel.BringToFront();
+                if (!AutoSettingsMemory.ContainsKey(str))
+                {
+                    AutoSettingsMemory.Add(str, mu);
+                    p.Controls.Add(mu.GetPanel);
+                    mu.GetPanel.BringToFront();
+                }
             }
 
             foreach (var val in AutoSettingsMemory)
