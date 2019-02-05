@@ -14,7 +14,15 @@ namespace Cell_Tool_3
         public static void CopyFile(string Dir, string NewDir)
         {
             if (!File.Exists(Dir)) return;
-            if (File.Exists(NewDir)) File.Delete(NewDir);
+            try
+            {
+                if (File.Exists(NewDir)) File.Delete(NewDir);
+            }
+            catch
+            {
+                MessageBox.Show("Target directory is not avaliable!");
+                return;
+            }
 
             try
             {
@@ -44,20 +52,31 @@ namespace Cell_Tool_3
         public static void CopyDirectory(string Dir, string NewDir)
         {
             if (!Directory.Exists(Dir)) return;
-            if (Directory.Exists(NewDir)) Directory.Delete(NewDir,true);
+            try
+            {
+                if (Directory.Exists(NewDir)) Directory.Delete(NewDir, true);
+            }
+            catch
+            {
+                MessageBox.Show("Target directory is not avaliable!");
+                return;
+            }
+
             try
             {
                 if (System.Environment.OSVersion.Platform != PlatformID.MacOSX &&
                     System.Environment.OSVersion.Platform != PlatformID.Unix)
                 {
+                    
                     Microsoft.VisualBasic.FileIO.FileSystem.CopyDirectory(Dir, NewDir,
                 Microsoft.VisualBasic.FileIO.UIOption.AllDialogs,
                 Microsoft.VisualBasic.FileIO.UICancelOption.DoNothing);
+                    
                     return;
                 }
             }
             catch { }
-
+            
             var bgw = new BackgroundWorker();
             bgw.DoWork += new DoWorkEventHandler(delegate (Object o, DoWorkEventArgs a)
             {
@@ -132,7 +151,16 @@ namespace Cell_Tool_3
         public static void MoveFile(string Dir, string NewDir)
         {
             if (!File.Exists(Dir)) return;
-            if (File.Exists(NewDir)) File.Delete(NewDir);
+            try
+            { 
+                if (File.Exists(NewDir)) File.Delete(NewDir);
+            }
+            catch
+            {
+                MessageBox.Show("Target directory is not avaliable!");
+                return;
+            }
+
             try
             {
                 if (System.Environment.OSVersion.Platform != PlatformID.MacOSX &&
@@ -161,7 +189,16 @@ namespace Cell_Tool_3
         public static void MoveDirectory(string Dir, string NewDir)
         {
             if (!Directory.Exists(Dir)) return;
-            if (Directory.Exists(NewDir)) Directory.Delete(NewDir,true);
+            try
+            { 
+                if (Directory.Exists(NewDir)) Directory.Delete(NewDir,true);
+            }
+            catch
+            {
+                MessageBox.Show("Target directory is not avaliable!");
+                return;
+            }
+
             try
             {
                 if (System.Environment.OSVersion.Platform != PlatformID.MacOSX &&

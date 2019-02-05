@@ -30,8 +30,6 @@ namespace Cell_Tool_3
         public static void SaveTif(TifFileInfo fi, string dir, ImageAnalyser IA)
         {
             try {
-                
-                //return;
                 //Save pixel data
                 switch (fi.bitsPerPixel)
                 {
