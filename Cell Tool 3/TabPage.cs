@@ -44,7 +44,7 @@ namespace Cell_Tool_3
             TifFileInfo tifFI = this.tifFI;
             if (tifFI != null)
             {
- 
+
                 if (!tifFI.available)
                 {
                     MessageBox.Show("Image is not avaliable!\nTry again later.");
@@ -67,7 +67,6 @@ namespace Cell_Tool_3
                         checkDir = OSStringConverter.StringToDir(checkDir);
                         if (!System.IO.Directory.Exists(checkDir)) System.IO.Directory.CreateDirectory(checkDir);
                     }
-                    //save file
                     FileEncoder.SaveTif(tifFI, dir, IA);
                 //report progress
                 ((BackgroundWorker)o).ReportProgress(0);

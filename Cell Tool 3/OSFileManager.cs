@@ -13,9 +13,6 @@ namespace Cell_Tool_3
     {
         public static void CopyFile(string Dir, string NewDir)
         {
-            Dir = OSStringConverter.StringToDir(Dir);
-            NewDir = OSStringConverter.StringToDir(NewDir);
-
             if (!File.Exists(Dir)) return;
             try
             {
@@ -54,8 +51,6 @@ namespace Cell_Tool_3
         }
         public static void CopyDirectory(string Dir, string NewDir)
         {
-            Dir = OSStringConverter.StringToDir(Dir);
-            NewDir = OSStringConverter.StringToDir(NewDir);
             if (!Directory.Exists(Dir)) return;
             try
             {
@@ -72,16 +67,16 @@ namespace Cell_Tool_3
                 if (System.Environment.OSVersion.Platform != PlatformID.MacOSX &&
                     System.Environment.OSVersion.Platform != PlatformID.Unix)
                 {
-                    
+
                     Microsoft.VisualBasic.FileIO.FileSystem.CopyDirectory(Dir, NewDir,
                 Microsoft.VisualBasic.FileIO.UIOption.AllDialogs,
                 Microsoft.VisualBasic.FileIO.UICancelOption.DoNothing);
-                    
+
                     return;
                 }
             }
             catch { }
-            
+
             var bgw = new BackgroundWorker();
             bgw.DoWork += new DoWorkEventHandler(delegate (Object o, DoWorkEventArgs a)
             {
@@ -94,10 +89,9 @@ namespace Cell_Tool_3
             form.SetUp("Copy Directory", Dir, NewDir, bgw);
 
         }
-       
+
         public static void DeleteDirectory(string Dir)
         {
-            Dir = OSStringConverter.StringToDir(Dir);
             if (!Directory.Exists(Dir)) return;
             try
             {
@@ -126,8 +120,7 @@ namespace Cell_Tool_3
 
         }
         public static void DeleteFile(string Dir)
-        { 
-            Dir = OSStringConverter.StringToDir(Dir);
+        {
             if (!File.Exists(Dir)) return;
             try
             {
@@ -157,11 +150,9 @@ namespace Cell_Tool_3
         }
         public static void MoveFile(string Dir, string NewDir)
         {
-            Dir = OSStringConverter.StringToDir(Dir);
-            NewDir = OSStringConverter.StringToDir(NewDir);
             if (!File.Exists(Dir)) return;
             try
-            { 
+            {
                 if (File.Exists(NewDir)) File.Delete(NewDir);
             }
             catch
@@ -197,12 +188,10 @@ namespace Cell_Tool_3
         }
         public static void MoveDirectory(string Dir, string NewDir)
         {
-            Dir = OSStringConverter.StringToDir(Dir);
-            NewDir = OSStringConverter.StringToDir(NewDir);
             if (!Directory.Exists(Dir)) return;
             try
-            { 
-                if (Directory.Exists(NewDir)) Directory.Delete(NewDir,true);
+            {
+                if (Directory.Exists(NewDir)) Directory.Delete(NewDir, true);
             }
             catch
             {
@@ -270,7 +259,7 @@ namespace Cell_Tool_3
                 }
             }
         }
-        private class InfoForm:Form
+        private class InfoForm : Form
         {
             private Label lab_From;
             private Label lab_To;
