@@ -43,7 +43,7 @@ namespace Cell_Tool_3
         //Activ Account
         public int ActiveAccountIndex = 0;
         //Panel
-        private Panel MainPanel;
+        Panel MainPanel;
         public Panel DataSourcesPanel = new Panel();
         public int DataSourcesPanelWidth = 300;
         //OpenFile options
@@ -61,8 +61,9 @@ namespace Cell_Tool_3
         public Color TaskBtnClickColor1;
 
         //Resize panel
+
         private Panel ResizeTreeViewPanel = new Panel();
-        private bool DataSourcesPanel_Resize = false;
+        private Boolean DataSourcesPanel_Resize = false;
         private Panel ResizePanel = new Panel();
         private int oldX;
         //Task bar
@@ -90,24 +91,24 @@ namespace Cell_Tool_3
         public List<string> Formats;
         //Search
         public TextBox searchTextbox = new TextBox();
-        private bool searched = false;
+        private Boolean searched = false;
         //Context menu
         ContextMenu TreeViewContextMenu = new ContextMenu();
         ContextMenu VboxContextMenu = new ContextMenu();
         TreeNode MoveNode = null;
         TreeNode MoveNodeCopyPaste = null;
-        bool copyItem = false;
-        bool cutItem = false;
+        Boolean copyItem = false;
+        Boolean cutItem = false;
         TreeNode doubleClickTarget = null;
         //Searched
         private int SearchCount = 0;
         //Drag and drop
         private bool DragDropEnter = false;
-        private bool DragDropNode = false;
+        private Boolean DragDropNode = false;
         public Panel OpenPanel = new Panel();
         public Panel DragDropPanel = new Panel();
         private Label DragDroplabel = new Label();
-        private bool SorseFromVbox = false;
+        private Boolean SorseFromVbox = false;
         TreeView DragDropSourceTree = null;
 
         private void Control_MouseOver(object sender, EventArgs e)
@@ -2866,14 +2867,10 @@ namespace Cell_Tool_3
                     if (razlika < 600 & razlika > 60)
                     {
                         oldX = e.X;
-                        if (ResizePanel.Location.X != razlika)
-                        {
-                            ResizePanel.Location = new System.Drawing.Point(razlika, DataSourcesPanel.Location.Y);
-                            MainPanel.Refresh();
-                            Application.DoEvents();
-                        }
+                        ResizePanel.Location = new System.Drawing.Point(razlika, DataSourcesPanel.Location.Y);
                     }
                 }
+
             }
             else {
 
@@ -2886,7 +2883,7 @@ namespace Cell_Tool_3
                     pnl.Cursor = Cursors.Default;
                 }
             }
-        }       
+        }
         private void DataSourcesPanel_MouseDown(object sender, MouseEventArgs e)
         {
             Panel pnl = sender as Panel;
@@ -3015,7 +3012,7 @@ namespace Cell_Tool_3
                     {
                         TreeViewExp_AddFolderNode(line);
                     }
-                    catch { };
+                    catch { }
                 }
             }
         }
