@@ -703,16 +703,19 @@ namespace Cell_Tool_3
                         if (nSource.Checked)
                         {
                             ResultsExtractor.DataNode n = (ResultsExtractor.DataNode)nSource.Tag;
+                            //find smallest array size
+                            int arraySize = form1.dataTV.Xaxis.Length;
+                            if (n.Series.Length < arraySize) arraySize = n.Series.Length;
 
-                            double[] Xvals = new double[form1.dataTV.Xaxis.Length];
-                            double[] Yvals = new double[form1.dataTV.Xaxis.Length];
+                            double[] Xvals = new double[arraySize];
+                            double[] Yvals = new double[arraySize];
 
-                            Array.Copy(form1.dataTV.Xaxis, Xvals, Xvals.Length);
+                            Array.Copy(form1.dataTV.Xaxis, Xvals, arraySize);
 
                             if (form1.NormCB.Checked)
-                                Array.Copy(n.NormSeries, Yvals, Yvals.Length);
+                                Array.Copy(n.NormSeries, Yvals, arraySize);
                             else
-                                Array.Copy(n.Series, Yvals, Yvals.Length);
+                                Array.Copy(n.Series, Yvals, arraySize);
 
                             #region New fit
                             MySolver.FitSettings cur = new MySolver.FitSettings();
