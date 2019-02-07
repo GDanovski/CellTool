@@ -32,8 +32,8 @@
     <PublisherName>Georgi Danovski</PublisherName>
     <SuiteName>CellTool</SuiteName>
     <AutorunEnabled>true</AutorunEnabled>
-    <ApplicationRevision>17</ApplicationRevision>
-    <ApplicationVersion>1.3.0.17</ApplicationVersion>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.4.0.0</ApplicationVersion>
     <UseApplicationTrust>true</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
     <PublishWizardCompleted>true</PublishWizardCompleted>
@@ -206,6 +206,7 @@
     </Compile>
     <Compile Include="FrameCalculator.cs" />
     <Compile Include="FRAPA_Model.cs" />
+    <Compile Include="FRAPA_ReactionDiffusion.cs" />
     <Compile Include="ImageAnalyser.cs" />
     <Compile Include="Interface.cs" />
     <Compile Include="KMeans.cs" />

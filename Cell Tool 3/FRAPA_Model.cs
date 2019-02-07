@@ -31,7 +31,7 @@ namespace Cell_Tool_3
 {
     class FRAPA_Model
     {
-        public const int nModels = 4;
+        public const int nModels = 5;
         #region Aquisition bleaching correction
         private static int[] Dialog(double[] Xvals) {
             int[] res = null;
@@ -679,11 +679,13 @@ namespace Cell_Tool_3
                     "FRAPA - rectangle ROI, single exp",
                     "FRAPA - rectangle ROI, double exp",
                     "FRAPA - oval ROI, single exp",
-                    "FRAPA - oval ROI, double exp"
+                    "FRAPA - oval ROI, double exp",
+                    "FRAPA - Binding + Diffusion"
                 });
             }
             public static int GetModelIndex(string ifFunc)
             {
+                
                 switch (ifFunc)
                 {
                     case "FRAP_SingleRectangle":
@@ -694,6 +696,8 @@ namespace Cell_Tool_3
                         return 2;
                     case "FRAP_DoubleOval":
                         return 3;
+                    case "FRAP_Binding+Diffusion":
+                        return 4;
                     default:
                         return -1;
                 }
@@ -712,6 +716,8 @@ namespace Cell_Tool_3
                         return Frapa_SingleOval.GetFrapaFunction();
                     case 3:
                         return Frapa_DoubleOval.GetFrapaFunction();
+                    case 4:
+                        return Frapa_Binding_Diffusion.GetFrapaFunction();
                     default:
                         return null;
                 }
@@ -734,6 +740,67 @@ namespace Cell_Tool_3
                     case 3:
                         Frapa_DoubleOval.CheckConstValues(par);
                         break;
+                    case 4:
+                        Frapa_Binding_Diffusion.CheckConstValues(par);
+                        break;
+                    default:
+                        break;
+                }
+
+            }
+            public static void SetConstValues(MySolver.Parameter par)
+            {
+                switch (par.Name)
+                {
+                    case "Io":
+                    case "I":
+                        par.Value = 1;
+                        par.Min = 0;
+                        par.Max = 1.5;
+                        break;
+                    case "A":
+                        par.Value = 0.2;
+                        par.Min = 0;
+                        par.Max = 1;
+                        break;
+                    case "Ceq":
+                        par.Value = 0.6;
+                        par.Min = 0;
+                        par.Max = 1;
+                        break;
+                    case "B":
+                        par.Value = 0.4;
+                        par.Min = 0;
+                        par.Max = 1;
+                        break;
+                    case "D":
+                        par.Value = 3;
+                        par.Min = 0;
+                        par.Max = 1000;
+                        break;
+                    case "b":
+                        par.Value = 0.07;
+                        par.Min = 0;
+                        par.Max = 1;
+                        break;
+                    case "Kon":
+                        par.Value = 0.05;
+                        par.Min = 0;
+                        par.Max = 1;
+                        break;
+                    case "a":
+                        par.Value = 0.05;
+                        par.Min = 0;
+                        par.Max = 1;
+                        break;
+                    case "Koff":
+                        par.Value = 0.01;
+                        par.Min = 0;
+                        par.Max = 1;
+                        break;
+                    case "w":
+                        par.Value = 3;
+                        break;
                     default:
                         break;
                 }
@@ -748,6 +815,8 @@ namespace Cell_Tool_3
                     return Frapa_SingleOval.Solve(Xvals, Yvals, coefficients);
                 else if (formula.StartsWith("If[FRAP_DoubleOval"))
                     return Frapa_DoubleOval.Solve(Xvals, Yvals, coefficients);
+                else if (formula.StartsWith("If[FRAP_Binding+Diffusion"))
+                    return Frapa_Binding_Diffusion.Solve(Xvals, Yvals, coefficients);
                 else
                     return null;
             }
@@ -763,6 +832,8 @@ namespace Cell_Tool_3
                         return Frapa_SingleOval.CalcFitVals(Xvals, coefficients);
                     case "FRAP_DoubleOval":
                         return Frapa_DoubleOval.CalcFitVals(Xvals, coefficients);
+                    case "FRAP_Binding+Diffusion":
+                        return Frapa_Binding_Diffusion.CalcFitVals(Xvals, coefficients);
                     default:
                         return null;
                 }
@@ -779,12 +850,14 @@ namespace Cell_Tool_3
                         return Frapa_SingleOval.ExportResults(curFit, name);
                     case "FRAP_DoubleOval":
                         return Frapa_DoubleOval.ExportResults(curFit, name);
+                    case "FRAP_Binding+Diffusion":
+                        return Frapa_Binding_Diffusion.ExportResults(curFit, name);
                     default:
                         return null;
                 }
             }
         }
-#region Double exp, rectangular ROI
+        #region Double exp, rectangular ROI
         public class Frapa_DoubleRectangle
         { 
             public static SolverFunctions.FunctionValue GetFrapaFunction()
@@ -2294,6 +2367,309 @@ namespace Cell_Tool_3
             }
         }
         #endregion Single exp, oval ROI
+
+        #region Binding&Diffusion
+        public class Frapa_Binding_Diffusion
+        {
+            
+            public static SolverFunctions.FunctionValue GetFrapaFunction()
+            {
+                SolverFunctions.FunctionValue f = new SolverFunctions.FunctionValue();
+                f.SetName = "FRAPA - Binding + Diffusion";
+                f.SetFormulaIF = "FRAP_Binding+Diffusion";
+                f.SetFormula1 = "{}";
+                f.SetFormula2 = "{}";
+                f.SetParameters = new string[]
+                {
+                "w",
+                "from",
+                "I",
+                "Ceq",
+                "D",
+                "Koff",
+                "Kon",
+                "T1/2"
+                };
+
+                return f;
+            }
+            public static void CheckConstValues(ChartSolverSettings.ParamPanel.ParameterBox par)
+            {
+                switch (par._Name.Text)
+                {
+                    case ("w"):
+                        par.IsConstant(true);
+                        par._Name.Checked = false;
+                        break;
+                    case ("from"):
+                        par.IsConstant(true);
+                        par._Name.Checked = false;
+                        break;
+                    case ("T1/2"):
+                        par.IsConstant(true, true);
+                        par._Name.Checked = false;
+                        break;
+                    default:
+                        par.IsConstant(false);
+                        par._Name.Checked = true;
+                        break;
+                }
+            }
+            public static double[][] CalcFitVals(double[] Xvals, Dictionary<string, MySolver.Parameter> coefficients)
+            {
+                double[][] res = new double[1][];
+                res[0] = new double[Xvals.Length];
+                
+                int frame = (int)coefficients["from"].Value;
+                double w = coefficients["w"].Value;
+                double I = coefficients["I"].Value;
+                double Ceq = coefficients["Ceq"].Value;
+                //coefficients["Feq"].Value = 1 - Ceq;
+                // double Feq = coefficients["Feq"].Value;
+                double Feq = 1 - Ceq;
+                double D = coefficients["D"].Value;
+                double Kon = coefficients["Kon"].Value;
+                double Koff = coefficients["Koff"].Value;
+
+                if (Xvals.Length > frame)
+                {
+                    Laplace lap = new Laplace();
+                    lap.InitStehfest(14);
+
+                    double startT = Xvals[frame];
+                    frame++;
+                    for (; frame < Xvals.Length; frame++)
+                    {
+                        res[0][frame] = (I) * lap.InverseTransform(I, w, Feq, Ceq, Kon, Koff, D, (Xvals[frame] - startT));
+                    }
+                }
+
+                return res;
+            }
+            private static Dictionary<string, MySolver.Parameter> SolveFRAPA(double[] Xvals, double[] Yvals, Dictionary<string, MySolver.Parameter> coefficients)
+            {
+                //const
+                int frame = (int)coefficients["from"].Value;
+                double startT = Xvals[frame];
+                //calculate XY values
+                double[] newXvals = new double[Xvals.Length - frame];
+                double[] newYvals = new double[newXvals.Length];
+                Array.Copy(Xvals, frame, newXvals, 0, newXvals.Length);
+
+                for (int i = 0; i < newXvals.Length; i++)
+                    newXvals[i] -= startT;
+
+                Array.Copy(Yvals, frame, newYvals, 0, newXvals.Length);
+                //create data set
+                FRAPA_ReactionDiffusion.DataSet data = new FRAPA_ReactionDiffusion.DataSet("", "", newXvals, newYvals);
+
+                List<FRAPA_ReactionDiffusion.Variable> Variables = new List<FRAPA_ReactionDiffusion.Variable>();
+                string[] names = new string[] {
+                "I",
+                "w",
+                "Kon",
+                "Koff",
+                "D",
+                "Ceq",
+                "T1/2"
+                };
+
+                foreach (string str in names)
+                {
+                    MySolver.Parameter par = coefficients[str];
+
+                    FRAPA_ReactionDiffusion.Variable v = new FRAPA_ReactionDiffusion.Variable();
+                    v.ConstName = par.Name;
+                    v.ConstValue = par.Value;
+
+                    if (par.Variable)
+                    {
+                        v.ConstMin = par.Min;
+                        v.ConstMax = par.Max;
+                    }
+                    else
+                    {
+                        v.ConstMin = par.Value;
+                        v.ConstMax = par.Value;
+                    }
+
+                    Variables.Add(v);
+                }
+
+                data.Variables = Variables;
+
+                FRAPA_ReactionDiffusion.MySolver mySolver = new FRAPA_ReactionDiffusion.MySolver();
+                mySolver.Solve(data, 1000);
+
+                Dictionary<string, MySolver.Parameter> parameters = new Dictionary<string, MySolver.Parameter>();
+
+                for (int i = 0; i < coefficients.Count; i++)
+                {
+                    MySolver.Parameter p = coefficients.ElementAt(i).Value;
+
+                    parameters.Add(p.Name, new MySolver.Parameter
+                (p.Name, p.Value, p.Min, p.Max, p.Variable));
+                }
+                
+                foreach (var v in Variables)
+                {
+                    parameters[v.ConstName].Value = v.ConstValue;
+                }
+
+                return parameters;
+            }
+            
+            public static Dictionary<string, MySolver.Parameter> Solve(double[] Xvals, double[] Yvals, Dictionary<string, MySolver.Parameter> coefficients)
+            {
+                Dictionary<string, MySolver.Parameter> parameters = SolveFRAPA(Xvals, Yvals, coefficients);//halftime model
+                
+                return parameters;
+            }
+            
+            public static List<List<string>> ExportResults(MySolver.FitSettings curFit, string name)
+            {
+                List<string> constNames = new List<string>() { "", "Const_" + name, "" };
+                List<string> constVals = new List<string>() { "", "Value_" + name, "" };
+                List<string> XValsL = new List<string>() { "", "Xvals_" + name, "" };
+                List<string> YValsL = new List<string>() { "", "Raw_" + name, "" };
+                List<string> Fit1ValsL = new List<string>() { "", "Fit_Binding+Diffusion_eq_" + name, "" };
+
+                foreach (var p in curFit.Parameters)
+                {
+                    constNames.Add(p.Value.Name);
+                    constVals.Add(p.Value.Value.ToString());
+                    if(p.Value.Name == "Ceq")
+                    {
+                        constNames.Add("Feq");
+                        constVals.Add((1-p.Value.Value).ToString());
+                    }
+                }
+
+                double[] Xvals = curFit.XVals;
+                double[] Yvals = curFit.YVals;
+
+                double[] StDev = new double[1];
+                double[][] fitVals = CalcFitVals(Xvals, curFit.Parameters);
+                int frame = (int)curFit.Parameters["from"].Value;
+
+                for (int i = 0; i < Xvals.Length && i < Yvals.Length; i++)
+                {
+                    Fit1ValsL.Add(fitVals[0][i].ToString());
+
+                    XValsL.Add(Xvals[i].ToString());
+                    YValsL.Add(Yvals[i].ToString());
+
+                    if (i >= frame)
+                    {
+                        StDev[0] += Math.Pow(Yvals[i] - fitVals[0][i], 2);
+                    }
+                }
+
+                curFit.StDev = 0;
+                StDev[0] = Math.Sqrt(StDev[0] / (Xvals.Length - frame));
+
+                constNames.Add("");
+                constVals.Add("");
+                constNames.Add("Root mean square deviation:");
+                constVals.Add(StDev[0].ToString());
+                constNames.Add("");
+                constVals.Add("");
+                constNames.Add("Coefficient of correlation:");
+                constVals.Add(ComputeCorelationCoeff(Yvals, fitVals[0], frame).ToString());
+                constNames.Add("");
+                constVals.Add("");
+                constNames.Add("R-squared:");
+                constVals.Add(Math.Pow(ComputeCorelationCoeff(Yvals, fitVals[0], frame), 2).ToString());
+                constNames.Add("");
+                constVals.Add("");
+                constNames.Add("Binding+Diffusion eq.:");
+                constVals.Add("f(t)= (I)invlap(FRAP(p))");
+                constNames.Add("FRAP(p)");
+                constVals.Add("FRAP(p) = 1/p-(Feq/p)*(1-2K1(qw)I1(qw))*(1+(Kon/(p+Koff)))-Ceq/(p+Koff)");
+
+                #region Fit Statistics
+                fitVals = null;
+
+                #endregion Fit Statistics
+                List<List<string>> FitRes = new List<List<string>>();
+
+                FitRes.Add(constNames);
+                FitRes.Add(constVals);
+                FitRes.Add(XValsL);
+                FitRes.Add(YValsL);
+                FitRes.Add(Fit1ValsL);
+
+                return FitRes;
+            }
+            class Laplace
+            {
+                //int DefaultStehfest = 14;
+
+                double[] V; // Stehfest coefficients 
+                double ln2; // log of 2
+
+                public void InitStehfest(int N)
+                {
+                    ln2 = Math.Log(2.0);
+                    int N2 = N / 2;
+                    int NV = 2 * N2;
+                    V = new double[NV];
+                    int sign = 1;
+                    if ((N2 % 2) != 0)
+                        sign = -1;
+                    for (int i = 0; i < NV; i++)
+                    {
+                        int kmin = (i + 2) / 2;
+                        int kmax = i + 1;
+                        if (kmax > N2)
+                            kmax = N2;
+                        V[i] = 0;
+                        sign = -sign;
+                        for (int k = kmin; k <= kmax; k++)
+                        {
+                            V[i] = V[i] + (Math.Pow(k, N2) / Factorial(k)) * (Factorial(2 * k)
+                                 / Factorial(2 * k - i - 1)) / Factorial(N2 - k)
+                                 / Factorial(k - 1) / Factorial(i + 1 - k);
+                        }
+                        V[i] = sign * V[i];
+                    }
+
+                }
+
+                public double InverseTransform(double R, double w, double Feq,
+                    double Ceq, double Kon, double Koff, double Df, double t)
+                {
+                    double ln2t = ln2 / t;
+                    double p = 0;
+                    double y = 0;
+                    double q = 0;
+
+                    for (int i = 0; i < V.Length; i++)
+                    {
+                        p += ln2t;
+                        q = Math.Sqrt((p / Df) * (1 + Kon / (p + Koff)));
+
+                        y += V[i] * (
+                            (1 / p) - (Feq / p) * (1 - 2 * MathNet.Numerics.SpecialFunctions.BesselK1(q * w) * MathNet.Numerics.SpecialFunctions.BesselI1(q * w)) *
+                            (1 + Kon / (p + Koff)) - Ceq / (p + Koff)
+                            );
+                    }
+                    return ln2t * y;
+                }
+
+                public double Factorial(int N)
+                {
+                    double x = 1;
+                    if (N > 1)
+                    {
+                        for (int i = 2; i <= N; i++)
+                            x = i * x;
+                    }
+                    return x;
+                }
+            }
+        }
+        #endregion Binding&Diffusion
         public static double ComputeCorelationCoeff(double[] values1, double[] values2, int frame = 0)
         {
             //source code from https://stackoverflow.com/questions/17447817/correlation-of-two-arrays-in-c-sharp
@@ -2357,6 +2733,7 @@ namespace Cell_Tool_3
             
             return 1-SSres/SStot;
         }
+        
         class SolveDeiffusionOval
         {
             private List<double> newXvals;

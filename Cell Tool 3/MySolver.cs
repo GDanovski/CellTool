@@ -257,7 +257,8 @@ namespace Cell_Tool_3
                 val = val.Replace("Pow", "Power");
 
                 var newParameters = Solve(this.Xvals, this.Yvals, val, parameters);
-                foreach(var par in newParameters)
+                
+                foreach (var par in newParameters)
                 {
                     parameters[par.Key] = par.Value;
                 }
