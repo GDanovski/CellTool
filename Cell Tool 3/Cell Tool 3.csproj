@@ -212,6 +212,7 @@
     </Compile>
     <Compile Include="FrameCalculator.cs" />
     <Compile Include="FRAPA_Model.cs" />
+    <Compile Include="FRAPA_ReactionDiffusion.cs" />
     <Compile Include="Helpers\Settings.cs" />
     <Compile Include="ImageAnalyser.cs" />
     <Compile Include="Interface.cs" />

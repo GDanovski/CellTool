@@ -934,6 +934,9 @@ namespace Cell_Tool_3
                 //enable all that we need
                 for (int i = 0; i < current.Parameters.Count; i++)
                 {
+                    if (cmbBox.SelectedIndex < FRAPA_Model.nModels)
+                        FRAPA_Model.AllModels.SetConstValues(current.Parameters.ElementAt(i).Value);
+
                     parBoxList[i].LoadParameter(current.Parameters.ElementAt(i).Value);
 
                     if (cmbBox.SelectedIndex < FRAPA_Model.nModels)
@@ -1056,7 +1059,7 @@ namespace Cell_Tool_3
                         f1.GetFormula2 == fit.GetFormula2 &&
                         f1.GetFormulaIF == fit.GetFormulaIF)
                     {
-                        cmbBox.SelectedIndex = SolverFunctions1.dialog.tw.Nodes.IndexOf(n)+4;
+                        cmbBox.SelectedIndex = SolverFunctions1.dialog.tw.Nodes.IndexOf(n) + FRAPA_Model.nModels;
                         return;
                     }
                 }
@@ -1079,7 +1082,7 @@ namespace Cell_Tool_3
                 SolverFunctions1.dialog.tw.SaveFunctions();
                 cmbBox.Items.Add(name);
 
-                cmbBox.SelectedIndex = SolverFunctions1.dialog.tw.Nodes.IndexOf(n1)+4;
+                cmbBox.SelectedIndex = SolverFunctions1.dialog.tw.Nodes.IndexOf(n1) + FRAPA_Model.nModels;
             }
             private void CopyArray(ResultsExtractor_CTChart.Series Navg)
             {
@@ -1562,7 +1565,7 @@ namespace Cell_Tool_3
                     Raw.Points.AddXY(Xvals[i1], Yvals[i1]);
                 }
 
-                for (int i = 0; i < 2; i++)
+                for (int i = 0; i < CalcFitVals.Length; i++)
                 {
                     //create new chart series
                     Series ser;
@@ -1591,11 +1594,14 @@ namespace Cell_Tool_3
                     curFit.StDev = 0;
                 }
                 FitFormulas[0].Color = Color.Green;
-                FitFormulas[1].Color = Color.Magenta;
+                if (CalcFitVals.Length > 1)
+                    FitFormulas[1].Color = Color.Magenta;
 
                 this.Titles.Items.Clear();
                 Titles.Height = 120;
-                this.Titles.Items.AddRange(new string[]{
+                if (CalcFitVals.Length > 1)
+                {
+                    this.Titles.Items.AddRange(new string[]{
                     "",
                     "\tRoot mean square deviation:",
                     "\tFRAP eq.(green) = " + StDev[0] ,
@@ -1604,6 +1610,18 @@ namespace Cell_Tool_3
                    "\tR-squared:",
                     "\tFRAP eq.(green) = " + Math.Pow(FRAPA_Model.ComputeCorelationCoeff(Yvals, CalcFitVals[0],frame),2) ,
                     "\tDiffusion eq. (magenta) = " + Math.Pow(FRAPA_Model.ComputeCorelationCoeff(Yvals, CalcFitVals[1], frame),2) });
+                }
+                else
+                {
+                    this.Titles.Items.AddRange(new string[]{
+                    "",
+                    "\tRoot mean square deviation:",
+                    "\tBinding + Diffusion eq. = " + StDev[0] ,
+                    "",
+                   "\tR-squared:",
+                    "\tBinding + Diffusion eq. = " + Math.Pow(FRAPA_Model.ComputeCorelationCoeff(Yvals, CalcFitVals[0],frame),2)
+                    });
+                }
                 this.GLDrawing_Start();
             }
             private int ColorIndex(int i)
