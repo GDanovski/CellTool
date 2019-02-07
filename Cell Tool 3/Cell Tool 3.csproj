@@ -32,8 +32,8 @@
     <PublisherName>Georgi Danovski</PublisherName>
     <SuiteName>CellTool</SuiteName>
     <AutorunEnabled>true</AutorunEnabled>
-    <ApplicationRevision>0</ApplicationRevision>
-    <ApplicationVersion>1.4.0.0</ApplicationVersion>
+    <ApplicationRevision>1</ApplicationRevision>
+    <ApplicationVersion>1.4.0.1</ApplicationVersion>
     <UseApplicationTrust>true</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
     <PublishWizardCompleted>true</PublishWizardCompleted>
@@ -232,6 +232,7 @@
     <Compile Include="ResultsExtractor_CTChart.cs">
       <SubType>UserControl</SubType>
     </Compile>
+    <Compile Include="ResultsExtractor_HalfTimeCalculator.cs" />
     <Compile Include="ROI.cs" />
     <Compile Include="RoiManager.cs" />
     <Compile Include="RoiMeasure.cs" />

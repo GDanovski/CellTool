@@ -2720,6 +2720,7 @@ namespace Cell_Tool_3
                                 e.Parameters["t"] = 10000;
                                 double end = 0;
                                 double.TryParse(e.Evaluate().ToString(), out end);
+                                ResultsExtractor_HalfTimeCalculator htCalc = new ResultsExtractor_HalfTimeCalculator();
                                 //calculate halftime of recruitment
                                 for (int i = 0; i < ind; i++)
                                     if (fitVals[i] >= HalfVal)
@@ -2728,8 +2729,10 @@ namespace Cell_Tool_3
                                             HalfUp = Xvals[i];
                                         break;
                                     }
+                                HalfUp = htCalc.SolveHalfTime(e, 1000, Xvals[0], Xvals[ind], HalfVal, HalfUp);
                                 //calculate halftime of removal
                                 if (FitMax - fitVals[fitVals.Length - 1] > 0)
+                                {
                                     for (int i = fitVals.Length - 1; i > ind; i--)
                                         if (fitVals[i] >= HalfVal)
                                         {
@@ -2737,9 +2740,13 @@ namespace Cell_Tool_3
                                                 HalfDown = Xvals[i];
                                             break;
                                         }
+                                    HalfDown = htCalc.SolveHalfTime(e, 1000, Xvals[ind], Xvals[fitVals.Length - 1], HalfVal, HalfDown);
+
+                                }
                                 //recalculated halftime of removal
                                 HalfVal = (FitMax - end) / 2;
                                 if (HalfVal > 0)
+                                {
                                     for (int i = fitVals.Length - 1; i > ind; i--)
                                         if (fitVals[i] >= HalfVal)
                                         {
@@ -2748,7 +2755,9 @@ namespace Cell_Tool_3
 
                                             break;
                                         }
+                                    HalfDownRec = htCalc.SolveHalfTime(e, 1000, Xvals[ind], Xvals[fitVals.Length - 1], HalfVal, HalfDownRec);
 
+                                }
                                 fitVals = null;
                                 //add vals
                                 constNames.Add("");
