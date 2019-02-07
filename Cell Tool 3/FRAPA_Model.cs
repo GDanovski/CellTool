@@ -33,7 +33,8 @@ namespace Cell_Tool_3
     {
         public const int nModels = 5;
         #region Aquisition bleaching correction
-        private static int[] Dialog(double[] Xvals) {
+        private static int[] Dialog(double[] Xvals)
+        {
             int[] res = null;
 
             Form OptionForm = new Form();
@@ -49,7 +50,7 @@ namespace Cell_Tool_3
 
             Label label1 = new Label();
             label1.Text = "Bleaching at:";
-            label1.Width = TextRenderer.MeasureText(label1.Text, label1.Font).Width+5;
+            label1.Width = TextRenderer.MeasureText(label1.Text, label1.Font).Width + 5;
             label1.Location = new System.Drawing.Point(5, 15);
             OptionForm.Controls.Add(label1);
 
@@ -109,8 +110,8 @@ namespace Cell_Tool_3
 
             okBtn.Click += new EventHandler(delegate (object sender, EventArgs e)
             {
-                int a=0, b=0, c=0;
-                if(!int.TryParse(tb1.Text, out a) ||
+                int a = 0, b = 0, c = 0;
+                if (!int.TryParse(tb1.Text, out a) ||
                 !int.TryParse(tb2.Text, out b) ||
                 !int.TryParse(tb3.Text, out c))
                 {
@@ -157,7 +158,7 @@ namespace Cell_Tool_3
 
             return res;
         }
-        
+
         public static void FrappaNormalise(ResultsExtractor.MyForm form1)
         {
             int[] dialogVals = Dialog(form1.dataTV.OriginalXaxis);
@@ -252,12 +253,12 @@ namespace Cell_Tool_3
                         if (i >= 0 && i < FRAP.OriginalSeries.Length)
                         {
                             IwholePost += (Whole.OriginalSeries[i] - Zero.OriginalSeries[i]);
-                            newAvgPostLength++; 
+                            newAvgPostLength++;
                         }
 
                     avgPreLength = newAvgPreLength;
                     avgPostLength = newAvgPostLength;
-                    
+
                     IfrapPre /= avgPreLength;
                     IwholePre /= avgPreLength;
                     IwholePost /= avgPostLength;
@@ -283,7 +284,7 @@ namespace Cell_Tool_3
                     }
 
                     //full scale normalization
-                    
+
                     double Ipost = New.OriginalSeries[bleaching];
                     for (int i = 0; i < New.OriginalSeries.Length; i++)
                     {
@@ -293,7 +294,7 @@ namespace Cell_Tool_3
                         New.Series[i] = val;
                         New.NormSeries[i] = val;
                     }
-                    
+
                     New.Comment = "gr: " + gap + " | bd: " + bd;
                     New.RoiName = "acquisition bleaching correction";
 
@@ -526,7 +527,7 @@ namespace Cell_Tool_3
 
                 if (a < 1 || a >= Xvals.Length ||
                 b < 1 || b >= Xvals.Length ||
-                 b - c <= a || c < 1 )
+                 b - c <= a || c < 1)
                 {
                     MessageBox.Show("Incorrect value!");
                     return;
@@ -626,7 +627,7 @@ namespace Cell_Tool_3
                     New.Checked = true;
                     //define variables
                     double I1frapPre = 0, I2frapPre = 0;
-                                        
+
                     //calculate the maximum for normalization
                     for (int i = bleaching - avgPreLength; i < bleaching; i++)
                     {
@@ -642,7 +643,7 @@ namespace Cell_Tool_3
                     //normalisation
                     for (int i = 0; i < MP1.OriginalSeries.Length; i++)
                     {
-                        MP1.OriginalSeries[i]  /= I1frapPre;
+                        MP1.OriginalSeries[i] /= I1frapPre;
                         MP2.OriginalSeries[i] /= I2frapPre;
                     }
                     //corect the negative values
@@ -656,7 +657,7 @@ namespace Cell_Tool_3
                         New.Series[i] = New.OriginalSeries[i];
                         New.NormSeries[i] = New.OriginalSeries[i];
                     }
-                    
+
                     //full scale normalization
                     New.Comment = "";
                     New.RoiName = "Foci FRAPA normalization";
@@ -668,7 +669,7 @@ namespace Cell_Tool_3
             //refresh vals
             form1.dataTV.RefreshAllNodes();
         }
-        
+
         #endregion Foci FRAPA
         public class AllModels
         {
@@ -685,7 +686,7 @@ namespace Cell_Tool_3
             }
             public static int GetModelIndex(string ifFunc)
             {
-                
+
                 switch (ifFunc)
                 {
                     case "FRAP_SingleRectangle":
@@ -705,7 +706,7 @@ namespace Cell_Tool_3
             public static SolverFunctions.FunctionValue GetFrapaFunction(int index)
             {
                 //extract the model from here
-                
+
                 switch (index)
                 {
                     case 0:
@@ -859,7 +860,7 @@ namespace Cell_Tool_3
         }
         #region Double exp, rectangular ROI
         public class Frapa_DoubleRectangle
-        { 
+        {
             public static SolverFunctions.FunctionValue GetFrapaFunction()
             {
                 SolverFunctions.FunctionValue f = new SolverFunctions.FunctionValue();
@@ -930,7 +931,7 @@ namespace Cell_Tool_3
                         //res[0][frame] = A * (1 - Math.Exp(-T *(Xvals[frame]-startT)));//eq for half life
                         res[0][frame] = Io * (1 - A * Math.Exp(-a * (Xvals[frame] - startT))
                             - B * Math.Exp(-b * (Xvals[frame] - startT)));//eq for half life
-                        res[1][frame] = I *(1- Math.Pow(wSq / (wSq + K * (Xvals[frame] - startT)), 0.5));//diffusion
+                        res[1][frame] = I * (1 - Math.Pow(wSq / (wSq + K * (Xvals[frame] - startT)), 0.5));//diffusion
                     }
                 }
 
@@ -956,7 +957,7 @@ namespace Cell_Tool_3
                 #region Add decisions
                 Decision Io = null;
 
-                if(parIo.Variable)
+                if (parIo.Variable)
                     Io = new Decision(Domain.RealRange(parIo.Min, parIo.Max), "Io");
                 else
                     Io = new Decision(Domain.RealRange(parIo.Value, parIo.Value), "Io");
@@ -1123,7 +1124,7 @@ namespace Cell_Tool_3
                     GoalKind.Minimize,
                     Model.Sum(Model.ForEach(IndexSet, i =>
                 Model.Power(yParam[i] - (
-               I * (1-Model.Power(parW / (parW + parPI * D * xParam[i]), 0.5))//HalfTime formula
+               I * (1 - Model.Power(parW / (parW + parPI * D * xParam[i]), 0.5))//HalfTime formula
                 )
                 , 2)
                 )));
@@ -1297,7 +1298,7 @@ namespace Cell_Tool_3
                 return FitRes;
             }
         }
-#endregion double exp, rectangular ROI
+        #endregion double exp, rectangular ROI
         #region Single exp, rectangular ROI
         public class Frapa_SingleRectangle
         {
@@ -1362,8 +1363,8 @@ namespace Cell_Tool_3
                     frame++;
                     for (; frame < Xvals.Length; frame++)
                     {
-                        res[0][frame] = Io * (1 - Math.Exp(-a *(Xvals[frame]-startT)));//eq for half life
-                        res[1][frame] = I * (1-Math.Pow(wSq / (wSq + K * (Xvals[frame] - startT)), 0.5));//diffusion
+                        res[0][frame] = Io * (1 - Math.Exp(-a * (Xvals[frame] - startT)));//eq for half life
+                        res[1][frame] = I * (1 - Math.Pow(wSq / (wSq + K * (Xvals[frame] - startT)), 0.5));//diffusion
                     }
                 }
 
@@ -1393,7 +1394,7 @@ namespace Cell_Tool_3
 
                 Io.SetInitialValue(parIo.Value);
                 model.AddDecision(Io);
-                
+
                 Decision a = null;
                 if (para.Variable)
                     a = new Decision(Domain.RealRange(para.Min, para.Max), "a");
@@ -1401,7 +1402,7 @@ namespace Cell_Tool_3
                     a = new Decision(Domain.RealRange(para.Value, para.Value), "a");
                 a.SetInitialValue(para.Value);
                 model.AddDecision(a);
-                
+
                 #endregion Add decisions
 
                 #region raw data
@@ -1529,7 +1530,7 @@ namespace Cell_Tool_3
                     GoalKind.Minimize,
                     Model.Sum(Model.ForEach(IndexSet, i =>
                 Model.Power(yParam[i] - (
-               I * (1-Model.Power(parW / (parW + parPI * D * xParam[i]), 0.5))//HalfTime formula
+               I * (1 - Model.Power(parW / (parW + parPI * D * xParam[i]), 0.5))//HalfTime formula
                 )
                 , 2)
                 )));
@@ -1756,7 +1757,7 @@ namespace Cell_Tool_3
                 res[0] = new double[Xvals.Length];
                 res[1] = new double[Xvals.Length];
 
-                
+
                 int frame = (int)coefficients["from"].Value;
                 double Io = coefficients["Io"].Value;
                 double A = coefficients["A"].Value;
@@ -1764,7 +1765,7 @@ namespace Cell_Tool_3
                 double B = coefficients["B"].Value;
                 double b = coefficients["b"].Value;
                 double I = coefficients["I"].Value;
-                double wSq = 0.5*Math.Pow(coefficients["w"].Value, 2) / coefficients["D"].Value;
+                double wSq = 0.5 * Math.Pow(coefficients["w"].Value, 2) / coefficients["D"].Value;
 
                 if (Xvals.Length > frame)
                 {
@@ -1772,9 +1773,9 @@ namespace Cell_Tool_3
                     frame++;
                     for (; frame < Xvals.Length; frame++)
                     {
-                       res[0][frame] = Io * (1 - A * Math.Exp(-a * (Xvals[frame] - startT))
-                            - B * Math.Exp(-b * (Xvals[frame] - startT)));//eq for half life
-                                                                          //res[1][frame] = I * Math.Pow(1 - wSq / (wSq + K * (Xvals[frame] - startT)), 0.5);//diffusion
+                        res[0][frame] = Io * (1 - A * Math.Exp(-a * (Xvals[frame] - startT))
+                             - B * Math.Exp(-b * (Xvals[frame] - startT)));//eq for half life
+                                                                           //res[1][frame] = I * Math.Pow(1 - wSq / (wSq + K * (Xvals[frame] - startT)), 0.5);//diffusion
                         double K = wSq / (Xvals[frame] - startT);
 
                         res[1][frame] = I * Math.Exp(-K) * (MathNet.Numerics.SpecialFunctions.BesselI0(K) + MathNet.Numerics.SpecialFunctions.BesselI1(K));//diffusion}
@@ -2104,7 +2105,7 @@ namespace Cell_Tool_3
                 double[][] res = new double[2][];
                 res[0] = new double[Xvals.Length];
                 res[1] = new double[Xvals.Length];
-                
+
                 int frame = (int)coefficients["from"].Value;
                 double Io = coefficients["Io"].Value;
                 double a = coefficients["a"].Value;
@@ -2120,7 +2121,7 @@ namespace Cell_Tool_3
                         res[0][frame] = Io * (1 - Math.Exp(-a * (Xvals[frame] - startT)));//eq for half life
 
                         double K = wSq / (Xvals[frame] - startT);
-                        
+
                         res[1][frame] = I * Math.Exp(-K) * (MathNet.Numerics.SpecialFunctions.BesselI0(K) + MathNet.Numerics.SpecialFunctions.BesselI1(K));//diffusion}
                     }
                 }
@@ -2371,7 +2372,7 @@ namespace Cell_Tool_3
         #region Binding&Diffusion
         public class Frapa_Binding_Diffusion
         {
-            
+
             public static SolverFunctions.FunctionValue GetFrapaFunction()
             {
                 SolverFunctions.FunctionValue f = new SolverFunctions.FunctionValue();
@@ -2419,7 +2420,7 @@ namespace Cell_Tool_3
             {
                 double[][] res = new double[1][];
                 res[0] = new double[Xvals.Length];
-                
+
                 int frame = (int)coefficients["from"].Value;
                 double w = coefficients["w"].Value;
                 double I = coefficients["I"].Value;
@@ -2510,7 +2511,7 @@ namespace Cell_Tool_3
                     parameters.Add(p.Name, new MySolver.Parameter
                 (p.Name, p.Value, p.Min, p.Max, p.Variable));
                 }
-                
+
                 foreach (var v in Variables)
                 {
                     parameters[v.ConstName].Value = v.ConstValue;
@@ -2518,14 +2519,14 @@ namespace Cell_Tool_3
 
                 return parameters;
             }
-            
+
             public static Dictionary<string, MySolver.Parameter> Solve(double[] Xvals, double[] Yvals, Dictionary<string, MySolver.Parameter> coefficients)
             {
                 Dictionary<string, MySolver.Parameter> parameters = SolveFRAPA(Xvals, Yvals, coefficients);//halftime model
-                
+
                 return parameters;
             }
-            
+
             public static List<List<string>> ExportResults(MySolver.FitSettings curFit, string name)
             {
                 List<string> constNames = new List<string>() { "", "Const_" + name, "" };
@@ -2538,10 +2539,10 @@ namespace Cell_Tool_3
                 {
                     constNames.Add(p.Value.Name);
                     constVals.Add(p.Value.Value.ToString());
-                    if(p.Value.Name == "Ceq")
+                    if (p.Value.Name == "Ceq")
                     {
                         constNames.Add("Feq");
-                        constVals.Add((1-p.Value.Value).ToString());
+                        constVals.Add((1 - p.Value.Value).ToString());
                     }
                 }
 
@@ -2724,16 +2725,16 @@ namespace Cell_Tool_3
             double SStot = 0;
             double SSres = 0;
 
-            for (int i =0; i< values1.Length; i++)
+            for (int i = 0; i < values1.Length; i++)
             {
                 SStot += Math.Pow(values1[i] - yMean, 2);
                 SSres += Math.Pow(values1[i] - values2[i], 2);
             }
 
-            
-            return 1-SSres/SStot;
+
+            return 1 - SSres / SStot;
         }
-        
+
         class SolveDeiffusionOval
         {
             private List<double> newXvals;
@@ -2855,8 +2856,8 @@ namespace Cell_Tool_3
                          I * Math.Exp(-K1) * (MathNet.Numerics.SpecialFunctions.BesselI0(K1) + MathNet.Numerics.SpecialFunctions.BesselI1(K1))//diffusion eq.
                         )), 2);
                 }
-                
-                return Math.Sqrt(Sum / (newXvals.Count - 1));                
+
+                return Math.Sqrt(Sum / (newXvals.Count - 1));
             }
         }
     }
