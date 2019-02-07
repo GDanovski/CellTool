@@ -713,13 +713,8 @@ namespace Cell_Tool_3
 
                 Point p = ((Panel)sender).Location;
                 p.X = e.X + p.X;
-                if (rP.Location.X != p.X || rP.Location.Y != p.Y)
-                {
-                    rP.Location = p;
-                    this.Refresh();
-                    Application.DoEvents();
-                }
-                
+                rP.Location = p;
+
             }
             private void Resize_MouseUp(object sender, MouseEventArgs e)
             {
@@ -1110,7 +1105,7 @@ namespace Cell_Tool_3
                     FRAPA_Model.FociFrappaNormalise(this.form1);
                     SendKeys.Send("{ESC}");
                 });
-                ContextMenu.MenuItems.Add(fociFrapCorrBtn);
+                //ContextMenu.MenuItems.Add(fociFrapCorrBtn);
 
                 RefreshBtn.Click += new EventHandler(delegate (object sender, EventArgs e)
                 {
@@ -2725,7 +2720,6 @@ namespace Cell_Tool_3
                                 e.Parameters["t"] = 10000;
                                 double end = 0;
                                 double.TryParse(e.Evaluate().ToString(), out end);
-
                                 ResultsExtractor_HalfTimeCalculator htCalc = new ResultsExtractor_HalfTimeCalculator();
                                 //calculate halftime of recruitment
                                 for (int i = 0; i < ind; i++)
@@ -2735,9 +2729,7 @@ namespace Cell_Tool_3
                                             HalfUp = Xvals[i];
                                         break;
                                     }
-
                                 HalfUp = htCalc.SolveHalfTime(e, 1000, Xvals[0], Xvals[ind], HalfVal, HalfUp);
-
                                 //calculate halftime of removal
                                 if (FitMax - fitVals[fitVals.Length - 1] > 0)
                                 {
@@ -2748,8 +2740,8 @@ namespace Cell_Tool_3
                                                 HalfDown = Xvals[i];
                                             break;
                                         }
+                                    HalfDown = htCalc.SolveHalfTime(e, 1000, Xvals[ind], Xvals[fitVals.Length - 1], HalfVal, HalfDown);
 
-                                    HalfDown = htCalc.SolveHalfTime(e, 1000, Xvals[ind], Xvals[fitVals.Length-1], HalfVal, HalfDown);
                                 }
                                 //recalculated halftime of removal
                                 HalfVal = (FitMax - end) / 2;
@@ -2763,10 +2755,9 @@ namespace Cell_Tool_3
 
                                             break;
                                         }
-
                                     HalfDownRec = htCalc.SolveHalfTime(e, 1000, Xvals[ind], Xvals[fitVals.Length - 1], HalfVal, HalfDownRec);
-                                } 
 
+                                }
                                 fitVals = null;
                                 //add vals
                                 constNames.Add("");
@@ -3648,13 +3639,8 @@ namespace Cell_Tool_3
                     if (razlika > Panel.Location.Y + 59)
                     {
                         oldY = e.Y;
-                        if (razlika != ResizePanel.Location.Y)
-                        {
-                            ResizePanel.Location = new System.Drawing.Point(0, razlika);
-                            this.PropertiesPanel.Refresh();
-                            ResizePanel.BringToFront();
-                            Application.DoEvents();
-                        }
+                        ResizePanel.Location = new System.Drawing.Point(0, razlika);
+                        ResizePanel.BringToFront();
                     }
                     ResizePanel.Visible = true;
                 }
