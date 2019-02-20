@@ -1105,7 +1105,7 @@ namespace Cell_Tool_3
                     FRAPA_Model.FociFrappaNormalise(this.form1);
                     SendKeys.Send("{ESC}");
                 });
-                //ContextMenu.MenuItems.Add(fociFrapCorrBtn);
+                ContextMenu.MenuItems.Add(fociFrapCorrBtn);
 
                 RefreshBtn.Click += new EventHandler(delegate (object sender, EventArgs e)
                 {
