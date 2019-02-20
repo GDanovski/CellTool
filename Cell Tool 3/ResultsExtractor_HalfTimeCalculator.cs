@@ -16,16 +16,7 @@
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.SolverFoundation.Services;
-using Accord.Statistics.Models.Regression.Linear;
-using System.Windows.Forms;
-using System.IO;
-//using Accord;//Accord.Math.Bessel
-using MathNet;
 using NCalc;
 
 namespace Cell_Tool_3
