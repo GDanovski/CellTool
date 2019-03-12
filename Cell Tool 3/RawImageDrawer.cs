@@ -1570,6 +1570,8 @@ namespace Cell_Tool_3
                         TabPages.propertiesPanel.Width = int.Parse(settings.PropertiesPanelWidth[AccInd]);
                     }
                     TabPages.hidePropAndBrows = false;
+
+                    IA.TabPages.Histograms_Reload();
                 }
             }
         }

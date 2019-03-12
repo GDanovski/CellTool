@@ -397,10 +397,33 @@ namespace Cell_Tool_3
 
             if (fi != null)
             {
-                if (fi.loaded && fi.tpTaskbar != null 
-                    && fi.tpTaskbar.TopBar.BackColor != FileBrowser.BackGroundColor1)
-                    fi.tpTaskbar.TopBar.BackColor = FileBrowser.BackGroundColor1;
+                try
+                {
+                    if (fi.sizeZ > 1 && TabPages.zTrackBar.Panel.Visible != true)
+                    {
+                        //TabPages.zTrackBar.Refresh(fi.zValue + 1, 1, fi.sizeZ);
+                        TabPages.zTrackBar.Panel.Visible = true;
+                    }
+                    else if(fi.sizeZ <= 1 && TabPages.zTrackBar.Panel.Visible != false)
+                    {
+                        TabPages.zTrackBar.Panel.Visible = false;
+                    }
 
+                    if (fi.sizeT > 1 && TabPages.tTrackBar.Panel.Visible != true)
+                    {
+                        //TabPages.tTrackBar.Refresh(fi.frame + 1, 1, fi.sizeT);
+                        TabPages.tTrackBar.Panel.Visible = true;
+                    }
+                    else if(fi.sizeT <= 1 && TabPages.tTrackBar.Panel.Visible != false)
+                    {
+                        TabPages.tTrackBar.Panel.Visible = false;
+                    }
+
+                    if (fi.loaded && fi.tpTaskbar != null
+                        && fi.tpTaskbar.TopBar.BackColor != FileBrowser.BackGroundColor1)
+                        fi.tpTaskbar.TopBar.BackColor = FileBrowser.BackGroundColor1;
+                }
+                catch { }
                 //Chart properties refresh
                 chart.Properties.LoadFI(fi);
                 chart.Series.LoadFI(fi);

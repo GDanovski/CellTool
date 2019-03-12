@@ -44,7 +44,7 @@ namespace Cell_Tool_3
         //histogram Panel
         private PropertiesPanel_Item HistogramPropPanel;
         public Panel HistogramPanel;
-        private BrightnessAndContrast_ChartPanel Chart1 = new BrightnessAndContrast_ChartPanel();
+        public BrightnessAndContrast_ChartPanel Chart1 = new BrightnessAndContrast_ChartPanel();
         private BrightnessAndContrast_ChartPanel.BrightnessAndContrast_Chart.Series Values = new BrightnessAndContrast_ChartPanel.BrightnessAndContrast_Chart.Series();
         private BrightnessAndContrast_ChartPanel.BrightnessAndContrast_Chart.Series[] Otsu1dSeries = new BrightnessAndContrast_ChartPanel.BrightnessAndContrast_Chart.Series[5];
         private BrightnessAndContrast_ChartPanel.BrightnessAndContrast_Chart.Series Spots = new BrightnessAndContrast_ChartPanel.BrightnessAndContrast_Chart.Series();

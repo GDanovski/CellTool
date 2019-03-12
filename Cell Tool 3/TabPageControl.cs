@@ -198,6 +198,7 @@ namespace Cell_Tool_3
                     {
                         propertiesPanel.Width = int.Parse(settings.PropertiesPanelWidth[ActiveAccountIndex]);
                         settings.PropertiesPanelVisible[ActiveAccountIndex] = "y";
+                        Histograms_Reload();
                     }
                     else
                     {
@@ -323,6 +324,51 @@ namespace Cell_Tool_3
             PropertiesBody.ResumeLayout(false);
             ResizePanel.ResumeLayout(false);
 
+        }
+        /// <summary>
+        /// Reloads the BandC and Segmentation histogram upon properties panel resizing
+        /// </summary>
+        public void Histograms_Reload()
+        {
+            //Fix chart redrawing
+            TifFileInfo fi = null;
+            try
+            {
+                if (SelectedIndex >= 0 && SelectedIndex < TabCollections.Count)
+                    fi = TabCollections[SelectedIndex].tifFI;
+            }
+            catch { }
+
+            if (fi != null)
+            {
+                //IA.BandC.Chart1.DrawToScreen(fi);
+                if (fi.selectedPictureBoxColumn == 0 & fi.cValue < fi.sizeC
+         & fi.tpTaskbar.ColorBtnList[fi.cValue].ImageIndex == 0
+         & fi.tpTaskbar.MethodsBtnList[0].ImageIndex == 0)
+                {
+                    var size = IA.BandC.Chart1.CA.Size;
+                    IA.BandC.Chart1.CA.Size = new Size(size.Width, size.Height + 1);
+                    IA.BandC.Chart1.CA.Size = size;
+
+                    IA.BandC.Chart1.CA.DrawToScreen(fi);
+                    IA.BandC.Chart1.CA.Update();
+                    IA.BandC.Chart1.CA.PerformLayout();
+                    IA.ReloadImages();
+                }
+                else if (fi.selectedPictureBoxColumn == 1 & fi.cValue < fi.sizeC
+        & fi.tpTaskbar.ColorBtnList[fi.cValue].ImageIndex == 0
+        & fi.tpTaskbar.MethodsBtnList[1].ImageIndex == 0)
+                {
+                    var size = IA.Segmentation.Chart1.Size;
+                    IA.Segmentation.Chart1.Size = new Size(size.Width, size.Height + 1);
+                    IA.Segmentation.Chart1.Size = size;
+
+                    IA.Segmentation.Chart1.DrawToScreen(fi);
+                    IA.Segmentation.Chart1.Update();
+                    IA.Segmentation.Chart1.PerformLayout();
+                    IA.ReloadImages();
+                }
+            }
         }
         private void ImageMainPanel_VisibleChanged(object sender, EventArgs e)
         {
@@ -1445,10 +1491,7 @@ namespace Cell_Tool_3
                 {
 
                     TabCollections[index].tifFI.selected = true;
-
-                    TabCollections[index].tifFI.tpTaskbar.TopBar.BackColor = BackGroundColor1;
-
-
+                    
                     if (TabCollections[index].tifFI.sizeZ > 1)
                     {
                         zTrackBar.Refresh(TabCollections[index].tifFI.zValue + 1, 1, TabCollections[index].tifFI.sizeZ);
@@ -1488,6 +1531,15 @@ namespace Cell_Tool_3
                     }
                     catch { };
 
+
+                    try
+                    {
+                        if (TabCollections[index].tifFI.loaded && TabCollections[index].tifFI.tpTaskbar != null
+                      && TabCollections[index].tifFI.tpTaskbar.TopBar.BackColor != FileBrowser.BackGroundColor1)
+                            TabCollections[index].tifFI.tpTaskbar.TopBar.BackColor = FileBrowser.BackGroundColor1;
+                        //TabCollections[index].tifFI.tpTaskbar.TopBar.BackColor = BackGroundColor1;
+                    }
+                    catch { }
                 }
                 else if (TabCollections[index].ResultsExtractor != null)
                 {
