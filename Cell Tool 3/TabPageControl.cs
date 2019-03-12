@@ -1524,10 +1524,7 @@ namespace Cell_Tool_3
                 {
 
                     TabCollections[index].tifFI.selected = true;
-
-                    TabCollections[index].tifFI.tpTaskbar.TopBar.BackColor = BackGroundColor1;
-
-
+                    
                     if (TabCollections[index].tifFI.sizeZ > 1)
                     {
                         zTrackBar.Refresh(TabCollections[index].tifFI.zValue + 1, 1, TabCollections[index].tifFI.sizeZ);
@@ -1567,6 +1564,15 @@ namespace Cell_Tool_3
                     }
                     catch { };
 
+
+                    try
+                    {
+                        if (TabCollections[index].tifFI.loaded && TabCollections[index].tifFI.tpTaskbar != null
+                      && TabCollections[index].tifFI.tpTaskbar.TopBar.BackColor != FileBrowser.BackGroundColor1)
+                            TabCollections[index].tifFI.tpTaskbar.TopBar.BackColor = FileBrowser.BackGroundColor1;
+                        //TabCollections[index].tifFI.tpTaskbar.TopBar.BackColor = BackGroundColor1;
+                    }
+                    catch { }
                 }
                 else if (TabCollections[index].ResultsExtractor != null)
                 {
