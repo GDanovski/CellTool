@@ -32,8 +32,8 @@
     <PublisherName>Georgi Danovski</PublisherName>
     <SuiteName>CellTool</SuiteName>
     <AutorunEnabled>true</AutorunEnabled>
-    <ApplicationRevision>3</ApplicationRevision>
-    <ApplicationVersion>1.4.0.3</ApplicationVersion>
+    <ApplicationRevision>4</ApplicationRevision>
+    <ApplicationVersion>1.4.0.4</ApplicationVersion>
     <UseApplicationTrust>true</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
     <PublishWizardCompleted>true</PublishWizardCompleted>
@@ -181,6 +181,7 @@
     <Compile Include="AutoApplySettingsClass.cs">
       <SubType>Form</SubType>
     </Compile>
+    <Compile Include="BigImagesReader.cs" />
     <Compile Include="BioFormats_Reader.cs" />
     <Compile Include="BrightnessAndContrast.cs" />
     <Compile Include="BrightnessAndContrast_Chart.cs">

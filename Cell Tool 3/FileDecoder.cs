@@ -26,11 +26,12 @@ using System.IO;
 using System.ComponentModel;
 using System.Runtime.InteropServices;
 using System.Drawing.Imaging;
+using Microsoft.VisualBasic.Devices;
 //LibTif
 using BitMiracle.LibTiff.Classic;
 //BioFormats
 using loci.formats.@in;
-using Microsoft.VisualBasic.Devices;
+
 
 namespace Cell_Tool_3
 {
@@ -337,7 +338,7 @@ namespace Cell_Tool_3
         {
 
             StatusLabel.Text = "Reading Metadata...";
-          
+            
             //Check for CellTool 3 format
             //try
             {
@@ -641,6 +642,7 @@ namespace Cell_Tool_3
             {
 
             }
+
         }
         public void Image16bit_readFrame(int i, Tiff image, TifFileInfo fi, int[] dimOrder = null)
         {
