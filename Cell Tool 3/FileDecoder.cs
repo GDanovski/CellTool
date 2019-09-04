@@ -26,6 +26,7 @@ using System.IO;
 using System.ComponentModel;
 using System.Runtime.InteropServices;
 using System.Drawing.Imaging;
+using Microsoft.VisualBasic.Devices;
 //LibTif
 using BitMiracle.LibTiff.Classic;
 //BioFormats
@@ -341,7 +342,13 @@ namespace Cell_Tool_3
             //Check for CellTool 3 format
             //try
             {
-                if (CellTool3_ReadMetadata(path, Collection, tp, IA1)) return true;
+                if (BigImagesReader.OpenBigImage(path, Collection, tp, IA1)) return true;
+                else if (new System.IO.FileInfo(path).Length >= (long)new ComputerInfo().AvailablePhysicalMemory)
+                {
+                    MessageBox.Show("Not enough RAM memory!");
+                    return false;
+                }
+                else if (CellTool3_ReadMetadata(path, Collection, tp, IA1)) return true;
                 else if (CellTool2_ReadMetadata(path, Collection, tp, IA1)) return true;
                 else if (BioFormats_Reader.OpenFile(Collection, path, tp, IA1, StatusLabel)) return true;
                 else StatusLabel.Text = "Ready";
@@ -608,63 +615,65 @@ namespace Cell_Tool_3
         */
         public void Image8bit_readFrame(int i, Tiff image, TifFileInfo fi, int[] dimOrder = null)
         {
-            
-                if (fi.image8bit == null) { return; }
 
-                if (dimOrder != null)
-                    image.SetDirectory((short)dimOrder[i]);
-                else
-                    image.SetDirectory((short)i);
+            if (fi.image8bit == null) { return; }
+            if (dimOrder != null && dimOrder.Length <= i) return;
 
-                int scanlineSize = image.ScanlineSize();
+            if (dimOrder != null)
+                image.SetDirectory((short)dimOrder[i]);
+            else
+                image.SetDirectory((short)i);
 
-                byte[][] buffer8 = new byte[fi.sizeY][];
+            int scanlineSize = image.ScanlineSize();
 
-                for (int j = 0; j < fi.sizeY; j++)
-                {
-                    buffer8[j] = new byte[scanlineSize];
-                    image.ReadScanline(buffer8[j], j);
-                }
-                if (fi.image8bit == null) { return; }
-                try
-                {
-                    fi.image8bit[i] = buffer8;
-                }
-                catch
-                {
+            byte[][] buffer8 = new byte[fi.sizeY][];
 
-                }
-            
+            for (int j = 0; j < fi.sizeY; j++)
+            {
+                buffer8[j] = new byte[scanlineSize];
+                image.ReadScanline(buffer8[j], j);
+            }
+            if (fi.image8bit == null) { return; }
+            try
+            {
+                fi.image8bit[i] = buffer8;
+            }
+            catch
+            {
+
+            }
+
         }
         public void Image16bit_readFrame(int i, Tiff image, TifFileInfo fi, int[] dimOrder = null)
         {
-                if (fi.image16bit == null) { return; }
+            if (fi.image16bit == null) { return; }
+            if (dimOrder != null && dimOrder.Length <= i) return;
 
-                if (dimOrder != null)
-                    image.SetDirectory((short)dimOrder[i]);
-                else
-                    image.SetDirectory((short)i);
+            if (dimOrder != null)
+                image.SetDirectory((short)dimOrder[i]);
+            else
+                image.SetDirectory((short)i);
 
-                int scanlineSize = image.ScanlineSize();
+            int scanlineSize = image.ScanlineSize();
 
-                ushort[][] buffer16 = new ushort[fi.sizeY][];
+            ushort[][] buffer16 = new ushort[fi.sizeY][];
 
-                for (int j = 0; j < fi.sizeY; j++)
-                {
-                    byte[] line = new byte[scanlineSize];
-                    buffer16[j] = new ushort[scanlineSize / 2];
-                    image.ReadScanline(line, j);
-                    Buffer.BlockCopy(line, 0, buffer16[j], 0, line.Length);
-                }
-                if (fi.image16bit == null) { return; }
-                try
-                {
-                    fi.image16bit[i] = buffer16;
-                }
-                catch
-                {
-                }
-            
+            for (int j = 0; j < fi.sizeY; j++)
+            {
+                byte[] line = new byte[scanlineSize];
+                buffer16[j] = new ushort[scanlineSize / 2];
+                image.ReadScanline(line, j);
+                Buffer.BlockCopy(line, 0, buffer16[j], 0, line.Length);
+            }
+            if (fi.image16bit == null) { return; }
+            try
+            {
+                fi.image16bit[i] = buffer16;
+            }
+            catch
+            {
+            }
+
         }
         public void ImageReader_BGW(List<TabPage> Collection, Tiff image1,TifFileInfo fi, ImageAnalyser IA,string path, int[] dimOrder = null)
         {
