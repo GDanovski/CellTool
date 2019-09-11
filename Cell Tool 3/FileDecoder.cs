@@ -340,7 +340,7 @@ namespace Cell_Tool_3
             StatusLabel.Text = "Reading Metadata...";
             
             //Check for CellTool 3 format
-            //try
+            try
             {
                 if (BigImagesReader.OpenBigImage(path, Collection, tp, IA1)) return true;
                 else if (new System.IO.FileInfo(path).Length >= (long)new ComputerInfo().AvailablePhysicalMemory)
@@ -354,7 +354,7 @@ namespace Cell_Tool_3
                 else StatusLabel.Text = "Ready";
 
             }
-            //catch { }
+            catch { MessageBox.Show("Error: Loading file error!"); }
 
             StatusLabel.Text = "Ready";
             return false;
