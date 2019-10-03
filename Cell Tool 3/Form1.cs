@@ -150,8 +150,7 @@ namespace Cell_Tool_3
             //Security control check - is It ok to continue with initializing the program
             SecurityControl.Initialize();
             SecurityControl.ChooseAccount();
-            Interface.ActiveAccountIndex = SecurityControl.AccIndex;
-			Helpers.Settings.SaveSettings ();
+            Interface.ActiveAccountIndex = SecurityControl.AccIndex;			
             //set main form propertties
             Interface.MainFormInitialize(this);
 
