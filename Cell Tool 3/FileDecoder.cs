@@ -26,7 +26,7 @@ using System.IO;
 using System.ComponentModel;
 using System.Runtime.InteropServices;
 using System.Drawing.Imaging;
-using Microsoft.VisualBasic.Devices;
+///using Microsoft.VisualBasic.Devices;
 //LibTif
 using BitMiracle.LibTiff.Classic;
 //BioFormats
@@ -342,13 +342,16 @@ namespace Cell_Tool_3
             //Check for CellTool 3 format
             try
             {
+                /*
                 if (BigImagesReader.OpenBigImage(path, Collection, tp, IA1)) return true;
                 else if (new System.IO.FileInfo(path).Length >= (long)new ComputerInfo().AvailablePhysicalMemory)
                 {
                     MessageBox.Show("Not enough RAM memory!");
                     return false;
                 }
-                else if (CellTool3_ReadMetadata(path, Collection, tp, IA1)) return true;
+                else 
+                */
+                if (CellTool3_ReadMetadata(path, Collection, tp, IA1)) return true;
                 else if (CellTool2_ReadMetadata(path, Collection, tp, IA1)) return true;
                 else if (BioFormats_Reader.OpenFile(Collection, path, tp, IA1, StatusLabel)) return true;
                 else StatusLabel.Text = "Ready";

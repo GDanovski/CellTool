@@ -114,8 +114,12 @@ namespace Cell_Tool_3
                     MessageBox.Show("Image is not avaliable yet!");
                     return;
                 }
-               
+
+                // Linux change
+                IA.FileBrowser.StatusLabel.Text = "Edit...";
                 ProjectionForm.ShowDialog();
+                IA.FileBrowser.StatusLabel.Text = "Ready";
+
             });
            
             CropToolStripMenuItem.Text = "Crop";
@@ -513,7 +517,7 @@ namespace Cell_Tool_3
                         break;
                 }
             });
-
+            // TODO - change status label
             OptionForm.ShowDialog();
             OptionForm.Dispose();
 
@@ -1895,7 +1899,10 @@ namespace Cell_Tool_3
             okBtn.Location = new Point(OptionForm.Width/2 - 10 -okBtn.Width, 10);
             cancelBtn.Location = new Point(OptionForm.Width / 2 - 5, 10);
 
+            // Linux change
+            IA.FileBrowser.StatusLabel.Text = "Dialog open";
             OptionForm.ShowDialog();
+            IA.FileBrowser.StatusLabel.Text = "Ready";
 
             return res;
         }

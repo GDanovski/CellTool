@@ -898,7 +898,11 @@ namespace Cell_Tool_3
             rtb.Text = Properties.Resources.LicenseAgreementCT;
 
             msgForm.Controls.Add(rtb);
+
+            // Linux change
+            StatusLabel.Text = "Dialog open";
             msgForm.ShowDialog();
+            StatusLabel.Text = "Ready";
         }
         void Tutorials_Click(object sender, EventArgs e)
         {
@@ -928,7 +932,11 @@ namespace Cell_Tool_3
             rtb.Rtf = Properties.Resources.Citation;
 
             msgForm.Controls.Add(rtb);
+
+            // Linux change
+            StatusLabel.Text = "Dialog open";
             msgForm.ShowDialog();
+            StatusLabel.Text = "Ready";
         }
         private void link_LinkClicked(object sender, LinkClickedEventArgs e)
         {
@@ -950,7 +958,11 @@ namespace Cell_Tool_3
             rtb.Text = Properties.Resources.AccordLicence;
 
             msgForm.Controls.Add(rtb);
+
+            // Linux change
+            StatusLabel.Text = "Dialog open";
             msgForm.ShowDialog();
+            StatusLabel.Text = "Ready";
         }
         void MathNET_NumericsLicense_Click(object sender, EventArgs e)
         {
@@ -968,7 +980,11 @@ namespace Cell_Tool_3
             rtb.Text = Properties.Resources.MathNET_NumericsLicense;
 
             msgForm.Controls.Add(rtb);
+
+            // Linux change
+            StatusLabel.Text = "Dialog open";
             msgForm.ShowDialog();
+            StatusLabel.Text = "Ready";
         }
         void NcalcLicense_Click(object sender, EventArgs e)
         {
@@ -986,7 +1002,11 @@ namespace Cell_Tool_3
             rtb.Text = Properties.Resources.NcalcLicense;
 
             msgForm.Controls.Add(rtb);
+
+            // Linux change
+            StatusLabel.Text = "Dialog open";
             msgForm.ShowDialog();
+            StatusLabel.Text = "Ready";
         }
         void LibTifLicense_Click(object sender, EventArgs e)
         {
@@ -1004,7 +1024,11 @@ namespace Cell_Tool_3
             rtb.Text = Properties.Resources.LicenseAgreementLibTif;
 
             msgForm.Controls.Add(rtb);
+
+            // Linux change
+            StatusLabel.Text = "Dialog open";
             msgForm.ShowDialog();
+            StatusLabel.Text = "Ready";
         }
         void BioFormatsLicense_Click(object sender, EventArgs e)
         {
@@ -1022,7 +1046,11 @@ namespace Cell_Tool_3
             rtb.Text = Properties.Resources.BioFormats;
 
             msgForm.Controls.Add(rtb);
+
+            // Linux change
+            StatusLabel.Text = "Dialog open";
             msgForm.ShowDialog();
+            StatusLabel.Text = "Ready";
         }
         void ikvmLicense_Click(object sender, EventArgs e)
         {
@@ -1040,7 +1068,11 @@ namespace Cell_Tool_3
             rtb.Text = Properties.Resources.ikvm;
 
             msgForm.Controls.Add(rtb);
+
+            // Linux change
+            StatusLabel.Text = "Dialog open";
             msgForm.ShowDialog();
+            StatusLabel.Text = "Ready";
         }
 
         void openTKLicense_Click(object sender, EventArgs e)
@@ -1059,7 +1091,11 @@ namespace Cell_Tool_3
             rtb.Text = Properties.Resources.OpenTK;
 
             msgForm.Controls.Add(rtb);
+
+            // Linux change
+            StatusLabel.Text = "Dialog open";
             msgForm.ShowDialog();
+            StatusLabel.Text = "Ready";
         }
         private void TaskBar(Panel MainPanel)
         {
@@ -1407,6 +1443,10 @@ namespace Cell_Tool_3
             {
                 MainPanel.Cursor = Cursors.Default;
                 StatusProgressBar.Visible = false;
+
+                // Linux change
+                MainForm.Enabled = true;
+                MainForm.Focus();
             }
             else
             {

@@ -38,7 +38,7 @@ namespace Cell_Tool_3
             {
                 Properties.Settings.Default.Upgrade();
                 Properties.Settings.Default.UpdateSettings = false;
-                Properties.Settings.Default.Save();
+				Security.SaveSettings(Properties.Settings.Default);
             }
             //Load settings for MacOS/LinuxOS
             Helpers.Settings.LoadSettings();
@@ -96,7 +96,8 @@ namespace Cell_Tool_3
                 {
                     msgForm.Close();
                 });
-                
+
+                // TODO - change status label
                 msgForm.ShowDialog();
                 msgForm.Dispose();
             }

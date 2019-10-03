@@ -4313,7 +4313,10 @@ namespace Cell_Tool_3
 
             OptionForm.ResumeLayout();
 
+            // Linux change
+            IA.FileBrowser.StatusLabel.Text = "Dialog open";
             OptionForm.ShowDialog();
+            IA.FileBrowser.StatusLabel.Text = "Ready";
             OptionForm.Dispose();
 
             if (secoundROI == null) return;

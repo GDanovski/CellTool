@@ -19,7 +19,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.ComponentModel;
 using System.Drawing;
-using Microsoft.VisualBasic.Devices;
+///using Microsoft.VisualBasic.Devices;
 using BitMiracle.LibTiff.Classic;
 
 namespace Cell_Tool_3
@@ -39,8 +39,8 @@ namespace Cell_Tool_3
             //Check the file size in bytes
             long FileSize = new System.IO.FileInfo(path).Length;
             //Check the free ram memory in bytes
-            long RAM = (long)new ComputerInfo().AvailablePhysicalMemory;
-            //RAM = 10000000;
+            //long RAM = (long)new ComputerInfo().AvailablePhysicalMemory;
+            long RAM = 10000000;
             if (FileSize < RAM)
                 return false;
             else
@@ -360,6 +360,7 @@ namespace Cell_Tool_3
                     }
                 });
 
+                // TODO - change status label
                 OptionForm.ShowDialog();
                 OptionForm.Dispose();
             }
@@ -810,7 +811,7 @@ namespace Cell_Tool_3
                         break;
                 }
             });
-
+            // TODO - change status label
             OptionForm.ShowDialog();
             OptionForm.Dispose();
 
