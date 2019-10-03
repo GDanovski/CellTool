@@ -151,6 +151,7 @@ namespace Cell_Tool_3
             SecurityControl.Initialize();
             SecurityControl.ChooseAccount();
             Interface.ActiveAccountIndex = SecurityControl.AccIndex;
+			Helpers.Settings.SaveSettings ();
             //set main form propertties
             Interface.MainFormInitialize(this);
 
@@ -174,7 +175,7 @@ namespace Cell_Tool_3
             Interface.TabPages.ImageMainPanel.Visible = false;
 
             this.ResumeLayout(true);
-            this.Show();
+            base.Show();
 
             Form_StartWithFile();
         }
@@ -363,7 +364,7 @@ namespace Cell_Tool_3
             //Chart
             Interface.IA.chart.Properties.LoadFunctions();
             //Properties
-            Interface.IA.Segmentation.AutoSetUp.ApplyToNewCheckB.Checked = bool.Parse(SecurityControl.settings.AutoProtocolSettings[SecurityControl.AccIndex]);
+			Interface.IA.Segmentation.AutoSetUp.ApplyToNewCheckB.Checked = bool.Parse(SecurityControl.settings.AutoProtocolSettings[SecurityControl.AccIndex]);
             Interface.IA.Segmentation.AutoSetUp.LoadSettings();
             //HotKeys
             Interface.HotKays.LoadAccountSettings();

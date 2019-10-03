@@ -865,7 +865,10 @@ namespace Cell_Tool_3
             }
             private void Edit_Click(object sender, EventArgs e)
             {
+
+                form1.StatusLabel.Text = "Dialog open";
                 SolverFunctions1.dialog.ShowDialog();
+                form1.StatusLabel.Text = "Ready";
             }
             public void cmbBox_ChangeIndex(object sender, EventArgs e)
             {

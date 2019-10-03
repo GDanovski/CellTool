@@ -258,7 +258,11 @@ namespace Cell_Tool_3
             core.Dock = DockStyle.Fill;
             OptionForm.Controls.Add(core);
             OptionForm.FormClosing += OptionForm_Closing;
+
+            // Linux change
+            IA.FileBrowser.StatusLabel.Text = "Dialog open";
             OptionForm.ShowDialog();
+            IA.FileBrowser.StatusLabel.Text = "Ready";
         }
         private void OptionForm_Closing(object sender, EventArgs e)
         {
@@ -657,9 +661,13 @@ namespace Cell_Tool_3
                         OptionForm1.Close();
                     }
             });
-            OptionForm1.ShowDialog();
 
-            if(applyChanges == true)
+            // Linux change
+            IA.FileBrowser.StatusLabel.Text = "Dialog open";
+            OptionForm1.ShowDialog();
+            IA.FileBrowser.StatusLabel.Text = "Ready";
+
+            if (applyChanges == true)
             {
                 l[0] = Convert.ToDouble(RepTB.Text);
                 l[1] = Convert.ToDouble(TTB.Text);
@@ -719,8 +727,11 @@ namespace Cell_Tool_3
                     rtb.ForeColor = IA.FileBrowser.ShriftColor1;
                     rtb.ReadOnly = true;
                     OptionForm.Controls.Add(rtb);
-                    
+
+                    // Linux change
+                    IA.FileBrowser.StatusLabel.Text = "Dialog open";
                     OptionForm.ShowDialog();
+                    IA.FileBrowser.StatusLabel.Text = "Ready";
 
                     rtb.Dispose();
                     OptionForm.Dispose();

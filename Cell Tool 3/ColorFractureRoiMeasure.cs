@@ -70,7 +70,11 @@ namespace Cell_Tool_3
             }
 
             Form binaryForm = BinaryDialog(colorL);
+
+            // Linux change
+            IA.FileBrowser.StatusLabel.Text = "Dialog open";
             binaryForm.ShowDialog();
+            IA.FileBrowser.StatusLabel.Text = "Ready";
 
             selectedCol = (Color)binaryForm.Tag;
 

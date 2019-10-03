@@ -275,8 +275,11 @@ namespace Cell_Tool_3
             ToleranceTB.Text = tolerance.ToString();
 
             FillHolesCB.Checked = fi.fillHoles;
-            
+
+            // Linux change
+            IA.FileBrowser.StatusLabel.Text = "Dialog open";
             Dialog.ShowDialog();
+            IA.FileBrowser.StatusLabel.Text = "Ready";
         }
         private void DuplicateImage(TifFileInfo fi)
         {

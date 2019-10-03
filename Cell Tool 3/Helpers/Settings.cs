@@ -101,7 +101,10 @@ namespace Cell_Tool_3.Helpers
                 //MSSettings.EndTrialDate = LoadSetting(MSSettings.EndTrialDate, EndTrialDate);
             }
             catch { }
-            MSSettings.Save();
+			try {
+            	MSSettings.Save();
+			} catch {
+			}
         }
         private static bool LoadSetting(bool MSsetting,string setting)
         {

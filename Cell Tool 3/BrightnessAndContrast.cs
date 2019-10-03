@@ -285,7 +285,11 @@ namespace Cell_Tool_3
                 }
                 OptionForm.Close();
             });
+
+            // Linux change
+            IA.FileBrowser.StatusLabel.Text = "Dialog open";
             OptionForm.ShowDialog();
+            IA.FileBrowser.StatusLabel.Text = "Ready";
             foreach (Button btn in fi.tpTaskbar.ColorBtnList)
             {
                 btn.Focus();

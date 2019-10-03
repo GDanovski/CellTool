@@ -1055,7 +1055,11 @@ namespace Cell_Tool_3
             }
 
             Form binaryForm = BinaryDialog(colorL);
+
+            // Linux change
+            IA.FileBrowser.StatusLabel.Text = "Dialog open";
             binaryForm.ShowDialog();
+            IA.FileBrowser.StatusLabel.Text = "Ready";
 
             Color selectedCol = (Color)binaryForm.Tag;
 
@@ -1550,7 +1554,11 @@ namespace Cell_Tool_3
             MyWatershed _MyWatershed = IA.Segmentation.Watershed;
             _MyWatershed.ToleranceTB.Text = _MyWatershed.tolerance.ToString();
             _MyWatershed.FillHolesCB.Checked = fi.fillHoles;
+
+            // Linux change
+            IA.FileBrowser.StatusLabel.Text = "Dialog open";
             _MyWatershed.Dialog.ShowDialog();
+            IA.FileBrowser.StatusLabel.Text = "Ready";
         }
         #endregion Binary
         public static class MyConvolution

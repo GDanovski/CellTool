@@ -252,8 +252,10 @@ namespace Cell_Tool_3
             string val = vals[vals.Length - 1].Replace(".tif","");
             vals = null;
 
-            if (val.Length == 4 && int.TryParse(val, out int a))
+	    int a;
+            if (val.Length == 4 && int.TryParse(val, out a)) {
                 return name.Substring(0, name.LastIndexOf("_")) + ".tif";
+		}
             else
                 return name;
         }

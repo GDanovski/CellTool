@@ -47,7 +47,7 @@ namespace Cell_Tool_3
             {
                 settings.EndTrialDate = date.AddDays(31);
                 settings.TrialActive = true;
-                settings.Save();
+                SaveSettings(settings);
             }
             StartProgram = true;
             return;
@@ -63,7 +63,7 @@ namespace Cell_Tool_3
             if (settings.TrialActive == false)
             {
                 settings.EndTrialDate = date.AddDays(31);
-                settings.Save();
+                SaveSettings(settings);
             }
             else if(DateTime.Compare(settings.EndTrialDate,date) == -1)
             {
@@ -80,7 +80,7 @@ namespace Cell_Tool_3
                     //settings.Reset();
                     settings.TrialActive = false;
                     settings.EndTrialDate = date.AddDays(31);
-                    settings.Save();
+                    SaveSettings(settings);
                 }
                 else
                 {
@@ -112,7 +112,7 @@ namespace Cell_Tool_3
             if (settings.IncorrectPass > 2)
             {
                 settings.BlockProgram = true;
-                settings.Save();
+                SaveSettings(settings);
             }
         }
         private Boolean IsTrialActive()
@@ -154,9 +154,11 @@ namespace Cell_Tool_3
             OkBtn.Click += new EventHandler(OkBtn_Click);
             TrialForm.Controls.Add(OkBtn);
             // Show dialog
-           PassBox_config();
-           TrialForm.ShowDialog();
-      }
+            PassBox_config();
+
+            // TODO - change status label
+            TrialForm.ShowDialog();
+        }
         private void PassBox_config()
         {
             PassBox.Text = "";
@@ -183,7 +185,7 @@ namespace Cell_Tool_3
             {
                 settings.IncorrectPass = 0;
                 settings.TrialActive = true;
-                settings.Save();
+                SaveSettings(settings);
                 StartProgram = true;
                 TrialForm.Close();
             }
@@ -191,7 +193,7 @@ namespace Cell_Tool_3
             {
                 PassBox_config();
                 settings.IncorrectPass += 1;
-                settings.Save();
+                SaveSettings(settings);
                 MessageBox.Show("Wrong key!");
             }
         }
@@ -493,6 +495,7 @@ namespace Cell_Tool_3
             PassPanel.VisibleChanged += Panel_VisibleChange;
             NewAccPanel.VisibleChanged += Panel_VisibleChange;
 
+            // TODO - change status label
             AccForm.ShowDialog();
         }
         private void Panel_VisibleChange(object sender, EventArgs e)
@@ -659,7 +662,7 @@ namespace Cell_Tool_3
                 settings.AccList.Add(accTbox1.Text);
                 settings.AccPass.Add(passTbox1.Text);
                 AddSettings();
-                settings.Save();
+                SaveSettings(settings);
 
                 //LogIn
                 for (int i = 0; i < settings.AccList.Count; i++)
@@ -712,7 +715,7 @@ namespace Cell_Tool_3
                         settings.AccList.RemoveAt(i);
                         settings.AccPass.RemoveAt(i);
                         DeleteSettings(i);
-                        settings.Save();
+                        SaveSettings(settings);
                         deleted = true;
                     }
                     i++;
@@ -728,6 +731,8 @@ namespace Cell_Tool_3
             //Delete all settings
             BackBtn_click(sender, e);
             //Start Dialog
+
+            // TODO - change status label
             AccForm.ShowDialog();
         }
         public void ChangePass_event(object sender, EventArgs e)
@@ -735,6 +740,8 @@ namespace Cell_Tool_3
             NewPassTextBox.Text = "";
             reNewPassTextBox.Text = "";
             oldPassTextBox.Text = "";
+
+            // TODO - change status label
             ChangePassForm.ShowDialog();
         }
         private void ChangePassTBox_KeyDown(object sender,KeyEventArgs e)
@@ -768,14 +775,14 @@ namespace Cell_Tool_3
                     ChangeAdminPass = false;
                     settings.AccPass[0] = NewPassTextBox.Text;
                     AdminPass = NewPassTextBox.Text;
-                    settings.Save();
+                    SaveSettings(settings);
                     ChangePassForm_clear();
                     Admin_Event();
                 }
                 else if (oldPassTextBox.Text == settings.AccPass[AccIndex])
                 {
                         settings.AccPass[AccIndex] = NewPassTextBox.Text;
-                        settings.Save();
+                        SaveSettings(settings);
                         ChangePassForm_clear();
                 }
                 else
@@ -838,7 +845,7 @@ namespace Cell_Tool_3
             }
             catch { }
             //Save Changes
-            settings.Save();
+            SaveSettings(settings);
         }
         private void AddSettings()
         {
@@ -890,7 +897,7 @@ namespace Cell_Tool_3
             }
             catch {}
             //Save Changes
-            settings.Save();
+            SaveSettings(settings);
         }
         private void rescueSettings()
         {
@@ -938,7 +945,7 @@ namespace Cell_Tool_3
             rescue(settings.HotKeys);
             rescue(settings.SmartBtns);
             //Save
-            settings.Save();
+            SaveSettings(settings);
         }
         private void rescue(System.Collections.Specialized.StringCollection vals)
         {
@@ -1125,6 +1132,14 @@ namespace Cell_Tool_3
                     break;
             }
         }
-    }
-   
+  
+		public static void SaveSettings(Properties.Settings settings)
+		{
+			if ((System.Environment.OSVersion.Platform != PlatformID.MacOSX) &&
+			    (System.Environment.OSVersion.Platform != PlatformID.Unix)) {
+			
+				settings.Save ();
+			}
+		}
+	} 
 }
