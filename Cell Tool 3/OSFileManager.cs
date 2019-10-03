@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.ComponentModel;
 using System.IO;
@@ -23,22 +19,7 @@ namespace Cell_Tool_3
                 MessageBox.Show("Target directory is not avaliable!");
                 return;
             }
-
-            try
-            {
-                if (System.Environment.OSVersion.Platform != PlatformID.MacOSX &&
-                    System.Environment.OSVersion.Platform != PlatformID.Unix)
-                { /*
-                    Microsoft.VisualBasic.FileIO.FileSystem.CopyFile(Dir, NewDir,
-                        Microsoft.VisualBasic.FileIO.UIOption.AllDialogs,
-                        Microsoft.VisualBasic.FileIO.UICancelOption.DoNothing);
-		*/
-                    return;
-		
-                }
-            }
-            catch { }
-
+            
             var bgw = new BackgroundWorker();
             bgw.DoWork += new DoWorkEventHandler(delegate (Object o, DoWorkEventArgs a)
             {
@@ -64,22 +45,6 @@ namespace Cell_Tool_3
                 return;
             }
 
-            try
-            {
-                if (System.Environment.OSVersion.Platform != PlatformID.MacOSX &&
-                    System.Environment.OSVersion.Platform != PlatformID.Unix)
-                { /*
-
-                    Microsoft.VisualBasic.FileIO.FileSystem.CopyDirectory(Dir, NewDir,
-                Microsoft.VisualBasic.FileIO.UIOption.AllDialogs,
-                Microsoft.VisualBasic.FileIO.UICancelOption.DoNothing);
-		*/
-                    return;
-		
-                }
-            }
-            catch { }
-
             var bgw = new BackgroundWorker();
             bgw.DoWork += new DoWorkEventHandler(delegate (Object o, DoWorkEventArgs a)
             {
@@ -96,21 +61,7 @@ namespace Cell_Tool_3
         public static void DeleteDirectory(string Dir)
         {
             if (!Directory.Exists(Dir)) return;
-            try
-            {
-                if (System.Environment.OSVersion.Platform != PlatformID.MacOSX &&
-                    System.Environment.OSVersion.Platform != PlatformID.Unix)
-                { /*
-                    Microsoft.VisualBasic.FileIO.FileSystem.DeleteDirectory(Dir,
-                Microsoft.VisualBasic.FileIO.UIOption.AllDialogs,
-                Microsoft.VisualBasic.FileIO.RecycleOption.SendToRecycleBin,
-                Microsoft.VisualBasic.FileIO.UICancelOption.DoNothing);
-		*/
-                    return;
-                }
-            }
-            catch { }
-
+            
             var bgw = new BackgroundWorker();
             bgw.DoWork += new DoWorkEventHandler(delegate (Object o, DoWorkEventArgs a)
             {
@@ -126,21 +77,7 @@ namespace Cell_Tool_3
         public static void DeleteFile(string Dir)
         {
             if (!File.Exists(Dir)) return;
-            try
-            {
-                if (System.Environment.OSVersion.Platform != PlatformID.MacOSX &&
-                    System.Environment.OSVersion.Platform != PlatformID.Unix)
-                { /*
-                    Microsoft.VisualBasic.FileIO.FileSystem.DeleteFile(Dir,
-                Microsoft.VisualBasic.FileIO.UIOption.AllDialogs,
-                Microsoft.VisualBasic.FileIO.RecycleOption.SendToRecycleBin,
-                Microsoft.VisualBasic.FileIO.UICancelOption.DoNothing);
-		*/
-                    return;
-                }
-            }
-            catch { }
-
+           
             var bgw = new BackgroundWorker();
             bgw.DoWork += new DoWorkEventHandler(delegate (Object o, DoWorkEventArgs a)
             {
@@ -165,22 +102,7 @@ namespace Cell_Tool_3
                 MessageBox.Show("Target directory is not avaliable!");
                 return;
             }
-
-            try
-            {
-                if (System.Environment.OSVersion.Platform != PlatformID.MacOSX &&
-                    System.Environment.OSVersion.Platform != PlatformID.Unix)
-                {
-		/*
-                    Microsoft.VisualBasic.FileIO.FileSystem.MoveFile(Dir, NewDir,
-                Microsoft.VisualBasic.FileIO.UIOption.AllDialogs,
-                Microsoft.VisualBasic.FileIO.UICancelOption.DoNothing);
-		*/
-                    return;
-                }
-            }
-            catch { }
-
+            
             var bgw = new BackgroundWorker();
             bgw.DoWork += new DoWorkEventHandler(delegate (Object o, DoWorkEventArgs a)
             {
@@ -206,19 +128,6 @@ namespace Cell_Tool_3
                 return;
             }
 
-            try
-            {
-                if (System.Environment.OSVersion.Platform != PlatformID.MacOSX &&
-                    System.Environment.OSVersion.Platform != PlatformID.Unix)
-                {/*
-                    Microsoft.VisualBasic.FileIO.FileSystem.MoveDirectory(Dir, NewDir,
-                Microsoft.VisualBasic.FileIO.UIOption.AllDialogs,
-                Microsoft.VisualBasic.FileIO.UICancelOption.DoNothing);
-		*/
-                    return;
-                }
-            }
-            catch { }
             var bgw = new BackgroundWorker();
             bgw.DoWork += new DoWorkEventHandler(delegate (Object o, DoWorkEventArgs a)
             {
