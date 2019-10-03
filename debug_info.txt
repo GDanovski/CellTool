@@ -1,0 +1,145 @@
+ContainerControl.Validate is not yet implemented
+[0x7f274bbd2780:] EXCEPTION handling: System.IO.FileNotFoundException: Could not load file or assembly 'UIAutomationWinforms, Version=1.0.0.0, Culture=neutral, PublicKeyToken=f4ceacb585d99812' or one of its dependencies
+[0x7f274bbd2780:] EXCEPTION handling: System.DllNotFoundException: libEGL.dll
+[0x7f274bbd2780:] EXCEPTION handling: System.IO.FileNotFoundException: Could not load file or assembly 'System.XmlSerializers' or one of its dependencies
+[0x7f274bbd2780:] EXCEPTION handling: System.NullReferenceException: Object reference not set to an instance of an object
+[0x7f274bbd2780:] EXCEPTION handling: java.io.FileNotFoundException: /.virtual-ikvm-home/assembly/bioformats_!package_!5.9.2/resources/jcl-over-slf4j-1.7.5.jar
+[0x7f274bbd2780:] EXCEPTION handling: java.security.PrivilegedActionException: 
+[0x7f274bbd2780:] EXCEPTION handling: java.io.FileNotFoundException: /.virtual-ikvm-home/assembly/bioformats_!package_!5.9.2/resources/jcl-over-slf4j-1.7.5.jar
+[0x7f274bbd2780:] EXCEPTION handling: java.security.PrivilegedActionException: 
+[0x7f274bbd2780:] EXCEPTION handling: java.io.FileNotFoundException: /.virtual-ikvm-home/assembly/bioformats_!package_!5.9.2/resources/ehcache-core-2.6.2.jar
+[0x7f274bbd2780:] EXCEPTION handling: java.security.PrivilegedActionException: 
+[0x7f274bbd2780:] EXCEPTION handling: java.io.FileNotFoundException: /.virtual-ikvm-home/assembly/bioformats_!package_!5.9.2/resources/ehcache-core-2.6.2.jar
+[0x7f274bbd2780:] EXCEPTION handling: java.security.PrivilegedActionException: 
+[0x7f274bbd2780:] EXCEPTION handling: java.io.FileNotFoundException: /.virtual-ikvm-home/assembly/bioformats_!package_!5.9.2/resources/jcl-over-slf4j-1.7.5.jar
+[0x7f274bbd2780:] EXCEPTION handling: java.security.PrivilegedActionException: 
+[0x7f274bbd2780:] EXCEPTION handling: java.io.FileNotFoundException: /.virtual-ikvm-home/assembly/bioformats_!package_!5.9.2/resources/jcl-over-slf4j-1.7.5.jar
+[0x7f274bbd2780:] EXCEPTION handling: java.security.PrivilegedActionException: 
+[0x7f274bbd2780:] EXCEPTION handling: java.io.FileNotFoundException: /.virtual-ikvm-home/assembly/bioformats_!package_!5.9.2/resources/ehcache-core-2.6.2.jar
+[0x7f274bbd2780:] EXCEPTION handling: java.security.PrivilegedActionException: 
+[0x7f274bbd2780:] EXCEPTION handling: java.io.FileNotFoundException: /.virtual-ikvm-home/assembly/bioformats_!package_!5.9.2/resources/ehcache-core-2.6.2.jar
+[0x7f274bbd2780:] EXCEPTION handling: java.security.PrivilegedActionException: 
+[0x7f274bbd2780:] EXCEPTION handling: java.io.FileNotFoundException: /.virtual-ikvm-home/assembly/bioformats_!package_!5.9.2/resources/jcl-over-slf4j-1.7.5.jar
+[0x7f274bbd2780:] EXCEPTION handling: java.security.PrivilegedActionException: 
+[0x7f274bbd2780:] EXCEPTION handling: java.io.FileNotFoundException: /.virtual-ikvm-home/assembly/bioformats_!package_!5.9.2/resources/jcl-over-slf4j-1.7.5.jar
+[0x7f274bbd2780:] EXCEPTION handling: java.security.PrivilegedActionException: 
+[0x7f274bbd2780:] EXCEPTION handling: java.io.FileNotFoundException: /.virtual-ikvm-home/assembly/bioformats_!package_!5.9.2/resources/ehcache-core-2.6.2.jar
+[0x7f274bbd2780:] EXCEPTION handling: java.security.PrivilegedActionException: 
+[0x7f274bbd2780:] EXCEPTION handling: java.io.FileNotFoundException: /.virtual-ikvm-home/assembly/bioformats_!package_!5.9.2/resources/ehcache-core-2.6.2.jar
+[0x7f274bbd2780:] EXCEPTION handling: java.security.PrivilegedActionException: 
+[0x7f274bbd2780:] EXCEPTION handling: java.io.FileNotFoundException: /.virtual-ikvm-home/assembly/bioformats_!package_!5.9.2/resources/jcl-over-slf4j-1.7.5.jar
+[0x7f274bbd2780:] EXCEPTION handling: java.security.PrivilegedActionException: 
+[0x7f274bbd2780:] EXCEPTION handling: java.io.FileNotFoundException: /.virtual-ikvm-home/assembly/bioformats_!package_!5.9.2/resources/jcl-over-slf4j-1.7.5.jar
+[0x7f274bbd2780:] EXCEPTION handling: java.security.PrivilegedActionException: 
+[0x7f274bbd2780:] EXCEPTION handling: java.io.FileNotFoundException: /.virtual-ikvm-home/assembly/bioformats_!package_!5.9.2/resources/ehcache-core-2.6.2.jar
+[0x7f274bbd2780:03:41:20.142 [Thread-0] DEBUG loci.formats.ClassList - Could not find loci.formats.in.SlideBook6Reader
+java.lang.ClassNotFoundException: loci.formats.in.SlideBook6Reader
+	at IKVM.NativeCode.java.lang.Class.forName0(Unknown Source) ~[na:na]
+	at java.lang.Class.forName0(Native Method) ~[na:OpenJDK 7u6 b24]
+	at java.lang.Class.forName(Class.java:287) ~[na:OpenJDK 7u6 b24]
+	at loci.formats.ClassList.parseLine(ClassList.java:179) [bioformats_package_5.9.2.dll:5.9.2]
+	at loci.formats.ClassList.parseFile(ClassList.java:238) [bioformats_package_5.9.2.dll:5.9.2]
+	at loci.formats.ClassList.<init>(ClassList.java:136) [bioformats_package_5.9.2.dll:5.9.2]
+	at loci.formats.ClassList.<init>(ClassList.java:122) [bioformats_package_5.9.2.dll:5.9.2]
+	at loci.formats.ImageReader.getDefaultReaderClasses(ImageReader.java:76) [bioformats_package_5.9.2.dll:5.9.2]
+	at loci.formats.ImageReader.<init>(ImageReader.java:116) [bioformats_package_5.9.2.dll:5.9.2]
+	at cli.Cell_Tool_3.BioFormats_Reader.GetFormatsSuff(Unknown Source) [CellTool.exe:na]
+	at cli.Cell_Tool_3.FileDecoder.LoadExtensions(Unknown Source) [CellTool.exe:na]
+	at cli.Cell_Tool_3.Interface.MainFormInitialize(Unknown Source) [CellTool.exe:na]
+	at cli.Cell_Tool_3.CellToolMainForm.CellToolMainForm_Load(Unknown Source) [CellTool.exe:na]
+	at cli.System.Windows.Forms.Form.OnLoad(Unknown Source) [System.Windows.Forms.dll:na]
+	at cli.System.Windows.Forms.Form.OnLoadInternal(Unknown Source) [System.Windows.Forms.dll:na]
+	at cli.System.Windows.Forms.Form.OnCreateControl(Unknown Source) [System.Windows.Forms.dll:na]
+	at cli.System.Windows.Forms.Control.CreateControl(Unknown Source) [System.Windows.Forms.dll:na]
+	at cli.System.Windows.Forms.Control.SetVisibleCore(Unknown Source) [System.Windows.Forms.dll:na]
+	at cli.System.Windows.Forms.Form.SetVisibleCore(Unknown Source) [System.Windows.Forms.dll:na]
+	at cli.System.Windows.Forms.Control.set_Visible(Unknown Source) [System.Windows.Forms.dll:na]
+	at cli.System.Windows.Forms.Application.RunLoop(Unknown Source) [System.Windows.Forms.dll:na]
+	at cli.System.Windows.Forms.Application.Run(Unknown Source) [System.Windows.Forms.dll:na]
+	at cli.System.Windows.Forms.Application.Run(Unknown Source) [System.Windows.Forms.dll:na]
+	at cli.Cell_Tool_3.Program.Main(Unknown Source) [CellTool.exe:na]
+03:41:20.181 [Thread-0] DEBUG loci.formats.ClassList - Could not find loci.formats.in.ScreenReader
+java.lang.ClassNotFoundException: loci.formats.in.ScreenReader
+	at IKVM.NativeCode.java.lang.Class.forName0(Unknown Source) ~[na:na]
+	at java.lang.Class.forName0(Native Method) ~[na:OpenJDK 7u6 b24]
+	at java.lang.Class.forName(Class.java:287) ~[na:OpenJDK 7u6 b24]
+	at loci.formats.ClassList.parseLine(ClassList.java:179) [bioformats_package_5.9.2.dll:5.9.2]
+	at loci.formats.ClassList.parseFile(ClassList.java:238) [bioformats_package_5.9.2.dll:5.9.2]
+	at loci.formats.ClassList.<init>(ClassList.java:136) [bioformats_package_5.9.2.dll:5.9.2]
+	at loci.formats.ClassList.<init>(ClassList.java:122) [bioformats_package_5.9.2.dll:5.9.2]
+	at loci.formats.ImageReader.getDefaultReaderClasses(ImageReader.java:76) [bioformats_package_5.9.2.dll:5.9.2]
+	at loci.formats.ImageReader.<init>(ImageReader.java:116) [bioformats_package_5.9.2.dll:5.9.2]
+	at cli.Cell_Tool_3.BioFormats_Reader.GetFormatsSuff(Unknown Source) [CellTool.exe:na]
+	at cli.Cell_Tool_3.FileDecoder.LoadExtensions(Unknown Source) [CellTool.exe:na]
+	at cli.Cell_Tool_3.Interface.MainFormInitialize(Unknown Source) [CellTool.exe:na]
+	at cli.Cell_Tool_3.CellToolMainForm.CellToolMainForm_Load(Unknown Source) [CellTool.exe:na]
+	at cli.System.Windows.Forms.Form.OnLoad(Unknown Source) [System.Windows.Forms.dll:na]
+	at cli.System.Windows.Forms.Form.OnLoadInternal(Unknown Source) [System.Windows.Forms.dll:na]
+	at cli.System.Windows.Forms.Form.OnCreateControl(Unknown Source) [System.Windows.Forms.dll:na]
+	at cli.System.Windows.Forms.Control.CreateControl(Unknown Source) [System.Windows.Forms.dll:na]
+	at cli.System.Windows.Forms.Control.SetVisibleCore(Unknown Source) [System.Windows.Forms.dll:na]
+	at cli.System.Windows.Forms.Form.SetVisibleCore(Unknown Source) [System.Windows.Forms.dll:na]
+	at cli.System.Windows.Forms.Control.set_Visible(Unknown Source) [System.Windows.Forms.dll:na]
+	at cli.System.Windows.Forms.Application.RunLoop(Unknown Source) [System.Windows.Forms.dll:na]
+	at cli.System.Windows.Forms.Application.Run(Unknown Source) [System.Windows.Forms.dll:na]
+	at cli.System.Windows.Forms.Application.Run(Unknown Source) [System.Windows.Forms.dll:na]
+	at cli.Cell_Tool_3.Program.Main(Unknown Source) [CellTool.exe:na]
+03:41:20.924 [Thread-0] DEBUG o.s.nativelib.NativeLibraryUtil - processor is INTEL_64 os.arch is amd64
+03:41:20.930 [Thread-0] DEBUG o.s.nativelib.NativeLibraryUtil - architecture is LINUX_64 os.name is unix 4.15.0.45
+03:41:20.932 [Thread-0] DEBUG o.s.nativelib.NativeLibraryUtil - architecture is LINUX_64 os.name is unix 4.15.0.45
+03:41:20.932 [Thread-0] DEBUG o.s.nativelib.NativeLibraryUtil - platform specific path is META-INF/lib/linux_64/
+03:41:20.933 [Thread-0] DEBUG o.scijava.nativelib.BaseJniExtractor - mappedLib is libturbojpeg.so
+03:41:20.933 [Thread-0] DEBUG o.scijava.nativelib.BaseJniExtractor - URL is jar:file:/.virtual-ikvm-home/assembly/bioformats_!package_!5.9.2/resources/bioformats_package.jar!/META-INF/lib/linux_64/libturbojpeg.so
+03:41:20.933 [Thread-0] DEBUG o.scijava.nativelib.BaseJniExtractor - URL path is file:/.virtual-ikvm-home/assembly/bioformats_!package_!5.9.2/resources/bioformats_package.jar!/META-INF/lib/linux_64/libturbojpeg.so
+03:41:21.046 [Thread-0] DEBUG o.scijava.nativelib.BaseJniExtractor - Extracting 'jar:file:/.virtual-ikvm-home/assembly/bioformats_!package_!5.9.2/resources/bioformats_package.jar!/META-INF/lib/linux_64/libturbojpeg.so' to '/tmp/libturbojpeg4334418451243568971.so'
+] EXCEPTION handling: java.security.PrivilegedActionException: 
+[0x7f274bbd2780:] EXCEPTION handling: java.io.FileNotFoundException: /.virtual-ikvm-home/assembly/bioformats_!package_!5.9.2/resources/ehcache-core-2.6.2.jar
+[0x7f274bbd2780:] EXCEPTION handling: java.security.PrivilegedActionException: 
+[0x7f274bbd2780:] EXCEPTION handling: .ClassNotFoundException: loci.formats.in.SlideBook6Reader
+[0x7f274bbd2780:] EXCEPTION handling: java.lang.ClassNotFoundException: loci.formats.in.SlideBook6Reader
+[0x7f274bbd2780:] EXCEPTION handling: .ClassNotFoundException: IKVM.NativeCode.java.lang.Class
+[0x7f274bbd2780:] EXCEPTION handling: java.lang.ClassNotFoundException: IKVM.NativeCode.java.lang.Class
+[0x7f274bbd2780:] EXCEPTION handling: .ClassNotFoundException: IKVM.NativeCode.java.lang.Class
+[0x7f274bbd2780:] EXCEPTION handling: java.lang.ClassNotFoundException: IKVM.NativeCode.java.lang.Class
+[0x7f274bbd2780:] EXCEPTION handling: .ClassNotFoundException: IKVM.NativeCode.java.lang.Class
+[0x7f274bbd2780:] EXCEPTION handling: java.lang.ClassNotFoundException: IKVM.NativeCode.java.lang.Class
+[0x7f274bbd2780:] EXCEPTION handling: .ClassNotFoundException: loci.formats.in.ScreenReader
+[0x7f274bbd2780:] EXCEPTION handling: java.lang.ClassNotFoundException: loci.formats.in.ScreenReader
+[0x7f274bbd2780:] EXCEPTION handling: .ClassNotFoundException: IKVM.NativeCode.java.lang.Class
+[0x7f274bbd2780:] EXCEPTION handling: java.lang.ClassNotFoundException: IKVM.NativeCode.java.lang.Class
+[0x7f274bbd2780:] EXCEPTION handling: .ClassNotFoundException: IKVM.NativeCode.java.lang.Class
+[0x7f274bbd2780:] EXCEPTION handling: java.lang.ClassNotFoundException: IKVM.NativeCode.java.lang.Class
+[0x7f274bbd2780:] EXCEPTION handling: .ClassNotFoundException: IKVM.NativeCode.java.lang.Class
+[0x7f274bbd2780:] EXCEPTION handling: java.lang.ClassNotFoundException: IKVM.NativeCode.java.lang.Class
+[0x7f274bbd2780:] EXCEPTION handling: java.lang.IllegalArgumentException: The datetime zone id 'GMT-04:00' is not recognised
+[0x7f274bbd2780:] EXCEPTION handling: System.IO.DirectoryNotFoundException: Could not find a part of the path "/home/rumen/code/CellTool/Cell Tool 3/bin/Debug:/usr/java/packages/lib/amd64:/lib:/usr/lib/QTJava.zip"
+[0x7f274bbd2780:] EXCEPTION handling: System.IO.DirectoryNotFoundException: Could not find a part of the path "/home/rumen/code/CellTool/Cell Tool 3/bin/Debug:/usr/java/packages/lib/amd64:/lib:/usr/lib/QTJava.zip"
+[0x7f274bbd2780:] EXCEPTION handling: System.IO.FileNotFoundException: Could not find file "/home/rumen/code/CellTool/Cell Tool 3/bin/Debug/libLegacyND2Reader.so"
+[0x7f274bbd2780:] EXCEPTION handling: System.IO.DirectoryNotFoundException: Could not find a part of the path "/usr/java/packages/lib/amd64/libLegacyND2Reader.so"
+[0x7f274bbd2780:] EXCEPTION handling: System.IO.FileNotFoundException: Could not find file "/lib/libLegacyND2Reader.so"
+[0x7f274bbd2780:] EXCEPTION handling: System.IO.FileNotFoundException: Could not find file "/usr/lib/libLegacyND2Reader.so"
+[0x7f274bbd2780:] EXCEPTION handling: java.lang.UnsatisfiedLinkError: no LegacyND2Reader in java.library.path
+[0x7f274bbd2780:] EXCEPTION handling: System.DllNotFoundException: ikvm-native
+[0x7f274bbd2780:] EXCEPTION handling: System.DllNotFoundException: ikvm-native
+[0x7f274bbd2780:] EXCEPTION handling: System.DllNotFoundException: ikvm-native
+[0x7f274bbd2780:] EXCEPTION handling: System.DllNotFoundException: ikvm-native
+[0x7f274bbd2780:] EXCEPTION handling: System.DllNotFoundException: ikvm-native
+[0x7f274bbd2780:] EXCEPTION handling: System.Reflection.TargetInvocationException: Exception has been thrown by the target of an invocation.
+[0x7f274bbd2780:] EXCEPTION handling: java.lang.reflect.InvocationTargetException: 
+[0x7f274bbd2780:] EXCEPTION handling: System.DllNotFoundException: ikvm-native
+[0x7f274bbd2780:] EXCEPTION handling: System.Reflection.TargetInvocationException: Exception has been thrown by the target of an invocation.
+[0x7f274bbd2780:] EXCEPTION handling: java.lang.reflect.InvocationTargetException: 
+[0x7f274bbd2780:] EXCEPTION handling: System.DllNSystem.DllNotFoundException: ikvm-native
+  at java.lang.Class.newInstance0 (ikvm.internal.CallerID ) <0x41479580 + 0x0040f> in <filename unknown>:0 
+  at java.lang.Class.newInstance (ikvm.internal.CallerID ) <0x41479500 + 0x00047> in <filename unknown>:0 
+  at loci.formats.ImageReader..ctor (loci.formats.ClassList classList) <0x41584dd0 + 0x0012b> in <filename unknown>:0 
+  at loci.formats.ImageReader..ctor () <0x41500fd0 + 0x0001b> in <filename unknown>:0 
+  at Cell_Tool_3.BioFormats_Reader.GetFormatsSuff () <0x4144cc00 + 0x00037> in <filename unknown>:0 
+  at Cell_Tool_3.FileDecoder.LoadExtensions () <0x4144c9f0 + 0x000ff> in <filename unknown>:0 
+  at Cell_Tool_3.Interface.MainFormInitialize (System.Windows.Forms.Form MainForm) <0x41403890 + 0x00943> in <filename unknown>:0 
+  at Cell_Tool_3.CellToolMainForm.CellToolMainForm_Load (System.Object sender, System.EventArgs e) <0x413ab230 + 0x00203> in <filename unknown>:0 
+  at System.Windows.Forms.Form.OnLoad (System.EventArgs e) <0x413ab030 + 0x00071> in <filename unknown>:0 
+  at System.Windows.Forms.Form.OnLoadInternal (System.EventArgs e) <0x413aae10 + 0x0007f> in <filename unknown>:0 
+otFoundException: ikvm-native
+[0x7f274bbd2780:] EXCEPTION handling: System.ObjectDisposedException: Cannot access a disposed object.
+Object name: 'Cell_Tool_3.CellToolMainForm'.

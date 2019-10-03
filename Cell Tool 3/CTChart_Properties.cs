@@ -499,7 +499,10 @@ namespace Cell_Tool_3
                 }
             });
 
+            // Unix change
+            IA.FileBrowser.StatusLabel.Text = "Dialog open";
             dialog.ShowDialog();
+            IA.FileBrowser.StatusLabel.Text = "Ready";
         }
         public string GetFunction(int ind)
         {
@@ -693,7 +696,10 @@ namespace Cell_Tool_3
                 }
             });
 
+            // Linux change
+            IA.FileBrowser.StatusLabel.Text = "Dialog open";
             dialog.ShowDialog();
+            IA.FileBrowser.StatusLabel.Text = "Ready";
         }
         private void nameCBox_IndexChanged(object sender, EventArgs e)
         {
@@ -728,8 +734,11 @@ namespace Cell_Tool_3
             }
             else
                 fTBox.Text = "";
-            
+
+            // Linux change
+            IA.FileBrowser.StatusLabel.Text = "Dialog open";
             OptionForm.ShowDialog();
+            IA.FileBrowser.StatusLabel.Text = "Ready";
         }
         private void optionForm_Hide()
         {

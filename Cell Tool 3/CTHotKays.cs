@@ -765,7 +765,10 @@ namespace Cell_Tool_3
         public void HotKeysToolStripMenuItem_Click(object sender, EventArgs e)
         {
             BuildForm();
+            // Linux change
+            this.CTInterface.FileBrowser.StatusLabel.Text = "Dialog open";
             DialogForm.ShowDialog();
+            this.CTInterface.FileBrowser.StatusLabel.Text = "Ready";
         }
 
         public class MemoryUnit

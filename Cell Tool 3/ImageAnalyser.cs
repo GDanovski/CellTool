@@ -362,7 +362,7 @@ namespace Cell_Tool_3
             TabPages.PropertiesBody.SuspendLayout();
             TabPages.propertiesPanel.SuspendLayout();
 
-            if (TabPages.Collections.Count < 1)
+            if (TabPages.Collections.Count < 1) 
             {
                 chart.Series.panel.Visible = false;
                 chart.Properties.panel.Visible = false;

@@ -125,7 +125,10 @@ namespace Cell_Tool_3
                 msgForm.Close();
             });
 
+            // Linux change
+            IA.FileBrowser.StatusLabel.Text = "Dialog open";
             msgForm.ShowDialog();
+            IA.FileBrowser.StatusLabel.Text = "Ready";
 
             if (unisntalled)
             {

@@ -28,11 +28,13 @@ namespace Cell_Tool_3
             {
                 if (System.Environment.OSVersion.Platform != PlatformID.MacOSX &&
                     System.Environment.OSVersion.Platform != PlatformID.Unix)
-                {
+                { /*
                     Microsoft.VisualBasic.FileIO.FileSystem.CopyFile(Dir, NewDir,
                         Microsoft.VisualBasic.FileIO.UIOption.AllDialogs,
                         Microsoft.VisualBasic.FileIO.UICancelOption.DoNothing);
+		*/
                     return;
+		
                 }
             }
             catch { }
@@ -66,13 +68,14 @@ namespace Cell_Tool_3
             {
                 if (System.Environment.OSVersion.Platform != PlatformID.MacOSX &&
                     System.Environment.OSVersion.Platform != PlatformID.Unix)
-                {
+                { /*
 
                     Microsoft.VisualBasic.FileIO.FileSystem.CopyDirectory(Dir, NewDir,
                 Microsoft.VisualBasic.FileIO.UIOption.AllDialogs,
                 Microsoft.VisualBasic.FileIO.UICancelOption.DoNothing);
-
+		*/
                     return;
+		
                 }
             }
             catch { }
@@ -97,11 +100,12 @@ namespace Cell_Tool_3
             {
                 if (System.Environment.OSVersion.Platform != PlatformID.MacOSX &&
                     System.Environment.OSVersion.Platform != PlatformID.Unix)
-                {
+                { /*
                     Microsoft.VisualBasic.FileIO.FileSystem.DeleteDirectory(Dir,
                 Microsoft.VisualBasic.FileIO.UIOption.AllDialogs,
                 Microsoft.VisualBasic.FileIO.RecycleOption.SendToRecycleBin,
                 Microsoft.VisualBasic.FileIO.UICancelOption.DoNothing);
+		*/
                     return;
                 }
             }
@@ -126,11 +130,12 @@ namespace Cell_Tool_3
             {
                 if (System.Environment.OSVersion.Platform != PlatformID.MacOSX &&
                     System.Environment.OSVersion.Platform != PlatformID.Unix)
-                {
+                { /*
                     Microsoft.VisualBasic.FileIO.FileSystem.DeleteFile(Dir,
                 Microsoft.VisualBasic.FileIO.UIOption.AllDialogs,
                 Microsoft.VisualBasic.FileIO.RecycleOption.SendToRecycleBin,
                 Microsoft.VisualBasic.FileIO.UICancelOption.DoNothing);
+		*/
                     return;
                 }
             }
@@ -166,9 +171,11 @@ namespace Cell_Tool_3
                 if (System.Environment.OSVersion.Platform != PlatformID.MacOSX &&
                     System.Environment.OSVersion.Platform != PlatformID.Unix)
                 {
+		/*
                     Microsoft.VisualBasic.FileIO.FileSystem.MoveFile(Dir, NewDir,
                 Microsoft.VisualBasic.FileIO.UIOption.AllDialogs,
                 Microsoft.VisualBasic.FileIO.UICancelOption.DoNothing);
+		*/
                     return;
                 }
             }
@@ -203,10 +210,11 @@ namespace Cell_Tool_3
             {
                 if (System.Environment.OSVersion.Platform != PlatformID.MacOSX &&
                     System.Environment.OSVersion.Platform != PlatformID.Unix)
-                {
+                {/*
                     Microsoft.VisualBasic.FileIO.FileSystem.MoveDirectory(Dir, NewDir,
                 Microsoft.VisualBasic.FileIO.UIOption.AllDialogs,
                 Microsoft.VisualBasic.FileIO.UICancelOption.DoNothing);
+		*/
                     return;
                 }
             }
@@ -331,6 +339,7 @@ namespace Cell_Tool_3
 
                 bgw.RunWorkerAsync();
 
+                // TODO - change status label
                 this.ShowDialog();
             }
             private void Label_TextChanged(object sender, EventArgs e)

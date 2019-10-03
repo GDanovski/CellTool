@@ -260,7 +260,7 @@ namespace Cell_Tool_3
                 Properties.Settings.Default.AutoProtocolSettings[IA.TabPages.ActiveAccountIndex] =
                     ApplyToNewCheckB.Checked.ToString();
 
-                Properties.Settings.Default.Save();
+					Security.SaveSettings(Properties.Settings.Default);
             }
         }
         private void startBtn_Click(object sender, EventArgs e)
@@ -282,8 +282,11 @@ namespace Cell_Tool_3
             {
                 LoadSettings(protocols[LibTB.SelectedIndex].Split(new string[] { ";\n" }, StringSplitOptions.None), fi);
             }
-            
+
+            // Linux change
+            IA.FileBrowser.StatusLabel.Text = "Dialog open";
             this.ShowDialog();
+            IA.FileBrowser.StatusLabel.Text = "Ready";
         }
         private void deleteBtn_Click(object sender, EventArgs e)
         {
@@ -355,7 +358,7 @@ namespace Cell_Tool_3
         {
             string val = string.Join("||", protocols);
             Properties.Settings.Default.ProtocolSettingsList[IA.TabPages.ActiveAccountIndex] = val;
-            Properties.Settings.Default.Save();
+			Security.SaveSettings(Properties.Settings.Default);
         }
         private TifFileInfo findFI()
         {

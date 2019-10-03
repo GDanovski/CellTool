@@ -630,7 +630,10 @@ namespace Cell_Tool_3
                     }
                 });
 
+                // Linux change
+                IA.FileBrowser.StatusLabel.Text = "Dialog open";
                 OptionForm.ShowDialog();
+                IA.FileBrowser.StatusLabel.Text = "Ready";
 
                 return newRange;
             }

@@ -822,6 +822,7 @@ namespace Cell_Tool_3
                     }
                 });
 
+                // TODO - change status label
                 OptionForm.ShowDialog();
                 OptionForm.Dispose();
             }
