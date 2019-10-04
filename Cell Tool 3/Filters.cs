@@ -635,7 +635,6 @@ namespace Cell_Tool_3
             BinaryTitlePanel.BackColor = IA.FileBrowser.BackGroundColor1;
             BinaryTitlePanel.ForeColor = IA.FileBrowser.ShriftColor1;
             BinaryTitlePanel.Dock = DockStyle.Top;
-            BinaryTitlePanel.Height = 20;
             this.Controls.Add(BinaryTitlePanel);
 
             Label BinaryTitleLabel = new Label();
@@ -710,6 +709,25 @@ namespace Cell_Tool_3
             ConvolutionTitlePanel.SendToBack();
             RestorePanel.SendToBack();
             #endregion order
+
+            // Automatically resize each panel to fit the components inside
+            ConvolutionTitleLabel.AutoSize = true;
+            BinaryTitleLabel.AutoSize = true;
+            BinaryMenu1.AutoSize = true;
+            BinaryMenu.AutoSize = true;
+            BinaryTitlePanel.AutoSize = true;
+            ConvolutionMenu.AutoSize = true;
+            ConvolutionTitlePanel.AutoSize = true;
+            RestorePanel.AutoSize = true;
+
+            foreach (ToolStripMenuItem menu_item in BinaryMenu.Items) {
+                menu_item.AutoSize = true;
+            }
+            foreach (ToolStripMenuItem menu_item in BinaryMenu1.Items)
+            {
+                menu_item.AutoSize = true;
+            }
+
 
             this.ResumeLayout();
         }

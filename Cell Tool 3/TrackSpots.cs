@@ -90,14 +90,17 @@ namespace Cell_Tool_3
         {
             MinSizeTB = CTTextBox_Add(5, 30, panel, "Min Size:",
                 "Set minimum size for the tracked particles in pixels");
+            MinSizeTB.label.AutoSize = true;
             MinSizeTB.Value.Changed += MinSizeTB_ValueChanged;
 
             MaxSizeTB = CTTextBox_Add(5, 55, panel, "Max Size:",
                "Set maximum size for the tracked particles in pixels");
+            MaxSizeTB.label.AutoSize = true;
             MaxSizeTB.Value.Changed += MaxSizeTB_ValueChanged;
 
             SpeedTB = CTTextBox_Add(5, 80, panel, "Max Speed:",
                "Set maximum speed for the tracked particles in pixels");
+            SpeedTB.label.AutoSize = true;
             SpeedTB.Value.Changed += SpeedTB_ValueChanged;
 
         }
