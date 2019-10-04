@@ -7,7 +7,7 @@ namespace Cell_Tool_3
 {
     class OSFileManager
     {
-        public static void CopyFile(string Dir, string NewDir)
+        public static void CopyFile(string Dir, string NewDir, ToolStripStatusLabel StatusLabel)
         {
             if (!File.Exists(Dir)) return;
             try
@@ -29,10 +29,10 @@ namespace Cell_Tool_3
                 ((BackgroundWorker)o).ReportProgress(0);
             });
             InfoForm form = new InfoForm();
-            form.SetUp("Copy File", Dir, NewDir, bgw);
+            form.SetUp("Copy File", Dir, NewDir, bgw,StatusLabel);
 
         }
-        public static void CopyDirectory(string Dir, string NewDir)
+        public static void CopyDirectory(string Dir, string NewDir, ToolStripStatusLabel StatusLabel)
         {
             if (!Directory.Exists(Dir)) return;
             try
@@ -54,11 +54,11 @@ namespace Cell_Tool_3
                 ((BackgroundWorker)o).ReportProgress(0);
             });
             InfoForm form = new InfoForm();
-            form.SetUp("Copy Directory", Dir, NewDir, bgw);
+            form.SetUp("Copy Directory", Dir, NewDir, bgw,StatusLabel);
 
         }
 
-        public static void DeleteDirectory(string Dir)
+        public static void DeleteDirectory(string Dir, ToolStripStatusLabel StatusLabel)
         {
             if (!Directory.Exists(Dir)) return;
             
@@ -71,10 +71,10 @@ namespace Cell_Tool_3
                 ((BackgroundWorker)o).ReportProgress(0);
             });
             InfoForm form = new InfoForm();
-            form.SetUp("Delete Directory", Dir, "", bgw);
+            form.SetUp("Delete Directory", Dir, "", bgw,StatusLabel);
 
         }
-        public static void DeleteFile(string Dir)
+        public static void DeleteFile(string Dir, ToolStripStatusLabel StatusLabel)
         {
             if (!File.Exists(Dir)) return;
            
@@ -87,10 +87,10 @@ namespace Cell_Tool_3
                 ((BackgroundWorker)o).ReportProgress(0);
             });
             InfoForm form = new InfoForm();
-            form.SetUp("Delete File", Dir, "", bgw);
+            form.SetUp("Delete File", Dir, "", bgw, StatusLabel);
 
         }
-        public static void MoveFile(string Dir, string NewDir)
+        public static void MoveFile(string Dir, string NewDir, ToolStripStatusLabel StatusLabel)
         {
             if (!File.Exists(Dir)) return;
             try
@@ -112,10 +112,10 @@ namespace Cell_Tool_3
                 ((BackgroundWorker)o).ReportProgress(0);
             });
             InfoForm form = new InfoForm();
-            form.SetUp("Move File", Dir, NewDir, bgw);
+            form.SetUp("Move File", Dir, NewDir, bgw, StatusLabel);
 
         }
-        public static void MoveDirectory(string Dir, string NewDir)
+        public static void MoveDirectory(string Dir, string NewDir, ToolStripStatusLabel StatusLabel)
         {
             if (!Directory.Exists(Dir)) return;
             try
@@ -137,7 +137,7 @@ namespace Cell_Tool_3
                 ((BackgroundWorker)o).ReportProgress(0);
             });
             InfoForm form = new InfoForm();
-            form.SetUp("Move Directory", Dir, NewDir, bgw);
+            form.SetUp("Move Directory", Dir, NewDir, bgw, StatusLabel);
         }
         private static void DirectoryCopy(string sourceDirName, string destDirName, bool copySubDirs)
         {
@@ -230,7 +230,7 @@ namespace Cell_Tool_3
                 this.pb.Anchor = AnchorStyles.Left | AnchorStyles.Right;
                 this.Controls.Add(pb);
             }
-            public void SetUp(string name, string FromDir, string ToDir, BackgroundWorker bgw)
+            public void SetUp(string name, string FromDir, string ToDir, BackgroundWorker bgw, ToolStripStatusLabel StatusLabel)
             {
                 this.Text = name;
                 this.FromDir = FromDir;
@@ -248,8 +248,9 @@ namespace Cell_Tool_3
 
                 bgw.RunWorkerAsync();
 
-                // TODO - change status label
+                StatusLabel.Text = "Dialog open";
                 this.ShowDialog();
+                StatusLabel.Text = "Ready";
             }
             private void Label_TextChanged(object sender, EventArgs e)
             {

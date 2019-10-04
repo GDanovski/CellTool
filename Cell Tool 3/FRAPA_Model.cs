@@ -33,7 +33,7 @@ namespace Cell_Tool_3
     {
         public const int nModels = 5;
         #region Aquisition bleaching correction
-        private static int[] Dialog(double[] Xvals)
+        private static int[] Dialog(double[] Xvals, ToolStripStatusLabel StatusLabel)
         {
             int[] res = null;
 
@@ -153,17 +153,17 @@ namespace Cell_Tool_3
                 }
             });
 
-
-            // TODO - change status label
+            StatusLabel.Text = "Dialog open";
             OptionForm.ShowDialog();
             OptionForm.Dispose();
+            StatusLabel.Text = "Ready";
 
             return res;
         }
 
         public static void FrappaNormalise(ResultsExtractor.MyForm form1)
         {
-            int[] dialogVals = Dialog(form1.dataTV.OriginalXaxis);
+            int[] dialogVals = Dialog(form1.dataTV.OriginalXaxis, form1.StatusLabel);
             if (dialogVals == null) return;
 
             int bleaching = dialogVals[0];
@@ -441,7 +441,7 @@ namespace Cell_Tool_3
         */
         #endregion Aquisition bleaching correction
         #region Foci FRAPA
-        private static int[] FociDialog(double[] Xvals)
+        private static int[] FociDialog(double[] Xvals, ToolStripStatusLabel StatusLabel)
         {
             int[] res = null;
 
@@ -561,14 +561,16 @@ namespace Cell_Tool_3
                 }
             });
 
-            // TODO - change status label
+           StatusLabel.Text = "Dialog open";
             OptionForm.ShowDialog();
+            OptionForm.Dispose();
+            StatusLabel.Text = "Ready";
 
             return res;
         }
         public static void FociFrappaNormalise(ResultsExtractor.MyForm form1)
         {
-            int[] dialogVals = FociDialog(form1.dataTV.OriginalXaxis);
+            int[] dialogVals = FociDialog(form1.dataTV.OriginalXaxis, form1.StatusLabel);
             if (dialogVals == null) return;
 
             int MP = dialogVals[0];

@@ -156,8 +156,8 @@ namespace Cell_Tool_3
             LogoForm.FormBorderStyle = FormBorderStyle.FixedDialog;
 
             LogoForm.Show();
-            LogoForm.Update();
             LogoForm.Validate();
+            LogoForm.Update();
             LogoForm.Refresh();
 
             //Stop the tread
