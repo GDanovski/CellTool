@@ -404,9 +404,8 @@ namespace Cell_Tool_3
             ConvolutionTitleLabel.Location = new Point(5, 2);
             ConvolutionTitlePanel.Controls.Add(ConvolutionTitleLabel);
 
-            
-            ConvolutionMenu.BackColor = IA.FileBrowser.BackGround2Color1;
-            ConvolutionMenu.ForeColor = IA.FileBrowser.ShriftColor1;
+            //ConvolutionMenu.BackColor = IA.FileBrowser.BackGround2Color1;
+            //ConvolutionMenu.ForeColor = IA.FileBrowser.ShriftColor1;
             ConvolutionMenu.CanOverflow = true;
             this.Controls.Add(ConvolutionMenu);
 
@@ -634,6 +633,7 @@ namespace Cell_Tool_3
             Panel BinaryTitlePanel = new Panel();
             BinaryTitlePanel.BackColor = IA.FileBrowser.BackGroundColor1;
             BinaryTitlePanel.ForeColor = IA.FileBrowser.ShriftColor1;
+            BinaryTitlePanel.Height = 20;
             BinaryTitlePanel.Dock = DockStyle.Top;
             this.Controls.Add(BinaryTitlePanel);
 
@@ -643,13 +643,13 @@ namespace Cell_Tool_3
             BinaryTitlePanel.Controls.Add(BinaryTitleLabel);
 
             BinaryMenu.CanOverflow = true;
-            BinaryMenu.BackColor = IA.FileBrowser.BackGround2Color1;
-            BinaryMenu.ForeColor = IA.FileBrowser.ShriftColor1;
+            //BinaryMenu.BackColor = IA.FileBrowser.BackGround2Color1;
+            //BinaryMenu.ForeColor = IA.FileBrowser.ShriftColor1;
             this.Controls.Add(BinaryMenu);
 
             BinaryMenu1.CanOverflow = true;
-            BinaryMenu1.BackColor = IA.FileBrowser.BackGround2Color1;
-            BinaryMenu1.ForeColor = IA.FileBrowser.ShriftColor1;
+            //BinaryMenu1.BackColor = IA.FileBrowser.BackGround2Color1;
+            //BinaryMenu1.ForeColor = IA.FileBrowser.ShriftColor1;
             this.Controls.Add(BinaryMenu1);
 
             current = Erode;
@@ -715,17 +715,25 @@ namespace Cell_Tool_3
             BinaryTitleLabel.AutoSize = true;
             BinaryMenu1.AutoSize = true;
             BinaryMenu.AutoSize = true;
-            BinaryTitlePanel.AutoSize = true;
+            //BinaryTitlePanel.AutoSize = true;
             ConvolutionMenu.AutoSize = true;
-            ConvolutionTitlePanel.AutoSize = true;
+            //ConvolutionTitlePanel.AutoSize = true;
             RestorePanel.AutoSize = true;
+           
+            foreach (ToolStripMenuItem menu_item in ConvolutionMenu.Items)
+            {
+                menu_item.AutoSize = true;
+                menu_item.Font = new Font(ConvolutionTitleLabel.Font.FontFamily, 9.0f);
+            }
 
             foreach (ToolStripMenuItem menu_item in BinaryMenu.Items) {
                 menu_item.AutoSize = true;
+                menu_item.Font = new Font(ConvolutionTitleLabel.Font.FontFamily, 9.0f);
             }
             foreach (ToolStripMenuItem menu_item in BinaryMenu1.Items)
             {
                 menu_item.AutoSize = true;
+                menu_item.Font = new Font(ConvolutionTitleLabel.Font.FontFamily, 9.0f);
             }
 
 
@@ -985,12 +993,12 @@ namespace Cell_Tool_3
         private void menuItem_Opened(object sender, EventArgs e)
         {
             ToolStripMenuItem item1 = sender as ToolStripMenuItem;
-            item1.ForeColor = Color.Black;
+           // item1.ForeColor = Color.Black;
         }
         private void menuItem_Closed(object sender, EventArgs e)
         {
             ToolStripMenuItem item1 = sender as ToolStripMenuItem;
-            item1.ForeColor = IA.FileBrowser.ShriftColor1;
+            //item1.ForeColor = IA.FileBrowser.ShriftColor1;
         }
 
         public TifFileInfo findFI()
