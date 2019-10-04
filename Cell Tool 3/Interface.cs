@@ -156,14 +156,17 @@ namespace Cell_Tool_3
             LogoForm.FormBorderStyle = FormBorderStyle.FixedDialog;
 
             LogoForm.Show();
-            LogoForm.Validate();
+            //Force update GUI
+            Application.DoEvents();
+            LogoForm.Invalidate();
             LogoForm.Update();
             LogoForm.Refresh();
+            Application.DoEvents();
 
             //Stop the tread
             Thread.Sleep(3000);
             LogoForm.Close();
-            
+            LogoForm.Dispose();
         }
 
         public void MainFormInitialize(Form MainForm)
@@ -591,23 +594,26 @@ namespace Cell_Tool_3
             IA.TabPages.zTrackBar.Refresh(fi.zValue + 1, 1, fi.sizeZ);
             IA.ReloadImages();
         }
+       
         private void Menu(Panel MainPanel)
         {
             Panel MenuPanel = new Panel();
-            MenuPanel.Height = 23;
+            MenuPanel.Height = 25;
             MenuPanel.Dock = DockStyle.Top;
             MainPanel.Controls.Add(MenuPanel);
             //Start Menu
-            MenuStrip StartMenu = new MenuStrip();
-            StartMenu.BackColor = BackGroundColor;
-            StartMenu.ForeColor = ShriftColor;
+            MenuStrip StartMenu = new MenuStrip();           
+            StartMenu.AutoSize = true;
+            StartMenu.Dock = DockStyle.Fill;
+            //StartMenu.BackColor = BackGroundColor;
+            //StartMenu.ForeColor = ShriftColor;
             MenuPanel.Controls.Add(StartMenu);
             //File menu 
             { 
                 ToolStripMenuItem FileToolStripMenuItem = new ToolStripMenuItem();
                 FileToolStripMenuItem.Text = "File";
-                FileToolStripMenuItem.BackColor = BackGroundColor;
-                FileToolStripMenuItem.ForeColor = ShriftColor;
+                //FileToolStripMenuItem.BackColor = BackGroundColor;
+                //FileToolStripMenuItem.ForeColor = ShriftColor;
                 FileToolStripMenuItem.DropDownOpened += new EventHandler(menuItem_Opened);
                 FileToolStripMenuItem.DropDownClosed += new EventHandler(menuItem_Closed);
                 StartMenu.Items.Add(FileToolStripMenuItem);
@@ -871,12 +877,12 @@ namespace Cell_Tool_3
         void menuItem_Opened(object sender, EventArgs e)
         {
             ToolStripMenuItem item1 = sender as ToolStripMenuItem;
-            item1.ForeColor = Color.Black;
+            //item1.ForeColor = Color.Black;
         }
         void menuItem_Closed(object sender, EventArgs e)
         {
             ToolStripMenuItem item1 = sender as ToolStripMenuItem;
-            item1.ForeColor = ShriftColor;
+            //item1.ForeColor = ShriftColor;
         }
         void Support_Click(object sender, EventArgs e)
         {
@@ -1299,7 +1305,7 @@ namespace Cell_Tool_3
                     ZoomValue.DropDownStyle = ComboBoxStyle.DropDownList;
                     ZoomValue.SelectedIndex = 4;
                     ZoomValue.AutoSize = false;
-                    ZoomValue.Width = 60;
+                    ZoomValue.Width = 80;
                     taskTS.Items.Add(ZoomValue);
                 }
                 ToolStripSeparator Separator6 = new ToolStripSeparator();

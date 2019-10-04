@@ -1033,6 +1033,10 @@ namespace Cell_Tool_3
             findStartIndex();
 
             Body.ResumeLayout(true);
+            Body.Invalidate();
+            Body.Update();
+            Body.Refresh();
+            Application.DoEvents();
         }
         private void openResultsExtractor(string dir,int FileTypeIndex, TreeNode node)
         {
