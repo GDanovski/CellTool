@@ -79,7 +79,7 @@ namespace Cell_Tool_3
             TifFileInfo fi = tp.tifFI;
             fi.seriesCount = reader.getSeriesCount();
             //Select which series to open!!!!!
-            int ser = SelectSeries(reader);
+            int ser = SelectSeries(reader, IA.TabPages.FileBrowser.StatusLabel);
             if(ser == -1)
             {
                 fi = null;
@@ -740,7 +740,7 @@ namespace Cell_Tool_3
 
             return indexes;
         }
-        private static int SelectSeries(loci.formats.ChannelSeparator reader)
+        private static int SelectSeries(loci.formats.ChannelSeparator reader, ToolStripStatusLabel StatusLabel)
         {
             int res = -1;
             if (reader.getSeriesCount() == 1)
@@ -822,9 +822,10 @@ namespace Cell_Tool_3
                     }
                 });
 
-                // TODO - change status label
+                StatusLabel.Text = "Dialog open";
                 OptionForm.ShowDialog();
                 OptionForm.Dispose();
+                StatusLabel.Text = "Ready";
             }
             return res;
         }

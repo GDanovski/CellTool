@@ -69,7 +69,7 @@ namespace Cell_Tool_3
                 int[][] matrix = null;
                 while (!CheckSize(RAM, matrix, tp.tifFI))
                 {
-                    matrix = SubstackDialog(tp.tifFI);
+                    matrix = SubstackDialog(tp.tifFI, IA.TabPages.FileBrowser.StatusLabel);
 
                     if (matrix == null)
                     {
@@ -129,7 +129,7 @@ namespace Cell_Tool_3
             TifFileInfo fi = tp.tifFI;
             fi.seriesCount = reader.getSeriesCount();
             //Select which series to open!!!!!
-            int ser = SelectSeries(reader);
+            int ser = SelectSeries(reader, IA.TabPages.FileBrowser.StatusLabel);
             if (ser == -1)
             {
                 fi = null;
@@ -278,7 +278,7 @@ namespace Cell_Tool_3
 
             return des;
         }
-        private static int SelectSeries(loci.formats.ChannelSeparator reader)
+        private static int SelectSeries(loci.formats.ChannelSeparator reader, ToolStripStatusLabel StatusLabel)
         {
             int res = -1;
             if (reader.getSeriesCount() == 1)
@@ -360,9 +360,10 @@ namespace Cell_Tool_3
                     }
                 });
 
-                // TODO - change status label
+                StatusLabel.Text = "Dialog open";
                 OptionForm.ShowDialog();
                 OptionForm.Dispose();
+                StatusLabel.Text = "Ready";                
             }
             return res;
         }
@@ -606,7 +607,7 @@ namespace Cell_Tool_3
             }
             if (LutList.Count == fi.sizeC) { fi.LutList = LutList; }
         }
-        private static int[][] SubstackDialog(TifFileInfo fi)
+        private static int[][] SubstackDialog(TifFileInfo fi, ToolStripStatusLabel StatusLabel)
         {
             int[][] res = null;
 
@@ -811,10 +812,11 @@ namespace Cell_Tool_3
                         break;
                 }
             });
-            // TODO - change status label
+            
+            StatusLabel.Text = "Dialog open";
             OptionForm.ShowDialog();
             OptionForm.Dispose();
-
+            StatusLabel.Text = "Ready";
             return res;
         }
         private static bool SubstackToolStripMenuItem_click(string path, List<TabPage> Collection, TabPage tp, ImageAnalyser IA, loci.formats.ChannelSeparator reader, int[][] dim)
