@@ -2339,23 +2339,28 @@ namespace Cell_Tool_3
             RoiMeasure.Measure(current, fi, fi.cValue, IA);
             IA.ReloadImages();
         }
+
+        private void clear_ROI_selection()
+        {
+            x_tb.Disable();
+            y_tb.Disable();
+            w_tb.Disable();
+            h_tb.Disable();
+            d_tb.Disable();
+            n_tb.Disable();
+            startT_tb.Disable();
+            finishT_tb.Disable();
+            startZ_tb.Disable();
+            finishZ_tb.Disable();
+
+            RoiName.Text = "Name: ";
+            RoiTypeL.Text = "Type: ";
+        }
         public void fillTextBox(TifFileInfo fi)
         {
             if (current == null)
             {
-                x_tb.Disable();
-                y_tb.Disable();
-                w_tb.Disable();
-                h_tb.Disable();
-                d_tb.Disable();
-                n_tb.Disable();
-                startT_tb.Disable();
-                finishT_tb.Disable();
-                startZ_tb.Disable();
-                finishZ_tb.Disable();
-
-                RoiName.Text = "Name: ";
-                RoiTypeL.Text = "Type: ";
+                this.clear_ROI_selection();
             }
             else
             {
@@ -2393,6 +2398,11 @@ namespace Cell_Tool_3
                 if (current.Shape == 0 | current.Shape == 1)
                 {
                     Point[] points = current.GetLocation(frame);
+                    if (points == null)
+                    {
+                        this.clear_ROI_selection();
+                        return;
+                    }
                     x_tb.Enable();
                     y_tb.Enable();
                     w_tb.Enable();
