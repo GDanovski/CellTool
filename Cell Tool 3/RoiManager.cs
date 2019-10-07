@@ -2339,6 +2339,7 @@ namespace Cell_Tool_3
             RoiMeasure.Measure(current, fi, fi.cValue, IA);
             IA.ReloadImages();
         }
+
         private void clear_ROI_selection()
         {
             x_tb.Disable();
