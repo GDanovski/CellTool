@@ -312,7 +312,7 @@ namespace Cell_Tool_3
             }
         }
         #region Substack
-        private static int[][] SubstackDialog(TifFileInfo fi)
+        private static int[][] SubstackDialog(TifFileInfo fi, ToolStripStatusLabel StatusLabel)
         {
             int[][] res = null;
 
@@ -517,10 +517,11 @@ namespace Cell_Tool_3
                         break;
                 }
             });
-            // TODO - change status label
+            
+            StatusLabel.Text = "Dialog open";
             OptionForm.ShowDialog();
             OptionForm.Dispose();
-
+            StatusLabel.Text = "Ready";
             return res;
         }
         private void SubstackToolStripMenuItem_click(object sender, EventArgs e)
@@ -534,7 +535,7 @@ namespace Cell_Tool_3
             if (fi == null) { return; }
             if (fi.available == false) return;
 
-            int[][] dim = SubstackDialog(fi);
+            int[][] dim = SubstackDialog(fi,this.IA.FileBrowser.StatusLabel);
 
             if (dim == null) return;
 

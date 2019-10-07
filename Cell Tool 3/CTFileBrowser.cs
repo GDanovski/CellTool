@@ -1339,7 +1339,7 @@ namespace Cell_Tool_3
                   "", MessageBoxButtons.YesNo) == System.Windows.Forms.DialogResult.No)
                     { return; }
                 }
-                OSFileManager.CopyFile(node.Tag.ToString(), dir);
+                OSFileManager.CopyFile(node.Tag.ToString(), dir,StatusLabel);
 
             }
         }
@@ -1372,7 +1372,7 @@ namespace Cell_Tool_3
 
                         if (saveInd == true && node.Tag.ToString() != dir)
                         {
-                            OSFileManager.CopyFile(node.Tag.ToString(), dir);
+                            OSFileManager.CopyFile(node.Tag.ToString(), dir,StatusLabel);
                             count++;
                         }
                     }
@@ -1410,7 +1410,7 @@ namespace Cell_Tool_3
 
                         if (saveInd == true & node.Tag.ToString() != dir)
                         {
-                            OSFileManager.CopyFile(node.Tag.ToString(), dir);
+                            OSFileManager.CopyFile(node.Tag.ToString(), dir,StatusLabel);
                             count++;
                         }
                     }
@@ -1602,11 +1602,11 @@ namespace Cell_Tool_3
                 {
                     if (Directory.Exists(OSStringConverter.StringToDir(Dir)) == true)
                     {
-                        OSFileManager.MoveDirectory(Dir, NewDir);
+                        OSFileManager.MoveDirectory(Dir, NewDir,StatusLabel);
                     }
                     else if (File.Exists(OSStringConverter.StringToDir(Dir)) == true)
                     {
-                       OSFileManager.MoveFile(Dir, NewDir);
+                       OSFileManager.MoveFile(Dir, NewDir,StatusLabel);
                     }
 
                 }
@@ -1614,11 +1614,11 @@ namespace Cell_Tool_3
                 {
                     if (Directory.Exists(OSStringConverter.StringToDir(Dir)) == true)
                     {
-                        OSFileManager.CopyDirectory(Dir, NewDir);
+                        OSFileManager.CopyDirectory(Dir, NewDir,StatusLabel);
                     }
                     else if (File.Exists(OSStringConverter.StringToDir(Dir)) == true)
                     {
-                        OSFileManager.CopyFile(Dir, NewDir);
+                        OSFileManager.CopyFile(Dir, NewDir,StatusLabel);
                     }
                 }
 
@@ -1854,11 +1854,11 @@ namespace Cell_Tool_3
                             if (Directory.Exists(OSStringConverter.StringToDir(node.Tag.ToString())) == true)
                             {
                                 //Directory.Delete(TreeViewExp.SelectedNode.Tag.ToString(), true);
-                                OSFileManager.DeleteDirectory(node.Tag.ToString());
+                                OSFileManager.DeleteDirectory(node.Tag.ToString(),StatusLabel);
                             }
                             else if (File.Exists(OSStringConverter.StringToDir(node.Tag.ToString())) == true)
                             {
-                                OSFileManager.DeleteFile(node.Tag.ToString());
+                                OSFileManager.DeleteFile(node.Tag.ToString(),StatusLabel);
                                 //File.Delete(TreeViewExp.SelectedNode.Tag.ToString());
                             }
                             Vbox_RemoveItem(node);
@@ -1907,13 +1907,13 @@ namespace Cell_Tool_3
 
                                 }
                                 //Directory.Delete(TreeViewExp.SelectedNode.Tag.ToString(), true);
-                                OSFileManager.DeleteDirectory(node.Tag.ToString());
+                                OSFileManager.DeleteDirectory(node.Tag.ToString(),StatusLabel);
 
 
                             }
                             else if (File.Exists(OSStringConverter.StringToDir(node.Tag.ToString())) == true)
                             {
-                                OSFileManager.DeleteFile(node.Tag.ToString());
+                                OSFileManager.DeleteFile(node.Tag.ToString(),StatusLabel);
                                 //File.Delete(TreeViewExp.SelectedNode.Tag.ToString());
                             }
                             Vbox_RemoveItem(node);
@@ -1970,11 +1970,11 @@ namespace Cell_Tool_3
                             if (Directory.Exists(OSStringConverter.StringToDir(node.Tag.ToString())) == true)
                             {
                                 //Directory.Delete(TreeViewExp.SelectedNode.Tag.ToString(), true);
-                                OSFileManager.DeleteDirectory(node.Tag.ToString());
+                                OSFileManager.DeleteDirectory(node.Tag.ToString(),StatusLabel);
                             }
                             else if (File.Exists(OSStringConverter.StringToDir(node.Tag.ToString())) == true)
                             {
-                                OSFileManager.DeleteFile(node.Tag.ToString());
+                                OSFileManager.DeleteFile(node.Tag.ToString(),StatusLabel);
                                 //File.Delete(TreeViewExp.SelectedNode.Tag.ToString());
                             }
                             Vbox_RemoveItem(node);
@@ -2023,13 +2023,13 @@ namespace Cell_Tool_3
 
                                 }
                                 //Directory.Delete(TreeViewExp.SelectedNode.Tag.ToString(), true);
-                                OSFileManager.DeleteDirectory(node.Tag.ToString());
+                                OSFileManager.DeleteDirectory(node.Tag.ToString(),StatusLabel);
 
 
                             }
                             else if (File.Exists(OSStringConverter.StringToDir(node.Tag.ToString())) == true)
                             {
-                                OSFileManager.DeleteFile(node.Tag.ToString());
+                                OSFileManager.DeleteFile(node.Tag.ToString(),StatusLabel);
                                 //File.Delete(TreeViewExp.SelectedNode.Tag.ToString());
                             }
                             Vbox_RemoveItem(node);
@@ -3194,13 +3194,13 @@ namespace Cell_Tool_3
 
                         }
                         //Directory.Delete(TreeViewExp.SelectedNode.Tag.ToString(), true);
-                        OSFileManager.DeleteDirectory(TreeViewExp.SelectedNode.Tag.ToString());
+                        OSFileManager.DeleteDirectory(TreeViewExp.SelectedNode.Tag.ToString(),StatusLabel);
 
                     }
                     else if (File.Exists(OSStringConverter.StringToDir(
                         TreeViewExp.SelectedNode.Tag.ToString())) == true)
                     {
-                        OSFileManager.DeleteFile(TreeViewExp.SelectedNode.Tag.ToString());
+                        OSFileManager.DeleteFile(TreeViewExp.SelectedNode.Tag.ToString(),StatusLabel);
                         //File.Delete(TreeViewExp.SelectedNode.Tag.ToString());
 
                     }

@@ -82,7 +82,7 @@ namespace Cell_Tool_3
                 //Resize event -> 26 is minimized box
                 if (DataPropPanel.Height != 26)
                 {
-                    DataPropPanel.Height = 170;
+                    DataPropPanel.Height = 180;
                 }
             });
            //Lib Panel initialize

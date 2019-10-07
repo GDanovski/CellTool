@@ -211,6 +211,13 @@ namespace Cell_Tool_3
 
             VisualizeColorBtns();
             VisualizeMethodsBtns();
+
+            
+            this.TopBar.Invalidate();
+            this.TopBar.Update();
+            this.TopBar.Refresh();
+            Application.DoEvents();
+
         }
 
         private void Control_MouseDown(object sender, MouseEventArgs e)

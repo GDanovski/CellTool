@@ -77,7 +77,7 @@ namespace Cell_Tool_3
             if (StatusBar.Minimum != 0) { StatusBar.Minimum = 0; }
             if (StatusBar.Step != 1) { StatusBar.Step = 1; }
 
-            Boolean hideStatusBar = true;
+            bool hideStatusBar = true;
             foreach (TabPage tp in tabCollection)
             {
                 if (tp.tifFI != null && tp.tifFI.available == false && tp.tifFI.selected == true)
