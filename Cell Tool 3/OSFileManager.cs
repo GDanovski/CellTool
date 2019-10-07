@@ -9,7 +9,11 @@ namespace Cell_Tool_3
     {
         public static void CopyFile(string Dir, string NewDir, ToolStripStatusLabel StatusLabel)
         {
+            Dir = OSStringConverter.StringToDir(Dir);
+            NewDir = OSStringConverter.StringToDir(NewDir);
+
             if (!File.Exists(Dir)) return;
+            
             try
             {
                 if (File.Exists(NewDir)) File.Delete(NewDir);
@@ -28,12 +32,15 @@ namespace Cell_Tool_3
 
                 ((BackgroundWorker)o).ReportProgress(0);
             });
+            
             InfoForm form = new InfoForm();
             form.SetUp("Copy File", Dir, NewDir, bgw,StatusLabel);
 
         }
         public static void CopyDirectory(string Dir, string NewDir, ToolStripStatusLabel StatusLabel)
         {
+            Dir = OSStringConverter.StringToDir(Dir);
+            NewDir = OSStringConverter.StringToDir(NewDir);
             if (!Directory.Exists(Dir)) return;
             try
             {
@@ -60,6 +67,7 @@ namespace Cell_Tool_3
 
         public static void DeleteDirectory(string Dir, ToolStripStatusLabel StatusLabel)
         {
+            Dir = OSStringConverter.StringToDir(Dir);
             if (!Directory.Exists(Dir)) return;
             
             var bgw = new BackgroundWorker();
@@ -76,6 +84,7 @@ namespace Cell_Tool_3
         }
         public static void DeleteFile(string Dir, ToolStripStatusLabel StatusLabel)
         {
+            Dir = OSStringConverter.StringToDir(Dir);
             if (!File.Exists(Dir)) return;
            
             var bgw = new BackgroundWorker();
@@ -92,6 +101,9 @@ namespace Cell_Tool_3
         }
         public static void MoveFile(string Dir, string NewDir, ToolStripStatusLabel StatusLabel)
         {
+            Dir = OSStringConverter.StringToDir(Dir);
+            NewDir = OSStringConverter.StringToDir(NewDir);
+
             if (!File.Exists(Dir)) return;
             try
             {
@@ -111,12 +123,16 @@ namespace Cell_Tool_3
 
                 ((BackgroundWorker)o).ReportProgress(0);
             });
+
             InfoForm form = new InfoForm();
             form.SetUp("Move File", Dir, NewDir, bgw, StatusLabel);
 
         }
         public static void MoveDirectory(string Dir, string NewDir, ToolStripStatusLabel StatusLabel)
         {
+            Dir = OSStringConverter.StringToDir(Dir);
+            NewDir = OSStringConverter.StringToDir(NewDir);
+
             if (!Directory.Exists(Dir)) return;
             try
             {
@@ -141,6 +157,8 @@ namespace Cell_Tool_3
         }
         private static void DirectoryCopy(string sourceDirName, string destDirName, bool copySubDirs)
         {
+            sourceDirName = OSStringConverter.StringToDir(sourceDirName);
+            destDirName = OSStringConverter.StringToDir(destDirName);
             // Get the subdirectories for the specified directory.
             DirectoryInfo dir = new DirectoryInfo(sourceDirName);
 
@@ -242,15 +260,13 @@ namespace Cell_Tool_3
 
                 bgw.ProgressChanged += new ProgressChangedEventHandler(delegate (Object o, ProgressChangedEventArgs a)
                 {
-                    this.Close();
-                    this.Dispose();
+                     this.Close();
                 });
 
                 bgw.RunWorkerAsync();
-
-                StatusLabel.Text = "Dialog open";
+                // StatusLabel.Text = "Dialog open";                
                 this.ShowDialog();
-                StatusLabel.Text = "Ready";
+                // StatusLabel.Text = "Ready";
             }
             private void Label_TextChanged(object sender, EventArgs e)
             {
