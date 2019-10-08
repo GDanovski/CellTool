@@ -282,7 +282,7 @@ namespace Cell_Tool_3
                 PropertiesBtn.Text = "Properties";
                 //PropertiesBtn.BackColor = TaskPanelColor;
                 PropertiesBtn.Image = Properties.Resources.info;
-                taskTS.Items.Add(PropertiesBtn);
+                if(OSStringConverter.isWinOS) taskTS.Items.Add(PropertiesBtn);
                 PropertiesBtn.Click += new EventHandler(PropertiesBtn_Click);
 
                 DeleteBtn.DisplayStyle = ToolStripItemDisplayStyle.Image;
@@ -591,7 +591,7 @@ namespace Cell_Tool_3
 
                 MenuItem OpenInNewWindowMenuBtn = new MenuItem();
                 OpenInNewWindowMenuBtn.Text = "Open in new window";
-                TreeViewContextMenu.MenuItems.Add(OpenInNewWindowMenuBtn);
+                if (OSStringConverter.isWinOS) TreeViewContextMenu.MenuItems.Add(OpenInNewWindowMenuBtn);
                 OpenInNewWindowMenuBtn.Click += new EventHandler(Explorer_Open);
 
                 TreeViewContextMenu.MenuItems.Add("-");
@@ -664,11 +664,11 @@ namespace Cell_Tool_3
                 TreeViewContextMenu.MenuItems.Add(NewFolderMenuBtn);
                 NewFolderMenuBtn.Click += new EventHandler(NewFolderBtn_Click);
 
-                TreeViewContextMenu.MenuItems.Add("-");
+                if (OSStringConverter.isWinOS) TreeViewContextMenu.MenuItems.Add("-");
 
                 MenuItem PropertiesMenuBtn = new MenuItem();
                 PropertiesMenuBtn.Text = "Properties";
-                TreeViewContextMenu.MenuItems.Add(PropertiesMenuBtn);
+                if (OSStringConverter.isWinOS) TreeViewContextMenu.MenuItems.Add(PropertiesMenuBtn);
                 PropertiesMenuBtn.Click += new EventHandler(PropertiesBtn_Click);
 
                 TreeViewExp.MouseUp += new MouseEventHandler(delegate (Object o, MouseEventArgs a)
@@ -896,11 +896,11 @@ namespace Cell_Tool_3
                 VboxContextMenu.MenuItems.Add(ReleaseSearchedMenuBtn);
                 ReleaseSearchedMenuBtn.Click += new EventHandler(Vbox_ReleaceSearched);
 
-                VboxContextMenu.MenuItems.Add("-");
+                if (OSStringConverter.isWinOS) VboxContextMenu.MenuItems.Add("-");
 
                 MenuItem PropertiesMenuBtn = new MenuItem();
                 PropertiesMenuBtn.Text = "Properties";
-                VboxContextMenu.MenuItems.Add(PropertiesMenuBtn);
+                if (OSStringConverter.isWinOS) VboxContextMenu.MenuItems.Add(PropertiesMenuBtn);
                 PropertiesMenuBtn.Click += new EventHandler(PropertiesBtn_Click);
 
                 Vbox.MouseUp += new MouseEventHandler(delegate (Object o, MouseEventArgs a)

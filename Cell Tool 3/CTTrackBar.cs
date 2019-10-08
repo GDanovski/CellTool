@@ -46,14 +46,14 @@ namespace Cell_Tool_3
            
             Panel textBoxPanel = new Panel();
             textBoxPanel.Dock = DockStyle.Right;
-            textBoxPanel.Width = 92;
+            textBoxPanel.Width = 100;
             Panel.Controls.Add(textBoxPanel);
 
             //frames text box
             TextBox1.Width = 40;
             
             TextBox1.Location = new System.Drawing.Point(10, 0);
-           TextBox1.BackColor = Color.White;
+            TextBox1.BackColor = Color.White;
             TextBox1.ForeColor = Color.Black;
             textBoxPanel.Controls.Add(TextBox1);
             TextBox1.TextChanged += new EventHandler(TextBox1_TextChanged);

@@ -213,6 +213,7 @@ namespace Cell_Tool_3
                 this.Width = 300;
                 this.Height = 150;
                 this.Icon = Properties.Resources.CT_done;
+                this.Load += Form_Load;
 
                 lab_From = new Label();
                 lab_To = new Label();
@@ -263,10 +264,18 @@ namespace Cell_Tool_3
                      this.Close();
                 });
 
-                bgw.RunWorkerAsync();
+               
                 // StatusLabel.Text = "Dialog open";                
                 this.ShowDialog();
                 // StatusLabel.Text = "Ready";
+            }     
+            private void Form_Load(object sender, EventArgs e)
+            {
+                this.bgw.RunWorkerAsync();
+                this.Invalidate();
+                this.Update();
+                this.Refresh();
+                Application.DoEvents();
             }
             private void Label_TextChanged(object sender, EventArgs e)
             {

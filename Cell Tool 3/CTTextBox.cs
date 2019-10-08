@@ -38,7 +38,7 @@ namespace Cell_Tool_3
         private ToolTip TurnOnToolTip = new ToolTip();
         #region Initialize
         public CTTextBox()
-        {
+        {           
             panel = new Panel();
             {
                 panel.Height = 20;

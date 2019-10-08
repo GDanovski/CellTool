@@ -400,20 +400,25 @@ namespace Cell_Tool_3
                 try
                 {
                     
-                    if (fi.sizeZ > 1 && TabPages.zTrackBar.Panel.Visible != true)
+                    if (fi.sizeZ > 1)
                     {
-                        TabPages.zTrackBar.Refresh(fi.zValue + 1, 1, fi.sizeZ);
-                        TabPages.zTrackBar.Panel.Visible = true;
+                        if (TabPages.zTrackBar.TrackBar1.Maximum != fi.sizeZ)
+                            TabPages.zTrackBar.Refresh(fi.zValue + 1, 1, fi.sizeZ);
+                        if (!TabPages.zTrackBar.Panel.Visible)
+                            TabPages.zTrackBar.Panel.Visible = true;
                     }
                     else if(fi.sizeZ <= 1 && TabPages.zTrackBar.Panel.Visible != false)
                     {
                         TabPages.zTrackBar.Panel.Visible = false;
                     }
 
-                    if (fi.sizeT > 1 && TabPages.tTrackBar.Panel.Visible != true)
+                    if (fi.sizeT > 1)
                     {
-                        TabPages.tTrackBar.Refresh(fi.frame + 1, 1, fi.sizeT);
-                        TabPages.tTrackBar.Panel.Visible = true;
+                        if (TabPages.tTrackBar.TrackBar1.Maximum != fi.sizeT)
+                            TabPages.tTrackBar.Refresh(fi.frame + 1, 1, fi.sizeT);
+
+                        if(!TabPages.tTrackBar.Panel.Visible)
+                            TabPages.tTrackBar.Panel.Visible = true;
                     }
                     else if(fi.sizeT <= 1 && TabPages.tTrackBar.Panel.Visible != false)
                     {
@@ -425,6 +430,7 @@ namespace Cell_Tool_3
                         && fi.tpTaskbar.TopBar.BackColor != FileBrowser.BackGroundColor1)
                     {
                         fi.tpTaskbar.TopBar.BackColor = FileBrowser.BackGroundColor1;
+                        fi.tpTaskbar.TopBar.ResumeLayout(true);
                         fi.tpTaskbar.TopBar.Invalidate();
                         fi.tpTaskbar.TopBar.Update();
                         fi.tpTaskbar.TopBar.Refresh();
@@ -686,7 +692,6 @@ namespace Cell_Tool_3
                         RoiMan.panel.Height = int.Parse(settings.RoiManHeight[TabPages.ActiveAccountIndex]);
                     RoiMan.panel.Visible = true;
                     RoiMan.panel.BringToFront();
-
                 }
                 else
                     RoiMan.panel.Visible = false;
@@ -703,12 +708,12 @@ namespace Cell_Tool_3
                 Segmentation.LibPanel.Height = 50;
             }
 
-            TabPages.PropertiesBody.ResumeLayout(true);
+            TabPages.PropertiesBody.ResumeLayout();
             TabPages.PropertiesBody.Update();
             TabPages.PropertiesBody.Invalidate();
             TabPages.PropertiesBody.Refresh();
 
-            TabPages.propertiesPanel.ResumeLayout(true);
+            TabPages.propertiesPanel.ResumeLayout();
             TabPages.propertiesPanel.Update();
             TabPages.propertiesPanel.Invalidate();
             TabPages.propertiesPanel.Refresh();
