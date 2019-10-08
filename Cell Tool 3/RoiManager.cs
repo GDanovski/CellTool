@@ -2493,7 +2493,7 @@ namespace Cell_Tool_3
             Label lb = new Label();
             lb.Text = title;
             lb.Tag = tag;
-            lb.Width = 40;
+            lb.Width = 60;
             lb.Location = new Point(X, Y + 3);
             gb.Controls.Add(lb);
             lb.MouseHover += Control_MouseOver;

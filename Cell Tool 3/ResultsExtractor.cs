@@ -470,7 +470,7 @@ namespace Cell_Tool_3
                 NormFrom0To1.ForeColor = Parametars.ShriftColor;
                 NormFrom0To1.Text = "Max = 1 && Min = 0";
                 NormFrom0To1.Checked = false;
-                NormFrom0To1.Width += 10;
+                NormFrom0To1.Width += 50;
                 NormFrom0To1.Location = new Point(25, 65);
                 p.Controls.Add(NormFrom0To1);
                 NormFrom0To1.Enabled = false;
@@ -766,15 +766,15 @@ namespace Cell_Tool_3
                 this.Controls.Add(MenuPanel);
 
                 MenuStrip Menu = new MenuStrip();
-                Menu.BackColor = Parametars.BackGroundColor;
-                Menu.ForeColor = Parametars.ShriftColor;
+                //Menu.BackColor = Parametars.BackGroundColor;
+                //Menu.ForeColor = Parametars.ShriftColor;
                 MenuPanel.Controls.Add(Menu);
 
                 //add Work dir
                 ToolStripMenuItem AddDirBtn = new ToolStripMenuItem();
                 AddDirBtn.Text = "Add work directory";
-                AddDirBtn.BackColor = Parametars.BackGroundColor;
-                AddDirBtn.ForeColor = Parametars.ShriftColor;
+                //AddDirBtn.BackColor = Parametars.BackGroundColor;
+                //AddDirBtn.ForeColor = Parametars.ShriftColor;
                 Menu.Items.Add(AddDirBtn);
                 AddDirBtn.Click += new EventHandler(delegate (object o, EventArgs a)
                 {
@@ -783,8 +783,8 @@ namespace Cell_Tool_3
                 //Open Btn
                 ToolStripMenuItem OpenBtn = new ToolStripMenuItem();
                 OpenBtn.Text = "Open";
-                OpenBtn.BackColor = Parametars.BackGroundColor;
-                OpenBtn.ForeColor = Parametars.ShriftColor;
+                //OpenBtn.BackColor = Parametars.BackGroundColor;
+                //OpenBtn.ForeColor = Parametars.ShriftColor;
                 Menu.Items.Add(OpenBtn);
                 OpenBtn.Click += new EventHandler(delegate (object o, EventArgs a)
                 {
@@ -794,8 +794,8 @@ namespace Cell_Tool_3
                 //Save Btn
                 ToolStripMenuItem SaveBtn = new ToolStripMenuItem();
                 SaveBtn.Text = "Save";
-                SaveBtn.BackColor = Parametars.BackGroundColor;
-                SaveBtn.ForeColor = Parametars.ShriftColor;
+                //SaveBtn.BackColor = Parametars.BackGroundColor;
+                //SaveBtn.ForeColor = Parametars.ShriftColor;
                 Menu.Items.Add(SaveBtn);
                 SaveBtn.Click += new EventHandler(delegate (object o, EventArgs a)
                 {
@@ -805,8 +805,8 @@ namespace Cell_Tool_3
                 //Export Btn
                 ToolStripMenuItem ExportBtn = new ToolStripMenuItem();
                 ExportBtn.Text = "Export";
-                ExportBtn.BackColor = Parametars.BackGroundColor;
-                ExportBtn.ForeColor = Parametars.ShriftColor;
+                //ExportBtn.BackColor = Parametars.BackGroundColor;
+                //ExportBtn.ForeColor = Parametars.ShriftColor;
                 Menu.Items.Add(ExportBtn);
                 ExportBtn.Click += new EventHandler(delegate (object o, EventArgs a)
                 {
