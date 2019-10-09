@@ -936,6 +936,7 @@ namespace Cell_Tool_3
             rtb.Dock = DockStyle.Fill;
             rtb.ReadOnly = true;
             rtb.Rtf = Properties.Resources.Citation;
+            //rtb.Text = Properties.Resources.Citation;
 
             msgForm.Controls.Add(rtb);
 
