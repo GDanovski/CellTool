@@ -54,8 +54,9 @@ namespace Cell_Tool_3
             rtb.ShowLines = false;
             rtb.Dock = DockStyle.Fill;
             //Fill the box with names
-            string path = OSStringConverter.StringToDir(
-                Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\CellToolPlugIns");
+            string path = OSStringConverter.StringToDir(Application.StartupPath + "\\PlugIns");
+            //string path = OSStringConverter.StringToDir(
+               // Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\CellToolPlugIns");
             bool unisntalled = false;
 
             if (!Directory.Exists(path))
@@ -155,10 +156,9 @@ namespace Cell_Tool_3
 
            // AddResultsExtractor();
 
-            // string path = Application.StartupPath + "\\PlugIns";
-            string path = OSStringConverter.StringToDir(
-                Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\CellToolPlugIns");
-
+             string path = OSStringConverter.StringToDir(Application.StartupPath + "\\PlugIns");
+            //string path = OSStringConverter.StringToDir(
+                //Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\CellToolPlugIns");
 
             if (!Directory.Exists(path))
                 Directory.CreateDirectory(path);
@@ -426,13 +426,16 @@ namespace Cell_Tool_3
             //Add event for projection here
             bgw.DoWork += new DoWorkEventHandler(delegate (Object o, DoWorkEventArgs a)
             {
-                string newPath = OSStringConverter.StringToDir(
-                    Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\CellToolPlugIns\\" +
+                string newPath = OSStringConverter.StringToDir(Application.StartupPath + "\\PlugIns\\"+
                 path.Substring(path.LastIndexOf("\\") + 1, path.Length - path.LastIndexOf("\\") - 1));
-                if (File.Exists(newPath))
+            //path.Substring(path.LastIndexOf("\\") + 1, path.Length - path.LastIndexOf("\\") - 1));
+            //string newPath = OSStringConverter.StringToDir(
+            //Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\CellToolPlugIns\\" +
+            //path.Substring(path.LastIndexOf("\\") + 1, path.Length - path.LastIndexOf("\\") - 1));
+            if (File.Exists(newPath))
                     ((BackgroundWorker)o).ReportProgress(1);
                 else {
-                    File.Copy(path, newPath, false);
+                    File.Copy(OSStringConverter.StringToDir(path), newPath, false);
                     ((BackgroundWorker)o).ReportProgress(0);
                 }
             });

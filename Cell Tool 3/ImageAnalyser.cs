@@ -395,6 +395,16 @@ namespace Cell_Tool_3
             }
             catch { }
 
+            //LibPanel
+            if (settings.SegmentLibPanelVis[TabPages.ActiveAccountIndex] != "y")
+            {
+                Segmentation.LibPanel.Height = 26;
+            }
+            else
+            {
+                Segmentation.LibPanel.Height = 50;
+            }
+
             if (fi != null)
             {
                 try
@@ -698,16 +708,6 @@ namespace Cell_Tool_3
 
                 #endregion Roi Manager
             }
-            //LibPanel
-            if (settings.SegmentLibPanelVis[TabPages.ActiveAccountIndex] != "y")
-            {
-                Segmentation.LibPanel.Height = 26;
-            }
-            else
-            {
-                Segmentation.LibPanel.Height = 50;
-            }
-
             TabPages.PropertiesBody.ResumeLayout();
             TabPages.PropertiesBody.Update();
             TabPages.PropertiesBody.Invalidate();
@@ -719,8 +719,11 @@ namespace Cell_Tool_3
             TabPages.propertiesPanel.Refresh();
 
             Application.DoEvents();
+
+            //The following rows are added only to triger the scroll bar rendering
+            TabPages.PropertiesBody.Height += 1;
+            TabPages.PropertiesBody.Height -= 1;
         }
-        
         private void ChangeT(string Val)
         {
             TifFileInfo fi = TabPages.TabCollections[TabPages.SelectedIndex].tifFI;
