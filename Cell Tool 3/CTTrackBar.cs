@@ -39,6 +39,9 @@ namespace Cell_Tool_3
         public Button ApplyBtn = new Button();
         private Button CancelBtn = new Button();
         private ToolTip TurnOnToolTip = new ToolTip();
+
+        private bool MouseInAcceptBtn = false;
+
         public void Initialize()
         {
             Panel.Height = 25;
@@ -76,6 +79,8 @@ namespace Cell_Tool_3
             ApplyBtn.Click += new EventHandler(Applybtn_Click);
             ApplyBtn.Tag = "Apply";
             ApplyBtn.MouseHover += new EventHandler(Control_MouseOver);
+            ApplyBtn.MouseEnter += acceptBtn_MouseEnter;
+            ApplyBtn.MouseLeave += acceptBtn_MouseLeave;
 
             CancelBtn.FlatAppearance.BorderSize = 0;
             CancelBtn.FlatStyle = FlatStyle.Flat;
@@ -191,10 +196,23 @@ namespace Cell_Tool_3
                 if (CancelBtn.Visible == true) { CancelBtn.Visible = false; }
             }
         }
+        private void acceptBtn_MouseEnter(object sender, EventArgs e)
+        {
+            MouseInAcceptBtn = true;
+        }
+        private void acceptBtn_MouseLeave(object sender, EventArgs e)
+        {
+            MouseInAcceptBtn = false;
+        }
 
         private void textBox1_FocusLost(object sender, EventArgs e)
         {
-            if(ApplyBtn.Focused == true | CancelBtn.Focused == true) { return; }
+            //if(ApplyBtn.Focused == true | CancelBtn.Focused == true) { return; }
+            if (MouseInAcceptBtn)
+            {
+                ApplyBtn.PerformClick();
+                return;
+            }
             TextBox1.Text = TrackBar1.Value.ToString();
             if (ApplyBtn.Visible == true) { ApplyBtn.Visible = false; }
             if (CancelBtn.Visible == true) { CancelBtn.Visible = false; }
