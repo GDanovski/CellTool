@@ -1639,7 +1639,12 @@ namespace Cell_Tool_3
 
                 tb.LostFocus += new EventHandler(delegate (Object o, EventArgs a)
                 {
-                    tb.Dispose();
+                    if (this.Controls.Contains(tb))
+                    {
+                        tb.Visible = false;
+                        this.Controls.Remove(tb);
+                        tb.Dispose();
+                    }
                 });
                 tb.KeyDown += new KeyEventHandler(delegate (Object o, KeyEventArgs a)
                 {
@@ -1648,12 +1653,17 @@ namespace Cell_Tool_3
                         a.Handled = true;
                         a.SuppressKeyPress = true;
                         this.SelectedNode.Text = tb.Text;
-                        tb.Dispose();
+                        if (this.Controls.Contains(tb))
+                        {
+                            tb.Visible = false;
+                            this.Controls.Remove(tb);
+                            tb.Dispose();
+                        }
                         form1.dataTV.RefreshAllNodes();
                         RefreshToHardDrive();
                     }
-
                 });
+                /*
                 this.AfterSelect += new TreeViewEventHandler(delegate (Object o, TreeViewEventArgs a)
                 {
                     tb.Dispose();
@@ -1661,7 +1671,7 @@ namespace Cell_Tool_3
                 this.MouseWheel += new MouseEventHandler(delegate (Object o, MouseEventArgs a)
                 {
                     tb.Dispose();
-                });
+                });*/
             }
             private void NewBtn_Click(object sender, EventArgs e)
             {
