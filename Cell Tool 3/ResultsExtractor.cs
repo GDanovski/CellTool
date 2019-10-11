@@ -2077,6 +2077,12 @@ namespace Cell_Tool_3
             private static void StrTranslator(string str, MyForm form1, TreeNode filters)
             {
                 string[] vals = str.Split(new string[] { "=" }, StringSplitOptions.None);
+
+                if (vals.Length != 2 || vals[1] == "")
+                {
+                    return;
+                }
+
                 try
                 {
                     switch (vals[0])
@@ -2180,7 +2186,7 @@ namespace Cell_Tool_3
                             form1.dataTV.Store[int.Parse(nodeAll[0])].Nodes.Add(dN);
                             break;
                         case "FitData":
-                            if(vals[1]!= null && vals[1]!="")
+                            if (vals[1]!= null && vals[1]!="")
                                 form1.solverClass.fitData.StringToData(vals[1]);
                             break;
                         case "FitF":
@@ -2190,8 +2196,8 @@ namespace Cell_Tool_3
                     }
                 }
                 catch
-                {
-                   MessageBox.Show("Error: " + vals[0].ToString());
+                {                   
+                   MessageBox.Show("Error: " + vals[0].ToString() + "\n" + vals[1]);
                 }
             }
             public static void Save(MyForm form1)
