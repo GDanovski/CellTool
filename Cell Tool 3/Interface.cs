@@ -837,7 +837,7 @@ namespace Cell_Tool_3
                 ToolStripMenuItem TutorialsMenuItem = new ToolStripMenuItem();
                 TutorialsMenuItem.Text = "Tutorials";
                 TutorialsMenuItem.Click += Tutorials_Click;
-                HelpToolStripMenuItem.DropDownItems.Add(TutorialsMenuItem);
+                if(OSStringConverter.isWinOS) HelpToolStripMenuItem.DropDownItems.Add(TutorialsMenuItem);
 
                 HotKeysToolStripMenuItem.Text = "Hot Keys";
                 HelpToolStripMenuItem.DropDownItems.Add(HotKeysToolStripMenuItem);
@@ -935,7 +935,8 @@ namespace Cell_Tool_3
             rtb.LinkClicked += new System.Windows.Forms.LinkClickedEventHandler(link_LinkClicked);
             rtb.Dock = DockStyle.Fill;
             rtb.ReadOnly = true;
-            rtb.Rtf = Properties.Resources.Citation;
+            //rtb.Rtf = Properties.Resources.Citation;
+            rtb.Text = Properties.Resources.Citation;
 
             msgForm.Controls.Add(rtb);
 
@@ -946,7 +947,8 @@ namespace Cell_Tool_3
         }
         private void link_LinkClicked(object sender, LinkClickedEventArgs e)
         {
-            System.Diagnostics.Process.Start(e.LinkText);
+            if(OSStringConverter.isWinOS)
+                System.Diagnostics.Process.Start(e.LinkText);
         }
         void AccordLicense_Click(object sender, EventArgs e)
         {

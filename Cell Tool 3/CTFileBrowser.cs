@@ -178,7 +178,8 @@ namespace Cell_Tool_3
                         DataSourcesPanel.Width = 15;
                         settings.DataSourcesPanelVisible[ActiveAccountIndex] = "n";
                     }
-                    settings.Save();
+                    //settings.Save();
+                    Security.SaveSettings(settings);
                 });
             }
             //Add verticalTitle panel
@@ -281,7 +282,7 @@ namespace Cell_Tool_3
                 PropertiesBtn.Text = "Properties";
                 //PropertiesBtn.BackColor = TaskPanelColor;
                 PropertiesBtn.Image = Properties.Resources.info;
-                taskTS.Items.Add(PropertiesBtn);
+                if(OSStringConverter.isWinOS) taskTS.Items.Add(PropertiesBtn);
                 PropertiesBtn.Click += new EventHandler(PropertiesBtn_Click);
 
                 DeleteBtn.DisplayStyle = ToolStripItemDisplayStyle.Image;
@@ -590,7 +591,7 @@ namespace Cell_Tool_3
 
                 MenuItem OpenInNewWindowMenuBtn = new MenuItem();
                 OpenInNewWindowMenuBtn.Text = "Open in new window";
-                TreeViewContextMenu.MenuItems.Add(OpenInNewWindowMenuBtn);
+                if (OSStringConverter.isWinOS) TreeViewContextMenu.MenuItems.Add(OpenInNewWindowMenuBtn);
                 OpenInNewWindowMenuBtn.Click += new EventHandler(Explorer_Open);
 
                 TreeViewContextMenu.MenuItems.Add("-");
@@ -663,11 +664,11 @@ namespace Cell_Tool_3
                 TreeViewContextMenu.MenuItems.Add(NewFolderMenuBtn);
                 NewFolderMenuBtn.Click += new EventHandler(NewFolderBtn_Click);
 
-                TreeViewContextMenu.MenuItems.Add("-");
+                if (OSStringConverter.isWinOS) TreeViewContextMenu.MenuItems.Add("-");
 
                 MenuItem PropertiesMenuBtn = new MenuItem();
                 PropertiesMenuBtn.Text = "Properties";
-                TreeViewContextMenu.MenuItems.Add(PropertiesMenuBtn);
+                if (OSStringConverter.isWinOS) TreeViewContextMenu.MenuItems.Add(PropertiesMenuBtn);
                 PropertiesMenuBtn.Click += new EventHandler(PropertiesBtn_Click);
 
                 TreeViewExp.MouseUp += new MouseEventHandler(delegate (Object o, MouseEventArgs a)
@@ -895,11 +896,11 @@ namespace Cell_Tool_3
                 VboxContextMenu.MenuItems.Add(ReleaseSearchedMenuBtn);
                 ReleaseSearchedMenuBtn.Click += new EventHandler(Vbox_ReleaceSearched);
 
-                VboxContextMenu.MenuItems.Add("-");
+                if (OSStringConverter.isWinOS) VboxContextMenu.MenuItems.Add("-");
 
                 MenuItem PropertiesMenuBtn = new MenuItem();
                 PropertiesMenuBtn.Text = "Properties";
-                VboxContextMenu.MenuItems.Add(PropertiesMenuBtn);
+                if (OSStringConverter.isWinOS) VboxContextMenu.MenuItems.Add(PropertiesMenuBtn);
                 PropertiesMenuBtn.Click += new EventHandler(PropertiesBtn_Click);
 
                 Vbox.MouseUp += new MouseEventHandler(delegate (Object o, MouseEventArgs a)
@@ -1551,7 +1552,7 @@ namespace Cell_Tool_3
         private void PasteKey(TreeNode targetNode)
         {
             StatusLabel.Text = "Copy items...";
-            Boolean FromDragAndDrop = DragDropNode;
+            bool FromDragAndDrop = DragDropNode;
             TreeNode sourceNode = MoveNode;
             if (DragDropNode == false)
             {
@@ -1559,7 +1560,7 @@ namespace Cell_Tool_3
             }
 
             TreeNode Parent = null;
-            Boolean SaveSource = false;
+            bool SaveSource = false;
             if (copyItem == true | DragDropNode == true)
             {
                 SaveSource = true;
@@ -1569,11 +1570,9 @@ namespace Cell_Tool_3
 
             bgw.DoWork += new DoWorkEventHandler(delegate (Object o, DoWorkEventArgs a)
             {
-
                 if (sourceNode == null | targetNode == null)
                 {
                     ((BackgroundWorker)o).ReportProgress(1);
-
                     return;
                 }
 
@@ -1597,7 +1596,6 @@ namespace Cell_Tool_3
                     return;
                 }
 
-
                 if (SaveSource == false)
                 {
                     if (Directory.Exists(OSStringConverter.StringToDir(Dir)) == true)
@@ -1606,7 +1604,7 @@ namespace Cell_Tool_3
                     }
                     else if (File.Exists(OSStringConverter.StringToDir(Dir)) == true)
                     {
-                       OSFileManager.MoveFile(Dir, NewDir,StatusLabel);
+                        OSFileManager.MoveFile(Dir, NewDir,StatusLabel);
                     }
 
                 }
@@ -1621,12 +1619,13 @@ namespace Cell_Tool_3
                         OSFileManager.CopyFile(Dir, NewDir,StatusLabel);
                     }
                 }
-
-            ((BackgroundWorker)o).ReportProgress(0);
+                
+                ((BackgroundWorker)o).ReportProgress(0);
             });
 
             bgw.ProgressChanged += new ProgressChangedEventHandler(delegate (Object o, ProgressChangedEventArgs a)
             {
+                StatusLabel.Text = "Copy items...";
                 if (a.ProgressPercentage == 0)
                 {
 
@@ -1650,7 +1649,8 @@ namespace Cell_Tool_3
                             }
 
                             settings.TreeViewContent[ActiveAccountIndex] = newStr;
-                            settings.Save();
+                            //settings.Save();
+                            Security.SaveSettings(settings);
                         }
                         Vbox_RemoveItem(sourceNode);
                         sourceNode.Remove();
@@ -1682,85 +1682,10 @@ namespace Cell_Tool_3
                 }
 
                 StatusLabel.Text = "Ready";
+                
             });
             bgw.WorkerReportsProgress = true;
-
-            bgw.RunWorkerAsync();
-            /*
-            TreeNode sourceNode = MoveNode;
-            if (sourceNode == null | targetNode == null)
-            {
-                return;
-            }
-            StatusLabel.Text = "Copy items...";
-            TreeNode Parent = null;
-            if (sourceNode.Parent != null)
-            {
-                Parent = sourceNode.Parent;
-            }
-           
-            string Dir = sourceNode.Tag.ToString();
-            string NewDir = targetNode.Tag.ToString();
-            if (Directory.Exists(NewDir) != true)
-            {
-                MessageBox.Show("Target directory is not existing!");
-                return;
-            }
-            NewDir += "\\" + sourceNode.Text;
-            if (NewDir == Dir)
-            {
-                return;
-            }
-            if (Directory.Exists(NewDir) == true | File.Exists(NewDir) == true)
-            {
-                if (MessageBox.Show("Do you want to overwrite << " + NewDir + " >> ?",
-                   "", MessageBoxButtons.YesNo) == System.Windows.Forms.DialogResult.No)
-                { return; }
-            }
-
-            Boolean SaveSource = false;
-            if (copyItem == true)
-            {
-                SaveSource = true;
-            }
-
-            if (SaveSource == false)
-            {
-                Vbox_RemoveItem(sourceNode);
-                sourceNode.Remove();
-                if (Directory.Exists(Dir) == true)
-                {
-                    Microsoft.VisualBasic.FileIO.FileSystem.MoveDirectory(Dir, NewDir, true);
-                }
-                else if (File.Exists(Dir) == true)
-                {
-                    Microsoft.VisualBasic.FileIO.FileSystem.MoveFile(Dir, NewDir, true);
-                }
-            }
-            else
-            {
-                if (Directory.Exists(Dir) == true)
-                {
-                    Microsoft.VisualBasic.FileIO.FileSystem.CopyDirectory(Dir, NewDir, true);
-                }
-                else if (File.Exists(Dir) == true)
-                {
-                    Microsoft.VisualBasic.FileIO.FileSystem.CopyFile(Dir, NewDir, true);
-                }
-            }
-
-            copyItem = false;
-            cutItem = false;
-            MoveNode = null;
-
-            TreeViewExp_populate(targetNode);
-            if (SaveSource == false & Parent != null)
-            {
-                TreeViewExp_populate(Parent);
-            }
-            targetNode.Expand();
-            StatusLabel.Text = "Ready";
-            */
+            bgw.RunWorkerAsync();            
         }
         private void TreeNode_checkAllSearched(TreeNode n, Boolean ItemChecked)
         {
@@ -1903,8 +1828,8 @@ namespace Cell_Tool_3
                                         }
                                     }
                                     settings.TreeViewContent[ActiveAccountIndex] = newStr;
-                                    settings.Save();
-
+                                    //settings.Save();
+                                    Security.SaveSettings(settings);
                                 }
                                 //Directory.Delete(TreeViewExp.SelectedNode.Tag.ToString(), true);
                                 OSFileManager.DeleteDirectory(node.Tag.ToString(),StatusLabel);
@@ -1949,7 +1874,8 @@ namespace Cell_Tool_3
                     }
 
                     settings.TreeViewContent[ActiveAccountIndex] = newStr;
-                    settings.Save();
+                    //settings.Save();
+                    Security.SaveSettings(settings);
 
                     Vbox_RemoveItem(TreeViewExp.SelectedNode);
                     TreeViewExp.SelectedNode.Remove();
@@ -2019,8 +1945,8 @@ namespace Cell_Tool_3
                                         }
                                     }
                                     settings.TreeViewContent[ActiveAccountIndex] = newStr;
-                                    settings.Save();
-
+                                    // settings.Save();
+                                    Security.SaveSettings(settings);
                                 }
                                 //Directory.Delete(TreeViewExp.SelectedNode.Tag.ToString(), true);
                                 OSFileManager.DeleteDirectory(node.Tag.ToString(),StatusLabel);
@@ -2447,6 +2373,7 @@ namespace Cell_Tool_3
         }
         private void RenameEvent(TreeView tv)
         {
+           
             TreeNode node = RenameTb.Tag as TreeNode;
             string name = RenameTb.Text;
             if (RenameTb.Text == "")
@@ -2467,7 +2394,7 @@ namespace Cell_Tool_3
             if (ext != "" & node.ImageIndex != 0)
             {
                 //check is it correct file type
-                Boolean okExtension = false;
+                bool okExtension = false;
                 foreach (string format in Formats)
                 {
                     if (format == ext)
@@ -2482,8 +2409,8 @@ namespace Cell_Tool_3
                     return;
                 }
             }
-
-            if(Directory.Exists(OSStringConverter.StringToDir(
+           
+            if (Directory.Exists(OSStringConverter.StringToDir(
                 node.Tag.ToString().Substring(0, node.Tag.ToString().Length - node.Text.Length) + name)))
             {
                 RenameTb.Visible = false;
@@ -2510,6 +2437,7 @@ namespace Cell_Tool_3
                     }
                 }
                 RenameTb.Visible = false;
+
                 TreeNode_Rename(node, name);
             }
             else
@@ -2532,7 +2460,9 @@ namespace Cell_Tool_3
                     }
                 }
                 settings.TreeViewContent[ActiveAccountIndex] = newStr;
-                settings.Save();
+                //settings.Save();
+                Security.SaveSettings(settings);
+
                 foreach (TreeNode n in tv.Nodes)
                 {
 
@@ -2566,7 +2496,7 @@ namespace Cell_Tool_3
                 {
                     try
                     {
-                        Directory.Move(node.Tag.ToString(), node.Tag.ToString().Substring(0, node.Tag.ToString().Length - node.Text.Length) + newName);
+                        OSFileManager.MoveDirectory(node.Tag.ToString(), node.Tag.ToString().Substring(0, node.Tag.ToString().Length - node.Text.Length) + newName,this.StatusLabel);
                     }
                     catch
                     {
@@ -2578,7 +2508,7 @@ namespace Cell_Tool_3
                 {
                     try
                     {
-                        File.Move(node.Tag.ToString(), node.Tag.ToString().Substring(0, node.Tag.ToString().Length - node.Text.Length) + newName);
+                        OSFileManager.MoveFile(node.Tag.ToString(), node.Tag.ToString().Substring(0, node.Tag.ToString().Length - node.Text.Length) + newName,this.StatusLabel);
                     }
                     catch
                     {
@@ -2619,24 +2549,27 @@ namespace Cell_Tool_3
 
             tb.LostFocus += new EventHandler(delegate (Object o, EventArgs a)
             {
-                if(tb.Visible)
+                if (tb.Visible)
+                {                   
                     RenameEvent(tv);
+                }
 
                 renameLabel.Text = "y";
                 renameLabel.Text = "";
 
                 tb.Visible = false;
             });
+
             tb.KeyDown += new KeyEventHandler(delegate (Object o, KeyEventArgs a)
             {
                 if (a.KeyCode == Keys.Enter)
                 {
                     tb.Visible = false;
-                    /*
+
                     RenameEvent(tv);
                     renameLabel.Text = "y";
                     renameLabel.Text = "";
-                    */
+
                     a.Handled = true;
                     a.SuppressKeyPress = true;
                 }
@@ -2823,7 +2756,8 @@ namespace Cell_Tool_3
                 }
                 settings.TreeViewVisible[ActiveAccountIndex] = "y";
             }
-            settings.Save();
+            //settings.Save();
+            Security.SaveSettings(settings);
         }
         private void VboxExp_Visible(object sender, EventArgs e)
         {
@@ -2854,7 +2788,8 @@ namespace Cell_Tool_3
                 Vbox.BringToFront();
                 settings.VBoxVisible[ActiveAccountIndex] = "y";
             }
-            settings.Save();
+            //settings.Save();
+            Security.SaveSettings(settings);
 
         }
         private void DataSourcesPanel_MouseMove(object sender, MouseEventArgs e)
@@ -2920,7 +2855,8 @@ namespace Cell_Tool_3
                 DataSourcesPanelWidth = DataSourcesPanel.Width;
                 Properties.Settings settings = Properties.Settings.Default;
                 settings.DataSourcesPanelValues[ActiveAccountIndex] = Convert.ToString(DataSourcesPanelWidth);
-                settings.Save();
+                //settings.Save();
+                Security.SaveSettings(settings);
 
                 Panel pnl = sender as Panel;
                 ResizePanel.Visible = false;
@@ -2992,7 +2928,8 @@ namespace Cell_Tool_3
 
                 Properties.Settings settings = Properties.Settings.Default;
                 settings.TreeViewSize[ActiveAccountIndex] = Convert.ToString(TreeViewExp.Height);
-                settings.Save();
+                //settings.Save();
+                Security.SaveSettings(settings);
 
                 Panel pnl = sender as Panel;
                 ResizePanel.Visible = false;
@@ -3190,8 +3127,8 @@ namespace Cell_Tool_3
                                 }
                             }
                             settings.TreeViewContent[ActiveAccountIndex] = newStr;
-                            settings.Save();
-
+                            //settings.Save();
+                            Security.SaveSettings(settings);
                         }
                         //Directory.Delete(TreeViewExp.SelectedNode.Tag.ToString(), true);
                         OSFileManager.DeleteDirectory(TreeViewExp.SelectedNode.Tag.ToString(),StatusLabel);
@@ -3241,7 +3178,8 @@ namespace Cell_Tool_3
                 {
                     settings.OldWorkDir[ActiveAccountIndex] = OSStringConverter.GetWinString(fbd.SelectedPath);
                     settings.TreeViewContent[ActiveAccountIndex] += "\t" + OSStringConverter.GetWinString(fbd.SelectedPath);
-                    settings.Save();
+                    //settings.Save();
+                    Security.SaveSettings(settings);
                 }
                 
                 TreeViewExp.ResumeLayout();
