@@ -33,6 +33,7 @@ namespace Cell_Tool_3
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
+            
             Application.Run(new CellToolMainForm());
         }
     }
