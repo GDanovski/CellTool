@@ -98,9 +98,8 @@ namespace Cell_Tool_3
 
             GL.MatrixMode(MatrixMode.Modelview);
             //Set viewpoint
-            //Set viewpoint
-            GL.Viewport(1000, 30 + 30 + 1 + 1, this.Width, this.Height);
-
+            GL.Viewport(0, 0, this.Width, this.Height);
+            
             //draw chart            
             try
             {
@@ -328,14 +327,6 @@ namespace Cell_Tool_3
 
             if (W > (float)rect.Width / 3 || H > (float)rect.Height / 3) return rect;
 
-            GL.Begin(PrimitiveType.LineStrip);
-            GL.Color3(Color.Black);
-
-            GL.Vertex2(rect.X + W, rect.Y + H);
-            GL.Vertex2(rect.X + W, rect.Y + rect.Height - H - H * 0.5);
-            GL.Vertex2(rect.X + rect.Width - H, rect.Y + rect.Height - H - H * 0.5);
-
-            GL.End();
 
             RectangleF microRect = new RectangleF(rect.X + W, rect.Y + H, rect.Width - W - H, rect.Height - 2 * H - 0.5f * H);
 
@@ -347,6 +338,12 @@ namespace Cell_Tool_3
 
             for (double x = microRect.X, i = 0; x <= microRect.X + microRect.Width; x += microRect.Width / stepX, i += valX)
             {
+                double i1 = Math.Round(i, 1);
+
+                if ((i1).ToString().Length > 6)
+                    BitmapFromString((i1).ToString("0.0E0"), new PointF((float)x, (rect.Y + rect.Height - 0.5f * H - H / 2)));
+                else
+                    BitmapFromString((i1).ToString(), new PointF((float)x, (rect.Y + rect.Height - 0.5f * H - H / 2)));
                 GL.Begin(PrimitiveType.Lines);
                 GL.Color3(Color.Black);
 
@@ -354,17 +351,17 @@ namespace Cell_Tool_3
                 GL.Vertex2(x, rect.Y + rect.Height - 0.5f * H - H * 0.8);
 
                 GL.End();
-
-                double i1 = Math.Round(i, 1);
-
-                if ((i1).ToString().Length > 6)
-                    BitmapFromString((i1).ToString("0.0E0"), new PointF((float)x, (rect.Y + rect.Height - 0.5f * H - H / 2)));
-                else
-                    BitmapFromString((i1).ToString(), new PointF((float)x, (rect.Y + rect.Height - 0.5f * H - H / 2)));
             }
 
             for (double y = microRect.Y + microRect.Height, i = minY; y >= microRect.Y; y -= microRect.Height / stepY, i += valY)
             {
+                double i1 = Math.Round(i, 1);
+
+                if ((i1).ToString().Length > 5)
+                    BitmapFromString((i1).ToString("0.0E0"), new PointF(rect.X + W / 2, (float)y));
+                else
+                    BitmapFromString((i1).ToString(), new PointF(rect.X + W / 2, (float)y));
+
                 GL.Begin(PrimitiveType.Lines);
                 GL.Color3(Color.Black);
 
@@ -373,13 +370,17 @@ namespace Cell_Tool_3
 
                 GL.End();
 
-                double i1 = Math.Round(i, 1);
-
-                if ((i1).ToString().Length > 5)
-                    BitmapFromString((i1).ToString("0.0E0"), new PointF(rect.X + W / 2, (float)y));
-                else
-                    BitmapFromString((i1).ToString(), new PointF(rect.X + W / 2, (float)y));
             }
+
+            GL.Begin(PrimitiveType.LineStrip);
+            GL.Color3(Color.Black);
+
+            GL.Vertex2(rect.X + W, rect.Y + H);
+            GL.Vertex2(rect.X + W, rect.Y + rect.Height - H - H * 0.5);
+            GL.Vertex2(rect.X + rect.Width - H, rect.Y + rect.Height - H - H * 0.5);
+
+            GL.End();
+
             if (form1 != null)
             {
                 if (form1.dataTV.YaxisTitle.Length < 6)
