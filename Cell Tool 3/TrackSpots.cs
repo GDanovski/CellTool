@@ -200,7 +200,7 @@ namespace Cell_Tool_3
             Label lb = new Label();
             lb.Text = title;
             lb.Tag = tag;
-            lb.Width = 65;
+            lb.Width = 85;
             lb.Location = new Point(X, Y + 3);
             p.Controls.Add(lb);
             lb.BringToFront();

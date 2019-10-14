@@ -61,7 +61,7 @@ namespace Cell_Tool_3
                 tb.Panel.Visible = true;
                 tb.Refresh(0, 0, 10);
                 tb.Name.Text = "Threshold:";
-                tb.NamePanel.Width = 62;
+                tb.NamePanel.Width = 70;
                 mainPanel.Controls.Add(tb.Panel);
                 thresh = tb;
                 tb.Panel.BringToFront();
@@ -82,7 +82,7 @@ namespace Cell_Tool_3
                 tb.Panel.Visible = true;
                 tb.Refresh(100, 1, 100);
                 tb.Name.Text = "Sensitivity:";
-                tb.NamePanel.Width = 62;
+                tb.NamePanel.Width = 70;
                 mainPanel.Controls.Add(tb.Panel);
                 sensitivity = tb;
                 tb.Panel.BringToFront();

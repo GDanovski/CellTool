@@ -19,7 +19,7 @@ namespace Cell_Tool_3
             this.SuspendLayout();
             CA = new BrightnessAndContrast_Chart();
             CA.Location = new Point(28, 5);
-            CA.Size = new Size(this.Width - 50, this.Height - 30);
+            CA.Size = new Size(this.Width-50, this.Height - 30);
 
             this.Controls.Add(CA);
             //CA.Dock = DockStyle.Fill;
@@ -30,7 +30,7 @@ namespace Cell_Tool_3
             this.Controls.Add(labPanel);
             CA.labelPanel = labPanel;
 
-            for (int i = 0; i < Labels.Length; i++)
+            for(int i = 0; i<Labels.Length; i++)
             {
                 Label lab = new Label();
                 lab.ForeColor = Color.White;
@@ -48,7 +48,7 @@ namespace Cell_Tool_3
                 labPanel.ForeColor = this.ForeColor;
             });
 
-            this.SizeChanged += new EventHandler(delegate (object sender, EventArgs e)
+            this.SizeChanged+= new EventHandler(delegate (object sender, EventArgs e)
             {
                 CA.Size = new Size(this.Width - 50, this.Height - 30);
                 CalculateLabelsLocations();
@@ -62,7 +62,7 @@ namespace Cell_Tool_3
 
             CA.labelPanel.SuspendLayout();
 
-            for (int i = 0, X = CA.Location.X; i < Labels.Length; i++, X += step)
+            for(int i = 0, X = CA.Location.X; i < Labels.Length; i++, X+=step)
             {
                 Labels[i].Text = CA.Labels[i].ToString();
                 Labels[i].Width = TextRenderer.MeasureText(Labels[i].Text, Labels[i].Font).Width;
@@ -70,7 +70,7 @@ namespace Cell_Tool_3
             }
 
             CA.labelPanel.ResumeLayout(true);
-
+            
         }
         public void DrawToScreen(TifFileInfo fi)
         {
@@ -138,7 +138,7 @@ namespace Cell_Tool_3
                 LUTColor[0] = (float)(fi.LutList[fi.cValue].R / 255f);
                 LUTColor[1] = (float)(fi.LutList[fi.cValue].G / 255f);
                 LUTColor[2] = (float)(fi.LutList[fi.cValue].B / 255f);
-
+               
                 GLDrawing_Start();
             }
 
@@ -214,7 +214,7 @@ namespace Cell_Tool_3
                             if (p.Y > MaxY) MaxY = p.Y;
                         }
 
-                MaxY = (int)(1.1 * MaxY) + 10;
+                MaxY = (int)(1.1 * MaxY)+10;
                 this.MaxX = MaxX;
                 this.MaxY = MaxY;
 
@@ -224,7 +224,7 @@ namespace Cell_Tool_3
                 double step = MaxX / 5;
                 double val = 0;
 
-                for (int i = 1; i < 5; i++)
+                for(int i =1; i < 5; i++)
                 {
                     val += step;
                     Labels[i] = (int)val;
@@ -237,10 +237,10 @@ namespace Cell_Tool_3
             {
                 //GL.ShadeModel(ShadingModel.Flat);
                 foreach (Series ser in _Series)
-                    if (ser.Enabled && ser.Points.Count() > 0)
+                    if (ser.Enabled && ser.Points.Count()>0)
                     {
-
-                        DrawSeriesSingleColor(ser, Color.Black);
+                        
+                       DrawSeriesSingleColor(ser, Color.Black);
                         GL.BlendFunc(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.One);
                         if (!ser.UseGradientStyle)
                             DrawSeriesSingleColor(ser, ser.Color);
@@ -251,7 +251,7 @@ namespace Cell_Tool_3
                             GL.Disable(EnableCap.Blend);
                         }
                         DrawSeriesBorder(ser);
-
+                        
                     }
 
                 if (ShowMinAndMax)
@@ -291,19 +291,19 @@ namespace Cell_Tool_3
             {
                 if (ser.Points.Count() == 0) return;
                 GL.Begin(PrimitiveType.TriangleStrip);
-
+               
                 foreach (Point p in ser.Points)
                 {
                     if (LUT.Length > p.X)
                         GL.Color4(LUTColor[0], LUTColor[1], LUTColor[2], LUT[p.X]);
                     else
                         GL.Color4(LUTColor[0], LUTColor[1], LUTColor[2], LUT[LUT.Length - 1]);
-
+                    
                     GL.Vertex2(p.X, p.Y);
                     GL.Vertex2(p.X, 0);
 
                 }
-
+                
                 GL.End();
             }
             private void DrawSeriesBorder(Series ser)
@@ -346,6 +346,6 @@ namespace Cell_Tool_3
                 }
             }
         }
-
+        
     }
 }

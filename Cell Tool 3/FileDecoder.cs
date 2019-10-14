@@ -146,7 +146,7 @@ namespace Cell_Tool_3
             loadingTimer.Start();
 
             tp.CorePanel.Tag = path;
-
+            
             return tp.CorePanel;
         }
         /*

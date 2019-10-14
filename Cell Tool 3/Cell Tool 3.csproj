@@ -32,8 +32,8 @@
     <PublisherName>Georgi Danovski</PublisherName>
     <SuiteName>CellTool</SuiteName>
     <AutorunEnabled>true</AutorunEnabled>
-    <ApplicationRevision>4</ApplicationRevision>
-    <ApplicationVersion>1.4.0.4</ApplicationVersion>
+    <ApplicationRevision>7</ApplicationRevision>
+    <ApplicationVersion>1.4.0.7</ApplicationVersion>
     <UseApplicationTrust>true</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
     <PublishWizardCompleted>true</PublishWizardCompleted>
@@ -95,113 +95,113 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Accord, Version=3.8.2.0, Culture=neutral, PublicKeyToken=fa1a88e29555ccf7, processorArchitecture=MSIL">
-      <HintPath>..\..\..\..\..\Desktop\Projects\CellTool-master\References\Accord.dll</HintPath>
+      <HintPath>..\..\..\CellTool-master\References\Accord.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Accord.Imaging, Version=3.8.2.0, Culture=neutral, PublicKeyToken=fa1a88e29555ccf7, processorArchitecture=MSIL">
-      <HintPath>..\..\..\..\..\Desktop\Projects\CellTool-master\References\Accord.Imaging.dll</HintPath>
+      <HintPath>..\..\..\CellTool-master\References\Accord.Imaging.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Accord.Math, Version=3.8.2.0, Culture=neutral, PublicKeyToken=fa1a88e29555ccf7, processorArchitecture=MSIL">
-      <HintPath>..\..\..\..\..\Desktop\Projects\CellTool-master\References\Accord.Math.dll</HintPath>
+      <HintPath>..\..\..\CellTool-master\References\Accord.Math.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Accord.Math.Core, Version=3.8.2.0, Culture=neutral, PublicKeyToken=fa1a88e29555ccf7, processorArchitecture=MSIL">
-      <HintPath>..\..\..\..\..\Desktop\Projects\CellTool-master\References\Accord.Math.Core.dll</HintPath>
+      <HintPath>..\..\..\CellTool-master\References\Accord.Math.Core.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="Accord.Statistics, Version=3.8.2.0, Culture=neutral, PublicKeyToken=fa1a88e29555ccf7, processorArchitecture=MSIL">
-      <HintPath>..\..\..\..\..\Desktop\Projects\CellTool-master\References\Accord.Statistics.dll</HintPath>
+      <HintPath>..\..\..\CellTool-master\References\Accord.Statistics.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="bioformats_package_5.9.2">
-      <HintPath>..\..\..\..\..\Desktop\Projects\CellTool-master\References\bioformats_package_5.9.2.dll</HintPath>
+      <HintPath>..\..\..\CellTool-master\References\bioformats_package_5.9.2.dll</HintPath>
     </Reference>
     <Reference Include="BitMiracle.LibTiff.NET">
-      <HintPath>..\..\..\..\..\Desktop\Projects\CellTool-master\References\BitMiracle.LibTiff.NET.dll</HintPath>
+      <HintPath>..\..\..\CellTool-master\References\BitMiracle.LibTiff.NET.dll</HintPath>
     </Reference>
     <Reference Include="CellToolDK, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\Desktop\Projects\CellTool-master\References\CellToolDK.dll</HintPath>
+      <HintPath>..\..\..\CellTool-master\References\CellToolDK.dll</HintPath>
     </Reference>
     <Reference Include="IKVM.AWT.WinForms">
-      <HintPath>..\..\..\..\..\Desktop\Projects\CellTool-master\References\IKVM.AWT.WinForms.dll</HintPath>
+      <HintPath>..\..\..\CellTool-master\References\IKVM.AWT.WinForms.dll</HintPath>
     </Reference>
     <Reference Include="IKVM.OpenJDK.Beans">
-      <HintPath>..\..\..\..\..\Desktop\Projects\CellTool-master\References\IKVM.OpenJDK.Beans.dll</HintPath>
+      <HintPath>..\..\..\CellTool-master\References\IKVM.OpenJDK.Beans.dll</HintPath>
     </Reference>
     <Reference Include="IKVM.OpenJDK.Charsets, Version=7.2.4630.5, Culture=neutral, PublicKeyToken=13235d27fcbfff58, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\Desktop\Projects\CellTool-master\References\IKVM.OpenJDK.Charsets.dll</HintPath>
+      <HintPath>..\..\..\CellTool-master\References\IKVM.OpenJDK.Charsets.dll</HintPath>
     </Reference>
     <Reference Include="IKVM.OpenJDK.Corba">
-      <HintPath>..\..\..\..\..\Desktop\Projects\CellTool-master\References\IKVM.OpenJDK.Corba.dll</HintPath>
+      <HintPath>..\..\..\CellTool-master\References\IKVM.OpenJDK.Corba.dll</HintPath>
     </Reference>
     <Reference Include="IKVM.OpenJDK.Core">
-      <HintPath>..\..\..\..\..\Desktop\Projects\CellTool-master\References\IKVM.OpenJDK.Core.dll</HintPath>
+      <HintPath>..\..\..\CellTool-master\References\IKVM.OpenJDK.Core.dll</HintPath>
     </Reference>
     <Reference Include="IKVM.OpenJDK.Jdbc">
-      <HintPath>..\..\..\..\..\Desktop\Projects\CellTool-master\References\IKVM.OpenJDK.Jdbc.dll</HintPath>
+      <HintPath>..\..\..\CellTool-master\References\IKVM.OpenJDK.Jdbc.dll</HintPath>
     </Reference>
     <Reference Include="IKVM.OpenJDK.Management">
-      <HintPath>..\..\..\..\..\Desktop\Projects\CellTool-master\References\IKVM.OpenJDK.Management.dll</HintPath>
+      <HintPath>..\..\..\CellTool-master\References\IKVM.OpenJDK.Management.dll</HintPath>
     </Reference>
     <Reference Include="IKVM.OpenJDK.Media">
-      <HintPath>..\..\..\..\..\Desktop\Projects\CellTool-master\References\IKVM.OpenJDK.Media.dll</HintPath>
+      <HintPath>..\..\..\CellTool-master\References\IKVM.OpenJDK.Media.dll</HintPath>
     </Reference>
     <Reference Include="IKVM.OpenJDK.Misc">
-      <HintPath>..\..\..\..\..\Desktop\Projects\CellTool-master\References\IKVM.OpenJDK.Misc.dll</HintPath>
+      <HintPath>..\..\..\CellTool-master\References\IKVM.OpenJDK.Misc.dll</HintPath>
     </Reference>
     <Reference Include="IKVM.OpenJDK.Naming">
-      <HintPath>..\..\..\..\..\Desktop\Projects\CellTool-master\References\IKVM.OpenJDK.Naming.dll</HintPath>
+      <HintPath>..\..\..\CellTool-master\References\IKVM.OpenJDK.Naming.dll</HintPath>
     </Reference>
     <Reference Include="IKVM.OpenJDK.Remoting">
-      <HintPath>..\..\..\..\..\Desktop\Projects\CellTool-master\References\IKVM.OpenJDK.Remoting.dll</HintPath>
+      <HintPath>..\..\..\CellTool-master\References\IKVM.OpenJDK.Remoting.dll</HintPath>
     </Reference>
     <Reference Include="IKVM.OpenJDK.Security">
-      <HintPath>..\..\..\..\..\Desktop\Projects\CellTool-master\References\IKVM.OpenJDK.Security.dll</HintPath>
+      <HintPath>..\..\..\CellTool-master\References\IKVM.OpenJDK.Security.dll</HintPath>
     </Reference>
     <Reference Include="IKVM.OpenJDK.SwingAWT, Version=7.2.4630.5, Culture=neutral, PublicKeyToken=13235d27fcbfff58, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\Desktop\Projects\CellTool-master\References\IKVM.OpenJDK.SwingAWT.dll</HintPath>
+      <HintPath>..\..\..\CellTool-master\References\IKVM.OpenJDK.SwingAWT.dll</HintPath>
     </Reference>
     <Reference Include="IKVM.OpenJDK.Text">
-      <HintPath>..\..\..\..\..\Desktop\Projects\CellTool-master\References\IKVM.OpenJDK.Text.dll</HintPath>
+      <HintPath>..\..\..\CellTool-master\References\IKVM.OpenJDK.Text.dll</HintPath>
     </Reference>
     <Reference Include="IKVM.OpenJDK.Util">
-      <HintPath>..\..\..\..\..\Desktop\Projects\CellTool-master\References\IKVM.OpenJDK.Util.dll</HintPath>
+      <HintPath>..\..\..\CellTool-master\References\IKVM.OpenJDK.Util.dll</HintPath>
     </Reference>
     <Reference Include="IKVM.OpenJDK.XML.API">
-      <HintPath>..\..\..\..\..\Desktop\Projects\CellTool-master\References\IKVM.OpenJDK.XML.API.dll</HintPath>
+      <HintPath>..\..\..\CellTool-master\References\IKVM.OpenJDK.XML.API.dll</HintPath>
     </Reference>
     <Reference Include="IKVM.OpenJDK.XML.Bind">
-      <HintPath>..\..\..\..\..\Desktop\Projects\CellTool-master\References\IKVM.OpenJDK.XML.Bind.dll</HintPath>
+      <HintPath>..\..\..\CellTool-master\References\IKVM.OpenJDK.XML.Bind.dll</HintPath>
     </Reference>
     <Reference Include="IKVM.OpenJDK.XML.Parse">
-      <HintPath>..\..\..\..\..\Desktop\Projects\CellTool-master\References\IKVM.OpenJDK.XML.Parse.dll</HintPath>
+      <HintPath>..\..\..\CellTool-master\References\IKVM.OpenJDK.XML.Parse.dll</HintPath>
     </Reference>
     <Reference Include="IKVM.Runtime">
-      <HintPath>..\..\..\..\..\Desktop\Projects\CellTool-master\References\IKVM.Runtime.dll</HintPath>
+      <HintPath>..\..\..\CellTool-master\References\IKVM.Runtime.dll</HintPath>
     </Reference>
     <Reference Include="IKVM.Runtime.JNI">
-      <HintPath>..\..\..\..\..\Desktop\Projects\CellTool-master\References\IKVM.Runtime.JNI.dll</HintPath>
+      <HintPath>..\..\..\CellTool-master\References\IKVM.Runtime.JNI.dll</HintPath>
     </Reference>
     <Reference Include="MathNet.Numerics, Version=4.7.0.0, Culture=neutral, processorArchitecture=MSIL">
-      <HintPath>..\..\..\..\..\Desktop\Projects\CellTool-master\References\MathNet.Numerics.dll</HintPath>
+      <HintPath>..\..\..\CellTool-master\References\MathNet.Numerics.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Solver.Foundation, Version=3.0.2.10889, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\..\..\..\Desktop\Projects\CellTool-master\References\Microsoft.Solver.Foundation.dll</HintPath>
+      <HintPath>..\..\..\CellTool-master\References\Microsoft.Solver.Foundation.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.VisualBasic" />
     <Reference Include="NCalc">
-      <HintPath>..\..\..\..\..\Desktop\Projects\CellTool-master\References\NCalc.dll</HintPath>
+      <HintPath>..\..\..\CellTool-master\References\NCalc.dll</HintPath>
     </Reference>
     <Reference Include="OpenTK">
-      <HintPath>..\..\..\..\..\Desktop\Projects\CellTool-master\References\OpenTK.dll</HintPath>
+      <HintPath>..\..\..\CellTool-master\References\OpenTK.dll</HintPath>
     </Reference>
     <Reference Include="OpenTK.GLControl">
-      <HintPath>..\..\..\..\..\Desktop\Projects\CellTool-master\References\OpenTK.GLControl.dll</HintPath>
+      <HintPath>..\..\..\CellTool-master\References\OpenTK.GLControl.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
@@ -257,6 +257,9 @@
     </Compile>
     <Compile Include="Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Form_auxiliary.cs">
+      <SubType>Form</SubType>
     </Compile>
     <Compile Include="FrameCalculator.cs" />
     <Compile Include="FRAPA_Model.cs" />
@@ -321,9 +324,6 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
-    </Compile>
-    <Compile Include="Form_auxiliary.cs">
-      <SubType>Form</SubType>
     </Compile>
   </ItemGroup>
   <ItemGroup>
