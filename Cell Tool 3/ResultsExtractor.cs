@@ -35,30 +35,17 @@ namespace Cell_Tool_3
    class ResultsExtractor
     {
         public Panel myPanel = null;
-        private string LoadingDir = "";
+        private ImageDrawer IDrawer;
         public Panel Input(string dir, ImageAnalyser IA)
         {
             MyForm form1 = new MyForm(dir,IA);
             this.myPanel = form1;
 
-            //if (File.Exists(OSStringConverter.StringToDir(dir)))
-            //ResultsExtractor.FileSaver.ReadCTDataFile(form1, dir);
-
-            this.LoadingDir = dir;
-            this.myPanel.DockChanged += myPanel_EnabledChanged;
+            if (File.Exists(OSStringConverter.StringToDir(dir)))
+                ResultsExtractor.FileSaver.ReadCTDataFile(form1, dir);
 
             return form1;
             //form1.Show();
-        }
-        private void myPanel_EnabledChanged(object sender, EventArgs e)
-        {
-            if (this.LoadingDir != "")
-            {
-                if (File.Exists(OSStringConverter.StringToDir(this.LoadingDir)))
-                    ResultsExtractor.FileSaver.ReadCTDataFile((MyForm)myPanel, this.LoadingDir);
-
-                this.LoadingDir = "";
-            }
         }
         public class Parametars
         {
@@ -484,7 +471,7 @@ namespace Cell_Tool_3
                 NormFrom0To1.ForeColor = Parametars.ShriftColor;
                 NormFrom0To1.Text = "Max = 1 && Min = 0";
                 NormFrom0To1.Checked = false;
-                NormFrom0To1.Width += 50;
+                NormFrom0To1.Width += 10;
                 NormFrom0To1.Location = new Point(25, 65);
                 p.Controls.Add(NormFrom0To1);
                 NormFrom0To1.Enabled = false;
@@ -780,15 +767,15 @@ namespace Cell_Tool_3
                 this.Controls.Add(MenuPanel);
 
                 MenuStrip Menu = new MenuStrip();
-                //Menu.BackColor = Parametars.BackGroundColor;
-                //Menu.ForeColor = Parametars.ShriftColor;
+                Menu.BackColor = Parametars.BackGroundColor;
+                Menu.ForeColor = Parametars.ShriftColor;
                 MenuPanel.Controls.Add(Menu);
 
                 //add Work dir
                 ToolStripMenuItem AddDirBtn = new ToolStripMenuItem();
                 AddDirBtn.Text = "Add work directory";
-                //AddDirBtn.BackColor = Parametars.BackGroundColor;
-                //AddDirBtn.ForeColor = Parametars.ShriftColor;
+                AddDirBtn.BackColor = Parametars.BackGroundColor;
+                AddDirBtn.ForeColor = Parametars.ShriftColor;
                 Menu.Items.Add(AddDirBtn);
                 AddDirBtn.Click += new EventHandler(delegate (object o, EventArgs a)
                 {
@@ -797,8 +784,8 @@ namespace Cell_Tool_3
                 //Open Btn
                 ToolStripMenuItem OpenBtn = new ToolStripMenuItem();
                 OpenBtn.Text = "Open";
-                //OpenBtn.BackColor = Parametars.BackGroundColor;
-                //OpenBtn.ForeColor = Parametars.ShriftColor;
+                OpenBtn.BackColor = Parametars.BackGroundColor;
+                OpenBtn.ForeColor = Parametars.ShriftColor;
                 Menu.Items.Add(OpenBtn);
                 OpenBtn.Click += new EventHandler(delegate (object o, EventArgs a)
                 {
@@ -808,8 +795,8 @@ namespace Cell_Tool_3
                 //Save Btn
                 ToolStripMenuItem SaveBtn = new ToolStripMenuItem();
                 SaveBtn.Text = "Save";
-                //SaveBtn.BackColor = Parametars.BackGroundColor;
-                //SaveBtn.ForeColor = Parametars.ShriftColor;
+                SaveBtn.BackColor = Parametars.BackGroundColor;
+                SaveBtn.ForeColor = Parametars.ShriftColor;
                 Menu.Items.Add(SaveBtn);
                 SaveBtn.Click += new EventHandler(delegate (object o, EventArgs a)
                 {
@@ -819,8 +806,8 @@ namespace Cell_Tool_3
                 //Export Btn
                 ToolStripMenuItem ExportBtn = new ToolStripMenuItem();
                 ExportBtn.Text = "Export";
-                //ExportBtn.BackColor = Parametars.BackGroundColor;
-                //ExportBtn.ForeColor = Parametars.ShriftColor;
+                ExportBtn.BackColor = Parametars.BackGroundColor;
+                ExportBtn.ForeColor = Parametars.ShriftColor;
                 Menu.Items.Add(ExportBtn);
                 ExportBtn.Click += new EventHandler(delegate (object o, EventArgs a)
                 {
@@ -1653,12 +1640,7 @@ namespace Cell_Tool_3
 
                 tb.LostFocus += new EventHandler(delegate (Object o, EventArgs a)
                 {
-                    if (this.Controls.Contains(tb))
-                    {
-                        tb.Visible = false;
-                        this.Controls.Remove(tb);
-                        tb.Dispose();
-                    }
+                    tb.Dispose();
                 });
                 tb.KeyDown += new KeyEventHandler(delegate (Object o, KeyEventArgs a)
                 {
@@ -1667,17 +1649,12 @@ namespace Cell_Tool_3
                         a.Handled = true;
                         a.SuppressKeyPress = true;
                         this.SelectedNode.Text = tb.Text;
-                        if (this.Controls.Contains(tb))
-                        {
-                            tb.Visible = false;
-                            this.Controls.Remove(tb);
-                            tb.Dispose();
-                        }
+                        tb.Dispose();
                         form1.dataTV.RefreshAllNodes();
                         RefreshToHardDrive();
                     }
+
                 });
-                /*
                 this.AfterSelect += new TreeViewEventHandler(delegate (Object o, TreeViewEventArgs a)
                 {
                     tb.Dispose();
@@ -1685,7 +1662,7 @@ namespace Cell_Tool_3
                 this.MouseWheel += new MouseEventHandler(delegate (Object o, MouseEventArgs a)
                 {
                     tb.Dispose();
-                });*/
+                });
             }
             private void NewBtn_Click(object sender, EventArgs e)
             {
@@ -2091,12 +2068,6 @@ namespace Cell_Tool_3
             private static void StrTranslator(string str, MyForm form1, TreeNode filters)
             {
                 string[] vals = str.Split(new string[] { "=" }, StringSplitOptions.None);
-
-                if (vals.Length != 2 || vals[1] == "")
-                {
-                    return;
-                }
-
                 try
                 {
                     switch (vals[0])
@@ -2200,7 +2171,7 @@ namespace Cell_Tool_3
                             form1.dataTV.Store[int.Parse(nodeAll[0])].Nodes.Add(dN);
                             break;
                         case "FitData":
-                            if (vals[1]!= null && vals[1]!="")
+                            if(vals[1]!= null && vals[1]!="")
                                 form1.solverClass.fitData.StringToData(vals[1]);
                             break;
                         case "FitF":
@@ -2210,8 +2181,8 @@ namespace Cell_Tool_3
                     }
                 }
                 catch
-                {                   
-                   MessageBox.Show("Error: " + vals[0].ToString() + "\n" + vals[1]);
+                {
+                   MessageBox.Show("Error: " + vals[0].ToString());
                 }
             }
             public static void Save(MyForm form1)

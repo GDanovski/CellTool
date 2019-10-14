@@ -55,6 +55,7 @@ namespace Cell_Tool_3
          public Panel OpenPanel = new Panel();
         public Panel TitlePanel = new Panel();
         public Panel ImageMainPanel = new Panel();
+        public Panel MainPanel;
         public Panel ResultsExtractorMainPanel = new Panel();
         //Tab Page List
         public List<List<Control>> Collections = new List<List<Control>>();
@@ -79,6 +80,7 @@ namespace Cell_Tool_3
         public void Initialize(Form MainForm, int ActiveAccountIndex1, Panel MainPanel1, Color BackGroundColor, Color BackGround2Color, Color ShriftColor, Color TitlePanelColor, Color TaskBtnColor, Color TaskBtnClickColor)
         {
             this.MainForm = MainForm;
+            this.MainPanel = MainPanel1;
             
             Body.SuspendLayout();
             OpenPanel.SuspendLayout();
@@ -199,6 +201,8 @@ namespace Cell_Tool_3
                         propertiesPanel.Width = int.Parse(settings.PropertiesPanelWidth[ActiveAccountIndex]);
                         settings.PropertiesPanelVisible[ActiveAccountIndex] = "y";
                         Histograms_Reload();
+                        IA.refresh_controls(propertiesPanel);
+
                     }
                     else
                     {
@@ -353,6 +357,8 @@ namespace Cell_Tool_3
                     IA.BandC.Chart1.CA.DrawToScreen(fi);
                     IA.BandC.Chart1.CA.Update();
                     IA.BandC.Chart1.CA.PerformLayout();
+
+
                     IA.ReloadImages();
                 }
                 else if (fi.selectedPictureBoxColumn == 1 & fi.cValue < fi.sizeC
@@ -366,6 +372,7 @@ namespace Cell_Tool_3
                     IA.Segmentation.Chart1.DrawToScreen(fi);
                     IA.Segmentation.Chart1.Update();
                     IA.Segmentation.Chart1.PerformLayout();
+
                     IA.ReloadImages();
                 }
             }
@@ -1560,6 +1567,9 @@ namespace Cell_Tool_3
 
                     ImageMainPanel.Visible = true;
                     ResultsExtractorMainPanel.Visible = false;
+                    IA.IDrawer.FormImg.Show();
+                    IA.Segmentation.FormSegmentation.Show();
+                    IA.BandC.FormBrightnessContrast.Show();
 
                     IA.ReloadImages();
                     try
@@ -1587,6 +1597,10 @@ namespace Cell_Tool_3
                     ResultsExtractorMainPanel.Controls.Add(TabCollections[index].ResultsExtractor.myPanel);
                     TabCollections[index].ResultsExtractor.myPanel.Dock = DockStyle.Fill;
                     IA.UpdateUndoBtns();
+
+                    IA.IDrawer.FormImg.Hide();
+                    IA.Segmentation.FormSegmentation.Hide();
+                    IA.BandC.FormBrightnessContrast.Hide();
                 }
             }
 

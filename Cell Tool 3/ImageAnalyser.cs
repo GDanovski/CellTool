@@ -48,10 +48,11 @@ namespace Cell_Tool_3
         public TrackSpots Tracking;
         public RoiManager RoiMan;
         public ImageDrawer IDrawer = new ImageDrawer();
-        public GLControl GLControl1 = new GLControl();
+        public OpenTK.GLControl GLControl1 = new GLControl();
         public Panel GLControl1_VerticalPanel = new Panel();
         public Panel GLControl1_HorizontalPanel = new Panel();
         public Panel GLControl1_TraserPanel = new Panel();
+
 
         public ToolStripComboBox zoomValue = null;
               
@@ -99,6 +100,9 @@ namespace Cell_Tool_3
 
             SpotDetectorEnabled=System.IO.File.Exists(Application.StartupPath + "/PlugIns/SpotDetector.txt");
             DeleteEmptyEnabled = !System.IO.File.Exists(Application.StartupPath + "/PlugIns/DeleteEmptyResults.txt");
+
+
+
         }
         
         private void Input_TextChange(object sender, ChangeValueEventArgs e)
@@ -359,8 +363,11 @@ namespace Cell_Tool_3
         }
         public void ReloadImages()
         { 
-            TabPages.PropertiesBody.SuspendLayout();
+            //TabPages.PropertiesBody.SuspendLayout();
             TabPages.propertiesPanel.SuspendLayout();
+
+
+            IDrawer.FormImg.Show();
 
             if (TabPages.Collections.Count < 1) 
             {
@@ -381,7 +388,7 @@ namespace Cell_Tool_3
                 ReDoBtn.Enabled = false;
                 GLControl1_VerticalPanel.Visible = false;
                 GLControl1_TraserPanel.Visible = false;
-                TabPages.PropertiesBody.ResumeLayout();
+                //TabPages.PropertiesBody.ResumeLayout();
                 TabPages.propertiesPanel.ResumeLayout();
                 
                 return;
@@ -395,40 +402,25 @@ namespace Cell_Tool_3
             }
             catch { }
 
-            //LibPanel
-            if (settings.SegmentLibPanelVis[TabPages.ActiveAccountIndex] != "y")
-            {
-                Segmentation.LibPanel.Height = 26;
-            }
-            else
-            {
-                Segmentation.LibPanel.Height = 50;
-            }
-
             if (fi != null)
             {
                 try
                 {
                     
-                    if (fi.sizeZ > 1)
+                    if (fi.sizeZ > 1 && TabPages.zTrackBar.Panel.Visible != true)
                     {
-                        if (TabPages.zTrackBar.TrackBar1.Maximum != fi.sizeZ)
-                            TabPages.zTrackBar.Refresh(fi.zValue + 1, 1, fi.sizeZ);
-                        if (!TabPages.zTrackBar.Panel.Visible)
-                            TabPages.zTrackBar.Panel.Visible = true;
+                        TabPages.zTrackBar.Refresh(fi.zValue + 1, 1, fi.sizeZ);
+                        TabPages.zTrackBar.Panel.Visible = true;
                     }
                     else if(fi.sizeZ <= 1 && TabPages.zTrackBar.Panel.Visible != false)
                     {
                         TabPages.zTrackBar.Panel.Visible = false;
                     }
 
-                    if (fi.sizeT > 1)
+                    if (fi.sizeT > 1 && TabPages.tTrackBar.Panel.Visible != true)
                     {
-                        if (TabPages.tTrackBar.TrackBar1.Maximum != fi.sizeT)
-                            TabPages.tTrackBar.Refresh(fi.frame + 1, 1, fi.sizeT);
-
-                        if(!TabPages.tTrackBar.Panel.Visible)
-                            TabPages.tTrackBar.Panel.Visible = true;
+                        TabPages.tTrackBar.Refresh(fi.frame + 1, 1, fi.sizeT);
+                        TabPages.tTrackBar.Panel.Visible = true;
                     }
                     else if(fi.sizeT <= 1 && TabPages.tTrackBar.Panel.Visible != false)
                     {
@@ -440,7 +432,6 @@ namespace Cell_Tool_3
                         && fi.tpTaskbar.TopBar.BackColor != FileBrowser.BackGroundColor1)
                     {
                         fi.tpTaskbar.TopBar.BackColor = FileBrowser.BackGroundColor1;
-                        fi.tpTaskbar.TopBar.ResumeLayout(true);
                         fi.tpTaskbar.TopBar.Invalidate();
                         fi.tpTaskbar.TopBar.Update();
                         fi.tpTaskbar.TopBar.Refresh();
@@ -457,8 +448,8 @@ namespace Cell_Tool_3
                 //
                 if (fi.openedImages < fi.sizeC * fi.sizeZ)
                 {
-                    TabPages.propertiesPanel.ResumeLayout();
-                    TabPages.PropertiesBody.ResumeLayout();
+                    //TabPages.propertiesPanel.ResumeLayout();
+                    //TabPages.PropertiesBody.ResumeLayout();
                     return;
                 }
 
@@ -500,13 +491,23 @@ namespace Cell_Tool_3
                     }
                     BandC.panel.Visible = true;
 
+                    // Hide the Segmentation historgram and show the Brigtness one on top
+                    Segmentation.FormSegmentation.Hide();
+                    BandC.FormBrightnessContrast.BringToFront();
+                    BandC.FormBrightnessContrast.Show();
+                   
+
                     if (settings.MetaVis[TabPages.ActiveAccountIndex] != "y")
                     {
                         Meta.panel.Height = 26;
                     }
                     else
                     {
-                        Meta.panel.Height = 126;
+                        if (Meta.panel.Height != 126)
+                        {
+                            Meta.panel.Height = 126;
+                            refresh_controls(Meta.panel);
+                        }
                     }
                     Meta.UpdateInfo();
                     Meta.panel.Visible = true;
@@ -532,7 +533,11 @@ namespace Cell_Tool_3
                     }
                     else
                     {
-                        Tracking.panel.Height = 105;
+                        if (Tracking.panel.Height != 105)
+                        {
+                            Tracking.panel.Height = 105;
+                            refresh_controls(Tracking.panel);
+                        }
                     }
                     //LibPanel
                     /*
@@ -551,7 +556,9 @@ namespace Cell_Tool_3
                     }
                     else
                     {
-                        Segmentation.DataPanel.Height = 180;
+                        if (Segmentation.DataPanel.Height != 180) { 
+                            Segmentation.DataPanel.Height = 180;
+                            refresh_controls(Segmentation.DataPanel);
                     }
 
                     //HistogramPanel
@@ -561,10 +568,18 @@ namespace Cell_Tool_3
                     }
                     else
                     {
-                        Segmentation.HistogramPanel.Height =
-                            int.Parse(settings.SegmentHistPanelHeight[TabPages.ActiveAccountIndex]);
+                            if (Segmentation.HistogramPanel.Height != int.Parse(settings.SegmentHistPanelHeight[TabPages.ActiveAccountIndex]))
+                            {
+                                Segmentation.HistogramPanel.Height = int.Parse(settings.SegmentHistPanelHeight[TabPages.ActiveAccountIndex]);
+                                refresh_controls(Segmentation.HistogramPanel);
+                            }
+                     }
                         //load histogram
                         Segmentation.Segmentation_LoadHistogramToChart(fi);
+
+                        // Hide the Brightness historgram and show the Segmentation one on top
+                        BandC.FormBrightnessContrast.Hide();
+                        Segmentation.FormSegmentation.Show();
                     }
 
                     //tresholdsPanel
@@ -574,6 +589,8 @@ namespace Cell_Tool_3
                     }
                     else
                     {
+                        int old_height = Segmentation.tresholdsPanel.Height;
+
                         switch (Segmentation.SegmentationCBox.SelectedIndex)
                         {
                             case 1:
@@ -590,6 +607,12 @@ namespace Cell_Tool_3
                                 Segmentation.tresholdsPanel.Height = 56;
                                 break;
                         }
+
+                        if (old_height == 26)
+                        {
+                            refresh_controls(Segmentation.tresholdsPanel);
+                            refresh_controls(Segmentation.Otsu1D.panel);
+                        }
                     }
                     //SpotDetPanel
                     if (settings.SegmentSpotDetPanelVis[TabPages.ActiveAccountIndex] != "y")
@@ -598,7 +621,11 @@ namespace Cell_Tool_3
                     }
                     else
                     {
-                        Segmentation.SpotDetPanel.Height = 104;
+                        if (Segmentation.SpotDetPanel.Height != 104)
+                        {
+                            Segmentation.SpotDetPanel.Height = 104;
+                            refresh_controls(Segmentation.SpotDetPanel);
+                        }
                     }
                     //reorder
 
@@ -606,36 +633,42 @@ namespace Cell_Tool_3
                     {
                         //Segmentation.LibPanel.Visible = true;
                         //Segmentation.LibPanel.BringToFront();
+                        
                     }
 
                     if (Segmentation.HistogramPanel.Visible != true)
                     {
                         Segmentation.HistogramPanel.Visible = true;
                         Segmentation.HistogramPanel.BringToFront();
+                        refresh_controls(Segmentation.HistogramPanel);
                     }
                     
                     if (Segmentation.DataPanel.Visible != true)
                     {
                         Segmentation.DataPanel.Visible = true;
                         Segmentation.DataPanel.BringToFront();
+                        refresh_controls(Segmentation.DataPanel);
                     }
 
                     if (Segmentation.tresholdsPanel.Visible != true)
                     {
                         Segmentation.tresholdsPanel.Visible = true;
                         Segmentation.tresholdsPanel.BringToFront();
+                        refresh_controls(Segmentation.tresholdsPanel);
                     }
 
                     if (/*SpotDetectorEnabled &&*/ Segmentation.SpotDetPanel.Visible != true)
                     {
                         Segmentation.SpotDetPanel.Visible = true;
                         Segmentation.SpotDetPanel.BringToFront();
+                        refresh_controls(Segmentation.SpotDetPanel);
                     }
 
                     if (Tracking.panel.Visible != true)
                     {
                         Tracking.panel.Visible = true;
                         Tracking.panel.BringToFront();
+                        refresh_controls(Tracking.panel);
                     }
                 }
                 else
@@ -660,7 +693,11 @@ namespace Cell_Tool_3
                     }
                     else
                     {
-                        chart.Properties.panel.Height = 90;
+                        if (chart.Properties.panel.Height != 90)
+                        {
+                            chart.Properties.panel.Height = 90;
+                            refresh_controls(chart.Properties.panel);
+                        }
                     }
                     
 
@@ -670,20 +707,30 @@ namespace Cell_Tool_3
                     }
                     else
                     {
-                        chart.Series.panel.Height =int.Parse(settings.CTChart_SeriesHeight[TabPages.ActiveAccountIndex]);
+                        if (chart.Series.panel.Height == 26)
+                        {
+                            chart.Series.panel.Height = int.Parse(settings.CTChart_SeriesHeight[TabPages.ActiveAccountIndex]);
+                            refresh_controls(chart.Series.panel);
+                        }
+                        
                     }
 
                     if (chart.Properties.panel.Visible != true)
                     {
                         chart.Properties.panel.Visible = true;
                         chart.Properties.panel.BringToFront();
+                        refresh_controls(chart.Properties.panel);
                     }
 
                     if (chart.Series.panel.Visible != true)
                     {
                         chart.Series.panel.Visible = true;
                         chart.Series.panel.BringToFront();
+                        refresh_controls(chart.Series.panel);
                     }
+
+                    Segmentation.FormSegmentation.Hide();
+                    BandC.FormBrightnessContrast.Hide();
                 }
                 else
                 {
@@ -698,32 +745,59 @@ namespace Cell_Tool_3
                 {
                     if (settings.RoiManVis[TabPages.ActiveAccountIndex] != "y")
                         RoiMan.panel.Height = 26;
-                    else
+                    else if (RoiMan.panel.Height != int.Parse(settings.RoiManHeight[TabPages.ActiveAccountIndex]))
+                    {
                         RoiMan.panel.Height = int.Parse(settings.RoiManHeight[TabPages.ActiveAccountIndex]);
+                        refresh_controls(RoiMan.panel);
+                    }
                     RoiMan.panel.Visible = true;
                     RoiMan.panel.BringToFront();
+                    refresh_controls(RoiMan.panel);
+
                 }
                 else
                     RoiMan.panel.Visible = false;
 
                 #endregion Roi Manager
             }
-            TabPages.PropertiesBody.ResumeLayout();
-            TabPages.PropertiesBody.Update();
-            TabPages.PropertiesBody.Invalidate();
-            TabPages.PropertiesBody.Refresh();
+            //LibPanel
+            if (settings.SegmentLibPanelVis[TabPages.ActiveAccountIndex] != "y")
+            {
+                Segmentation.LibPanel.Height = 26;
+            }
+            else
+            {
+                if (Segmentation.LibPanel.Height != 50)
+                {
+                    Segmentation.LibPanel.Height = 50;
+                    refresh_controls(Segmentation.LibPanel);
+                }
+            }
 
-            TabPages.propertiesPanel.ResumeLayout();
-            TabPages.propertiesPanel.Update();
-            TabPages.propertiesPanel.Invalidate();
-            TabPages.propertiesPanel.Refresh();
 
             Application.DoEvents();
 
-            //The following rows are added only to triger the scroll bar rendering
-            TabPages.PropertiesBody.Height += 1;
-            TabPages.PropertiesBody.Height -= 1;
+            BandC.Chart1.BringToFront();
+            //refresh_controls(BandC.Chart1.CA);
+            TabPages.propertiesPanel.ResumeLayout();
+            //TabPages.PropertiesBody.ResumeLayout();
+
         }
+
+        
+
+        public void refresh_controls(Control ctrl)
+        {
+            
+
+            //ctrl.ResumeLayout(true);
+            ctrl.Invalidate();
+            Application.DoEvents();
+            
+            foreach (Control ctrl2 in ctrl.Controls) { refresh_controls(ctrl2); }
+
+        }
+        
         private void ChangeT(string Val)
         {
             TifFileInfo fi = TabPages.TabCollections[TabPages.SelectedIndex].tifFI;

@@ -212,15 +212,12 @@ namespace Cell_Tool_3
             VisualizeColorBtns();
             VisualizeMethodsBtns();
 
-            Panel fillerPanel = new Panel();
-            fillerPanel.BackColor = IA.FileBrowser.BackGroundColor1;
-            fillerPanel.Dock = DockStyle.Fill;
-            TopBar.Controls.Add(fillerPanel);
-
+            
             this.TopBar.Invalidate();
             this.TopBar.Update();
             this.TopBar.Refresh();
             Application.DoEvents();
+
         }
 
         private void Control_MouseDown(object sender, MouseEventArgs e)

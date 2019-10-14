@@ -185,7 +185,7 @@ namespace Cell_Tool_3
             MainPanel.BackColor = BackGroundColor;
             MainForm.Controls.Add(MainPanel);
             StatusLabel.TextChanged += new EventHandler(StatusLabel_TextChange);
-            StatusProgressBar.VisibleChanged += StatusProgressBar_visibleChanged;
+            //StatusProgressBar.VisibleChanged += StatusProgressBar_visibleChanged;
             MainPanel.CursorChanged += new EventHandler(delegate (Object o, EventArgs a)
             {
                 MainForm.Cursor = MainPanel.Cursor;
@@ -219,6 +219,8 @@ namespace Cell_Tool_3
             editMenu1.setIA = IA;
 
             IA.Initialize(UnDoBtn,ReDoBtn);
+            //MainForm.Controls.Add((Panel)IA.GLControl1.Parent);
+            //((Panel)IA.GLControl1.Parent).BringToFront();
 
             TabPages.AddPlugIns();
             //Add hot keys to main form
@@ -358,6 +360,9 @@ namespace Cell_Tool_3
         }
         private void CloseProgram(object sander, FormClosingEventArgs e)
         {
+            Application.Exit();
+            return;
+
             if (update) return;
             Helpers.Settings.SaveSettings();
             // Check is it ok to close the program
@@ -368,9 +373,11 @@ namespace Cell_Tool_3
             // Displays the MessageBox.
             result = MessageBox.Show(message, caption, buttons);
 
+
             if (result == System.Windows.Forms.DialogResult.Yes)
             {
                 e.Cancel = false;
+                Application.Exit();
             }
             else
             {
@@ -837,7 +844,7 @@ namespace Cell_Tool_3
                 ToolStripMenuItem TutorialsMenuItem = new ToolStripMenuItem();
                 TutorialsMenuItem.Text = "Tutorials";
                 TutorialsMenuItem.Click += Tutorials_Click;
-                if(OSStringConverter.isWinOS) HelpToolStripMenuItem.DropDownItems.Add(TutorialsMenuItem);
+                HelpToolStripMenuItem.DropDownItems.Add(TutorialsMenuItem);
 
                 HotKeysToolStripMenuItem.Text = "Hot Keys";
                 HelpToolStripMenuItem.DropDownItems.Add(HotKeysToolStripMenuItem);
@@ -935,8 +942,7 @@ namespace Cell_Tool_3
             rtb.LinkClicked += new System.Windows.Forms.LinkClickedEventHandler(link_LinkClicked);
             rtb.Dock = DockStyle.Fill;
             rtb.ReadOnly = true;
-            //rtb.Rtf = Properties.Resources.Citation;
-            rtb.Text = Properties.Resources.Citation;
+            rtb.Rtf = Properties.Resources.Citation;
 
             msgForm.Controls.Add(rtb);
 
@@ -947,8 +953,7 @@ namespace Cell_Tool_3
         }
         private void link_LinkClicked(object sender, LinkClickedEventArgs e)
         {
-            if(OSStringConverter.isWinOS)
-                System.Diagnostics.Process.Start(e.LinkText);
+            System.Diagnostics.Process.Start(e.LinkText);
         }
         void AccordLicense_Click(object sender, EventArgs e)
         {
@@ -1489,7 +1494,7 @@ namespace Cell_Tool_3
                 }
                 else
                 {
-                    Application.DoEvents();
+                    //Application.DoEvents();
                 }
             });
 

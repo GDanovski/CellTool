@@ -475,7 +475,6 @@ namespace Cell_Tool_3
 
             if (ofd.ShowDialog() == DialogResult.OK)
             {
-
                 using (StreamReader sr = new StreamReader(ofd.FileName))
                 {
                     string str = sr.ReadToEnd();
@@ -485,7 +484,6 @@ namespace Cell_Tool_3
                             roi_new(val, fi);
                     }
                 }
-
                 IA.ReloadImages();
             }
         }
@@ -580,8 +578,7 @@ namespace Cell_Tool_3
                     foreach (TreeNode n in roiTV.Nodes)
                     {
                         ROI roi = (ROI)n;
-                        //sw.WriteLine(roi_new(fi.cValue, roi));
-                        sw.Write(roi_new(fi.cValue, roi) + "\r\n");
+                        sw.WriteLine(roi_new(fi.cValue, roi));
                     }
                     //MessageBox.Show("Roi set saved to:\n" + dir);
                 }
@@ -602,7 +599,8 @@ namespace Cell_Tool_3
             tb.Width = node.Bounds.Width;
             tb.Height = node.Bounds.Height;
             tb.Visible = true;
-
+            roiTV.Controls.Add(tb);
+            tb.Focus();
             if (!String.IsNullOrEmpty(tb.Text))
             {
                 tb.SelectionStart = 0;
@@ -611,19 +609,16 @@ namespace Cell_Tool_3
 
             tb.TextChanged += new EventHandler(delegate (Object o, EventArgs a)
             {
-                if (tb.Text == "") return;
-               
                 int w = TextRenderer.MeasureText(tb.Text, tb.Font).Width + 5;
                 if (tb.Width < w)
-               {
-                        tb.Width = w;
-               }
+                {
+                    tb.Width = w;
+                }
             });
 
             tb.LostFocus += new EventHandler(delegate (Object o, EventArgs a)
             {
-                string str = tb.Text;
-                if (str.IndexOf("=") > -1)
+                if (tb.Text.IndexOf("=") > -1)
                 {
                     MessageBox.Show("Symbol \"=\" is not allowed!");
                 }
@@ -636,26 +631,22 @@ namespace Cell_Tool_3
                     }
                     catch { return; }
                     if (fi == null) return;
+
                     #region History
                     if (fi.roiList[fi.cValue] != null && fi.roiList[fi.cValue].IndexOf(node) > -1)
                         addToHistoryOldInfo(roi_getStat(node, fi, "Comment"), fi);
 
                     #endregion History
-                    node.Comment = str;
+
+                    node.Comment = tb.Text;
+
                     #region History
                     if (fi.roiList[fi.cValue] != null && fi.roiList[fi.cValue].IndexOf(node) > -1)
                         addToHistoryNewInfo(roi_getStat(node, fi, "Comment"), fi);
                     #endregion History
                 }
 
-                if (roiTV.Controls.Contains(tb))
-                {
-                    tb.Visible = false;
-                    roiTV.Controls.Remove(tb);
-                    tb.Dispose();
-                    IA.ReloadImages();
-                    Application.DoEvents();
-                }
+                tb.Dispose();
             });
             tb.KeyDown += new KeyEventHandler(delegate (Object o, KeyEventArgs a)
             {
@@ -687,26 +678,26 @@ namespace Cell_Tool_3
                         if (fi.roiList[fi.cValue] != null && fi.roiList[fi.cValue].IndexOf(node) > -1)
                             addToHistoryNewInfo(roi_getStat(node, fi, "Comment"), fi);
                         #endregion History
+
+
                     }
 
-                    if (roiTV.Controls.Contains(tb))
-                    {
-                        tb.Visible = false;
-                        roiTV.Controls.Remove(tb);
-                        tb.Dispose();
-                        IA.ReloadImages();
-                        Application.DoEvents();
-                    }
+                    tb.Dispose();
 
                     a.Handled = true;
                     a.SuppressKeyPress = true;
                 }
+
             });
-
-            roiTV.Controls.Add(tb);
-            tb.Focus();
+            roiTV.AfterSelect += new TreeViewEventHandler(delegate (Object o, TreeViewEventArgs a)
+            {
+                tb.Dispose();
+            });
+            roiTV.MouseWheel += new MouseEventHandler(delegate (Object o, MouseEventArgs a)
+            {
+                tb.Dispose();
+            });
         }
-
         private void RenameBtn_Click(object sender, EventArgs e)
         {
             ROI node = (ROI)((MenuItem)sender).Tag;
@@ -1922,15 +1913,15 @@ namespace Cell_Tool_3
             n_tb = CTTextBox_Add(5, 170, gb, "Stack:", "Number of layers in ROI stack");
             n_tb.Value.Changed += n_tb_textChanged;
 
-            w_tb = CTTextBox_Add(155, 70, gb, "W:", "Width");
+            w_tb = CTTextBox_Add(125, 70, gb, "W:", "Width");
             w_tb.Value.Changed += w_tb_textChanged;
-            h_tb = CTTextBox_Add(155, 95, gb, "H:", "Height");
+            h_tb = CTTextBox_Add(125, 95, gb, "H:", "Height");
             h_tb.Value.Changed += h_tb_textChanged;
-            finishT_tb = CTTextBox_Add(155, 120, gb, "to T:", "The last time frame of which ROI is avaliable");
+            finishT_tb = CTTextBox_Add(125, 120, gb, "to T:", "The last time frame of which ROI is avaliable");
             finishT_tb.Value.Changed += ToT_tb_textChanged;
-            finishZ_tb = CTTextBox_Add(155, 145, gb, "to Z:", "The last Z frame of which ROI is avaliable");
+            finishZ_tb = CTTextBox_Add(125, 145, gb, "to Z:", "The last Z frame of which ROI is avaliable");
             finishZ_tb.Value.Changed += ToZ_tb_textChanged;
-            d_tb = CTTextBox_Add(155, 170, gb, "D:", "Width of layer");
+            d_tb = CTTextBox_Add(125, 170, gb, "D:", "Width of layer");
             d_tb.Value.Changed += d_tb_textChanged;
             //Roi List Control
             TreeView tv = new TreeView();
@@ -2502,7 +2493,7 @@ namespace Cell_Tool_3
             Label lb = new Label();
             lb.Text = title;
             lb.Tag = tag;
-            lb.Width = 60;
+            lb.Width = 40;
             lb.Location = new Point(X, Y + 3);
             gb.Controls.Add(lb);
             lb.MouseHover += Control_MouseOver;
