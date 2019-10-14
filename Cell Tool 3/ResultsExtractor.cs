@@ -35,16 +35,29 @@ namespace Cell_Tool_3
    class ResultsExtractor
     {
         public Panel myPanel = null;
+        private string LoadingDir = "";
         public Panel Input(string dir, ImageAnalyser IA)
         {
             MyForm form1 = new MyForm(dir,IA);
             this.myPanel = form1;
 
-            if (File.Exists(OSStringConverter.StringToDir(dir)))
-                ResultsExtractor.FileSaver.ReadCTDataFile(form1, dir);
+            //if (File.Exists(OSStringConverter.StringToDir(dir)))
+            //ResultsExtractor.FileSaver.ReadCTDataFile(form1, dir);
+            this.LoadingDir = dir;
+            this.myPanel.DockChanged += myPanel_EnabledChanged;
 
             return form1;
             //form1.Show();
+        }
+        private void myPanel_EnabledChanged(object sender, EventArgs e)
+        {
+            if(this.LoadingDir != "")
+            {
+                if (File.Exists(OSStringConverter.StringToDir(this.LoadingDir)))
+                    ResultsExtractor.FileSaver.ReadCTDataFile((MyForm)myPanel, this.LoadingDir);
+
+                this.LoadingDir = "";
+            }
         }
         public class Parametars
         {
