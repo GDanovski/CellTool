@@ -27,6 +27,8 @@ using System.Windows.Forms;
 
 using OpenTK.Graphics.OpenGL;
 using OpenTK;
+using System.ComponentModel;
+using System.Threading;
 
 namespace Cell_Tool_3
 {
@@ -36,6 +38,7 @@ namespace Cell_Tool_3
         public ImageAnalyser IA = null;
         public Panel corePanel = new Panel();
         public ContentPipe ImageTexture = new ContentPipe();
+
 
         #region Position on screen
         public Rectangle[][] coRect;
@@ -47,11 +50,33 @@ namespace Cell_Tool_3
         public double valX = 0;
         public double valY = 0;
         bool changeXY = true;
+
+        public Form_auxiliary FormImg; // To hold the GLControl of the images
         #endregion
 
         #region New Image Drawing
         public void Initialize(GLControl GLControl1)
         {
+
+            //this.InitializeComponent(GLControl1);
+
+            GLControl1.SuspendLayout();
+            // 
+            // panel1
+            // 
+            
+
+            // 
+            // Form1
+            // 
+            //GLControl1.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            GLControl1.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            //GLControl1.ClientSize = new System.Drawing.Size(400, 300);
+            //IA.TabPages.ImageMainPanel.Controls.Add(GLControl1);
+            GLControl1.ResumeLayout(false);
+
+            
+
             GLControl1.Load += GLControl_Load;
             GLControl1.Paint += GLControl_Paint;
             GLControl1.Resize += GLControl_Resize;
@@ -64,11 +89,15 @@ namespace Cell_Tool_3
             GLControl1.MouseMove += GLControl1_MouseMove;
             GLControl1.MouseUp += GLControl1_MouseUp;
 
-            GLControl1.Dock = DockStyle.Fill;
+            GLControl1.ResumeLayout(true);
+
+
+
+            
             TabPageControl tpContr = IA.TabPages;
             tpContr.ImageMainPanel.SuspendLayout();
-
-            tpContr.ImageMainPanel.Controls.Add(GLControl1);
+            //tpContr.ImageMainPanel.Controls.Add(GLControl1);
+            
             //ScrollBars
             Panel VertPanel = IA.GLControl1_VerticalPanel;
             VertPanel.Dock = DockStyle.Right;
@@ -117,7 +146,24 @@ namespace Cell_Tool_3
             corePanel.Dock = DockStyle.Top;
             tpContr.ImageMainPanel.Controls.Add(corePanel);
             tpContr.ImageMainPanel.ResumeLayout(true);
+
+            Panel GL_container = new Panel();
+            GL_container.Dock = DockStyle.Fill;
+            tpContr.ImageMainPanel.Controls.Add(GL_container);
+            GL_container.BringToFront();
+
+            GLControl1.Location = new Point(0, 0);
+            GLControl1.Dock = DockStyle.Fill;
+            
+            this.FormImg = new Form_auxiliary(GL_container, 0, 0, 0, 0);
+            this.FormImg.Controls.Add(GLControl1);
+            GLControl1.BringToFront();
+            //this.FormImg.Show();
+
+
+            
         }
+
         private void HorizontalScroll_ValueChanged(object sender, EventArgs e)
         {
             if (changeXY == false) { return; }
@@ -221,6 +267,7 @@ namespace Cell_Tool_3
             //Global variables
             GLControl GLControl1 = sender as GLControl;
             GLDrawing_Start(GLControl1);
+
         }
         private void GLDrawing_Start(GLControl GLControl1)
         {
@@ -264,12 +311,13 @@ namespace Cell_Tool_3
 
                 GL.MatrixMode(MatrixMode.Modelview);
                 //GL.LoadIdentity();
-                GL.Translate(-valX, -valY, 0);
+                //GL.Translate(-valX, -valY, 0);
                 valX = 0;
                 valY = 0;
 
                 //Set viewpoint
                 GL.Viewport(0, 0, GLControl1.Width, GLControl1.Height);
+
                 //scale the image
                 if (oldScale != fi.zoom)
                 {

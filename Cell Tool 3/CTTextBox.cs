@@ -36,10 +36,9 @@ namespace Cell_Tool_3
         private Button cancelbtn;
 
         private ToolTip TurnOnToolTip = new ToolTip();
-        private bool MouseInAcceptBtn = false;
         #region Initialize
         public CTTextBox()
-        {           
+        {
             panel = new Panel();
             {
                 panel.Height = 20;
@@ -80,8 +79,6 @@ namespace Cell_Tool_3
                 btn.Visible = false;
                 btn.MouseHover += Control_MouseOver;
                 btn.Click += acceptBtn_Click;
-                btn.MouseEnter += acceptBtn_MouseEnter;
-                btn.MouseLeave += acceptBtn_MouseLeave;
             }
 
             cancelbtn = new Button();
@@ -117,11 +114,7 @@ namespace Cell_Tool_3
         }
         private void tb_LostFocus(object sender, EventArgs e)
         {
-            if (MouseInAcceptBtn)
-            {
-                acceptBtn.PerformClick();
-                return;
-            }
+            if (acceptBtn.Focused || cancelbtn.Focused) return;
 
             tb.Text = (string)tb.Tag;
 
@@ -147,14 +140,6 @@ namespace Cell_Tool_3
             tb.Select();
             ValueChangeFunction();
         }
-        private void acceptBtn_MouseEnter(object sender, EventArgs e)
-        {
-            MouseInAcceptBtn = true;
-        }
-        private void acceptBtn_MouseLeave(object sender, EventArgs e)
-        {
-            MouseInAcceptBtn = false;
-        }
         private void cancelBtn_Click(object sender, EventArgs e)
         {
             tb.Select();
@@ -166,7 +151,7 @@ namespace Cell_Tool_3
         private void tb_TextChanged(object sender,EventArgs e)
         {
             if (tb.Focused == false) return;
-            
+
             string oldVal = (string)tb.Tag;
             
             if(tb.Text != oldVal)

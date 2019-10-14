@@ -240,7 +240,7 @@ namespace Cell_Tool_3
                 tb.Panel.Visible = false;
                 tb.Refresh(0, 0, 10);
                 tb.Name.Text = "T" + (i + 1).ToString();
-                tb.NamePanel.Width = 38;
+                tb.NamePanel.Width = 30;
                 threshGB.Controls.Add(tb.Panel);
                 threshTrackBars[i] = tb;
                 tb.Panel.BringToFront();
@@ -395,7 +395,7 @@ namespace Cell_Tool_3
         }
         public void loadThreshAndColorBtns(TifFileInfo fi)
         {
-            panel.SuspendLayout();
+            //panel.SuspendLayout();
             int threshNum = fi.thresholds[fi.cValue];
             int[] vals1 = fi.thresholdValues[fi.cValue];
             int min = 0;
