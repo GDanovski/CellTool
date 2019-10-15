@@ -358,6 +358,8 @@ namespace Cell_Tool_3
         }
         private void CloseProgram(object sander, FormClosingEventArgs e)
         {
+            Application.Exit();
+            return;
             if (update) return;
             Helpers.Settings.SaveSettings();
             // Check is it ok to close the program

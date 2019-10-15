@@ -511,7 +511,6 @@ namespace Cell_Tool_3
 
                     // Hide the Segmentation historgram and show the Brigtness one on top
                     Segmentation.FormSegmentation.Hide();
-                    BandC.FormBrightnessContrast.BringToFront();
                     BandC.FormBrightnessContrast.Show();
                    
 

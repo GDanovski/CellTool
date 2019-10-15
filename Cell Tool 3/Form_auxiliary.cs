@@ -56,7 +56,6 @@ namespace Cell_Tool_3
             this.Hide();
             
         }
-
         private void setInitialProperties()
         {
             // Set the scale and size properties, initially to 0
@@ -74,7 +73,7 @@ namespace Cell_Tool_3
             this.ShowInTaskbar = false;
             this.ControlBox = false;
             this.Text = null;
-            this.TopMost = true;
+            this.TopMost = false;
         }
         /*
          * Change the location and size of the form according to the given Panel
@@ -101,34 +100,47 @@ namespace Cell_Tool_3
             // Upon a progress report, update the Form
             bgw.ProgressChanged += new ProgressChangedEventHandler(delegate (Object o, ProgressChangedEventArgs a)
             {
-                if (a.ProgressPercentage == 0)
+            if (a.ProgressPercentage == 0)
+            {
+                if (parentPanel.IsDisposed) { bgw.CancelAsync(); }
+                else
                 {
-                    if (parentPanel.IsDisposed) { bgw.CancelAsync(); }
-                    else
+                    this.Location = parentPanel.PointToScreen(new Point(X_offset, Y_offset));
+                    this.Size = new Size(parentPanel.Size.Width + W_offset, parentPanel.Size.Height + H_offset);
+
+                    foreach (Form formInstance in Application.OpenForms)
                     {
-                        this.Location = parentPanel.PointToScreen(new Point(X_offset, Y_offset));
-                        this.Size = new Size(parentPanel.Size.Width + W_offset, parentPanel.Size.Height + H_offset);
-                        
-                        foreach (Form formInstance in Application.OpenForms)
+                        // Take the window state of the main form (e.g. minimized, maximized)
+                        if (formInstance is CellToolMainForm)
                         {
-                            // Take the window state of the main form (e.g. minimized, maximized)
-                            if (formInstance is CellToolMainForm)
+                            if (formInstance.WindowState == FormWindowState.Minimized)
                             {
-                                if (formInstance.WindowState == FormWindowState.Minimized)
-                                {
-                                    this.WindowState = formInstance.WindowState;
-                                }
-                                else { this.WindowState = FormWindowState.Normal; }
+                                this.WindowState = formInstance.WindowState;
                             }
-                            
+                            else {
+                                this.WindowState = FormWindowState.Normal;
+                            }
 
-                        }
-                        
+                            // set the different levels of focus of the forms
 
+                            // This (auxiliary) form should be always on top, whenever the application is active;
+                            // and the application is active when the main form contains focus
+                            if (formInstance.ContainsFocus == true && this.TopMost == false)
+                                {
+                                    this.TopMost = true;
+                                    formInstance.Focus();
 
-
-                    } 
-                }
+                                // If the main form no longer has focus, and this form is on top, it no longer has to be.
+                                } else if (this.ContainsFocus == false && 
+                                            formInstance.ContainsFocus == false && 
+                                            this.TopMost == true)
+                                {
+                                    this.TopMost = false; 
+                                }
+                            } // end if main form 
+                        } // end foreach active form
+                    } // end if panel is disposed
+                } // end if progress reported
             });
             //Start the background worker
             bgw.RunWorkerAsync();
