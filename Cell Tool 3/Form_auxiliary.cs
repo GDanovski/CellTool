@@ -36,7 +36,6 @@ namespace Cell_Tool_3
         private System.ComponentModel.IContainer components;
         private BackgroundWorker bgw = new BackgroundWorker(); // for continuously checking for size changes
         private Panel parentPanel; // the panel whose properties this form will use
-        bool lostFocus = false;
 
         protected override void Dispose(bool disposing)
         {
