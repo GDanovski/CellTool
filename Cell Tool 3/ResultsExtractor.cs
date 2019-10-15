@@ -236,7 +236,10 @@ namespace Cell_Tool_3
                 ResultPanel.Panel.Height = 250;
                 chartPanel.Controls.Add(ResultPanel.Panel);
 
-                RepeatsChartPanel.Body.Controls.Add(repeatsCh);
+                Form_auxiliary formRepeats = new Form_auxiliary(RepeatsChartPanel.Body, 0, 0, 0, 0);
+                formRepeats.Controls.Add(repeatsCh);
+                formRepeats.Show();
+                //RepeatsChartPanel.Body.Controls.Add(repeatsCh);
                 ResultPanel.Body.Controls.Add(resultsCh);
             }
             private void AddFitSettings()
