@@ -220,7 +220,7 @@ namespace Cell_Tool_3
                     settings.Save();
                 });
             }
-            
+
             //Add verticalTitle panel
             Panel verticalTitle = new Panel();
             verticalTitle.Dock = DockStyle.Left;
@@ -679,13 +679,10 @@ namespace Cell_Tool_3
                     if (razlika > 100 & razlika < Body.Width - 100)
                     {
                         oldX = e.X;
-                        if (ResizePanel.Location.X != razlika)
-                        {
-                            ResizePanel.Location = new System.Drawing.Point(razlika, propertiesPanel.Location.Y);
-                            RefreshControl();
-                        }
+                        ResizePanel.Location = new System.Drawing.Point(razlika, propertiesPanel.Location.Y);
                     }
                 }
+
             }
             else {
 
@@ -698,18 +695,6 @@ namespace Cell_Tool_3
                     pnl.Cursor = Cursors.Default;
                 }
             }
-        }
-        public void RefreshControl(bool RefreshProperties = true)
-        {
-            if (RefreshProperties)
-                this.propertiesPanel.Refresh();
-            else
-                this.TitlePanel.Refresh();
-
-            this.ImageMainPanel.Refresh();
-            this.zTrackBar.Panel.Refresh();
-            this.tTrackBar.Panel.Refresh();
-            Application.DoEvents();
         }
         private void PropertiesPanel_MouseDown(object sender, MouseEventArgs e)
         {
@@ -940,7 +925,7 @@ namespace Cell_Tool_3
                 OpenFile_Event(strS, node);
             }
         }
-        private bool isAvailable(string Dir)
+        private Boolean isAvailable(string Dir)
         {
             foreach (TabPage fi in TabCollections)
             {
@@ -1132,7 +1117,7 @@ namespace Cell_Tool_3
 
             int maxW = TitlePanel.Width - 56;
             int widthToCurControl = 0;
-            bool count = false;
+            Boolean count = false;
          
             for (int i = Collections.Count - 1; i >= 0; i--)
             {
@@ -1285,7 +1270,6 @@ namespace Cell_Tool_3
         public void SaveFile(object sender,EventArgs e)
         {
             if (Collections.Count <= 0) { return; }
-            if (CheckForWorkInProgress()) { return; }
             int i = SelectedIndex;
             SaveItem(i);
             FileBrowser.Refresh_AfterSave();
@@ -1293,7 +1277,7 @@ namespace Cell_Tool_3
         public void SaveAllFile(object sender, EventArgs e)
         {
             if (Collections.Count <= 0) { return; }
-            if (CheckForWorkInProgress()) { return; }
+
             var res = MessageBox.Show("Do you want to save ALL opened images?"                   
                    , "Save All", MessageBoxButtons.YesNo);
             if (res == System.Windows.Forms.DialogResult.Yes)
@@ -1309,7 +1293,6 @@ namespace Cell_Tool_3
         public void saveAs(object sender, EventArgs e)
         {
             if (Collections.Count <= 0) { return; }
-            if (CheckForWorkInProgress()) { return; }
             SaveFileDialog saveFileDialog1 = new SaveFileDialog();
             TreeNode node = Collections[SelectedIndex][0].Tag as TreeNode;
 
@@ -1326,11 +1309,7 @@ namespace Cell_Tool_3
             saveFileDialog1.Filter = formatStr;
             saveFileDialog1.FilterIndex = 1;
             saveFileDialog1.RestoreDirectory = false;
-            try
-            {
-                saveFileDialog1.InitialDirectory = node.Tag.ToString().Substring(0, node.Tag.ToString().Length - (node.Text.Length + 1));
-            }
-            catch { }
+            saveFileDialog1.InitialDirectory = node.Tag.ToString().Substring(0, node.Tag.ToString().Length - (node.Text.Length + 1));
             saveFileDialog1.FileName = node.Text;
             saveFileDialog1.OverwritePrompt = true;
             if (saveFileDialog1.ShowDialog() == DialogResult.OK)
@@ -1447,22 +1426,10 @@ namespace Cell_Tool_3
                 }
             }
 
-            TabCollections[i].Save(IA);           
+            TabCollections[i].Save(IA);
+           
         }
-        /// <summary>
-        /// Return true if there is work in progress
-        /// </summary>
-        /// <returns></returns>
-        private bool CheckForWorkInProgress()
-        {
-            if(FileBrowser.StatusLabel.Text != "Ready")
-            {
-                MessageBox.Show("The program is busy.\nTry again later. ");
-                return true;
-            }
-            return false;
-        }
-        private bool CheckIsItSaved(int i)
+        private Boolean CheckIsItSaved(int i)
         {
             if (TabCollections[i].Saved == true) { return true; }
             if (TabCollections[i].tifFI!= null && TabCollections[i].tifFI.available == false) { return false; }
