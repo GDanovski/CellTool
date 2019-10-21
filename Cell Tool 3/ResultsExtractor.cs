@@ -36,6 +36,7 @@ namespace Cell_Tool_3
     {
         public Panel myPanel = null;
         private string LoadingDir = "";
+        
         public Panel Input(string dir, ImageAnalyser IA)
         {
             MyForm form1 = new MyForm(dir,IA);
@@ -45,6 +46,7 @@ namespace Cell_Tool_3
             //ResultsExtractor.FileSaver.ReadCTDataFile(form1, dir);
             this.LoadingDir = dir;
             this.myPanel.DockChanged += myPanel_EnabledChanged;
+            this.myPanel.ParentChanged += myPanel_ParentChanged;
 
             return form1;
             //form1.Show();
@@ -57,6 +59,19 @@ namespace Cell_Tool_3
                     ResultsExtractor.FileSaver.ReadCTDataFile((MyForm)myPanel, this.LoadingDir);
 
                 this.LoadingDir = "";
+            }
+        }
+
+        private void myPanel_ParentChanged(object sender, EventArgs e)
+        {
+            if (this.myPanel.Parent == null)
+            {
+                ((MyForm)myPanel).formRepeats.SetVisibleState(false);
+                ((MyForm)myPanel).formResults.SetVisibleState(false);
+            } else
+            {
+                ((MyForm)myPanel).formRepeats.SetVisibleState(true);
+                ((MyForm)myPanel).formResults.SetVisibleState(true);
             }
         }
         public class Parametars
@@ -72,6 +87,8 @@ namespace Cell_Tool_3
         public class MyForm : Panel
         {
             public ImageAnalyser IA;
+            public Form_auxiliary formRepeats;
+            public Form_auxiliary formResults;
             /// StatusBar
             public ToolStripProgressBar StatusProgressBar = new ToolStripProgressBar();
             public ToolStripStatusLabel StatusLabel = new ToolStripStatusLabel();
@@ -236,11 +253,11 @@ namespace Cell_Tool_3
                 ResultPanel.Panel.Height = 250;
                 chartPanel.Controls.Add(ResultPanel.Panel);
 
-                Form_auxiliary formRepeats = new Form_auxiliary(RepeatsChartPanel.Body, 0, 0, 0, -50, "Extractor_repeats");
+                this.formRepeats = new Form_auxiliary(RepeatsChartPanel.Body, 0, 0, 0, -50, "Extractor_repeats");
                 formRepeats.Controls.Add(repeatsCh);
                 formRepeats.Show();
 
-                Form_auxiliary formResults = new Form_auxiliary(ResultPanel.Body, 0, 0, 0, -50, "Extractor_results");
+                formResults = new Form_auxiliary(ResultPanel.Body, 0, 0, 0, -50, "Extractor_results");
                 formResults.Controls.Add(resultsCh);
                 formResults.Show();
             }
