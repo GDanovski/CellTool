@@ -29,7 +29,7 @@ using System.Drawing;
 using System.Threading;
 using System.Windows.Forms;
 
-namespace Cell_Tool_3 
+namespace Cell_Tool_3
 {
     public class Form_auxiliary : Form
     {
@@ -50,14 +50,14 @@ namespace Cell_Tool_3
          * Receive the location and position offsets, relative to the parent panel.
          * Remove the title bar and disable resizing and maximization.
          */
-        public Form_auxiliary(Panel parentPanel, int X_offset, int Y_offset, int W_offset,int H_offset, string Name)
+        public Form_auxiliary(Panel parentPanel, int X_offset, int Y_offset, int W_offset, int H_offset, string Name)
         {
             this.Name = Name;
             this.parentPanel = parentPanel;
             setInitialProperties(); // set the static properties of the Form
             startParentMonitor(X_offset, Y_offset, W_offset, H_offset); // upon a change in the parent's location and size, update the form accordingly 
             this.Hide();
-            
+
         }
 
         /* When an external caller wants to hide or show the form, they must call SetVisible(false) instead of Hide();
@@ -85,7 +85,7 @@ namespace Cell_Tool_3
             //if (this.Name == "RawImage" || this.Name == "Extractor") { this.TopMost = true;  }
             //else { this.TopMost = false; }
 
-            
+
         }
         /*
          * Change the location and size of the form according to the given Panel
@@ -93,11 +93,11 @@ namespace Cell_Tool_3
          */
         public void startParentMonitor(int X_offset, int Y_offset, int W_offset, int H_offset)
         {
-           
+
             // Make sure the bgw can be stopped, and is reporting progress
             bgw.WorkerSupportsCancellation = true;
             bgw.WorkerReportsProgress = true;
-            
+
             // On every time interval, report progress to trigger size updates, until canceled
             bgw.DoWork += delegate (Object o, DoWorkEventArgs a)
             {
@@ -120,10 +120,10 @@ namespace Cell_Tool_3
                         this.Location = parentPanel.PointToScreen(new Point(X_offset, Y_offset));
                         this.Size = new Size(parentPanel.Size.Width + W_offset, parentPanel.Size.Height + H_offset);
 
-                        
-                        
+
+
                         this.SetWindowState();
-                        
+
                     } // end if panel is disposed
                 } // end if progress reported
             };
@@ -152,15 +152,16 @@ namespace Cell_Tool_3
             {
                 if (((Form_auxiliary)ImgForm).last_state_visible == false)
                 {
-                    this.last_state_visible = true;
-                } else
-                {
-                    this.last_state_visible = false;
+                    this.last_state_visible &= true;
                 }
-            } 
+                else
+                {
+                    this.last_state_visible &= false;
+                }
+            }
             if (MainForm.ContainsFocus && last_state_visible) { this.Show(); }
             else { this.Hide(); }
-            
+
         }
 
         private void SetWindowState()
