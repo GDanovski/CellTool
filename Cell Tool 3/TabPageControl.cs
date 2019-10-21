@@ -206,7 +206,7 @@ namespace Cell_Tool_3
 
                     if (propertiesPanel.Width == 15)
                     {
-                        propertiesPanel.Width = 2 * int.Parse(settings.PropertiesPanelWidth[ActiveAccountIndex]);
+                        propertiesPanel.Width = 2 * 300; // int.Parse(settings.PropertiesPanelWidth[ActiveAccountIndex]);
                         settings.PropertiesPanelVisible[ActiveAccountIndex] = "y";
                         Histograms_Reload();
                         IA.refresh_controls(propertiesPanel);
