@@ -68,10 +68,12 @@ namespace Cell_Tool_3
             {
                 ((MyForm)myPanel).formRepeats.SetVisibleState(false);
                 ((MyForm)myPanel).formResults.SetVisibleState(false);
+                ((MyForm)myPanel).formFit.SetVisibleState(false);
             } else
             {
                 ((MyForm)myPanel).formRepeats.SetVisibleState(true);
                 ((MyForm)myPanel).formResults.SetVisibleState(true);
+                ((MyForm)myPanel).formFit.SetVisibleState(true);
             }
         }
         public class Parametars
@@ -87,8 +89,7 @@ namespace Cell_Tool_3
         public class MyForm : Panel
         {
             public ImageAnalyser IA;
-            public Form_auxiliary formRepeats;
-            public Form_auxiliary formResults;
+            public Form_auxiliary formRepeats, formResults, formFit;
             /// StatusBar
             public ToolStripProgressBar StatusProgressBar = new ToolStripProgressBar();
             public ToolStripStatusLabel StatusLabel = new ToolStripStatusLabel();
@@ -336,7 +337,7 @@ namespace Cell_Tool_3
                 propertiesPanel.Controls.Add(FitChartPanel.Panel);
 
 
-                Form_auxiliary formFit = new Form_auxiliary(FitChartPanel.Body, 0, 10, 0, -30, "Extractor_fit");
+                formFit = new Form_auxiliary(FitChartPanel.Body, 0, 10, 0, -30, "Extractor_fit");
                 formFit.Controls.Add(solverClass.fitChart1);
                 formFit.Show();
 

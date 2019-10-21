@@ -212,7 +212,7 @@ namespace Cell_Tool_3
             {
                 if (SecurityControl.settings.PropertiesPanelVisible[SecurityControl.AccIndex] == "y")
                 {
-                    Interface.TabPages.propertiesPanel.Width = 2 * int.Parse(SecurityControl.settings.PropertiesPanelWidth[SecurityControl.AccIndex]);
+                    Interface.TabPages.propertiesPanel.Width = 2 * 300; // int.Parse(SecurityControl.settings.PropertiesPanelWidth[SecurityControl.AccIndex]);
                 }
             }
 
@@ -356,7 +356,7 @@ namespace Cell_Tool_3
             }
             else
             {
-                Interface.TabPages.propertiesPanel.Width = 2 * int.Parse(SecurityControl.settings.PropertiesPanelWidth[SecurityControl.AccIndex]);
+                Interface.TabPages.propertiesPanel.Width = 2 * 300; // int.Parse(SecurityControl.settings.PropertiesPanelWidth[SecurityControl.AccIndex]);
             }
             //Brightness and Contrast
             Interface.IA.BandC.panel.Height = int.Parse(SecurityControl.settings.BandC[SecurityControl.AccIndex]);
