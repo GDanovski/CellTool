@@ -154,8 +154,7 @@ namespace Cell_Tool_3
             //set main form propertties
             Interface.MainFormInitialize(this);
 
-            Properties.Settings s = Properties.Settings.Default;
-            Security.SaveSettings(s);
+            Helpers.Settings.SaveSettings();
 
             //Developer menu
             Interface.IA.PlugIns = new PlugInEngine(Interface.DeveloperToolStripMenuItem, Interface.IA);
@@ -212,7 +211,7 @@ namespace Cell_Tool_3
             {
                 if (SecurityControl.settings.PropertiesPanelVisible[SecurityControl.AccIndex] == "y")
                 {
-                    Interface.TabPages.propertiesPanel.Width = 2 * 300; // int.Parse(SecurityControl.settings.PropertiesPanelWidth[SecurityControl.AccIndex]);
+                    Interface.TabPages.propertiesPanel.Width = int.Parse(SecurityControl.settings.PropertiesPanelWidth[SecurityControl.AccIndex]);
                 }
             }
 
@@ -356,7 +355,7 @@ namespace Cell_Tool_3
             }
             else
             {
-                Interface.TabPages.propertiesPanel.Width = 2 * 300; // int.Parse(SecurityControl.settings.PropertiesPanelWidth[SecurityControl.AccIndex]);
+                Interface.TabPages.propertiesPanel.Width = int.Parse(SecurityControl.settings.PropertiesPanelWidth[SecurityControl.AccIndex]);
             }
             //Brightness and Contrast
             Interface.IA.BandC.panel.Height = int.Parse(SecurityControl.settings.BandC[SecurityControl.AccIndex]);

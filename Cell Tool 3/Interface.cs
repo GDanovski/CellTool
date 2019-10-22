@@ -224,7 +224,10 @@ namespace Cell_Tool_3
             //Add hot keys to main form
             MainForm.KeyPreview = true;
             MainForm.KeyDown += new KeyEventHandler(Form1_KeyPress);
-            
+
+            // Keep all properties collapsed except for the one currently clicked
+            TabPages.configurePropPanelsCollapse();
+
             // Show form on the screen
             MainForm.ResumeLayout(true);
             

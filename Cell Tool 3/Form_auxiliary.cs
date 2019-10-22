@@ -159,7 +159,7 @@ namespace Cell_Tool_3
                     this.last_state_visible &= false;
                 }
             }
-            if (MainForm.ContainsFocus && last_state_visible) { this.Show(); }
+            if (MainForm.ContainsFocus && last_state_visible && parentPanel.Visible) { this.Show(); }
             else { this.Hide(); }
 
         }

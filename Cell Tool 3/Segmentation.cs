@@ -39,7 +39,7 @@ namespace Cell_Tool_3
         public Panel DataPanel;
         public Filters MyFilters;
         //histogram Panel
-        private PropertiesPanel_Item HistogramPropPanel;
+        public PropertiesPanel_Item HistogramPropPanel;
         public Panel HistogramPanel;
         public BrightnessAndContrast_ChartPanel Chart1 = new BrightnessAndContrast_ChartPanel();
         private BrightnessAndContrast_ChartPanel.BrightnessAndContrast_Chart.Series Values = new BrightnessAndContrast_ChartPanel.BrightnessAndContrast_Chart.Series();
@@ -97,6 +97,8 @@ namespace Cell_Tool_3
             //SpotDet Panel initialize
             SpotDetPropPanel = new PropertiesPanel_Item();
             SpotDetPanel_Initialize(propertiesPanel, PropertiesBody);
+
+            
         }
         private void Control_MouseOver(object sender, EventArgs e)
         {
@@ -476,6 +478,7 @@ namespace Cell_Tool_3
             HistogramPanel = HistogramPropPanel.Panel;
 
             HistogramPanel.Visible = false;
+            HistogramPropPanel.Body.Visible = false;
 
             //Chart
             Chart1.CA.BackGroundColor = IA.FileBrowser.BackGroundColor1;
