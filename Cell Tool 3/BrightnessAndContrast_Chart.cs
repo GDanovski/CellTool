@@ -66,7 +66,7 @@ namespace Cell_Tool_3
             {
                 Labels[i].Text = CA.Labels[i].ToString();
                 Labels[i].Width = TextRenderer.MeasureText(Labels[i].Text, Labels[i].Font).Width;
-                Labels[i].Location = new Point(X - Labels[i].Width / 2, 1);
+                Labels[i].Location = new Point(X - Labels[i].Width / 2, 10);
             }
 
             CA.labelPanel.ResumeLayout(true);

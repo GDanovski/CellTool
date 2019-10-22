@@ -39,7 +39,7 @@ namespace Cell_Tool_3
         //Properties panel
         public int ActiveAccountIndex = 0;
         public Panel propertiesPanel = new Panel();
-        public Panel propertiesPanelLeft = new Panel();
+        //public Panel propertiesPanelLeft = new Panel();
         private ToolTip TurnOnToolTip = new ToolTip();
         //Selected Tab Index
         public int SelectedIndex;
@@ -70,7 +70,7 @@ namespace Cell_Tool_3
         private int MoveTabIndex = -1;
         //Resize Properties panel
         public Panel PropertiesBody = new Panel();
-        public Panel PropertiesBodyLeft = new Panel();
+        //public Panel PropertiesBodyLeft = new Panel();
         private bool propertiesPanel_Resize = false;
         private Panel ResizePanel = new Panel();
         private int oldX;
@@ -172,13 +172,13 @@ namespace Cell_Tool_3
             //Properties panel
             propertiesPanel.Dock = DockStyle.Right;
             propertiesPanel.BackColor = BackGround2Color;
-            propertiesPanel.Width = 2 * 300;
+            propertiesPanel.Width = 300;
             Body.Controls.Add(propertiesPanel);
             propertiesPanel.BringToFront();
 
-            propertiesPanelLeft.Dock = DockStyle.Right;
-            propertiesPanelLeft.BackColor = BackGround2Color;
-            propertiesPanelLeft.Width = 300;
+            //propertiesPanelLeft.Dock = DockStyle.Right;
+            //propertiesPanelLeft.BackColor = BackGround2Color;
+            //propertiesPanelLeft.Width = 300;
             //Body.Controls.Add(propertiesPanelLeft);
             //propertiesPanelLeft.BringToFront();
 
@@ -198,15 +198,16 @@ namespace Cell_Tool_3
             //add tool tip to turn on/off button
             {
                 TurnOnBtn.MouseHover += new EventHandler(Control_MouseOver);
+                
                 //Hide and show File Browser
                 TurnOnBtn.Click += new EventHandler(delegate (Object o, EventArgs a)
                 {
                     var btn = (Control)o;
                     Properties.Settings settings = Properties.Settings.Default;
 
-                    if (propertiesPanel.Width == 15)
+                    if (propertiesPanel.Width == 30)
                     {
-                        propertiesPanel.Width = 2 * 300; // int.Parse(settings.PropertiesPanelWidth[ActiveAccountIndex]);
+                        propertiesPanel.Width = int.Parse(settings.PropertiesPanelWidth[ActiveAccountIndex]);
                         settings.PropertiesPanelVisible[ActiveAccountIndex] = "y";
                         Histograms_Reload();
                         IA.refresh_controls(propertiesPanel);
@@ -214,11 +215,14 @@ namespace Cell_Tool_3
                     }
                     else
                     {
-                        propertiesPanel.Width = 15;
+                        propertiesPanel.Width = 30;
                         settings.PropertiesPanelVisible[ActiveAccountIndex] = "n";
+                       
                     }
                     settings.Save();
                 });
+
+                
             }
 
             //Add verticalTitle panel
@@ -255,16 +259,16 @@ namespace Cell_Tool_3
             propertiesTitlelabel.Location = new System.Drawing.Point(10, 5);
             proprtiesTitlePanel.Controls.Add(propertiesTitlelabel);
 
-            PropertiesBody.Dock = DockStyle.Right;
+            PropertiesBody.Dock = DockStyle.Fill;
             propertiesPanel.Controls.Add(PropertiesBody);
             PropertiesBody.BringToFront();
 
-            PropertiesBodyLeft.Dock = DockStyle.Left;
-            propertiesPanel.Controls.Add(PropertiesBodyLeft);
-            PropertiesBodyLeft.BringToFront();
+            //PropertiesBodyLeft.Dock = DockStyle.Left;
+            //propertiesPanel.Controls.Add(PropertiesBodyLeft);
+            //PropertiesBodyLeft.BringToFront();
 
-            PropertiesBody.Width = 275;
-            PropertiesBodyLeft.Width = 275;
+            //PropertiesBody.Width = 275;
+            //PropertiesBodyLeft.Width = 275;
 
 
             //Frames and Z track bars
@@ -348,6 +352,35 @@ namespace Cell_Tool_3
         /// <summary>
         /// Reloads the BandC and Segmentation histogram upon properties panel resizing
         /// </summary>
+        /// 
+
+        /* Keep all property panels collapse, except for the one currently expanded
+         */
+        public void configurePropPanelsCollapse()
+        {
+            // Add all property panels in a list
+            //List<PropertiesPanel_Item> AllPropPanels = new List<PropertiesPanel_Item>();
+            //AllPropPanels.Add();
+            
+
+            // For each item in the list, add an event for size change
+
+            foreach (Panel p in PropertiesBody.Controls) {
+
+                p.SizeChanged += new EventHandler(delegate (object o, EventArgs e)
+                {
+                    if (p.Height != 26)
+                    {
+                        foreach (Panel otherPanel in PropertiesBody.Controls)
+                        {
+                            if (otherPanel != p) { otherPanel.Height = 26; }
+                        }
+                        propertiesPanel.Parent.Refresh();
+                        
+                    }
+                });
+            }
+        }
         public void Histograms_Reload()
         {
             //Fix chart redrawing
@@ -436,7 +469,7 @@ namespace Cell_Tool_3
                 }
                 IA.Meta.panel.Resize += new EventHandler(Meta_heightChange);
                 //Segmentation
-                IA.Segmentation = new Segmentation(propertiesPanel, PropertiesBodyLeft, IA);
+                IA.Segmentation = new Segmentation(propertiesPanel, PropertiesBody, IA);
                 IA.Segmentation.BackColor(BackGround2Color1);
                 IA.Segmentation.ForeColor(ShriftColor1);
                 IA.Segmentation.TitleColor(TitlePanelColor1);
