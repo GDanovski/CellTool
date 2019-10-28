@@ -30,7 +30,7 @@ namespace Cell_Tool_3
         //controls
         public ImageAnalyser IA;
         public Ncalc_Adapter Ncalc;
-        private PropertiesPanel_Item PropPanel;
+        public PropertiesPanel_Item PropPanel;
         public Panel panel;
         public ComboBox xAxisTB;
         public ComboBox yAxisTB;

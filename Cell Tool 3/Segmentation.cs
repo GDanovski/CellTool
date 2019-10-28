@@ -27,11 +27,11 @@ namespace Cell_Tool_3
     {
         public ImageAnalyser IA = null;
         //Lib Panel 
-        private PropertiesPanel_Item LibPropPanel;
+        public PropertiesPanel_Item LibPropPanel;
         public Panel LibPanel;
         public AutoApplySettingsClass AutoSetUp;
         //Spot detector Panel
-        private PropertiesPanel_Item SpotDetPropPanel;
+        public PropertiesPanel_Item SpotDetPropPanel;
         public Panel SpotDetPanel;
         public SpotDetector SpotDet;
         //Convolution Methods Panel
@@ -48,7 +48,7 @@ namespace Cell_Tool_3
         public Form_auxiliary FormSegmentation; // For holding the GL control of the segmentation histogram
 
         //Segmentation Panel
-        private PropertiesPanel_Item tresholdsPropPanel;
+        public PropertiesPanel_Item tresholdsPropPanel;
         public Panel tresholdsPanel;
         public OtsuSegmentation Otsu1D;
         public KMeansSegmentation Kmeans;
@@ -143,7 +143,7 @@ namespace Cell_Tool_3
 
             SpotDetPanel = SpotDetPropPanel.Panel;
 
-            SpotDetPanel.Visible = false;
+            SpotDetPanel.Visible = true;
 
             SpotDet = new SpotDetector(SpotDetPanel, IA);
         }
@@ -250,7 +250,7 @@ namespace Cell_Tool_3
 
             DataPanel = DataPropPanel.Panel;
 
-            DataPanel.Visible = false;
+            DataPanel.Visible = true;
             DataPanel.Controls.Add((Panel)MyFilters);
             MyFilters.BringToFront();
             /*
@@ -517,7 +517,7 @@ namespace Cell_Tool_3
             Chart1.BackColor = HistogramPropPanel.Body.BackColor;
             //HistogramPropPanel.Panel.Controls.Add(Chart1);
 
-            this.FormSegmentation = new Form_auxiliary(this.HistogramPropPanel.Body, 10, 10, -10, -50, "Segmentation");
+            this.FormSegmentation = new Form_auxiliary(this.HistogramPanel, 10, 10, -10, -50, "Segmentation");
             this.FormSegmentation.Controls.Add(Chart1);
             //this.FormSegmentation.Show();
 
@@ -533,7 +533,7 @@ namespace Cell_Tool_3
 
             tresholdsPanel = tresholdsPropPanel.Panel;
 
-            tresholdsPanel.Visible = false;
+            tresholdsPanel.Visible = true;
 
             //add method
             Panel p = new Panel();
@@ -618,7 +618,7 @@ namespace Cell_Tool_3
             //set value
             fi.SegmentationCBoxIndex[fi.cValue] = SegmentationCBox.SelectedIndex;
             //hide panels
-            Otsu1D.panel.Visible = false;
+            //Otsu1D.panel.Visible = false;
             //Show panels
             if (IA.settings.SegmentTreshPanelVis[IA.TabPages.ActiveAccountIndex] != "y")
             {
@@ -626,21 +626,21 @@ namespace Cell_Tool_3
             }
             else
             {
+                tresholdsPanel.Height = 200 + Otsu1D.panel.Height;
+
                 switch (SegmentationCBox.SelectedIndex)
                 {
                     case 1:
-                        Otsu1D.sumHistogramsCheckBox.Visible = true;
-                        tresholdsPanel.Height = 56 + Otsu1D.panel.Height;
-                        Otsu1D.panel.Visible = true;
+                        Otsu1D.sumHistogramsCheckBox.Enabled = true;
+                        Otsu1D.ProcessBtn.Enabled = true;
                         break;
                     case 2:
-                        Otsu1D.sumHistogramsCheckBox.Visible = true;
-                        tresholdsPanel.Height = 56 + Otsu1D.panel.Height;
-                        Otsu1D.panel.Visible = true;
+                        Otsu1D.sumHistogramsCheckBox.Enabled = true;
+                        Otsu1D.ProcessBtn.Enabled = true;
                         break;
                     default:
-                        tresholdsPanel.Height = 56;
-                        Otsu1D.panel.Visible = false;
+                        Otsu1D.sumHistogramsCheckBox.Enabled = false;
+                        Otsu1D.ProcessBtn.Enabled = false;
                         break;
                 }
             }
@@ -648,6 +648,11 @@ namespace Cell_Tool_3
             {
                 IA.ReloadImages();
             }
+            Otsu1D.thresholdsNumCB.SelectedIndex = fi.thresholdsCBoxIndex[fi.cValue];
+            Otsu1D.sumHistogramsCheckBox.Checked = fi.sumHistogramChecked[fi.cValue];
+            Otsu1D.loadThreshAndColorBtns(fi);
+
+            IA.refresh_properties_panels();
         }
         #endregion Segmentation
 

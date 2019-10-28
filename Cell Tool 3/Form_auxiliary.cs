@@ -82,11 +82,18 @@ namespace Cell_Tool_3
             this.ShowInTaskbar = false;
             this.ControlBox = false;
             this.Text = null;
-            //if (this.Name == "RawImage" || this.Name == "Extractor") { this.TopMost = true;  }
-            //else { this.TopMost = false; }
+            //this.TopMost = true;
+
+            
+
+            
+        //if (this.Name == "RawImage" || this.Name == "Extractor") { this.TopMost = true;  }
+        //else { this.TopMost = false; }
 
 
-        }
+    }
+
+       
         /*
          * Change the location and size of the form according to the given Panel
          * X, Y, width and height offsets are relative to those of the parent panel
@@ -131,7 +138,7 @@ namespace Cell_Tool_3
             bgw.RunWorkerAsync();
         }
 
-
+        
         private void SetWindowLevels()
         {
 
@@ -168,18 +175,31 @@ namespace Cell_Tool_3
         {
             if (getMainForm().WindowState == FormWindowState.Minimized) { this.Hide(); }
             else { this.SetWindowLevels(); }
+            /*
+            if (ApplicationActive() && last_state_visible) {
+                this.Show();
+            } else { this.Hide();  }
+            */
         }
 
-
+        /*
+         * 
+        [System.Runtime.InteropServices.DllImport("user32.dll")]
+        private static extern IntPtr GetForegroundWindow();
         public bool ApplicationActive()
         {
             bool active = false;
+            IntPtr foregroundWindow = GetForegroundWindow();
+
             foreach (Form formInstance in Application.OpenForms)
             {
-                active |= formInstance.Focused;
+                active |= (foregroundWindow == formInstance.Handle);
             }
+
+            Console.WriteLine(active);
             return active;
         }
+        */
 
         private Form getFormByName(string givenName)
         {

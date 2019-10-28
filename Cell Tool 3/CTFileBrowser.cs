@@ -206,6 +206,7 @@ namespace Cell_Tool_3
             DataSourceTitlelabel.Width = 150;
             DataSourceTitlelabel.Text = "Data Sources";
             DataSourceTitlelabel.Location = new System.Drawing.Point(10, 5);
+            DataSourceTitlelabel.AutoSize = true;
             DataSourceTitlePanel.Controls.Add(DataSourceTitlelabel);
             //Resize panel
             ResizePanel.Anchor = (AnchorStyles.Top | AnchorStyles.Bottom);
@@ -432,6 +433,7 @@ namespace Cell_Tool_3
                 TreeViewTitlelabel.Width = 150;
                 TreeViewTitlelabel.Text = "Directory Explorer";
                 TreeViewTitlelabel.Location = new System.Drawing.Point(10, 5);
+                TreeViewTitlelabel.AutoSize = true;
                 TreeViewTitlePanel.Controls.Add(TreeViewTitlelabel);
                 TreeViewTitlelabel.Tag = "Show/Hide Directory Explorer";
                 TreeViewTitlelabel.MouseHover += new EventHandler(Control_MouseOver);
@@ -517,6 +519,7 @@ namespace Cell_Tool_3
                 VBoxTitlelabel.Width = 150;
                 VBoxTitlelabel.Text = "Virtual Box";
                 VBoxTitlelabel.Location = new System.Drawing.Point(10, 5);
+                VBoxTitlelabel.AutoSize = true;
                 VBoxTitlePanel.Controls.Add(VBoxTitlelabel);
                 VBoxTitlelabel.Tag = "Show/Hide VirtualBox";
                 VBoxTitlelabel.MouseHover += new EventHandler(Control_MouseOver);

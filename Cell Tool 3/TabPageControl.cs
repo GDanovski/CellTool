@@ -195,6 +195,15 @@ namespace Cell_Tool_3
             //TurnOnBtn.Image = Properties.Resources.DataSourcesIcon;
             TurnOnBtn.Width = 10;
             propertiesPanel.Controls.Add(TurnOnBtn);
+
+            
+            propertiesPanel.LocationChanged += new EventHandler(delegate (object o, EventArgs e) {
+                IA.refresh_properties_panels();
+            });
+            propertiesPanel.SizeChanged += new EventHandler(delegate (object o, EventArgs e) {
+                IA.refresh_properties_panels();
+            });
+
             //add tool tip to turn on/off button
             {
                 TurnOnBtn.MouseHover += new EventHandler(Control_MouseOver);
@@ -205,17 +214,17 @@ namespace Cell_Tool_3
                     var btn = (Control)o;
                     Properties.Settings settings = Properties.Settings.Default;
 
-                    if (propertiesPanel.Width == 30)
+                    if (propertiesPanel.Width == 15)
                     {
                         propertiesPanel.Width = int.Parse(settings.PropertiesPanelWidth[ActiveAccountIndex]);
                         settings.PropertiesPanelVisible[ActiveAccountIndex] = "y";
                         Histograms_Reload();
-                        IA.refresh_controls(propertiesPanel);
+                        IA.refresh_properties_panels();
 
                     }
                     else
                     {
-                        propertiesPanel.Width = 30;
+                        propertiesPanel.Width = 15;
                         settings.PropertiesPanelVisible[ActiveAccountIndex] = "n";
                        
                     }
@@ -358,14 +367,11 @@ namespace Cell_Tool_3
          */
         public void configurePropPanelsCollapse()
         {
-            // Add all property panels in a list
-            //List<PropertiesPanel_Item> AllPropPanels = new List<PropertiesPanel_Item>();
-            //AllPropPanels.Add();
             
-
             // For each item in the list, add an event for size change
-
             foreach (Panel p in PropertiesBody.Controls) {
+
+                p.Height = 26; // initially, collapse all
 
                 p.SizeChanged += new EventHandler(delegate (object o, EventArgs e)
                 {
@@ -375,12 +381,13 @@ namespace Cell_Tool_3
                         {
                             if (otherPanel != p) { otherPanel.Height = 26; }
                         }
-                        propertiesPanel.Parent.Refresh();
-                        
+                        IA.refresh_properties_panels();
                     }
                 });
             }
+
         }
+
         public void Histograms_Reload()
         {
             //Fix chart redrawing
@@ -435,6 +442,7 @@ namespace Cell_Tool_3
                 tTrackBar.Panel.BringToFront();
                 ImageMainPanel.BringToFront();
             }
+            
         }
         public void AddPlugIns()
         {
@@ -490,7 +498,7 @@ namespace Cell_Tool_3
                 }
                 IA.Segmentation.HistogramPanel.Resize += new EventHandler(SegmentationHistogramPanel_heightChange);
                 //Segmentation Tresholds
-                IA.Segmentation.tresholdsPanel.Height = 56;
+                IA.Segmentation.tresholdsPanel.Height = 320;
                 IA.Segmentation.tresholdsPanel.Resize += new EventHandler(SegmentationTresholdsPanel_heightChange);
                 //Segmentation Spot Detector
                 IA.Segmentation.SpotDetPanel.Height = 104;
@@ -579,6 +587,7 @@ namespace Cell_Tool_3
         }
         private void RoiManPanel_heightChange(object sender, EventArgs e)
         {
+
             if (IA.RoiMan.panel.Height <= 26)
             {
                 IA.settings.RoiManVis[FileBrowser.ActiveAccountIndex] = "n";
@@ -652,25 +661,6 @@ namespace Cell_Tool_3
             else
             {
                 IA.settings.SegmentTreshPanelVis[FileBrowser.ActiveAccountIndex] = "y";
-                switch (IA.Segmentation.SegmentationCBox.SelectedIndex)
-                {
-                    case 1:
-                        IA.Segmentation.Otsu1D.sumHistogramsCheckBox.Visible = true;
-                        IA.Segmentation.tresholdsPanel.Height = 56 +
-                                        IA.Segmentation.Otsu1D.panel.Height;
-                        IA.Segmentation.Otsu1D.panel.Visible = true;
-                        break;
-                    case 2:
-                        IA.Segmentation.Otsu1D.sumHistogramsCheckBox.Visible = true;
-                        IA.Segmentation.tresholdsPanel.Height = 56 +
-                                        IA.Segmentation.Otsu1D.panel.Height;
-                        IA.Segmentation.Otsu1D.panel.Visible = true;
-                        break;
-                    default:
-                        IA.Segmentation.Otsu1D.panel.Visible = false;
-                        IA.Segmentation.tresholdsPanel.Height = 56;
-                        break;
-                }
             }
             IA.settings.Save();
         }
@@ -1079,6 +1069,7 @@ namespace Cell_Tool_3
             Body.Update();
             Body.Refresh();
             Application.DoEvents();
+
         }
         private void openResultsExtractor(string dir,int FileTypeIndex, TreeNode node)
         {
@@ -1538,7 +1529,7 @@ namespace Cell_Tool_3
         }
         public void selectTab_event(int index)
         {
-            Body.SuspendLayout();
+            //Body.SuspendLayout();
             ResultsExtractorMainPanel.Controls.Clear();
            
             if (Collections.Count > index)
@@ -1621,11 +1612,11 @@ namespace Cell_Tool_3
                 }
             }
 
-            Body.ResumeLayout(true);
+            //Body.ResumeLayout(true);
 
-            Body.Update();
-            Body.Invalidate();
-            Body.Refresh();
+            //Body.Update();
+            //Body.Invalidate();
+            //Body.Refresh();
         }
         public void treeNode_Rename(object sender, EventArgs e)
         {
