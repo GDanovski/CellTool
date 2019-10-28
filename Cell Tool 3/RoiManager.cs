@@ -54,7 +54,7 @@ namespace Cell_Tool_3
         private List<ROI> OriginalROIList = null;
         //controls
         public ImageAnalyser IA;
-        private PropertiesPanel_Item PropPanel;
+        public PropertiesPanel_Item PropPanel;
         private Panel InsidePanel = new Panel();
         public Panel panel;
         //Variable controls

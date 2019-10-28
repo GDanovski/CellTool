@@ -220,8 +220,8 @@ namespace Cell_Tool_3
             }
             else
             {
-                ColBtn.BackColor = Color.White;
-                ColBtn.Text = "NaN";
+                ColBtn.BackColor = Color.Gray;
+                ColBtn.Text = "";
             }
 
             TailType.Text = fi.SpotTailType[fi.cValue];

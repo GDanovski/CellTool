@@ -26,7 +26,7 @@ namespace Cell_Tool_3
     class BrightnessAndContrast
     {
         public ImageAnalyser IA = null;
-        private PropertiesPanel_Item PropPanel = new PropertiesPanel_Item();
+        public PropertiesPanel_Item PropPanel = new PropertiesPanel_Item();
         public Panel panel;
         //Chart
         public BrightnessAndContrast_ChartPanel Chart1 = new BrightnessAndContrast_ChartPanel();

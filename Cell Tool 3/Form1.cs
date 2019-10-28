@@ -471,7 +471,7 @@ namespace Cell_Tool_3
             Interface.SmartBtnToolStripMenuItem.Click += Interface.SmartButtons.SmartBtnToolStripMenuItem_Click;
         }
 
-        [STAThread]// this property prevents the file dialog from freezing
+        
         private void OpenFile(object sender, EventArgs e)
         {
 
@@ -488,8 +488,9 @@ namespace Cell_Tool_3
             ofd.Filter = formatStr;
             ofd.FilterIndex = 1;
             ofd.RestoreDirectory = true;
-            ofd.ShowHelp = true;
-
+            
+            
+            
             try
             {
                 DialogResult dialogRes = ofd.ShowDialog();

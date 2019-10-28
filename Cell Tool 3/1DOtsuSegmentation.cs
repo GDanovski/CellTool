@@ -60,11 +60,11 @@ namespace Cell_Tool_3
 
             this.IA = IA;
             //Core panel 
-            panel.Dock = DockStyle.Top;
+            panel.Dock = DockStyle.Fill;
             panel.BackColor = IA.FileBrowser.BackGround2Color1;
             panel.ForeColor = IA.FileBrowser.ShriftColor1;
-            panel.Visible = false;
-            panel.Height = 150;
+            panel.Visible = true;
+            panel.Height = 250;
             mainPanel.Controls.Add(panel);
             panel.BringToFront();
 
@@ -74,7 +74,7 @@ namespace Cell_Tool_3
             optionGB.BackColor = IA.FileBrowser.BackGround2Color1;
             optionGB.ForeColor = IA.FileBrowser.ShriftColor1;
             optionGB.Dock = DockStyle.Top;
-            optionGB.Height = 85;
+            optionGB.Height = 100;
             panel.Controls.Add(optionGB);
             optionGB.BringToFront();
             
@@ -97,9 +97,12 @@ namespace Cell_Tool_3
             cb.AutoSize = false;
             cb.SelectedIndexChanged += new EventHandler(delegate(object o, EventArgs e) 
             {
+                if (!cb.Enabled) return;
                 TifFileInfo fi = IA.TabPages.TabCollections[IA.TabPages.SelectedIndex].tifFI;
                 fi.thresholdsCBoxIndex[fi.cValue] = cb.SelectedIndex;
-                IA.ReloadImages();
+                //fi.thresholds[fi.cValue] = cb.SelectedIndex;
+                //loadThreshAndColorBtns(fi);
+                //IA.ReloadImages();
             });
 
             CheckBox checkB = sumHistogramsCheckBox;
@@ -170,7 +173,9 @@ namespace Cell_Tool_3
                             fi.available = true;
                             IA.FileBrowser.StatusLabel.Text = "Ready";
                             IA.MarkAsNotSaved();
+                            loadThreshAndColorBtns(fi);
                             IA.ReloadImages();
+
                         });
                         //Apply status
                         IA.FileBrowser.StatusLabel.Text = "Segmentation...";
@@ -188,7 +193,6 @@ namespace Cell_Tool_3
             threshGB.BackColor = IA.FileBrowser.BackGround2Color1;
             threshGB.ForeColor = IA.FileBrowser.ShriftColor1;
             threshGB.Dock = DockStyle.Fill;
-            threshGB.Height = 50;
             panel.Controls.Add(threshGB);
             threshGB.BringToFront();
 
@@ -217,7 +221,7 @@ namespace Cell_Tool_3
                 colorPanel.Controls.Add(btn);
                 colorBtns[i] = btn;
                 btn.BringToFront();
-                btn.Visible = false;
+                btn.Visible = true;
                 btn.MouseDown += new MouseEventHandler(ColorBtn_Click);
                 btn.MouseHover += new EventHandler(delegate (object o, EventArgs a) 
                 {
@@ -237,7 +241,7 @@ namespace Cell_Tool_3
                 tb.Panel.Dock = DockStyle.Top;
                 tb.BackColor(IA.FileBrowser.BackGround2Color1);
                 tb.ForeColor(IA.FileBrowser.ShriftColor1);
-                tb.Panel.Visible = false;
+                tb.Panel.Visible = true;
                 tb.Refresh(0, 0, 10);
                 tb.Name.Text = "T" + (i + 1).ToString();
                 tb.NamePanel.Width = 38;
@@ -250,6 +254,10 @@ namespace Cell_Tool_3
                 });
             }
             #endregion Thresholds
+
+            threshGB.BringToFront();
+            sumHistogramsCheckBox.Enabled = false;
+            ProcessBtn.Enabled = false;
         }
         private void TrackBar_ValueChange(ChangeValueEventArgs e, CTTrackBar tb)
         {
@@ -336,6 +344,7 @@ namespace Cell_Tool_3
                 #endregion apply to history
 
                 IA.ReloadImages();
+                
             }
             else if (e.Button == MouseButtons.Right & btn.Text == "")
             {
@@ -392,6 +401,7 @@ namespace Cell_Tool_3
                     IA.ReloadImages();
                 }
             }
+            loadThreshAndColorBtns(fi);
         }
         public void loadThreshAndColorBtns(TifFileInfo fi)
         {
@@ -412,15 +422,18 @@ namespace Cell_Tool_3
 
             for (int i = 0; i < colorBtns.Length; i++)
             {
+                if (!colorBtns[i].Visible) { colorBtns[i].Visible = true; }
+                colorBtns[i].BringToFront();
+
                 //color btns
-                if (i <= threshNum & colorBtns[i].Visible == false)
+                if (i <= threshNum /*& colorBtns[i].Visible == false*/)
                 {
-                    colorBtns[i].Visible = true;
-                    colorBtns[i].BringToFront();
+                    colorBtns[i].Enabled = true;
+                    //colorBtns[i].BringToFront();
                 }
                 else if (i > threshNum)
                 {
-                    colorBtns[i].Visible = false;
+                    colorBtns[i].Enabled = false;
                 }
                 
                 Color col = fi.thresholdColors[fi.cValue][i];
@@ -429,33 +442,40 @@ namespace Cell_Tool_3
                 {
                     colorBtns[i].BackColor = col;
                     colorBtns[i].Text = "";
+                    colorBtns[i].Enabled = true;
                 }
                 else
                 {
-                    colorBtns[i].BackColor = Color.White;
-                    colorBtns[i].Text = "NaN";
+                    colorBtns[i].BackColor = Color.Transparent;
+                    colorBtns[i].Text = "N";
+                    //colorBtns[i].Enabled = false;
                 }
                 //trackBars
                 if (i < threshNum & i < threshTrackBars.Length)
                 {
-                    if (threshTrackBars[i].Panel.Visible == false)
+                    if (!threshTrackBars[i].Panel.Visible) { threshTrackBars[i].Panel.Visible = true; }
+                    //threshTrackBars[i].Panel.BringToFront();
+
+                    if (threshTrackBars[i].Panel.Enabled == false)
                     {
-                        threshTrackBars[i].Panel.Visible = true;
-                        threshTrackBars[i].Panel.BringToFront();
+                        threshTrackBars[i].Panel.Enabled = true;
+                        //threshTrackBars[i].Panel.BringToFront();
                     }
                     threshTrackBars[i].Refresh(vals1[i+1], min, max);
                 }
                 else if (i >= threshNum & i < threshTrackBars.Length)
                 {
-                    threshTrackBars[i].Panel.Visible = false;
+                    threshTrackBars[i].Panel.Enabled = false;
                 }
             }
             //Resize Panel
             
-            if (threshNum == 0)
-                panel.Height = 85;
-            else
-                panel.Height = 105 + 25 * (threshNum + 1);
+            //if (threshNum == 0)
+            //    panel.Height = 85;
+            //else
+            panel.Height = 200;
+
+            //IA.refresh_properties_panels();
            
             panel.ResumeLayout();
             
@@ -531,6 +551,8 @@ namespace Cell_Tool_3
                         fi.thresholdValues[fi.cValue][i] = threshold[i] * GlobalStep16Bit;
                     break;
             }
+
+            
         }
         private void buildHistogram(float[] h, TifFileInfo fi, int width, int height)
         {

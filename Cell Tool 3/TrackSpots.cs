@@ -31,7 +31,7 @@ namespace Cell_Tool_3
         //controls
         public ImageAnalyser IA;
         Wand wand;
-        private PropertiesPanel_Item PropPanel;
+        public PropertiesPanel_Item PropPanel;
         public Panel panel;
         //Options
         private CTTextBox MinSizeTB;
