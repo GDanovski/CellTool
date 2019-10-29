@@ -362,13 +362,7 @@ namespace Cell_Tool_3
             TabPages.zTrackBar.TextBox1.Enabled = val;
         }
         public void ReloadImages()
-        { 
-            //TabPages.PropertiesBody.SuspendLayout();
-            TabPages.propertiesPanel.SuspendLayout();
-
-
-            IDrawer.FormImg.Show();
-
+        {
             if (TabPages.Collections.Count < 1) 
             {
                 chart.Series.panel.Visible = false;
@@ -377,23 +371,21 @@ namespace Cell_Tool_3
                 TabPages.zTrackBar.Panel.Visible = false;
                 BandC.panel.Visible = false;
                 Meta.panel.Visible = false;
-               // Segmentation.LibPanel.Visible = false;
+                Segmentation.LibPanel.Visible = false;
                 Segmentation.DataPanel.Visible = false;
                 Segmentation.HistogramPanel.Visible = false;
                 Segmentation.tresholdsPanel.Visible = false;
                 Segmentation.SpotDetPanel.Visible = false;
+                Segmentation.Otsu1D.panel.Visible = false;
                 RoiMan.panel.Visible = false;
                 Tracking.panel.Visible = false;
                 UnDoBtn.Enabled = false;
                 ReDoBtn.Enabled = false;
                 GLControl1_VerticalPanel.Visible = false;
                 GLControl1_TraserPanel.Visible = false;
-                //TabPages.PropertiesBody.ResumeLayout();
-                TabPages.propertiesPanel.ResumeLayout();
                 
                 return;
             }
-            bool turnOnRoiMan = false;
 
             TifFileInfo fi = null;
             try
@@ -402,19 +394,6 @@ namespace Cell_Tool_3
             }
             catch { }
 
-            //LibPanel
-            if (settings.SegmentLibPanelVis[TabPages.ActiveAccountIndex] != "y")
-            {
-                Segmentation.LibPanel.Height = 26;
-            }
-            else
-            {
-                if (Segmentation.LibPanel.Height != 50)
-                {
-                    Segmentation.LibPanel.Height = 50;
-                    refresh_controls(Segmentation.LibPanel);
-                }
-            }
 
             if (fi != null)
             {
@@ -439,11 +418,11 @@ namespace Cell_Tool_3
                         if (!TabPages.tTrackBar.Panel.Visible)
                             TabPages.tTrackBar.Panel.Visible = true;
                     }
-                    else if(fi.sizeT <= 1 && TabPages.tTrackBar.Panel.Visible != false)
+                    else if (fi.sizeT <= 1 && TabPages.tTrackBar.Panel.Visible != false)
                     {
                         TabPages.tTrackBar.Panel.Visible = false;
                     }
-                   
+
 
                     if (/*fi.loaded && */fi.tpTaskbar != null
                         && fi.tpTaskbar.TopBar.BackColor != FileBrowser.BackGroundColor1)
@@ -453,352 +432,138 @@ namespace Cell_Tool_3
                         fi.tpTaskbar.TopBar.Invalidate();
                         fi.tpTaskbar.TopBar.Update();
                         fi.tpTaskbar.TopBar.Refresh();
-                        
+
                         Application.DoEvents();
                     }
                 }
                 catch { }
+
+                
                 //Chart properties refresh
                 chart.Properties.LoadFI(fi);
                 chart.Series.LoadFI(fi);
+
                 //set z and t
                 EnabletrackBars(fi.loaded);
-                //
-                if (fi.openedImages < fi.sizeC * fi.sizeZ)
-                {
-                    //TabPages.propertiesPanel.ResumeLayout();
-                    //TabPages.PropertiesBody.ResumeLayout();
-                    return;
-                }
-
+                
                 //zoomValue refresh
                 zoomValue_Set(fi.zoom);
                 BandC.autoDetect.Checked = fi.autoDetectBandC;
                 BandC.applyToAll.Checked = fi.applyToAllBandC;
+
                 //Segmentation
-                //Segmentation.ProtocolCBox.SelectedIndex = fi.SegmentationProtocol[fi.cValue];
-                Segmentation.SegmentationCBox.SelectedIndex = fi.SegmentationCBoxIndex[fi.cValue];
-                Segmentation.Otsu1D.thresholdsNumCB.SelectedIndex = fi.thresholdsCBoxIndex[fi.cValue];
-                Segmentation.Otsu1D.sumHistogramsCheckBox.Checked = fi.sumHistogramChecked[fi.cValue];
-                Segmentation.Otsu1D.loadThreshAndColorBtns(fi);
-                Segmentation.SpotDet.ReloadImage(fi);
+                //
+                
+                if (Segmentation.DataPropPanel.IsExpanded())
+                {
+                    //Segmentation.ProtocolCBox.SelectedIndex = fi.SegmentationProtocol[fi.cValue];
+                    
+                    Segmentation.SegmentationCBox.SelectedIndex = fi.SegmentationCBoxIndex[fi.cValue];
+                    Segmentation.Otsu1D.thresholdsNumCB.SelectedIndex = fi.thresholdsCBoxIndex[fi.cValue];
+                    Segmentation.Otsu1D.sumHistogramsCheckBox.Checked = fi.sumHistogramChecked[fi.cValue];
+                    Segmentation.Otsu1D.loadThreshAndColorBtns(fi);
+                }
+
+                if (Segmentation.SpotDetPropPanel.IsExpanded())
+                    Segmentation.SpotDet.ReloadImage(fi);
+
                 Segmentation.MyFilters.LoadImageInfo(fi);
+
                 //Tracking
                 Tracking.LoadSettings(fi);
                 //RoiManager
+
                 RoiMan.FillRoiManagerList(fi);
                 RoiMan.fillTextBox(fi);
                 RoiMan.calculateRoiAccessRect(fi);
+
                 //Image Drawer
                 try
                 {
-                   IDrawer.DrawToScreen();
+                    IDrawer.DrawToScreen();
                 }
                 catch { }
                 //Prop Panel settings
-                #region Raw Image
-                if (fi.selectedPictureBoxColumn == 0 & fi.cValue < fi.sizeC 
+                
+                if (fi.selectedPictureBoxColumn == 0 & fi.cValue < fi.sizeC
                     & fi.tpTaskbar.ColorBtnList[fi.cValue].ImageIndex == 0
                     & fi.tpTaskbar.MethodsBtnList[0].ImageIndex == 0)
                 {
-                    turnOnRoiMan = true;
-
-                    if (settings.BandCVis[TabPages.ActiveAccountIndex] != "y")
-                    {
-                        BandC.panel.Height = 26;
-                    }
-                    BandC.panel.Visible = true;
-
-                    // Hide the Segmentation historgram and show the Brigtness one on top
-                    Segmentation.FormSegmentation.Hide();
-                    BandC.FormBrightnessContrast.Show();
-                   
-
-                    if (settings.MetaVis[TabPages.ActiveAccountIndex] != "y")
-                    {
-                        Meta.panel.Height = 26;
-                    }
-                    else
-                    {
-                        if (Meta.panel.Height != 126)
-                        {
-                            Meta.panel.Height = 126;
-                            refresh_controls(Meta.panel);
-                        }
-                    }
                     Meta.UpdateInfo();
-                    Meta.panel.Visible = true;
-                    Meta.panel.BringToFront();
                 }
-                else
-                {
-                    BandC.panel.Visible = false;
-                    Meta.panel.Visible = false;
-                }
-                #endregion Raw Image
-
-                #region Filtered image
-                if (fi.selectedPictureBoxColumn == 1 & fi.cValue < fi.sizeC
-                    & fi.tpTaskbar.ColorBtnList[fi.cValue].ImageIndex == 0
-                    & fi.tpTaskbar.MethodsBtnList[1].ImageIndex == 0)
-                {
-                    turnOnRoiMan = true;
-                    //Tracking panel
-                    if (settings.TrackingVis[TabPages.ActiveAccountIndex] != "y")
-                    {
-                        Tracking.panel.Height = 26;
-                    }
-                    else
-                    {
-                        if (Tracking.panel.Height != 105)
-                        {
-                            Tracking.panel.Height = 105;
-                            refresh_controls(Tracking.panel);
-                        }
-                    }
-                    //LibPanel
-                    /*
-                    if (settings.SegmentLibPanelVis[TabPages.ActiveAccountIndex] != "y")
-                    {
-                        Segmentation.LibPanel.Height = 26;
-                    }
-                    else
-                    {
-                        Segmentation.LibPanel.Height = 50;
-                    }*/
-                    //Data Panel
-                    if (settings.SegmentDataPanelVis[TabPages.ActiveAccountIndex] != "y")
-                    {
-                        Segmentation.DataPanel.Height = 26;
-                    }
-                    else
-                    {
-                        if (Segmentation.DataPanel.Height != 180) { 
-                            Segmentation.DataPanel.Height = 180;
-                            refresh_controls(Segmentation.DataPanel);
-                    }
-
-                    //HistogramPanel
-                    if (settings.SegmentHistPanelVis[TabPages.ActiveAccountIndex] != "y")
-                    {
-                        Segmentation.HistogramPanel.Height = 26;
-                    }
-                    else
-                    {
-                            if (Segmentation.HistogramPanel.Height != int.Parse(settings.SegmentHistPanelHeight[TabPages.ActiveAccountIndex]))
-                            {
-                                Segmentation.HistogramPanel.Height = int.Parse(settings.SegmentHistPanelHeight[TabPages.ActiveAccountIndex]);
-                                refresh_controls(Segmentation.HistogramPanel);
-                            }
-                     }
-                        //load histogram
-                        Segmentation.Segmentation_LoadHistogramToChart(fi);
-
-                        // Hide the Brightness historgram and show the Segmentation one on top
-                        BandC.FormBrightnessContrast.Hide();
-                        Segmentation.FormSegmentation.Show();
-                    }
-
-                    //tresholdsPanel
-                    if (settings.SegmentTreshPanelVis[TabPages.ActiveAccountIndex] != "y")
-                    {
-                        Segmentation.tresholdsPanel.Height = 26;
-                    }
-                    else
-                    {
-                        int old_height = Segmentation.tresholdsPanel.Height;
-
-                        switch (Segmentation.SegmentationCBox.SelectedIndex)
-                        {
-                            case 1:
-                                Segmentation.Otsu1D.sumHistogramsCheckBox.Visible = true;
-                                Segmentation.tresholdsPanel.Height = 56 +
-                                    Segmentation.Otsu1D.panel.Height;
-                                break;
-                            case 2:
-                                Segmentation.Otsu1D.sumHistogramsCheckBox.Visible = true;
-                                Segmentation.tresholdsPanel.Height = 56 +
-                                   Segmentation.Otsu1D.panel.Height;
-                                break;
-                            default:
-                                Segmentation.tresholdsPanel.Height = 56;
-                                break;
-                        }
-
-                        if (old_height == 26)
-                        {
-                            refresh_controls(Segmentation.tresholdsPanel);
-                            refresh_controls(Segmentation.Otsu1D.panel);
-                        }
-                    }
-                    //SpotDetPanel
-                    if (settings.SegmentSpotDetPanelVis[TabPages.ActiveAccountIndex] != "y")
-                    {
-                        Segmentation.SpotDetPanel.Height = 26;
-                    }
-                    else
-                    {
-                        if (Segmentation.SpotDetPanel.Height != 104)
-                        {
-                            Segmentation.SpotDetPanel.Height = 104;
-                            refresh_controls(Segmentation.SpotDetPanel);
-                        }
-                    }
-                    //reorder
-
-                    if (Segmentation.LibPanel.Visible != true)
-                    {
-                        //Segmentation.LibPanel.Visible = true;
-                        //Segmentation.LibPanel.BringToFront();
-                        
-                    }
-
-                    if (Segmentation.HistogramPanel.Visible != true)
-                    {
-                        Segmentation.HistogramPanel.Visible = true;
-                        Segmentation.HistogramPanel.BringToFront();
-                        refresh_controls(Segmentation.HistogramPanel);
-                    }
-                    
-                    if (Segmentation.DataPanel.Visible != true)
-                    {
-                        Segmentation.DataPanel.Visible = true;
-                        Segmentation.DataPanel.BringToFront();
-                        refresh_controls(Segmentation.DataPanel);
-                    }
-
-                    if (Segmentation.tresholdsPanel.Visible != true)
-                    {
-                        Segmentation.tresholdsPanel.Visible = true;
-                        Segmentation.tresholdsPanel.BringToFront();
-                        refresh_controls(Segmentation.tresholdsPanel);
-                    }
-
-                    if (/*SpotDetectorEnabled &&*/ Segmentation.SpotDetPanel.Visible != true)
-                    {
-                        Segmentation.SpotDetPanel.Visible = true;
-                        Segmentation.SpotDetPanel.BringToFront();
-                        refresh_controls(Segmentation.SpotDetPanel);
-                    }
-
-                    if (Tracking.panel.Visible != true)
-                    {
-                        Tracking.panel.Visible = true;
-                        Tracking.panel.BringToFront();
-                        refresh_controls(Tracking.panel);
-                    }
-                }
-                else
-                {
-                    //Segmentation.LibPanel.Visible = false;
-                    Segmentation.DataPanel.Visible = false;
-                    Segmentation.HistogramPanel.Visible = false;
-                    Segmentation.tresholdsPanel.Visible = false;
-                    Segmentation.SpotDetPanel.Visible = false;
-                    Tracking.panel.Visible = false;
-                }
-                #endregion Filtered image
                 
-                #region Chart
-                if (fi.selectedPictureBoxColumn == 2 & fi.cValue < fi.sizeC
-                    & fi.tpTaskbar.ColorBtnList[fi.cValue].ImageIndex == 0 & fi.tpTaskbar.MethodsBtnList[2].ImageIndex == 0)
+
+                //load histogram
+                Segmentation.Segmentation_LoadHistogramToChart(fi);
+                
+                if (!RoiMan.panel.Visible)
                 {
-                    turnOnRoiMan = true;
-                    if (settings.CTChart_PropertiesVis[TabPages.ActiveAccountIndex] != "y")
-                    {
-                        chart.Properties.panel.Height = 26;
-                    }
-                    else
-                    {
-                        if (chart.Properties.panel.Height != 90)
-                        {
-                            chart.Properties.panel.Height = 90;
-                            refresh_controls(chart.Properties.panel);
-                        }
-                    }
-                    
 
-                    if (settings.CTChart_SeriesVis[TabPages.ActiveAccountIndex] != "y")
-                    {
-                        chart.Series.panel.Height = 26;
-                    }
-                    else
-                    {
-                        if (chart.Series.panel.Height == 26)
-                        {
-                            chart.Series.panel.Height = int.Parse(settings.CTChart_SeriesHeight[TabPages.ActiveAccountIndex]);
-                            refresh_controls(chart.Series.panel);
-                        }
-                        
-                    }
 
-                    if (chart.Properties.panel.Visible != true)
-                    {
-                        chart.Properties.panel.Visible = true;
-                        chart.Properties.panel.BringToFront();
-                        refresh_controls(chart.Properties.panel);
-                    }
-
-                    if (chart.Series.panel.Visible != true)
-                    {
-                        chart.Series.panel.Visible = true;
-                        chart.Series.panel.BringToFront();
-                        refresh_controls(chart.Series.panel);
-                    }
-
-                    Segmentation.FormSegmentation.Hide();
-                    BandC.FormBrightnessContrast.Hide();
-                }
-                else
-                {
-                    chart.Properties.panel.Visible = false;
-                    chart.Series.panel.Visible = false;
-                }
-                #endregion Chart
-
-                #region Roi Manager
-                //Roi manager
-                if (turnOnRoiMan == true)
-                {
-                    if (settings.RoiManVis[TabPages.ActiveAccountIndex] != "y")
-                        RoiMan.panel.Height = 26;
-                    else if (RoiMan.panel.Height != int.Parse(settings.RoiManHeight[TabPages.ActiveAccountIndex]))
-                    {
-                        RoiMan.panel.Height = int.Parse(settings.RoiManHeight[TabPages.ActiveAccountIndex]);
-                        refresh_controls(RoiMan.panel);
-                    }
+                    chart.Series.panel.Visible = true;
+                    chart.Properties.panel.Visible = true;
+                    TabPages.tTrackBar.Panel.Visible = true;
+                    TabPages.zTrackBar.Panel.Visible = true;
+                    BandC.panel.Visible = true;
+                    Meta.panel.Visible = true;
+                    Segmentation.LibPanel.Visible = true;
+                    Segmentation.DataPanel.Visible = true;
+                    Segmentation.HistogramPanel.Visible = true;
+                    Segmentation.tresholdsPanel.Visible = true;
+                    Segmentation.SpotDetPanel.Visible = true;
+                    Segmentation.Otsu1D.panel.Visible = true;
                     RoiMan.panel.Visible = true;
-                    RoiMan.panel.BringToFront();
-                    refresh_controls(RoiMan.panel);
+                    Tracking.panel.Visible = true;
+                    UnDoBtn.Enabled = true;
+                    ReDoBtn.Enabled = true;
+                    GLControl1_VerticalPanel.Visible = true;
+                    GLControl1_TraserPanel.Visible = true;
 
                 }
-                else
-                    RoiMan.panel.Visible = false;
+                
 
-                #endregion Roi Manager
             }
-            
 
+            refresh_properties_panels();
 
             Application.DoEvents();
-
-            BandC.Chart1.BringToFront();
-            //refresh_controls(BandC.Chart1.CA);
-            TabPages.propertiesPanel.ResumeLayout();
-            //TabPages.PropertiesBody.ResumeLayout();
 
         }
 
-        
+        public void refresh_properties_panels()
+        {
+
+            
+
+            refresh_controls(Meta.PropPanel.NamePanel);
+            refresh_controls(chart.Series.PropPanel.NamePanel);
+            refresh_controls(chart.Properties.PropPanel.NamePanel);
+            refresh_controls(Segmentation.DataPropPanel.NamePanel);
+            refresh_controls(Segmentation.HistogramPropPanel.NamePanel);
+            refresh_controls(Segmentation.LibPropPanel.NamePanel);
+            refresh_controls(Segmentation.SpotDetPropPanel.NamePanel);
+            refresh_controls(Segmentation.tresholdsPropPanel.NamePanel);
+            refresh_controls(BandC.PropPanel.NamePanel);
+            refresh_controls(RoiMan.PropPanel.NamePanel);
+            refresh_controls(Tracking.PropPanel.NamePanel);
+
+            TabPages.propertiesPanel.Invalidate();
+            TabPages.PropertiesBody.Invalidate();
+            TabPages.TitlePanel.Invalidate();
+
+            Application.DoEvents();
+
+
+        }
 
         public void refresh_controls(Control ctrl)
         {
-            
-
-            //ctrl.ResumeLayout(true);
+            //BeginControlUpdate(ctrl);
+            //EndControlUpdate(ctrl);
             ctrl.Invalidate();
-            Application.DoEvents();
             
+            
+            Application.DoEvents();
             foreach (Control ctrl2 in ctrl.Controls) { refresh_controls(ctrl2); }
 
         }
@@ -1701,6 +1466,39 @@ namespace Cell_Tool_3
             //});
             //wait the process to finish
             //t.Wait();
+        }
+
+
+        private const int WM_SETREDRAW = 11;
+
+        /// <summary>
+        /// Suspends painting for the target control. Do NOT forget to call EndControlUpdate!!!
+        /// </summary>
+        /// <param name="control">visual control</param>
+        public static void BeginControlUpdate(Control control)
+        {
+            Message msgSuspendUpdate = Message.Create(control.Handle, WM_SETREDRAW, IntPtr.Zero,
+                  IntPtr.Zero);
+
+            System.Windows.Forms.NativeWindow window = System.Windows.Forms.NativeWindow.FromHandle(control.Handle);
+            window.DefWndProc(ref msgSuspendUpdate);
+        }
+
+        /// <summary>
+        /// Resumes painting for the target control. Intended to be called following a call to BeginControlUpdate()
+        /// </summary>
+        /// <param name="control">visual control</param>
+        public static void EndControlUpdate(Control control)
+        {
+            // Create a C "true" boolean as an IntPtr
+            IntPtr wparam = new IntPtr(1);
+            Message msgResumeUpdate = Message.Create(control.Handle, WM_SETREDRAW, wparam,
+                  IntPtr.Zero);
+
+            System.Windows.Forms.NativeWindow window = System.Windows.Forms.NativeWindow.FromHandle(control.Handle);
+            window.DefWndProc(ref msgResumeUpdate);
+            control.Invalidate();
+            control.Refresh();
         }
     }
 }

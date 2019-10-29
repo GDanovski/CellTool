@@ -47,35 +47,35 @@ namespace Cell_Tool_3
             Panel.Height = 25;
             Panel.Dock = DockStyle.Top;
            
-            Panel textBoxPanel = new Panel();
-            textBoxPanel.Dock = DockStyle.Right;
-            textBoxPanel.Width = 100;
-            Panel.Controls.Add(textBoxPanel);
+            
 
             //frames text box
-            TextBox1.Width = 40;
+            TextBox1.Width = 30;
             
-            TextBox1.Location = new System.Drawing.Point(10, 0);
+            TextBox1.Location = new System.Drawing.Point(2, 0);
             TextBox1.BackColor = Color.White;
             TextBox1.ForeColor = Color.Black;
-            textBoxPanel.Controls.Add(TextBox1);
             TextBox1.TextChanged += new EventHandler(TextBox1_TextChanged);
             TextBox1.LostFocus += new EventHandler(textBox1_FocusLost);
             TextBox1.KeyDown += new KeyEventHandler(textBox1_KeyPress);
             TextBox1.Tag = 
                 "Use numbers to change value. \nApply changes by using enter keyboard key or apply button.";
             TextBox1.MouseHover += new EventHandler(Control_MouseOver);
-            
+
+            //Max Label
+            maxLabel.Location = new Point(TextBox1.Location.X + TextBox1.Width, 2);
+            maxLabel.Width = 45;
+            maxLabel.Height = 25;
+
             ApplyBtn.FlatAppearance.BorderSize = 0;
             ApplyBtn.FlatStyle = FlatStyle.Flat;
-            ApplyBtn.Width = TextBox1.Height;
-            ApplyBtn.Height = TextBox1.Height;
-            ApplyBtn.Location = new System.Drawing.Point(10 + TextBox1.Width + 2, -1);
-            ApplyBtn.Visible = false;
+            ApplyBtn.Width = 20;
+            ApplyBtn.Height = 20;
+            ApplyBtn.Location = new System.Drawing.Point(maxLabel.Location.X + maxLabel.Width, -1);
+            ApplyBtn.Visible = true; // false;
             ApplyBtn.Text = "";
             ApplyBtn.TextImageRelation = TextImageRelation.Overlay;
             ApplyBtn.Image = Properties.Resources.the_blue_tick_th;
-            textBoxPanel.Controls.Add(ApplyBtn);
             ApplyBtn.Click += new EventHandler(Applybtn_Click);
             ApplyBtn.Tag = "Apply";
             ApplyBtn.MouseHover += new EventHandler(Control_MouseOver);
@@ -84,22 +84,26 @@ namespace Cell_Tool_3
 
             CancelBtn.FlatAppearance.BorderSize = 0;
             CancelBtn.FlatStyle = FlatStyle.Flat;
-            CancelBtn.Width = TextBox1.Height;
-            CancelBtn.Height = TextBox1.Height;
+            CancelBtn.Width = 20;
+            CancelBtn.Height = 20;
             CancelBtn.Location = new System.Drawing.Point(ApplyBtn.Location.X + ApplyBtn.Width, -1);
-            CancelBtn.Visible = false;
+            CancelBtn.Visible = true; // false;
             CancelBtn.Text = "";
             CancelBtn.TextImageRelation = TextImageRelation.Overlay;
             CancelBtn.Image = Properties.Resources.CancelRed;
             CancelBtn.Click += new EventHandler(CancelBtn_Click);
-            textBoxPanel.Controls.Add(CancelBtn);
             CancelBtn.Tag = "Cancel";
             CancelBtn.MouseHover += new EventHandler(Control_MouseOver);
 
-            //Max Label
-           
-            maxLabel.Location = new Point(10 + TextBox1.Width + 2,2);
+            Panel textBoxPanel = new Panel();
+            textBoxPanel.Dock = DockStyle.Right;
+            textBoxPanel.Width = TextBox1.Location.X + TextBox1.Width + maxLabel.Width + ApplyBtn.Width + CancelBtn.Width + 5;
+            textBoxPanel.Controls.Add(TextBox1);
             textBoxPanel.Controls.Add(maxLabel);
+            textBoxPanel.Controls.Add(ApplyBtn);
+            textBoxPanel.Controls.Add(CancelBtn);
+            Panel.Controls.Add(textBoxPanel);
+
             //Label
 
             NamePanel.Dock = DockStyle.Left;
@@ -110,6 +114,7 @@ namespace Cell_Tool_3
             Name.Location = new System.Drawing.Point(10, 2);
             NamePanel.Controls.Add(Name);
             //track bar
+            
             TrackBar1.Dock = DockStyle.Fill;
             TrackBar1.Minimum = 1;
             TrackBar1.Maximum = 2;
@@ -117,11 +122,14 @@ namespace Cell_Tool_3
             TrackBar1.SmallChange = 1;
             TrackBar1.LargeChange = 1;
             TrackBar1.Value = 1;
+            TrackBar1.AutoSize = false;
+            TrackBar1.Height = 20;
             Panel.Controls.Add(TrackBar1);
             TrackBar1.BringToFront();
-            TrackBar1.ValueChanged += new EventHandler(TrackBar1_ChangeValue);
-            
-       }
+            //TrackBar1.ValueChanged += new EventHandler(TrackBar1_ChangeValue);
+            TrackBar1.MouseUp += new MouseEventHandler(TrackBar1_ChangeValue);
+
+        }
         
         public void BackColor(Color Color)
         {
@@ -178,12 +186,12 @@ namespace Cell_Tool_3
             TextBox1.Text = TrackBar1.Value.ToString();
             Value.ChangeValueFunction(TrackBar1.Value.ToString());
 
-            if(ApplyBtn.Visible == true) { ApplyBtn.Visible = false; }
-            if (CancelBtn.Visible == true) { CancelBtn.Visible = false; }
+            //if(ApplyBtn.Visible == true) { ApplyBtn.Visible = false; }
+            //if (CancelBtn.Visible == true) { CancelBtn.Visible = false; }
         }
         private void TextBox1_TextChanged(object sender, EventArgs e)
         {
-            if (TextBox1.Focused == false) { return; }
+            //if (TextBox1.Focused == false) { return; }
 
             if (TextBox1.Text != TrackBar1.Value.ToString())
             {
@@ -192,8 +200,8 @@ namespace Cell_Tool_3
             }
             else
             {
-                if (ApplyBtn.Visible == true) { ApplyBtn.Visible = false; }
-                if (CancelBtn.Visible == true) { CancelBtn.Visible = false; }
+                //if (ApplyBtn.Visible == true) { ApplyBtn.Visible = false; }
+                //if (CancelBtn.Visible == true) { CancelBtn.Visible = false; }
             }
         }
         private void acceptBtn_MouseEnter(object sender, EventArgs e)
@@ -208,20 +216,20 @@ namespace Cell_Tool_3
         private void textBox1_FocusLost(object sender, EventArgs e)
         {
             //if(ApplyBtn.Focused == true | CancelBtn.Focused == true) { return; }
-            if (MouseInAcceptBtn)
-            {
-                ApplyBtn.PerformClick();
-                return;
-            }
-            TextBox1.Text = TrackBar1.Value.ToString();
-            if (ApplyBtn.Visible == true) { ApplyBtn.Visible = false; }
-            if (CancelBtn.Visible == true) { CancelBtn.Visible = false; }
+            //if (MouseInAcceptBtn)
+            //{
+            //    ApplyBtn.PerformClick();
+            //    return;
+            //}
+            //TextBox1.Text = TrackBar1.Value.ToString();
+            //if (ApplyBtn.Visible == true) { ApplyBtn.Visible = false; }
+            //if (CancelBtn.Visible == true) { CancelBtn.Visible = false; }
         }
         private void CancelBtn_Click(object sender, EventArgs e)
         {
             TextBox1.Text = TrackBar1.Value.ToString();
-            if (ApplyBtn.Visible == true) { ApplyBtn.Visible = false; }
-            if (CancelBtn.Visible == true) { CancelBtn.Visible = false; }
+            //if (ApplyBtn.Visible == true) { ApplyBtn.Visible = false; }
+            //if (CancelBtn.Visible == true) { CancelBtn.Visible = false; }
         }
         private void textBox1_KeyPress(object sender, KeyEventArgs e)
         {
@@ -239,6 +247,7 @@ namespace Cell_Tool_3
         }
         private void ApplyFromTextBox1()
         {
+            TextBox1.Update();
             int val;
             try
             {
@@ -257,13 +266,13 @@ namespace Cell_Tool_3
            
             Value.ChangeValueFunction(TrackBar1.Value.ToString());
 
-            if (ApplyBtn.Visible == true) { ApplyBtn.Visible = false; }
-            if (CancelBtn.Visible == true) { CancelBtn.Visible = false; }
+            //if (ApplyBtn.Visible == true) { ApplyBtn.Visible = false; }
+            //if (CancelBtn.Visible == true) { CancelBtn.Visible = false; }
         }
         private void Control_MouseOver(object sender, EventArgs e)
         {
-            var ctr = (Control)sender;
-            TurnOnToolTip.SetToolTip(ctr, ctr.Tag.ToString());
+            //var ctr = (Control)sender;
+            //TurnOnToolTip.SetToolTip(ctr, ctr.Tag.ToString());
         }
     }
 }

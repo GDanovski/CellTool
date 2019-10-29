@@ -31,9 +31,9 @@ namespace Cell_Tool_3
     class Filters:Panel
     {
         private ImageAnalyser IA;
-        private MenuStrip ConvolutionMenu = new MenuStrip();
-        private MenuStrip BinaryMenu = new MenuStrip();
-        private MenuStrip BinaryMenu1 = new MenuStrip();
+        public MenuStrip ConvolutionMenu = new MenuStrip();
+        public MenuStrip BinaryMenu = new MenuStrip();
+        public MenuStrip BinaryMenu1 = new MenuStrip();
 
         public Button ToBinaryBtn = new Button();
         public Button ResetBtn = new Button();

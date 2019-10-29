@@ -29,7 +29,7 @@ namespace Cell_Tool_3
     {
         //controls
         public ImageAnalyser IA;
-        private PropertiesPanel_Item PropPanel;
+        public PropertiesPanel_Item PropPanel;
         private TreeView tv = new TreeView();
         public Panel panel;
         //Settings

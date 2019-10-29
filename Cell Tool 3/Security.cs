@@ -502,16 +502,17 @@ namespace Cell_Tool_3
         {
             Panel pnl = (Panel)sender;
 
-            foreach (Control ctr in pnl.Controls)
-                ctr.Visible = pnl.Visible;
-
-            pnl.Update();
             pnl.Invalidate();
-            pnl.Refresh();
+            Application.DoEvents();
 
-            AccForm.Update();
-            AccForm.Invalidate();
-            AccForm.Refresh();
+            foreach (Control ctr in pnl.Controls)
+            {
+                ctr.Visible = pnl.Visible;
+                ctr.Invalidate();
+                Application.DoEvents();
+            }
+
+            
             /*
             if (!((Panel)sender).Visible) return;
 
@@ -541,7 +542,7 @@ namespace Cell_Tool_3
         {
             AccForm.Height = 200;
             AccForm.Text = "New";
-            PassPanel.Visible = false;
+            AccListPanel.Visible = false;
             NewAccPanel.Visible = true;
         }
         private void BackAdminBtn_click (object sender, EventArgs e)

@@ -36,6 +36,7 @@ namespace Cell_Tool_3
     {
         public Panel myPanel = null;
         private string LoadingDir = "";
+        
         public Panel Input(string dir, ImageAnalyser IA)
         {
             MyForm form1 = new MyForm(dir,IA);
@@ -45,6 +46,7 @@ namespace Cell_Tool_3
             //ResultsExtractor.FileSaver.ReadCTDataFile(form1, dir);
             this.LoadingDir = dir;
             this.myPanel.DockChanged += myPanel_EnabledChanged;
+            this.myPanel.ParentChanged += myPanel_ParentChanged;
 
             return form1;
             //form1.Show();
@@ -57,6 +59,21 @@ namespace Cell_Tool_3
                     ResultsExtractor.FileSaver.ReadCTDataFile((MyForm)myPanel, this.LoadingDir);
 
                 this.LoadingDir = "";
+            }
+        }
+
+        private void myPanel_ParentChanged(object sender, EventArgs e)
+        {
+            if (this.myPanel.Parent == null)
+            {
+                ((MyForm)myPanel).formRepeats.SetVisibleState(false);
+                ((MyForm)myPanel).formResults.SetVisibleState(false);
+                ((MyForm)myPanel).formFit.SetVisibleState(false);
+            } else
+            {
+                ((MyForm)myPanel).formRepeats.SetVisibleState(true);
+                ((MyForm)myPanel).formResults.SetVisibleState(true);
+                ((MyForm)myPanel).formFit.SetVisibleState(true);
             }
         }
         public class Parametars
@@ -72,6 +89,7 @@ namespace Cell_Tool_3
         public class MyForm : Panel
         {
             public ImageAnalyser IA;
+            public Form_auxiliary formRepeats, formResults, formFit;
             /// StatusBar
             public ToolStripProgressBar StatusProgressBar = new ToolStripProgressBar();
             public ToolStripStatusLabel StatusLabel = new ToolStripStatusLabel();
@@ -236,11 +254,13 @@ namespace Cell_Tool_3
                 ResultPanel.Panel.Height = 250;
                 chartPanel.Controls.Add(ResultPanel.Panel);
 
-                Form_auxiliary formRepeats = new Form_auxiliary(RepeatsChartPanel.Body, 0, 0, 0, 0);
+                this.formRepeats = new Form_auxiliary(RepeatsChartPanel.Body, 0, 0, 0, -50, "Extractor_repeats");
                 formRepeats.Controls.Add(repeatsCh);
                 formRepeats.Show();
-                //RepeatsChartPanel.Body.Controls.Add(repeatsCh);
-                ResultPanel.Body.Controls.Add(resultsCh);
+
+                formResults = new Form_auxiliary(ResultPanel.Body, 0, 0, 0, -50, "Extractor_results");
+                formResults.Controls.Add(resultsCh);
+                formResults.Show();
             }
             private void AddFitSettings()
             {
@@ -316,7 +336,12 @@ namespace Cell_Tool_3
                 FitChartPanel.Panel.Visible = true;
                 propertiesPanel.Controls.Add(FitChartPanel.Panel);
 
-                FitChartPanel.Body.Controls.Add(solverClass.fitChart1);
+
+                formFit = new Form_auxiliary(FitChartPanel.Body, 0, 10, 0, -30, "Extractor_fit");
+                formFit.Controls.Add(solverClass.fitChart1);
+                formFit.Show();
+
+                //FitChartPanel.Body.Controls.Add(solverClass.fitChart1);
                 FitChartPanel.Body.Controls.Add(solverClass.fitChart1.Titles);
                 
                 /*

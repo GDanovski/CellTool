@@ -154,6 +154,8 @@ namespace Cell_Tool_3
             //set main form propertties
             Interface.MainFormInitialize(this);
 
+            Helpers.Settings.SaveSettings();
+
             //Developer menu
             Interface.IA.PlugIns = new PlugInEngine(Interface.DeveloperToolStripMenuItem, Interface.IA);
             //HotKeys
@@ -468,8 +470,12 @@ namespace Cell_Tool_3
             Interface.HotKeysToolStripMenuItem.Click += Interface.HotKays.HotKeysToolStripMenuItem_Click;
             Interface.SmartBtnToolStripMenuItem.Click += Interface.SmartButtons.SmartBtnToolStripMenuItem_Click;
         }
+
+        
         private void OpenFile(object sender, EventArgs e)
         {
+
+
             OpenFileDialog ofd = new OpenFileDialog();
             string formatStr = "TIF files (*.tif)|*.tif|All files (*.*)|*.*";
             /*
@@ -482,14 +488,23 @@ namespace Cell_Tool_3
             ofd.Filter = formatStr;
             ofd.FilterIndex = 1;
             ofd.RestoreDirectory = true;
-                       
-            if (ofd.ShowDialog() == DialogResult.OK)
+            
+            
+            
+            try
             {
-                
-                TreeNode node = Interface.FileBrowser.CheckForFile(OSStringConverter.GetWinString(ofd.FileName));
-                if(node != null) { Interface.FileBrowser.Openlabel.Tag = node; }
-                Interface.FileBrowser.Openlabel.Text = "'" + OSStringConverter.GetWinString(ofd.FileName) + "'";
-                Interface.FileBrowser.Openlabel.Text = "";
+                DialogResult dialogRes = ofd.ShowDialog();
+                if (dialogRes == DialogResult.OK)
+                {
+
+                    TreeNode node = Interface.FileBrowser.CheckForFile(OSStringConverter.GetWinString(ofd.FileName));
+                    if (node != null) { Interface.FileBrowser.Openlabel.Tag = node; }
+                    Interface.FileBrowser.Openlabel.Text = "'" + OSStringConverter.GetWinString(ofd.FileName) + "'";
+                    Interface.FileBrowser.Openlabel.Text = "";
+                }
+            } catch {
+                Console.WriteLine("Failed to open file.");
+                //Application.Exit();
             }
         }
     }

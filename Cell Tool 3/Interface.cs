@@ -224,7 +224,10 @@ namespace Cell_Tool_3
             //Add hot keys to main form
             MainForm.KeyPreview = true;
             MainForm.KeyDown += new KeyEventHandler(Form1_KeyPress);
-            
+
+            // Keep all properties collapsed except for the one currently clicked
+            TabPages.configurePropPanelsCollapse();
+
             // Show form on the screen
             MainForm.ResumeLayout(true);
             
@@ -234,9 +237,27 @@ namespace Cell_Tool_3
         }
         private void InitializeAnimations()
         {
-            System.Windows.Forms.Timer tTimer = new System.Windows.Forms.Timer();
+            BackgroundWorker tTimer = new BackgroundWorker();
+            tTimer.WorkerSupportsCancellation = true;
+            tTimer.WorkerReportsProgress = true;
+
+            BackgroundWorker zTimer = new BackgroundWorker();
+            zTimer.WorkerSupportsCancellation = true;
+            zTimer.WorkerReportsProgress = true;
+
+            // On every time interval, report progress to trigger size updates, until canceled
+            tTimer.DoWork += delegate (Object o, DoWorkEventArgs a)
+            {
+                while (!tTimer.CancellationPending)
+                {
+                    Thread.Sleep(100);
+                    ((BackgroundWorker)o).ReportProgress(0);
+                }
+                if (tTimer.CancellationPending) { a.Cancel = true; }
+            };
+
             bool tTimerRunning = false;
-            System.Windows.Forms.Timer zTimer = new System.Windows.Forms.Timer();
+            
             bool zTimerRunning = false;
 
             TifFileInfo oldFI = null;
@@ -246,7 +267,7 @@ namespace Cell_Tool_3
                 if (zTimerRunning) return;
 
                 TabPages.tPlayStop.Image = Properties.Resources.Play;
-                tTimer.Stop();
+                tTimer.CancelAsync();
                 oldFI = null;
 
                 if (tTimerRunning)
@@ -269,39 +290,53 @@ namespace Cell_Tool_3
 
                 tTimerRunning = true;
                 TabPages.tPlayStop.Image = Properties.Resources.Stop;
-                tTimer.Start();
+                tTimer.RunWorkerAsync();
             });
 
-            tTimer.Tick += new EventHandler(delegate (object o, EventArgs a) 
+            tTimer.ProgressChanged += delegate (Object o, ProgressChangedEventArgs a)
             {
-                TifFileInfo fi = null;
-                try
+                if (a.ProgressPercentage == 0)
                 {
-                    fi = TabPages.TabCollections[TabPages.SelectedIndex].tifFI;
-                }
-                catch { }
+                    TifFileInfo fi = null;
+                    try
+                    {
+                        fi = TabPages.TabCollections[TabPages.SelectedIndex].tifFI;
+                    }
+                    catch { }
 
-                if (fi == null ||
-                fi != oldFI ||
-                !fi.loaded ||
-                fi.frame + 1 >= fi.sizeT)
+                    if (fi == null ||
+                    fi != oldFI ||
+                    !fi.loaded ||
+                    fi.frame + 1 >= fi.sizeT)
+                    {
+                        oldFI = null;
+                        tTimerRunning = false;
+                        TabPages.tPlayStop.Image = Properties.Resources.Play;
+                        tTimer.CancelAsync();
+                    }
+
+                    TimeTrackBar_Forward();
+                } // end if progress reported
+            };
+
+            //Z
+
+            // On every time interval, report progress to trigger size updates, until canceled
+            zTimer.DoWork += delegate (Object o, DoWorkEventArgs a)
+            {
+                while (!zTimer.CancellationPending)
                 {
-                    oldFI = null;
-                    tTimerRunning = false;
-                    TabPages.tPlayStop.Image = Properties.Resources.Play;
-                    tTimer.Stop();
+                    Thread.Sleep(100);
+                    ((BackgroundWorker)o).ReportProgress(0);
                 }
-
-                TimeTrackBar_Forward();
-            });
-            tTimer.Interval = 40;
-       //Z
+                if (zTimer.CancellationPending) { a.Cancel = true; }
+            };
 
             TabPages.zPlayStop.Click += new EventHandler(delegate (object o, EventArgs a)
             {
                 if (tTimerRunning) return;
                 TabPages.zPlayStop.Image = Properties.Resources.Play;
-                zTimer.Stop();
+                zTimer.CancelAsync();
                 oldFI = null;
 
                 if (zTimerRunning)
@@ -324,10 +359,10 @@ namespace Cell_Tool_3
 
                 zTimerRunning = true;
                 TabPages.zPlayStop.Image = Properties.Resources.Stop;
-                zTimer.Start();
+                zTimer.RunWorkerAsync();
             });
 
-            zTimer.Tick += new EventHandler(delegate (object o, EventArgs a)
+            zTimer.ProgressChanged += delegate (Object o, ProgressChangedEventArgs a)
             {
                 TifFileInfo fi = null;
                 try
@@ -344,13 +379,11 @@ namespace Cell_Tool_3
                     oldFI = null;
                     zTimerRunning = false;
                     TabPages.zPlayStop.Image = Properties.Resources.Play;
-                    zTimer.Stop();
+                    zTimer.CancelAsync();
                 }
 
                 zTrackBar_Forward();
-            });
-
-            zTimer.Interval = 40;
+            };
         }
         public void AccBox_Add()
         {
@@ -1480,22 +1513,35 @@ namespace Cell_Tool_3
         {
             if (StatusProgressBar.Visible == false) return;
 
-            System.Windows.Forms.Timer t = new System.Windows.Forms.Timer();
-            t.Interval = 100;
-            t.Tick += new EventHandler(delegate(object o, EventArgs a)
+            BackgroundWorker t = new BackgroundWorker();
+            t.WorkerSupportsCancellation = true;
+            t.WorkerReportsProgress = true;
+
+            // On every time interval, report progress to trigger size updates, until canceled
+            t.DoWork += delegate (Object o, DoWorkEventArgs a)
+            {
+                while (!t.CancellationPending)
+                {
+                    Thread.Sleep(100);
+                    ((BackgroundWorker)o).ReportProgress(0);
+                }
+                if (t.CancellationPending) { a.Cancel = true; }
+            };
+
+            t.ProgressChanged += delegate (Object o, ProgressChangedEventArgs a)
             {
                 if (StatusProgressBar.Visible == false)
                 {
-                    t.Stop();
+                    t.CancelAsync();
                     t.Dispose();
                 }
                 else
                 {
                     Application.DoEvents();
                 }
-            });
+            };
 
-            if (StatusProgressBar.Visible == true) t.Start();
+            if (StatusProgressBar.Visible == true) t.RunWorkerAsync();
 
         }
 

@@ -26,7 +26,7 @@ namespace Cell_Tool_3
     class BrightnessAndContrast
     {
         public ImageAnalyser IA = null;
-        private PropertiesPanel_Item PropPanel = new PropertiesPanel_Item();
+        public PropertiesPanel_Item PropPanel = new PropertiesPanel_Item();
         public Panel panel;
         //Chart
         public BrightnessAndContrast_ChartPanel Chart1 = new BrightnessAndContrast_ChartPanel();
@@ -128,7 +128,7 @@ namespace Cell_Tool_3
             Chart1.Dock = DockStyle.Fill;
             Chart1.BackColor = PropPanel.Body.BackColor;
             
-            this.FormBrightnessContrast = new Form_auxiliary(this.panel, 10, 50, -10, -50);
+            this.FormBrightnessContrast = new Form_auxiliary(this.panel, 10, 20, -10, -50, "Brigtness");
             this.FormBrightnessContrast.Controls.Add(Chart1);
             //this.FormBrightnessContrast.Show();
             

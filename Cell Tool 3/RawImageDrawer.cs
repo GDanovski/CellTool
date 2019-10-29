@@ -155,10 +155,11 @@ namespace Cell_Tool_3
             GLControl1.Location = new Point(0, 0);
             GLControl1.Dock = DockStyle.Fill;
             
-            this.FormImg = new Form_auxiliary(GL_container, 0, 0, 0, 0);
+            this.FormImg = new Form_auxiliary(GL_container, 0, 0, 0, -100, "RawImage");
+            
             this.FormImg.Controls.Add(GLControl1);
             GLControl1.BringToFront();
-            //this.FormImg.Show();
+            this.FormImg.Show();
 
 
             
@@ -1615,7 +1616,7 @@ namespace Cell_Tool_3
                     }
                     else
                     {
-                        TabPages.propertiesPanel.Width = int.Parse(settings.PropertiesPanelWidth[AccInd]);
+                        TabPages.propertiesPanel.Width = 2 * int.Parse(settings.PropertiesPanelWidth[AccInd]);
                     }
                     TabPages.hidePropAndBrows = false;
 

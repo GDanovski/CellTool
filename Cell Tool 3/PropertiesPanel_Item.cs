@@ -34,7 +34,7 @@ namespace Cell_Tool_3
         public Label Name = new Label();
         public bool Resizable = false;
 
-        private Panel NamePanel = new Panel();
+        public Panel NamePanel = new Panel();
         public Panel ResizePanel = new Panel();
         private Color TitleBackColor;
 
@@ -59,6 +59,7 @@ namespace Cell_Tool_3
             NamePanel.MouseLeave += new EventHandler(Title_Normal);
 
             Name.Width = 150;
+            Name.AutoSize = true;
             Name.Location = new System.Drawing.Point(10, 5);
             NamePanel.Controls.Add(Name);
             Name.MouseHover += new EventHandler(Control_MouseOver);
@@ -109,8 +110,11 @@ namespace Cell_Tool_3
                 Panel.Height = Height;
             }
             //PropertiesPanel.Refresh();
-            p.Refresh();
+            //p.Refresh();
         }
+
+        public bool IsExpanded() {  return (Panel.Height != 26); }
+
         private void Title_HighLight(object sender, EventArgs e)
         {
             Panel ctr = NamePanel;

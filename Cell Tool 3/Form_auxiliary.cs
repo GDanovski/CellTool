@@ -29,13 +29,15 @@ using System.Drawing;
 using System.Threading;
 using System.Windows.Forms;
 
-namespace Cell_Tool_3 
+namespace Cell_Tool_3
 {
     public class Form_auxiliary : Form
     {
         private System.ComponentModel.IContainer components;
         private BackgroundWorker bgw = new BackgroundWorker(); // for continuously checking for size changes
         private Panel parentPanel; // the panel whose properties this form will use
+
+        private bool last_state_visible = true;
 
         protected override void Dispose(bool disposing)
         {
@@ -48,14 +50,21 @@ namespace Cell_Tool_3
          * Receive the location and position offsets, relative to the parent panel.
          * Remove the title bar and disable resizing and maximization.
          */
-        public Form_auxiliary(Panel parentPanel, int X_offset, int Y_offset, int W_offset,int H_offset)
+        public Form_auxiliary(Panel parentPanel, int X_offset, int Y_offset, int W_offset, int H_offset, string Name)
         {
+            this.Name = Name;
             this.parentPanel = parentPanel;
             setInitialProperties(); // set the static properties of the Form
             startParentMonitor(X_offset, Y_offset, W_offset, H_offset); // upon a change in the parent's location and size, update the form accordingly 
             this.Hide();
-            
+
         }
+
+        /* When an external caller wants to hide or show the form, they must call SetVisible(false) instead of Hide();
+         * SetVisible(true) instead of Show(); Then the background worker will take this into account and decide whether to hide or show.
+         */
+        public void SetVisibleState(bool VisibleState) { this.last_state_visible = VisibleState; }
+
         private void setInitialProperties()
         {
             // Set the scale and size properties, initially to 0
@@ -73,21 +82,31 @@ namespace Cell_Tool_3
             this.ShowInTaskbar = false;
             this.ControlBox = false;
             this.Text = null;
-            this.TopMost = false;
-        }
+            //this.TopMost = true;
+
+            
+
+            
+        //if (this.Name == "RawImage" || this.Name == "Extractor") { this.TopMost = true;  }
+        //else { this.TopMost = false; }
+
+
+    }
+
+       
         /*
          * Change the location and size of the form according to the given Panel
          * X, Y, width and height offsets are relative to those of the parent panel
          */
         public void startParentMonitor(int X_offset, int Y_offset, int W_offset, int H_offset)
         {
-           
+
             // Make sure the bgw can be stopped, and is reporting progress
             bgw.WorkerSupportsCancellation = true;
             bgw.WorkerReportsProgress = true;
-            
+
             // On every time interval, report progress to trigger size updates, until canceled
-            bgw.DoWork += new DoWorkEventHandler(delegate (Object o, DoWorkEventArgs a)
+            bgw.DoWork += delegate (Object o, DoWorkEventArgs a)
             {
                 while (!bgw.CancellationPending)
                 {
@@ -95,55 +114,115 @@ namespace Cell_Tool_3
                     ((BackgroundWorker)o).ReportProgress(0);
                 }
                 if (bgw.CancellationPending) { a.Cancel = true; }
-            });
+            };
 
             // Upon a progress report, update the Form
-            bgw.ProgressChanged += new ProgressChangedEventHandler(delegate (Object o, ProgressChangedEventArgs a)
+            bgw.ProgressChanged += delegate (Object o, ProgressChangedEventArgs a)
             {
-            if (a.ProgressPercentage == 0)
-            {
-                if (parentPanel.IsDisposed) { bgw.CancelAsync(); }
-                else
+                if (a.ProgressPercentage == 0)
                 {
-                    this.Location = parentPanel.PointToScreen(new Point(X_offset, Y_offset));
-                    this.Size = new Size(parentPanel.Size.Width + W_offset, parentPanel.Size.Height + H_offset);
-
-                    foreach (Form formInstance in Application.OpenForms)
+                    if (parentPanel.IsDisposed) { bgw.CancelAsync(); }
+                    else
                     {
-                        // Take the window state of the main form (e.g. minimized, maximized)
-                        if (formInstance is CellToolMainForm)
-                        {
-                            if (formInstance.WindowState == FormWindowState.Minimized)
-                            {
-                                this.WindowState = formInstance.WindowState;
-                            }
-                            else {
-                                this.WindowState = FormWindowState.Normal;
-                            }
+                        this.Location = parentPanel.PointToScreen(new Point(X_offset, Y_offset));
+                        this.Size = new Size(parentPanel.Size.Width + W_offset, parentPanel.Size.Height + H_offset);
 
-                            // set the different levels of focus of the forms
 
-                            // This (auxiliary) form should be always on top, whenever the application is active;
-                            // and the application is active when the main form contains focus
-                            if (formInstance.ContainsFocus == true && this.TopMost == false)
-                                {
-                                    this.TopMost = true;
-                                    formInstance.Focus();
 
-                                // If the main form no longer has focus, and this form is on top, it no longer has to be.
-                                } else if (this.ContainsFocus == false && 
-                                            formInstance.ContainsFocus == false && 
-                                            this.TopMost == true)
-                                {
-                                    this.TopMost = false; 
-                                }
-                            } // end if main form 
-                        } // end foreach active form
+                        this.SetWindowState();
+
                     } // end if panel is disposed
                 } // end if progress reported
-            });
+            };
             //Start the background worker
             bgw.RunWorkerAsync();
         }
+
+        
+        private void SetWindowLevels()
+        {
+
+            Form MainForm = getMainForm();
+            Form ImgForm = getFormByName("RawImage");
+            Form BrigtnessForm = getFormByName("Brightness");
+            Form SegmentationForm = getFormByName("Segmentation");
+            Form ExtractorForm = getFormByName("Extractor");
+
+            foreach (Form formInstance in Application.OpenForms)
+            {
+                if (formInstance is Form_auxiliary)
+                {
+                    if (formInstance.ContainsFocus) { MainForm.Focus(); }
+                }
+            }
+            if (this.Name.Contains("Extractor"))
+            {
+                if (((Form_auxiliary)ImgForm).last_state_visible == false)
+                {
+                    this.last_state_visible &= true;
+                }
+                else
+                {
+                    this.last_state_visible &= false;
+                }
+            }
+            if (MainForm.ContainsFocus && last_state_visible && parentPanel.Visible) { this.Show(); }
+            else { this.Hide(); }
+
+        }
+
+        private void SetWindowState()
+        {
+            if (getMainForm().WindowState == FormWindowState.Minimized) { this.Hide(); }
+            else { this.SetWindowLevels(); }
+            /*
+            if (ApplicationActive() && last_state_visible) {
+                this.Show();
+            } else { this.Hide();  }
+            */
+        }
+
+        /*
+         * 
+        [System.Runtime.InteropServices.DllImport("user32.dll")]
+        private static extern IntPtr GetForegroundWindow();
+        public bool ApplicationActive()
+        {
+            bool active = false;
+            IntPtr foregroundWindow = GetForegroundWindow();
+
+            foreach (Form formInstance in Application.OpenForms)
+            {
+                active |= (foregroundWindow == formInstance.Handle);
+            }
+
+            Console.WriteLine(active);
+            return active;
+        }
+        */
+
+        private Form getFormByName(string givenName)
+        {
+            Form pointerForm = null;
+            foreach (Form formInstance in Application.OpenForms)
+            {
+                if (formInstance.Name.Equals(givenName)) { pointerForm = formInstance; }
+            }
+            return pointerForm;
+        }
+
+        private Form getMainForm()
+        {
+            Form mainForm = null;
+            foreach (Form formInstance in Application.OpenForms)
+            {
+                if (formInstance is CellToolMainForm) { mainForm = formInstance; }
+            }
+            return mainForm;
+        }
+
+
+
+
     } // end class
 } // end namespace

@@ -30,7 +30,7 @@ namespace Cell_Tool_3
     class MetadataProp
     {
         public ImageAnalyser IA = null;
-        private PropertiesPanel_Item PropPanel = new PropertiesPanel_Item();
+        public PropertiesPanel_Item PropPanel = new PropertiesPanel_Item();
         public Panel panel;
         private ToolTip TurnOnToolTip = new ToolTip();
 
