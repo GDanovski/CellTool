@@ -729,7 +729,12 @@ namespace Cell_Tool_3
 
                 Point p = ((Panel)sender).Location;
                 p.X = e.X + p.X;
-                rP.Location = p;
+                if (rP.Location.X != p.X || rP.Location.Y != p.Y)
+                {
+                    rP.Location = p;
+                    this.Refresh();
+                    Application.DoEvents();
+                }
 
             }
             private void Resize_MouseUp(object sender, MouseEventArgs e)
@@ -3671,8 +3676,13 @@ namespace Cell_Tool_3
                     if (razlika > Panel.Location.Y + 59)
                     {
                         oldY = e.Y;
-                        ResizePanel.Location = new System.Drawing.Point(0, razlika);
-                        ResizePanel.BringToFront();
+                        if (razlika != ResizePanel.Location.Y)
+                        {
+                            ResizePanel.Location = new System.Drawing.Point(0, razlika);
+                            ResizePanel.BringToFront();
+                            this.PropertiesPanel.Refresh();
+                            Application.DoEvents();
+                        }
                     }
                     ResizePanel.Visible = true;
                 }
