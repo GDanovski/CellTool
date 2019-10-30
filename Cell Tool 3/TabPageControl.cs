@@ -655,10 +655,13 @@ namespace Cell_Tool_3
                     if (razlika > 100 & razlika < Body.Width - 100)
                     {
                         oldX = e.X;
-                        ResizePanel.Location = new System.Drawing.Point(razlika, propertiesPanel.Location.Y);
+                        if (ResizePanel.Location.X != razlika)
+                        {
+                            ResizePanel.Location = new System.Drawing.Point(razlika, propertiesPanel.Location.Y);
+                            RefreshControl();
+                        }
                     }
                 }
-
             }
             else {
 
@@ -671,6 +674,18 @@ namespace Cell_Tool_3
                     pnl.Cursor = Cursors.Default;
                 }
             }
+        }
+        public void RefreshControl(bool RefreshProperties = true)
+        {
+            if (RefreshProperties)
+                this.propertiesPanel.Refresh();
+            else
+                this.TitlePanel.Refresh();
+
+            this.ImageMainPanel.Refresh();
+            this.zTrackBar.Panel.Refresh();
+            this.tTrackBar.Panel.Refresh();
+            Application.DoEvents();
         }
         private void PropertiesPanel_MouseDown(object sender, MouseEventArgs e)
         {

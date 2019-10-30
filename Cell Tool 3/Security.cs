@@ -526,6 +526,7 @@ namespace Cell_Tool_3
             AccForm.Height = 200;
             AccForm.Text = "New";
             PassPanel.Visible = false;
+            AccListPanel.Visible = false;
             NewAccPanel.Visible = true;
         }
         private void BackAdminBtn_click (object sender, EventArgs e)

@@ -222,8 +222,13 @@ namespace Cell_Tool_3
                 if (razlika > Panel.Location.Y + 59)
                 {
                     oldY = e.Y;
-                    ResizePanel.Location = new System.Drawing.Point(15, razlika);
-                    ResizePanel.BringToFront();
+                    if (razlika != ResizePanel.Location.Y)
+                    {
+                        ResizePanel.Location = new System.Drawing.Point(15, razlika);
+                        this.PropertiesPanel.Refresh();
+                        ResizePanel.BringToFront();
+                        Application.DoEvents();
+                    }
                 }
                  ResizePanel.Visible = true;
             }
