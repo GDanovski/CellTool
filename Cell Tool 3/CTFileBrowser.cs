@@ -50,6 +50,7 @@ namespace Cell_Tool_3
         public List<string> OpenList = new List<string>();
         public Label Openlabel = new Label();
         public Label renameLabel = new Label();
+        public Button TurnOnBtn;
 
         public ToolStripStatusLabel StatusLabel = null;
 
@@ -146,7 +147,7 @@ namespace Cell_Tool_3
             DataSourcesPanel.BringToFront();
 
             //add Turn on/off button
-            Button TurnOnBtn = new Button();
+            TurnOnBtn = new Button();
             TurnOnBtn.Tag = "Show/Hide Data sources";
             TurnOnBtn.BackColor = TaskBtnColor;
             TurnOnBtn.Text = "";
@@ -189,9 +190,9 @@ namespace Cell_Tool_3
             verticalTitle.Width = 5;
             DataSourcesPanel.Controls.Add(verticalTitle);
             //Resize Panel
-            verticalTitle.MouseMove += new MouseEventHandler(DataSourcesPanel_MouseMove);
-            verticalTitle.MouseDown += new MouseEventHandler(DataSourcesPanel_MouseDown);
-            verticalTitle.MouseUp += new MouseEventHandler(DataSourcesPanel_MouseUp);
+            //verticalTitle.MouseMove += new MouseEventHandler(DataSourcesPanel_MouseMove);
+            //verticalTitle.MouseDown += new MouseEventHandler(DataSourcesPanel_MouseDown);
+            //verticalTitle.MouseUp += new MouseEventHandler(DataSourcesPanel_MouseUp);
 
             //Add Data Source title
             Panel DataSourceTitlePanel = new Panel();
@@ -967,7 +968,7 @@ namespace Cell_Tool_3
                     }
                 });
             }
-            DataSourcesPanel.Resize += DataSourcesPanel_resize;
+            //DataSourcesPanel.Resize += DataSourcesPanel_resize;
         }
         private void DataSourcesPanel_resize(object sender, EventArgs e)
         {

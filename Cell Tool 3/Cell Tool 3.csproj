@@ -222,6 +222,9 @@
     <Reference Include="Plugin.Settings.Abstractions, Version=3.1.1.0, Culture=neutral, PublicKeyToken=null">
       <HintPath>..\packages\Xam.Plugins.Settings.3.1.1\lib\net45\Plugin.Settings.Abstractions.dll</HintPath>
     </Reference>
+    <Reference Include="AdMaiora.AppKit.Core">
+      <HintPath>..\packages\AdMaiora.AppKit.2.0.5\lib\portable-net45+wp8+wpa81+win8+MonoAndroid10+MonoTouch10+Xamarin.iOS10\AdMaiora.AppKit.Core.dll</HintPath>
+    </Reference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="1DOtsuSegmentation.cs" />
@@ -324,6 +327,15 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
+    </Compile>
+    <Compile Include="OpenFileDialog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="OpenFileDialog.Designer.cs" />
+    <None Include="OpenFileDialog.resx" />
+    <Compile Include="MacKeys.cs" />
+    <Compile Include="Form_GL_Test.cs">
+      <SubType>Form</SubType>
     </Compile>
   </ItemGroup>
   <ItemGroup>

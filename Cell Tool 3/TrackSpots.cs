@@ -183,6 +183,22 @@ namespace Cell_Tool_3
             IA.MarkAsNotSaved();
             IA.ReloadImages();
         }
+
+        public void HideAll()
+        {
+            MinSizeTB.HideAll();
+            MaxSizeTB.HideAll();
+            SpeedTB.HideAll();
+            Application.DoEvents();
+        }
+
+        public void ShowAll()
+        {
+            MinSizeTB.ShowAll();
+            MaxSizeTB.ShowAll();
+            SpeedTB.ShowAll();
+            Application.DoEvents();
+        }
         private CTTextBox CTTextBox_Add(int X, int Y, Panel p, string title, string tag)
         {
             /*

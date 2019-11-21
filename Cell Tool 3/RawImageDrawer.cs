@@ -38,6 +38,8 @@ namespace Cell_Tool_3
         public ImageAnalyser IA = null;
         public Panel corePanel = new Panel();
         public ContentPipe ImageTexture = new ContentPipe();
+        private GLControl GLControl1;
+        BackgroundWorker BitmapDrawer = new BackgroundWorker();
 
 
         #region Position on screen
@@ -51,31 +53,18 @@ namespace Cell_Tool_3
         public double valY = 0;
         bool changeXY = true;
 
-        public Form_auxiliary FormImg; // To hold the GLControl of the images
         #endregion
 
         #region New Image Drawing
         public void Initialize(GLControl GLControl1)
         {
 
-            //this.InitializeComponent(GLControl1);
-
+            this.GLControl1 = GLControl1;
             GLControl1.SuspendLayout();
-            // 
-            // panel1
-            // 
             
-
-            // 
-            // Form1
-            // 
-            //GLControl1.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             GLControl1.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            //GLControl1.ClientSize = new System.Drawing.Size(400, 300);
-            //IA.TabPages.ImageMainPanel.Controls.Add(GLControl1);
             GLControl1.ResumeLayout(false);
 
-            
 
             GLControl1.Load += GLControl_Load;
             GLControl1.Paint += GLControl_Paint;
@@ -90,9 +79,6 @@ namespace Cell_Tool_3
             GLControl1.MouseUp += GLControl1_MouseUp;
 
             GLControl1.ResumeLayout(true);
-
-
-
             
             TabPageControl tpContr = IA.TabPages;
             tpContr.ImageMainPanel.SuspendLayout();
@@ -147,21 +133,38 @@ namespace Cell_Tool_3
             tpContr.ImageMainPanel.Controls.Add(corePanel);
             tpContr.ImageMainPanel.ResumeLayout(true);
 
-            Panel GL_container = new Panel();
-            GL_container.Dock = DockStyle.Fill;
-            tpContr.ImageMainPanel.Controls.Add(GL_container);
-            GL_container.BringToFront();
+            Size MainSize = IA.TabPages.MainForm.Size;
+            int StartWidth = IA.FileBrowser.DataSourcesPanelWidth;
 
-            GLControl1.Location = new Point(0, 0);
-            GLControl1.Dock = DockStyle.Fill;
+            GLControl1.Location = new Point(StartWidth + 5, 0);
+            GLControl1.Size = new Size(MainSize.Width - 2 * StartWidth -10, MainSize.Height - 200);
             
-            this.FormImg = new Form_auxiliary(GL_container, 0, 0, 0, -100, "RawImage");
-            
-            this.FormImg.Controls.Add(GLControl1);
+            IA.TabPages.MainForm.Controls.Add(GLControl1);
             GLControl1.BringToFront();
-            this.FormImg.Show();
+            
+            // Resize the GL control upon resizing the main form
+            IA.TabPages.MainForm.SizeChanged += new EventHandler (delegate(object o, EventArgs e) {
+                Size MainFormSize = IA.TabPages.MainForm.Size;
+                GLControl1.Location = new Point(StartWidth + 5, 0);
+                GLControl1.Size = new Size(MainFormSize.Width - 2 * StartWidth-10, MainFormSize.Height - 200);
+            });
+
+            
 
 
+        }
+
+
+
+
+            public void MakeTransparent(Control ctrl)
+        {
+            if (ctrl == null) return;
+
+            if (ctrl is Panel) {
+                ((Panel)ctrl).BackColor = Color.Transparent;
+            }
+            MakeTransparent(ctrl.Parent);
             
         }
 
@@ -210,7 +213,8 @@ namespace Cell_Tool_3
             try
             {
                 //Activate Control
-                IA.GLControl1.MakeCurrent();
+                if (IA.GLControl1 != null)
+                    IA.GLControl1.MakeCurrent();
                 //Load background
                 GL.ClearColor(IA.FileBrowser.BackGround2Color1);
                 GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
@@ -1415,6 +1419,7 @@ namespace Cell_Tool_3
                                     fi.selectedPictureBoxColumn = i;
                                     fi.cValue = j;
                                     //Reload
+                                    IA.SwitchBrightnessAndSegmentation();
                                     IA.ReloadImages();
                                     return;
                                 }
@@ -1599,11 +1604,11 @@ namespace Cell_Tool_3
                 }
                 else {
                     //data source panel
-                    FileBrowser.DataSourcesPanelWidth = int.Parse(settings.DataSourcesPanelValues[AccInd]);
+                    FileBrowser.DataSourcesPanelWidth = 300; // int.Parse(settings.DataSourcesPanelValues[AccInd]);
 
                     if (settings.DataSourcesPanelVisible[AccInd] == "y")
                     {
-                        FileBrowser.DataSourcesPanel.Width = int.Parse(settings.DataSourcesPanelValues[AccInd]);
+                        FileBrowser.DataSourcesPanel.Width = 300; // int.Parse(settings.DataSourcesPanelValues[AccInd]);
                     }
                     else
                     {
@@ -3004,5 +3009,7 @@ namespace Cell_Tool_3
             //return results
             return bmp;
         }
+
+        
     }
 }

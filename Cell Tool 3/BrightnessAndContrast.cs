@@ -46,6 +46,17 @@ namespace Cell_Tool_3
 
         public Form_auxiliary FormBrightnessContrast; // For holding theGLControl of the historgram
 
+        public void HideAll()
+        {
+            applyToAll.Hide();
+            autoDetect.Hide();
+        }
+
+        public void ShowAll()
+        {
+            applyToAll.Show();
+            autoDetect.Show();
+        }
         public void BackColor(Color color)
         {
             PropPanel.BackColor(color);
@@ -58,6 +69,7 @@ namespace Cell_Tool_3
         {
             PropPanel.TitleColor(color);
         }
+        
         private void Control_MouseOver(object sender, EventArgs e)
         {
             var ctr = (Control)sender;
@@ -67,7 +79,7 @@ namespace Cell_Tool_3
         {
             //PropPanel properties
             PropPanel.Initialize(propertiesPanel);
-            PropPanel.Resizable = true;
+            PropPanel.Resizable = false; // true;
             PropPanel.Name.Text = "Brightness And Contrast";
             PropertiesBody.Controls.Add(PropPanel.Panel);
 
@@ -102,7 +114,7 @@ namespace Cell_Tool_3
             autoDetect.MouseHover += new EventHandler(Control_MouseOver);
             Panel1.Controls.Add(autoDetect);
             applyToAll.BringToFront();
-
+            /*
             Panel1.Resize += new EventHandler(delegate (object o, EventArgs a)
             {
                 int x1 = autoDetect.Width + 35;
@@ -110,6 +122,7 @@ namespace Cell_Tool_3
                 applyToAll.Location = new Point(x1, 3);
 
             });
+            */
             //Chart
             BrightnessAndContrast_ChartPanel.BrightnessAndContrast_Chart CA = Chart1.CA;
             //CA.BackColor = PropPanel.Body.BackColor;
@@ -125,11 +138,17 @@ namespace Cell_Tool_3
             Values.Color = Color.Black;
             Chart1.Series.Add(Values);
 
-            Chart1.Dock = DockStyle.Fill;
+            //Chart1.Dock = DockStyle.Fill;
             Chart1.BackColor = PropPanel.Body.BackColor;
-            
-            this.FormBrightnessContrast = new Form_auxiliary(this.panel, 10, 20, -10, -50, "Brigtness");
-            this.FormBrightnessContrast.Controls.Add(Chart1);
+
+            Size MainSize = IA.TabPages.MainForm.Size;
+            int StartWidth = IA.FileBrowser.DataSourcesPanelWidth;
+            Chart1.CA.Location = new Point(MainSize.Width - StartWidth, 0);
+            Chart1.CA.Anchor = AnchorStyles.Right | AnchorStyles.Top;
+            Chart1.CA.Size = new Size(StartWidth - 5, 200);
+            //IA.TabPages.MainForm.Controls.Add(Chart1.CA);
+            //this.FormBrightnessContrast = new Form_auxiliary(this.panel, 10, 30, -10, -60, "Brigtness");
+            //this.FormBrightnessContrast.Controls.Add(Chart1);
             //this.FormBrightnessContrast.Show();
             
 
@@ -139,9 +158,33 @@ namespace Cell_Tool_3
             CA.MouseUp += new MouseEventHandler(Chart1_MouseUp);
             CA.MouseClick += new MouseEventHandler(Chart1_MouseClick);
             //Chart1.MouseHover += new MouseEventHandler(Chart1_MouseHover);
-            Chart1.BringToFront();
+            Chart1.CA.BringToFront();
+
+            // Resize the GL control upon resizing the main form
+            //IA.TabPages.MainForm.ResizeEnd += ResizeEnd;
+            IA.TabPages.MainForm.SizeChanged += ResizeEnd;
+
+
         }
 
+        private void ResizeEnd(object o, EventArgs e)
+        {
+            int StartWidth = IA.FileBrowser.DataSourcesPanelWidth;
+            Size MainFormSize = IA.TabPages.MainForm.Size;
+            bool IsVisible = false;
+            if (IA.TabPages.MainForm.Controls.Contains(Chart1.CA))
+            {
+                IA.TabPages.MainForm.Controls.Remove(Chart1.CA);
+                IsVisible = true;
+            }
+            Chart1.CA.Location = new Point(MainFormSize.Width - StartWidth, 0);
+            Chart1.CA.Size = new Size(StartWidth - 5, 200);
+            if (IsVisible)
+            {
+                IA.TabPages.AddImageGLControls();
+            }
+
+        }
         private void OptionForm_KeyPress(object sender, KeyEventArgs e)
         {
 
@@ -449,7 +492,7 @@ namespace Cell_Tool_3
             MinPrew = lastMin;
             MaxPrew = lastMax;
 
-            if ((e.X > min - 2 & e.X < min + 2))
+            if ((e.X > min - 6 & e.X < min + 6))
             {
                 Chart1.Cursor = Cursors.SizeWE;
                 //var rc = Chart1.RectangleToScreen(new Rectangle(Point.Empty, Chart1.ClientSize));
@@ -458,7 +501,7 @@ namespace Cell_Tool_3
                 moveMax = false;
                 moveMin = true;
             }
-            else if (e.X > max - 2 & e.X < max + 2)
+            else if (e.X > max - 6 & e.X < max + 6)
             {
                 Chart1.Cursor = Cursors.SizeWE;
                 //var rc = Chart1.RectangleToScreen(new Rectangle(Point.Empty, Chart1.ClientSize));
