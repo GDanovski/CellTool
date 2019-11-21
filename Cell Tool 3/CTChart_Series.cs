@@ -31,6 +31,7 @@ namespace Cell_Tool_3
         public ImageAnalyser IA;
         public PropertiesPanel_Item PropPanel;
         private TreeView tv = new TreeView();
+        private Label tvLabel = new Label();
         public Panel panel;
         //Settings
         List<Color> RefColors = new List<Color>();
@@ -55,6 +56,33 @@ namespace Cell_Tool_3
                 RefColors.Add(ColorTranslator.FromHtml(val));
                 createImagesFortTV(ColorTranslator.FromHtml(val));
             }
+        }
+
+        public void HideAll()
+        {
+            // Remove the focus from the selected tree node
+            tvLabel.Focus();
+            tvLabel.Hide();
+        }
+        public void ShowAll()
+        {
+            
+            
+            tvLabel.Show();
+            tv.BeginUpdate();
+            tv.Show();
+            tv.BringToFront();
+            tv.EndUpdate();
+
+
+
+
+
+            //tv.Focus();
+            //tv.BringToFront();
+            //tv.Invalidate();
+            //tv.Update();
+            //tv.Refresh();
         }
 
         private void createImagesFortTV(Color col)
@@ -109,17 +137,17 @@ namespace Cell_Tool_3
         }
         private void BuildOptions()
         {
-            Panel BotPanel = new Panel();
-            BotPanel.Dock = DockStyle.Top;
-            BotPanel.Height = 5;
-            panel.Controls.Add(BotPanel);
-            BotPanel.BringToFront();
+
+            tvLabel.Text = "ROIs view";
+            tvLabel.Dock = DockStyle.Bottom;
+            panel.Controls.Add(tvLabel);
 
             tv.Dock = DockStyle.Fill;
             tv.ShowNodeToolTips = false;
             tv.Height = 200;
             tv.BorderStyle = BorderStyle.None;
             tv.CheckBoxes = true;
+            tv.HideSelection = false;
             panel.Controls.Add(tv);
             tv.BringToFront();
             tv.ShowRootLines = false;

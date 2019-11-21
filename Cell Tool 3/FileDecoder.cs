@@ -1736,7 +1736,7 @@ namespace Cell_Tool_3
             TifFileInfo fi = tp.tifFI;
             fi.Dir = path;
             fi.original = false;
-            //fi.available = false;
+            fi.available = false;
             //read tags
             int[] FilterHistory = ApplyCT3Tags(vals, fi);
             
@@ -1853,6 +1853,8 @@ namespace Cell_Tool_3
                     try
                     {
                         IA1.ReloadImages();
+
+                        //IA1.TabPages.selectTab_event(IA1.TabPages.SelectedIndex);
                     }
                     catch { }
                     
@@ -1885,6 +1887,8 @@ namespace Cell_Tool_3
                     fi.openedImages = fi.imageCount;
                     fi.available = true;
                     fi.loaded = true;
+
+                    //IA1.TabPages.selectTab_event(IA1.TabPages.SelectedIndex);
 
                     CalculateAllRois(fi);
                     IA1.ReloadImages();

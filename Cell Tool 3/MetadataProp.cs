@@ -55,6 +55,39 @@ namespace Cell_Tool_3
                 TurnOnToolTip.RemoveAll();
             }
         }
+
+        public void HideAll()
+        {
+            fileName.Hide();
+            filePath.Hide();
+            fileDimensions.Hide();
+            fileType.Hide();
+            filePixelSize.Hide();
+            tv.Hide();
+            MetaBtn.Hide();
+
+            foreach (Control ctrl in Panel1.Controls)
+            {
+                if (ctrl is Label) { ctrl.Hide(); }
+            }
+        }
+
+        public void ShowAll()
+        {
+            fileName.Show();
+            filePath.Show();
+            fileDimensions.Show();
+            fileType.Show();
+            filePixelSize.Show();
+            tv.Show();
+            MetaBtn.Show();
+
+            foreach (Control ctrl in Panel1.Controls)
+            {
+                if (ctrl is Label) { ctrl.Show(); }
+            }
+
+        }
         public void Initialize(Panel propertiesPanel, Panel PropertiesBody, ImageAnalyser IA)
         {
             //PropPanel properties

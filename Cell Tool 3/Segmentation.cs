@@ -60,6 +60,12 @@ namespace Cell_Tool_3
         public ComboBox SegmentationCBox = new ComboBox();
         public Button AutoBtn = new Button();
 
+        private Label LibName;
+        private ComboBox LibTB;
+
+        private Label MethodName;
+        private ComboBox MethodTB;
+
         #region Initializing componends
 
         public Segmentation(Panel propertiesPanel, Panel PropertiesBody, ImageAnalyser IA)
@@ -75,6 +81,7 @@ namespace Cell_Tool_3
             //Data Panel initialize
             DataPropPanel = new PropertiesPanel_Item();
             DataPanel_Initialize(propertiesPanel, PropertiesBody);
+            /*
             DataPropPanel.Panel.Resize += new EventHandler(delegate (object o, EventArgs e)
             {
                 //Resize event -> 26 is minimized box
@@ -83,9 +90,11 @@ namespace Cell_Tool_3
                     DataPropPanel.Height = 180;
                 }
             });
+            */
             //Lib Panel initialize
             LibPropPanel = new PropertiesPanel_Item();
             LibPanel_Initialize(propertiesPanel, PropertiesBody);
+            /*
             LibPropPanel.Panel.Resize += new EventHandler(delegate (object o, EventArgs e)
             {
                 //Resize event -> 26 is minimized box
@@ -94,6 +103,7 @@ namespace Cell_Tool_3
                     LibPropPanel.Height = 50;
                 }
             });
+            */
             //SpotDet Panel initialize
             SpotDetPropPanel = new PropertiesPanel_Item();
             SpotDetPanel_Initialize(propertiesPanel, PropertiesBody);
@@ -159,14 +169,15 @@ namespace Cell_Tool_3
 
             //LibPanel.Visible = false;
             //items
-            Label LibName = new Label();
+            LibName = new Label();
             LibName.Text = "Protocol:";
             LibName.Width = TextRenderer.MeasureText(LibName.Text, LibName.Font).Width;
             LibName.Location = new Point(5, 30);
+            LibName.AutoSize = true;
             LibPanel.Controls.Add(LibName);
             LibName.BringToFront();
 
-            ComboBox LibTB = ProtocolCBox;
+            LibTB = ProtocolCBox;
             LibTB.Text = "None";
             LibTB.Items.Add("None");
             int w = LibPanel.Width - 126;
@@ -182,13 +193,14 @@ namespace Cell_Tool_3
             LibTB.SelectedIndex = 0;
             LibTB.AutoSize = false;
 
-
+            /*
             LibPanel.Resize += new EventHandler(delegate (object o, EventArgs a)
             {
                 int x1 = LibPanel.Width - 126;
                 if (x1 < 20) { x1 = 20; }
                 LibTB.Width = x1;
             });
+            */
             //Add button on top
             {
                 Button btn = new Button();
@@ -234,6 +246,34 @@ namespace Cell_Tool_3
             }
 
 
+        }
+
+        public void HideLib()
+        {
+            LibTB.Hide();
+            LibName.Hide();
+        }
+
+        public void ShowLib()
+        {
+            LibTB.Show();
+            LibName.Show();
+        }
+
+        public void HideAll()
+        {
+            MethodTB.Hide();
+            MethodName.Hide();
+            if (Otsu1D != null)
+                Otsu1D.HideAll();
+        }
+
+        public void ShowAll()
+        {
+            MethodTB.Show();
+            MethodName.Show();
+            if (Otsu1D != null)
+                Otsu1D.ShowAll();
         }
         private void DataPanel_Initialize(Panel propertiesPanel, Panel PropertiesBody)
         {
@@ -473,7 +513,7 @@ namespace Cell_Tool_3
             HistogramPropPanel.Initialize(propertiesPanel);
             HistogramPropPanel.Resizable = true;
             HistogramPropPanel.Name.Text = "Histogram";
-            PropertiesBody.Controls.Add(HistogramPropPanel.Panel);
+            //PropertiesBody.Controls.Add(HistogramPropPanel.Panel);
 
             HistogramPanel = HistogramPropPanel.Panel;
 
@@ -513,15 +553,44 @@ namespace Cell_Tool_3
                 Spots = ser;
             }
 
-            Chart1.Dock = DockStyle.Fill;
+            //Chart1.Dock = DockStyle.Fill;
             Chart1.BackColor = HistogramPropPanel.Body.BackColor;
             //HistogramPropPanel.Panel.Controls.Add(Chart1);
 
-            this.FormSegmentation = new Form_auxiliary(this.HistogramPanel, 10, 10, -10, -50, "Segmentation");
-            this.FormSegmentation.Controls.Add(Chart1);
-            //this.FormSegmentation.Show();
+            Size MainSize = IA.TabPages.MainForm.Size;
+            int StartWidth = IA.FileBrowser.DataSourcesPanelWidth;
+
+            Chart1.CA.Location = new Point(MainSize.Width - StartWidth, 0);
+            Chart1.CA.Anchor = AnchorStyles.Right | AnchorStyles.Top;
+            Chart1.CA.Size = new Size(StartWidth - 5, 200);
+            //IA.TabPages.MainForm.Controls.Add(Chart1.CA);
+            
+
 
             Chart1.BringToFront();
+
+            // Resize the GL control upon resizing the main form
+            //IA.TabPages.MainForm.ResizeEnd += ResizeEnd;
+            IA.TabPages.MainForm.SizeChanged += ResizeEnd;
+
+        }
+
+        private void ResizeEnd (object o, EventArgs e) {
+            int StartWidth = IA.FileBrowser.DataSourcesPanelWidth;
+            Size MainFormSize = IA.TabPages.MainForm.Size;
+            bool IsVisible = false;
+            if (IA.TabPages.MainForm.Controls.Contains(Chart1.CA))
+            {
+                IA.TabPages.MainForm.Controls.Remove(Chart1.CA);
+                IsVisible = true;
+            }
+            Chart1.CA.Location = new Point(MainFormSize.Width - StartWidth, 0);
+            Chart1.CA.Size = new Size(StartWidth - 5, 200);
+            if (IsVisible)
+            {
+                IA.TabPages.AddImageGLControls();
+            }
+
         }
         private void tresholdsPanel_Initialize(Panel propertiesPanel, Panel PropertiesBody)
         {
@@ -542,45 +611,55 @@ namespace Cell_Tool_3
             tresholdsPanel.Controls.Add(p);
             p.BringToFront();
 
-            Label LibName = new Label();
-            LibName.Text = "Method:";
-            LibName.Width = TextRenderer.MeasureText(LibName.Text, LibName.Font).Width;
-            LibName.Location = new Point(5, 9);
-            p.Controls.Add(LibName);
-            LibName.BringToFront();
+            MethodName = new Label();
+            MethodName.Text = "Method:";
+            MethodName.Width = TextRenderer.MeasureText(MethodName.Text, MethodName.Font).Width;
+            MethodName.Location = new Point(5, 9);
+            p.Controls.Add(MethodName);
+            MethodName.BringToFront();
 
-            ComboBox LibTB = SegmentationCBox;
-            LibTB.Text = "None";
-            LibTB.Items.Add("None");
+            MethodTB = SegmentationCBox;
+            MethodTB.Text = "None";
+            MethodTB.Items.Add("None");
 
             int w = tresholdsPanel.Width - 105;
             if (w < 20) { w = 20; }
-            LibTB.Width = w;
-            LibTB.Width = 150;
-            LibTB.Location = new Point(80, 6);
-            p.Controls.Add(LibTB);
-            LibTB.BringToFront();
-            LibTB.MouseHover += Control_MouseOver;
+            MethodTB.Width = w;
+            MethodTB.Width = 150;
+            MethodTB.Location = new Point(80, 6);
+            p.Controls.Add(MethodTB);
+            MethodTB.BringToFront();
+            MethodTB.MouseHover += Control_MouseOver;
 
-            LibTB.DropDownStyle = ComboBoxStyle.DropDownList;
-            LibTB.SelectedIndex = 0;
-            LibTB.AutoSize = false;
+            MethodTB.DropDownStyle = ComboBoxStyle.DropDownList;
+            MethodTB.SelectedIndex = 0;
+            MethodTB.AutoSize = false;
 
-            LibTB.SelectedIndexChanged += SegmentationCBox_SelectedIndexChange;
-
+            MethodTB.SelectedIndexChanged += SegmentationCBox_SelectedIndexChange;
+            /*
             tresholdsPanel.Resize += new EventHandler(delegate (object o, EventArgs a)
             {
                 int x1 = tresholdsPanel.Width - 105;
                 if (x1 < 20) { x1 = 20; }
-                LibTB.Width = x1;
-            });
+                MethodTB.Width = x1;
 
+                if (!tresholdsPropPanel.IsExpanded())
+                {
+                    Otsu1D.optionGB.Hide();
+                    Otsu1D.threshGB.Hide();
+                } else
+                {
+                    Otsu1D.optionGB.Show();
+                    Otsu1D.threshGB.Show();
+                }
+            });
+            */
             #region Types of segmentation
             //Add Otsu segmentation
-            //LibTB.Items.Add("1D Maximum Between-class Variance");
-            LibTB.Items.Add("Otsu Thresholding");
+            //MethodTB.Items.Add("1D Maximum Between-class Variance");
+            MethodTB.Items.Add("Otsu Thresholding");
             Otsu1D = new OtsuSegmentation(tresholdsPanel, IA);
-            LibTB.Items.Add("K-Means");
+            MethodTB.Items.Add("K-Means");
             Kmeans = new KMeansSegmentation(IA);
             #endregion Types of segmentation
         }
@@ -626,7 +705,7 @@ namespace Cell_Tool_3
             }
             else
             {
-                tresholdsPanel.Height = 200 + Otsu1D.panel.Height;
+                //tresholdsPanel.Height = 200 + Otsu1D.panel.Height;
 
                 switch (SegmentationCBox.SelectedIndex)
                 {
@@ -652,7 +731,7 @@ namespace Cell_Tool_3
             Otsu1D.sumHistogramsCheckBox.Checked = fi.sumHistogramChecked[fi.cValue];
             Otsu1D.loadThreshAndColorBtns(fi);
 
-            IA.refresh_properties_panels();
+            //IA.refresh_properties_panels();
         }
         #endregion Segmentation
 

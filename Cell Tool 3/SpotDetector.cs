@@ -51,6 +51,7 @@ namespace Cell_Tool_3
             mainPanel.Controls.Add(p1);
             p1.BringToFront();
 
+
             #region Threshold
             {
                 CTTrackBar tb = new CTTrackBar();
@@ -164,6 +165,35 @@ namespace Cell_Tool_3
             }
 
             #endregion Options
+        }
+
+        public void HideAll ()
+        {
+            thresh.HideAll();
+            sensitivity.HideAll();
+
+            selectT.Hide();
+            tType.Hide();
+            ColBtn.Hide();
+            TailType.Hide();
+        }
+        public void ShowAll()
+        {
+            thresh.ShowAll();
+            sensitivity.ShowAll();
+
+            selectT.Show();
+            tType.Show();
+            ColBtn.Show();
+            TailType.Show();
+
+            thresh.RefreshView();
+            sensitivity.RefreshView();
+            selectT.BringToFront();
+            tType.BringToFront();
+            ColBtn.BringToFront();
+            TailType.BringToFront();
+
         }
         private void Control_MouseOver(object sender, EventArgs e)
         {
