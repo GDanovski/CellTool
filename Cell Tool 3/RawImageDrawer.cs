@@ -96,12 +96,12 @@ namespace Cell_Tool_3
             VertPanel.Tag = p1;
             VertPanel.Controls.Add(p1);
             VertPanel.BringToFront();
-            tpContr.ImageMainPanel.Controls.Add(VertPanel);
+            //tpContr.ImageMainPanel.Controls.Add(VertPanel);
             //tracer
             Panel trPanel = IA.GLControl1_TraserPanel;
             trPanel.Dock = DockStyle.Bottom;
             trPanel.Height = 18;
-            tpContr.ImageMainPanel.Controls.Add(trPanel);
+            //tpContr.ImageMainPanel.Controls.Add(trPanel);
             trPanel.BringToFront();
             Panel p3 = new Panel();
             p3.Width = 17;
@@ -126,8 +126,8 @@ namespace Cell_Tool_3
             trPanel.Visible = false;
             VertPanel.Visible = false;
 
-            VertPanel.Scroll += VerticalScroll_ValueChanged;
-            HorPanel.Scroll += HorizontalScroll_ValueChanged;
+            //VertPanel.Scroll += VerticalScroll_ValueChanged;
+           // HorPanel.Scroll += HorizontalScroll_ValueChanged;
             //Top Bar
             corePanel.Dock = DockStyle.Top;
             tpContr.ImageMainPanel.Controls.Add(corePanel);
@@ -1453,6 +1453,7 @@ namespace Cell_Tool_3
             }
             else if (Control.ModifierKeys == Keys.Shift)
             {
+                return;
                 if (IA.GLControl1_TraserPanel.Visible == true)
                 {
                     TifFileInfo fi;
@@ -1504,6 +1505,7 @@ namespace Cell_Tool_3
             }
             else
             {
+                return;
                 if (IA.GLControl1_VerticalPanel.Visible == true)
                 {
                     TifFileInfo fi;
@@ -1637,6 +1639,7 @@ namespace Cell_Tool_3
         private int oldY = 0;
         private void GLControl1_MouseDown(object sender, MouseEventArgs e)
         {
+            return;
             if ((e.Button == MouseButtons.Right & Control.ModifierKeys == Keys.Control)
                 | e.Button == MouseButtons.Middle)
             {
