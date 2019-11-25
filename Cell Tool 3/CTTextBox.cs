@@ -44,11 +44,13 @@ namespace Cell_Tool_3
             {
                 panel.Height = 20;
                 panel.Width = 90;
+                /*
                 panel.Resize += new EventHandler(delegate (object o, EventArgs a) 
                 {
                     if (panel.Width < 60) panel.Width = 60;
                     if (tb != null) tb.Width = panel.Width - 40;
                 });
+                */
             }
 
             tb = new TextBox();
@@ -223,6 +225,22 @@ namespace Cell_Tool_3
 
             //acceptBtn.Visible = false;
             //cancelbtn.Visible = false;
+        }
+
+        public void HideAll()
+        {
+            label.Hide();
+            tb.Hide();
+            acceptBtn.Hide();
+            cancelbtn.Hide();
+        }
+
+        public void ShowAll()
+        {
+            label.Show();
+            tb.Show();
+            acceptBtn.Show();
+            cancelbtn.Show();
         }
     }
 }

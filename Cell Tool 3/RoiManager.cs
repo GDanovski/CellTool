@@ -71,12 +71,17 @@ namespace Cell_Tool_3
         CTTextBox finishT_tb = null;
         CTTextBox startZ_tb = null;
         CTTextBox finishZ_tb = null;
+
+        private GroupBox gb;
         //tooltip 
         private ToolTip TurnOnToolTip = new ToolTip();
 
         const float DEG2RAD = (float)(3.14159 / 180.0);
         //History
         string HistBuf = "";
+
+        // Keep track of the node currently selected
+        TreeNode selectedNode = null;
         #region Initialize
         public RoiManager(Panel propertiesPanel, Panel PropertiesBody, ImageAnalyser IA)
         {
@@ -1836,8 +1841,12 @@ namespace Cell_Tool_3
         }
         private void roiTV_selectedNodeChange(object sender, EventArgs e)
         {
-            selectedRoiChanged((ROI)roiTV.SelectedNode);
-            IA.ReloadImages();
+            if (roiTV.SelectedNode != selectedNode)
+            {
+                selectedNode = roiTV.SelectedNode;
+                selectedRoiChanged((ROI)roiTV.SelectedNode);
+                IA.ReloadImages();
+            }
         }
         public void DeleteBtn_Click(object sender, EventArgs e)
         {
@@ -1888,7 +1897,7 @@ namespace Cell_Tool_3
             panel.Controls.Add(p);
             p.BringToFront();
 
-            GroupBox gb = new GroupBox();
+            gb = new GroupBox();
             gb.Text = "Options:";
             gb.Dock = DockStyle.Bottom;
             gb.Height = 200;
@@ -1955,6 +1964,53 @@ namespace Cell_Tool_3
             //select node event
             tv.AfterSelect += roiTV_selectedNodeChange;
             tv.AfterCheck += roiTV_CheckNode;
+
+        }
+
+        public void HideAll()
+        {
+            gb.Hide();
+
+            foreach (Control ctrl in gb.Controls)
+            {
+                if (ctrl is Label) { ctrl.Hide(); }
+            }
+            RoiName.Hide();
+            RoiTypeL.Hide();
+            //roiTV
+            x_tb.HideAll();
+            y_tb.HideAll();
+            w_tb.HideAll();
+            h_tb.HideAll();
+            d_tb.HideAll();
+            n_tb.HideAll();
+            startT_tb.HideAll();
+            finishT_tb.HideAll();
+            startZ_tb.HideAll();
+            finishZ_tb.HideAll();
+        }
+
+        public void ShowAll()
+        {
+            gb.Show();
+            foreach (Control ctrl in gb.Controls)
+            {
+                if (ctrl is Label) { ctrl.Show(); }
+            }
+
+            RoiName.Show();
+            RoiTypeL.Show();
+            //roiTV
+            x_tb.ShowAll();
+            y_tb.ShowAll();
+            w_tb.ShowAll();
+            h_tb.ShowAll();
+            d_tb.ShowAll();
+            n_tb.ShowAll();
+            startT_tb.ShowAll();
+            finishT_tb.ShowAll();
+            startZ_tb.ShowAll();
+            finishZ_tb.ShowAll();
         }
         private Bitmap ExtendedBitmap(Bitmap source)
         {
@@ -2349,7 +2405,7 @@ namespace Cell_Tool_3
             IA.ReloadImages();
         }
 
-        private void clear_ROI_selection()
+        public void clear_ROI_selection()
         {
             x_tb.Disable();
             y_tb.Disable();
@@ -2361,6 +2417,9 @@ namespace Cell_Tool_3
             finishT_tb.Disable();
             startZ_tb.Disable();
             finishZ_tb.Disable();
+
+            // Remove the focus
+            x_tb.label.Focus();
 
             RoiName.Text = "Name: ";
             RoiTypeL.Text = "Type: ";

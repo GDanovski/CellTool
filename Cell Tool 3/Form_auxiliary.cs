@@ -26,6 +26,7 @@
 using System;
 using System.ComponentModel;
 using System.Drawing;
+using System.Security.Permissions;
 using System.Threading;
 using System.Windows.Forms;
 
@@ -53,10 +54,12 @@ namespace Cell_Tool_3
         public Form_auxiliary(Panel parentPanel, int X_offset, int Y_offset, int W_offset, int H_offset, string Name)
         {
             this.Name = Name;
+           
             this.parentPanel = parentPanel;
             setInitialProperties(); // set the static properties of the Form
-            startParentMonitor(X_offset, Y_offset, W_offset, H_offset); // upon a change in the parent's location and size, update the form accordingly 
+            //startParentMonitor(X_offset, Y_offset, W_offset, H_offset); // upon a change in the parent's location and size, update the form accordingly 
             this.Hide();
+
 
         }
 
@@ -124,12 +127,14 @@ namespace Cell_Tool_3
                     if (parentPanel.IsDisposed) { bgw.CancelAsync(); }
                     else
                     {
-                        this.Location = parentPanel.PointToScreen(new Point(X_offset, Y_offset));
-                        this.Size = new Size(parentPanel.Size.Width + W_offset, parentPanel.Size.Height + H_offset);
+                        //this.Location = parentPanel.PointToScreen(new Point(X_offset, Y_offset));
+                        //this.Size = new Size(parentPanel.Size.Width + W_offset, parentPanel.Size.Height + H_offset);
 
 
 
-                        this.SetWindowState();
+                        //this.SetWindowState();
+                        
+                        
 
                     } // end if panel is disposed
                 } // end if progress reported
@@ -139,6 +144,8 @@ namespace Cell_Tool_3
         }
 
         
+
+
         private void SetWindowLevels()
         {
 
@@ -157,7 +164,11 @@ namespace Cell_Tool_3
             }
             if (this.Name.Contains("Extractor"))
             {
-                if (((Form_auxiliary)ImgForm).last_state_visible == false)
+                if (ImgForm == null)
+                {
+                    this.last_state_visible &= true;
+                }
+                else if (((Form_auxiliary)ImgForm).last_state_visible == false)
                 {
                     this.last_state_visible &= true;
                 }
@@ -166,14 +177,31 @@ namespace Cell_Tool_3
                     this.last_state_visible &= false;
                 }
             }
-            if (MainForm.ContainsFocus && last_state_visible && parentPanel.Visible) { this.Show(); }
+            if (MainForm != null && MainForm.ContainsFocus && last_state_visible && parentPanel.Visible) { this.Show(); }
             else { this.Hide(); }
 
+            
+            
+
+            /*
+            if (this.Name == "RawImage")
+            {
+                
+                this.TopLevel = true;
+                this.TopMost = true;
+                this.Show();
+                this.Focus();
+                this.Activate();
+            }
+            */
         }
+
 
         private void SetWindowState()
         {
-            if (getMainForm().WindowState == FormWindowState.Minimized) { this.Hide(); }
+
+            
+            if (getMainForm() != null && getMainForm().WindowState == FormWindowState.Minimized) { this.Hide(); }
             else { this.SetWindowLevels(); }
             /*
             if (ApplicationActive() && last_state_visible) {
@@ -200,6 +228,7 @@ namespace Cell_Tool_3
             return active;
         }
         */
+        
 
         private Form getFormByName(string givenName)
         {

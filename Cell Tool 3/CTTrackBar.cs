@@ -31,13 +31,13 @@ namespace Cell_Tool_3
         public Panel Panel = new Panel();
         public Label Name = new Label();
         public Panel NamePanel = new Panel();
-        private Label maxLabel = new Label();
+        public Label maxLabel = new Label();
 
         public TrackBar TrackBar1 = new TrackBar();
         public TextBox TextBox1 = new TextBox();
         
         public Button ApplyBtn = new Button();
-        private Button CancelBtn = new Button();
+        public Button CancelBtn = new Button();
         private ToolTip TurnOnToolTip = new ToolTip();
 
         private bool MouseInAcceptBtn = false;
@@ -129,8 +129,42 @@ namespace Cell_Tool_3
             //TrackBar1.ValueChanged += new EventHandler(TrackBar1_ChangeValue);
             TrackBar1.MouseUp += new MouseEventHandler(TrackBar1_ChangeValue);
 
+
         }
-        
+
+        public void RefreshView()
+        {
+            //Panel.BringToFront();
+            //Application.DoEvents();
+
+            NamePanel.BringToFront();
+            //Application.DoEvents();
+
+            Name.BringToFront();
+            //Application.DoEvents();
+
+            maxLabel.BringToFront();
+            //Application.DoEvents();
+
+            TrackBar1.BringToFront();
+            //Application.DoEvents();
+
+            TextBox1.BringToFront();
+            //Application.DoEvents();
+
+            ApplyBtn.BringToFront();
+            //Application.DoEvents();
+
+            CancelBtn.BringToFront();
+            //Application.DoEvents();
+        }
+
+        public void DisableAll()
+        {
+            TrackBar1.Enabled = false;
+            ApplyBtn.Enabled = false;
+            CancelBtn.Enabled = false;
+        }
         public void BackColor(Color Color)
         {
             Panel.BackColor = Color;
@@ -273,6 +307,28 @@ namespace Cell_Tool_3
         {
             //var ctr = (Control)sender;
             //TurnOnToolTip.SetToolTip(ctr, ctr.Tag.ToString());
+        }
+
+        public void HideAll()
+        {
+            ApplyBtn.Hide();
+            CancelBtn.Hide();
+            TrackBar1.Hide();
+            Name.Hide();
+            TextBox1.Hide();
+            maxLabel.Hide();
+        }
+
+
+        public void ShowAll()
+        {
+            ApplyBtn.Show();
+            CancelBtn.Show();
+            TrackBar1.Show();
+            Name.Show();
+            TextBox1.Show();
+            maxLabel.Show();
+            Application.DoEvents();
         }
     }
 }

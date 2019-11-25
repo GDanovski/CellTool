@@ -363,6 +363,7 @@ namespace Cell_Tool_3
         }
         public void ReloadImages()
         {
+            if (RoiMan == null) { return;  }
             if (TabPages.Collections.Count < 1) 
             {
                 chart.Series.panel.Visible = false;
@@ -383,7 +384,8 @@ namespace Cell_Tool_3
                 ReDoBtn.Enabled = false;
                 GLControl1_VerticalPanel.Visible = false;
                 GLControl1_TraserPanel.Visible = false;
-                
+
+
                 return;
             }
 
@@ -428,13 +430,28 @@ namespace Cell_Tool_3
                         && fi.tpTaskbar.TopBar.BackColor != FileBrowser.BackGroundColor1)
                     {
                         fi.tpTaskbar.TopBar.BackColor = FileBrowser.BackGroundColor1;
+
+                        TabPages.AddImageGLControls();
+
+                        IDrawer.corePanel.BringToFront();
+                        fi.tpTaskbar.TopBar.BringToFront();
+
+                        IDrawer.corePanel.Dock = DockStyle.Bottom;
+                        fi.tpTaskbar.TopBar.Dock = DockStyle.Bottom;
+
+                        
+
                         fi.tpTaskbar.TopBar.ResumeLayout(true);
                         fi.tpTaskbar.TopBar.Invalidate();
                         fi.tpTaskbar.TopBar.Update();
                         fi.tpTaskbar.TopBar.Refresh();
 
+
+
                         Application.DoEvents();
                     }
+
+                    
                 }
                 catch { }
 
@@ -461,7 +478,7 @@ namespace Cell_Tool_3
                     Segmentation.SegmentationCBox.SelectedIndex = fi.SegmentationCBoxIndex[fi.cValue];
                     Segmentation.Otsu1D.thresholdsNumCB.SelectedIndex = fi.thresholdsCBoxIndex[fi.cValue];
                     Segmentation.Otsu1D.sumHistogramsCheckBox.Checked = fi.sumHistogramChecked[fi.cValue];
-                    Segmentation.Otsu1D.loadThreshAndColorBtns(fi);
+                    //Segmentation.Otsu1D.loadThreshAndColorBtns(fi);
                 }
 
                 if (Segmentation.SpotDetPropPanel.IsExpanded())
@@ -471,21 +488,26 @@ namespace Cell_Tool_3
 
                 //Tracking
                 Tracking.LoadSettings(fi);
-                //RoiManager
 
-                RoiMan.FillRoiManagerList(fi);
-                RoiMan.fillTextBox(fi);
-                RoiMan.calculateRoiAccessRect(fi);
+                //RoiManager
+                if (RoiMan.PropPanel.IsExpanded())
+                {
+                    RoiMan.FillRoiManagerList(fi);
+                    RoiMan.fillTextBox(fi);
+                    RoiMan.calculateRoiAccessRect(fi);
+                } 
 
                 //Image Drawer
                 try
                 {
                     IDrawer.DrawToScreen();
+                    BandC.Chart1.DrawToScreen(fi);
+                    Segmentation.Chart1.DrawToScreen(fi);
                 }
                 catch { }
                 //Prop Panel settings
                 
-                if (fi.selectedPictureBoxColumn == 0 & fi.cValue < fi.sizeC
+                if (Meta.PropPanel.IsExpanded() && fi.selectedPictureBoxColumn == 0 & fi.cValue < fi.sizeC
                     & fi.tpTaskbar.ColorBtnList[fi.cValue].ImageIndex == 0
                     & fi.tpTaskbar.MethodsBtnList[0].ImageIndex == 0)
                 {
@@ -502,8 +524,8 @@ namespace Cell_Tool_3
 
                     chart.Series.panel.Visible = true;
                     chart.Properties.panel.Visible = true;
-                    TabPages.tTrackBar.Panel.Visible = true;
-                    TabPages.zTrackBar.Panel.Visible = true;
+                    //TabPages.tTrackBar.Panel.Visible = true;
+                    //TabPages.zTrackBar.Panel.Visible = true;
                     BandC.panel.Visible = true;
                     Meta.panel.Visible = true;
                     Segmentation.LibPanel.Visible = true;
@@ -519,47 +541,195 @@ namespace Cell_Tool_3
                     GLControl1_VerticalPanel.Visible = true;
                     GLControl1_TraserPanel.Visible = true;
 
+                    
+                    chart.Series.panel.BringToFront();
+                    chart.Properties.panel.BringToFront();
+                    TabPages.tTrackBar.Panel.BringToFront();
+                    TabPages.zTrackBar.Panel.BringToFront();
+                    BandC.panel.BringToFront();
+                    Meta.panel.BringToFront();
+                    Segmentation.LibPanel.BringToFront();
+                    Segmentation.DataPanel.BringToFront();
+                    Segmentation.HistogramPanel.BringToFront();
+                    Segmentation.tresholdsPanel.BringToFront();
+                    Segmentation.SpotDetPanel.BringToFront();
+                    Segmentation.Otsu1D.panel.BringToFront();
+                    RoiMan.panel.BringToFront();
+                    Tracking.panel.BringToFront();
+                    RoiMan.panel.BringToFront();
+
+                    TabPages.configurePropPanelsCollapse();
+
+                    // Initially, show the MetaData, while all others are hidden
+                    Meta.PropPanel.Control_Click(Meta.PropPanel.Name, new EventArgs());
+
+
                 }
                 
 
             }
 
+
             refresh_properties_panels();
 
-            Application.DoEvents();
 
+        }
+
+        public void SwitchBrightnessAndSegmentation()
+        {
+            TifFileInfo fi = null;
+            try
+            {
+                fi = TabPages.TabCollections[TabPages.SelectedIndex].tifFI;
+            }
+            catch { }
+
+
+            if (fi != null)
+            {
+                try
+                {
+
+                    // Show the Brightness histogram or the Segmentation histogram depending on the selected image
+                    if (fi.selectedPictureBoxColumn == 0 & fi.cValue < fi.sizeC
+                    & fi.tpTaskbar.ColorBtnList[fi.cValue].ImageIndex == 0
+                    & fi.tpTaskbar.MethodsBtnList[0].ImageIndex == 0)
+                    {
+                        // Remove all controls from the main form; add the GLControl1, containing the image;
+                        // then add back the remaining controls
+                        Control[] MainControls = new Control[TabPages.MainForm.Controls.Count];
+
+                        if (TabPages.MainForm.Controls.Contains(Segmentation.Chart1.CA))
+                            TabPages.MainForm.Controls.Remove(Segmentation.Chart1.CA);
+
+                        TabPages.MainForm.Controls.CopyTo(MainControls, 0);
+                        TabPages.MainForm.Controls.Clear();
+
+                        TabPages.MainForm.Controls.Add(BandC.Chart1.CA);
+
+                        foreach (Control ctrl in MainControls)
+                        {
+                            if (ctrl != null)
+                                TabPages.MainForm.Controls.Add(ctrl);
+                        }
+
+                    }
+                    else if (fi.selectedPictureBoxColumn == 1 & fi.cValue < fi.sizeC
+                    & fi.tpTaskbar.ColorBtnList[fi.cValue].ImageIndex == 0
+                    & fi.tpTaskbar.MethodsBtnList[1].ImageIndex == 0)
+                    {
+                        if (TabPages.MainForm.Controls.Contains(BandC.Chart1.CA))
+                            TabPages.MainForm.Controls.Remove(BandC.Chart1.CA);
+                        if (!TabPages.MainForm.Controls.Contains(Segmentation.Chart1.CA))
+                            TabPages.MainForm.Controls.Add(Segmentation.Chart1.CA);
+                    }
+                }
+                catch { }
+            }
         }
 
         public void refresh_properties_panels()
         {
 
+            if (RoiMan == null) { return; }
+
+            if (!RoiMan.PropPanel.IsExpanded())
+            {
+                RoiMan.clear_ROI_selection();
+            } else {
+                /*
+                refresh_controls(chart.Series.PropPanel.NamePanel);
+                refresh_controls(chart.Properties.PropPanel.NamePanel);
+                refresh_controls(Tracking.PropPanel.NamePanel);
+                refresh_controls(Segmentation.SpotDetPropPanel.NamePanel);
+                refresh_controls(Segmentation.DataPropPanel.NamePanel);
+                refresh_controls(Segmentation.LibPropPanel.NamePanel);
+                refresh_controls(Segmentation.HistogramPropPanel.NamePanel);
+                refresh_controls(Segmentation.tresholdsPropPanel.NamePanel);
+                refresh_controls(BandC.PropPanel.NamePanel);
+                refresh_controls(Meta.PropPanel.NamePanel);
+                refresh_controls(RoiMan.PropPanel.NamePanel);
+                */
+            }
+
+
+            //if (Segmentation.tresholdsPropPanel.IsExpanded())   { Segmentation.tresholdsPanel.ShowAll(); }
+            //else                                                { Segmentation.tresholdsPanel.HideAll(); }
+
             
 
-            refresh_controls(Meta.PropPanel.NamePanel);
-            refresh_controls(chart.Series.PropPanel.NamePanel);
-            refresh_controls(chart.Properties.PropPanel.NamePanel);
-            refresh_controls(Segmentation.DataPropPanel.NamePanel);
-            refresh_controls(Segmentation.HistogramPropPanel.NamePanel);
-            refresh_controls(Segmentation.LibPropPanel.NamePanel);
-            refresh_controls(Segmentation.SpotDetPropPanel.NamePanel);
-            refresh_controls(Segmentation.tresholdsPropPanel.NamePanel);
-            refresh_controls(BandC.PropPanel.NamePanel);
-            refresh_controls(RoiMan.PropPanel.NamePanel);
-            refresh_controls(Tracking.PropPanel.NamePanel);
+            if (chart.Series.PropPanel.IsExpanded()) { chart.Series.ShowAll(); }
+            else { chart.Series.HideAll(); }
+            if (chart.Properties.PropPanel.IsExpanded()) { chart.Properties.ShowAll(); }
+            else { chart.Properties.HideAll(); }
+            if (BandC.PropPanel.IsExpanded()) { BandC.ShowAll(); }
+            else { BandC.HideAll(); }
+            if (Meta.PropPanel.IsExpanded()) { Meta.ShowAll(); }
+            else { Meta.HideAll(); }
 
-            TabPages.propertiesPanel.Invalidate();
-            TabPages.PropertiesBody.Invalidate();
-            TabPages.TitlePanel.Invalidate();
+            if (Segmentation.DataPropPanel.IsExpanded())        { Segmentation.MyFilters.ShowAll(); }
+            else                                                { Segmentation.MyFilters.HideAll(); }
+            if (Segmentation.LibPropPanel.IsExpanded())         { Segmentation.ShowLib(); }
+            else                                                { Segmentation.HideLib(); }
+            
+            if (Segmentation.tresholdsPropPanel.IsExpanded())   { Segmentation.ShowAll(); }
+            else                                                { Segmentation.HideAll(); }
+            if (Segmentation.SpotDetPropPanel.IsExpanded()) { Segmentation.SpotDet.ShowAll(); }
+            else { Segmentation.SpotDet.HideAll(); }
+            if (Tracking.PropPanel.IsExpanded()) { Tracking.ShowAll(); }
+            else { Tracking.HideAll(); }
+            if (RoiMan.PropPanel.IsExpanded()) { RoiMan.ShowAll(); }
+            else { RoiMan.HideAll(); }
+
+            /*
+            // Refresh the TaskBar and MainBar - find them by name
+            // This is necessary to remove the drawing artefacts from the properties panel refreshing
+            foreach (Control ctrl in TabPages.MainPanel.Controls)
+            {
+                if (ctrl.Name.Contains("Bar")) { refresh_controls(ctrl); }
+            }
+
+            // Refresh the Properties Title Label - it gets hidden when refreshing the properties menu names
+            foreach (Control ctrl in TabPages.propertiesPanel.Controls)
+            {
+                foreach (Control ctrl_inner in ctrl.Controls)
+                {
+                    if (ctrl_inner.Text.Equals("Properties")) {
+                        ctrl_inner.BringToFront();
+                        refresh_controls(ctrl);
+                        refresh_controls(ctrl_inner);
+                    }
+                }
+            }
+            */
+            TabPages.ImageMainPanel.BringToFront();
 
             Application.DoEvents();
+        }
 
-
+        public void refresh_name_labels()
+        {
+            // Refresh each properties submenu title in turn
+            
+            refresh_controls(chart.Series.PropPanel.NamePanel);
+            refresh_controls(chart.Properties.PropPanel.NamePanel);
+            refresh_controls(Tracking.PropPanel.NamePanel);
+            refresh_controls(Segmentation.SpotDetPropPanel.NamePanel);
+            refresh_controls(Segmentation.DataPropPanel.NamePanel);
+            refresh_controls(Segmentation.LibPropPanel.NamePanel);
+            refresh_controls(Segmentation.HistogramPropPanel.NamePanel);
+            refresh_controls(Segmentation.tresholdsPropPanel.NamePanel);
+            refresh_controls(BandC.PropPanel.NamePanel);
+            refresh_controls(Meta.PropPanel.NamePanel);
+            refresh_controls(RoiMan.PropPanel.NamePanel);
+            
         }
 
         public void refresh_controls(Control ctrl)
         {
             //BeginControlUpdate(ctrl);
             //EndControlUpdate(ctrl);
+            return;
             ctrl.Invalidate();
             
             
@@ -1469,36 +1639,22 @@ namespace Cell_Tool_3
         }
 
 
-        private const int WM_SETREDRAW = 11;
-
-        /// <summary>
-        /// Suspends painting for the target control. Do NOT forget to call EndControlUpdate!!!
-        /// </summary>
-        /// <param name="control">visual control</param>
-        public static void BeginControlUpdate(Control control)
+        public void SetDoubleBuffered(System.Windows.Forms.Control c)
         {
-            Message msgSuspendUpdate = Message.Create(control.Handle, WM_SETREDRAW, IntPtr.Zero,
-                  IntPtr.Zero);
+            //Taxes: Remote Desktop Connection and painting
+            //http://blogs.msdn.com/oldnewthing/archive/2006/01/03/508694.aspx
+            if (System.Windows.Forms.SystemInformation.TerminalServerSession)
+                return;
 
-            System.Windows.Forms.NativeWindow window = System.Windows.Forms.NativeWindow.FromHandle(control.Handle);
-            window.DefWndProc(ref msgSuspendUpdate);
-        }
+            System.Reflection.PropertyInfo aProp =
+                  typeof(System.Windows.Forms.Control).GetProperty(
+                        "DoubleBuffered",
+                        System.Reflection.BindingFlags.NonPublic |
+                        System.Reflection.BindingFlags.Instance);
 
-        /// <summary>
-        /// Resumes painting for the target control. Intended to be called following a call to BeginControlUpdate()
-        /// </summary>
-        /// <param name="control">visual control</param>
-        public static void EndControlUpdate(Control control)
-        {
-            // Create a C "true" boolean as an IntPtr
-            IntPtr wparam = new IntPtr(1);
-            Message msgResumeUpdate = Message.Create(control.Handle, WM_SETREDRAW, wparam,
-                  IntPtr.Zero);
-
-            System.Windows.Forms.NativeWindow window = System.Windows.Forms.NativeWindow.FromHandle(control.Handle);
-            window.DefWndProc(ref msgResumeUpdate);
-            control.Invalidate();
-            control.Refresh();
+            
+            aProp.SetValue(c, true, null);
+            object doubleBuff = aProp.GetValue((object)c);
         }
     }
 }

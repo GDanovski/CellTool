@@ -1155,7 +1155,7 @@ namespace Cell_Tool_3
                     w += 50;
 
                     this.Dock = DockStyle.Top;
-                    this.Resize += This_Resize;
+                    //this.Resize += This_Resize;
                 }
                 private void This_Resize(object sender, EventArgs e)
                 {
@@ -1340,7 +1340,7 @@ namespace Cell_Tool_3
                 w += 50;
 
                 this.Dock = DockStyle.Top;
-                this.Resize += This_Resize;
+                //this.Resize += This_Resize;
             }
             private void This_Resize(object sender, EventArgs e)
             {
@@ -1383,15 +1383,17 @@ namespace Cell_Tool_3
             public FitChart()
             {
                 Titles = new ListBox();
-                Titles.Dock = DockStyle.Top;
+                //Titles.Dock = DockStyle.Bottom;
+                Titles.Location = new Point(0, 280);
                 Titles.Font = new Font("Arial", 8);
+                Titles.Width = 300;
                 Titles.SelectionMode = SelectionMode.None;
                 Titles.Height = 10;
                 Titles.BackColor = Color.White;
                 Titles.ForeColor = Color.Black;
                 Titles.BorderStyle = BorderStyle.None;
                
-                this.Dock = DockStyle.Fill;
+                //this.Dock = DockStyle.Fill;
                 this.Build(null);
                 //Chart
                                

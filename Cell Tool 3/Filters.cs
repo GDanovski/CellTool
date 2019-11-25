@@ -57,6 +57,11 @@ namespace Cell_Tool_3
         public ToolStripMenuItem Close = new ToolStripMenuItem();
         public ToolStripMenuItem FillHoles = new ToolStripMenuItem();
         public ToolStripMenuItem Watershed = new ToolStripMenuItem();
+
+        public ToolStripMenuItem BlurMI, SharpenMI, GradientMI, OthersMI;
+        public Label BinaryTitleLabel, ConvolutionTitleLabel;
+        public Panel BinaryTitlePanel, ConvolutionTitlePanel;
+
         #region History
         public void addToHistoryOldInfo(int C, TifFileInfo fi)
         {
@@ -392,14 +397,14 @@ namespace Cell_Tool_3
 
                 #region Convolutions
 
-            Panel ConvolutionTitlePanel = new Panel();
+            ConvolutionTitlePanel = new Panel();
             ConvolutionTitlePanel.BackColor = IA.FileBrowser.BackGroundColor1;
             ConvolutionTitlePanel.ForeColor = IA.FileBrowser.ShriftColor1;
             ConvolutionTitlePanel.Dock = DockStyle.Top;
             ConvolutionTitlePanel.Height = 20;
             this.Controls.Add(ConvolutionTitlePanel);
 
-            Label ConvolutionTitleLabel = new Label();
+            ConvolutionTitleLabel = new Label();
             ConvolutionTitleLabel.Text = "Convolutions:";
             ConvolutionTitleLabel.Location = new Point(5, 2);
             ConvolutionTitlePanel.Controls.Add(ConvolutionTitleLabel);
@@ -412,7 +417,7 @@ namespace Cell_Tool_3
             ToolStripItem current = null;
 
             //Blurs
-            ToolStripMenuItem BlurMI = new ToolStripMenuItem();
+            BlurMI = new ToolStripMenuItem();
             BlurMI.Text = "Smooth";
             BlurMI.Overflow = ToolStripItemOverflow.AsNeeded;
             BlurMI.DropDownOpened += new EventHandler(menuItem_Opened);
@@ -486,7 +491,7 @@ namespace Cell_Tool_3
                 BlurMI.DropDownItems.Add(current);
             }
             //Sharpen
-            ToolStripMenuItem SharpenMI = new ToolStripMenuItem();
+            SharpenMI = new ToolStripMenuItem();
             SharpenMI.Text = "Sharpen";
             SharpenMI.Overflow = ToolStripItemOverflow.AsNeeded;
             SharpenMI.DropDownOpened += new EventHandler(menuItem_Opened);
@@ -534,7 +539,7 @@ namespace Cell_Tool_3
             }
 
             //Gradient
-            ToolStripMenuItem GradientMI = new ToolStripMenuItem();
+            GradientMI = new ToolStripMenuItem();
             GradientMI.Text = "Gradient";
             GradientMI.Overflow = ToolStripItemOverflow.AsNeeded;
             GradientMI.DropDownOpened += new EventHandler(menuItem_Opened);
@@ -619,7 +624,7 @@ namespace Cell_Tool_3
             }
 
             //Gradient
-            ToolStripMenuItem OthersMI = new ToolStripMenuItem();
+            OthersMI = new ToolStripMenuItem();
             OthersMI.Text = "Others";
             OthersMI.Overflow = ToolStripItemOverflow.AsNeeded;
             OthersMI.DropDownOpened += new EventHandler(menuItem_Opened);
@@ -630,14 +635,14 @@ namespace Cell_Tool_3
 
             #region Binary operations
 
-            Panel BinaryTitlePanel = new Panel();
+            BinaryTitlePanel = new Panel();
             BinaryTitlePanel.BackColor = IA.FileBrowser.BackGroundColor1;
             BinaryTitlePanel.ForeColor = IA.FileBrowser.ShriftColor1;
             BinaryTitlePanel.Height = 20;
             BinaryTitlePanel.Dock = DockStyle.Top;
             this.Controls.Add(BinaryTitlePanel);
 
-            Label BinaryTitleLabel = new Label();
+            BinaryTitleLabel = new Label();
             BinaryTitleLabel.Text = "Binary operations:";
             BinaryTitleLabel.Location = new Point(5, 2);
             BinaryTitlePanel.Controls.Add(BinaryTitleLabel);
@@ -739,7 +744,50 @@ namespace Cell_Tool_3
 
             this.ResumeLayout();
         }
-        
+
+        public void HideAll()
+        {
+            ConvolutionTitlePanel.Height = 0;
+            BinaryTitlePanel.Height = 0;
+            ConvolutionMenu.Hide();
+            BinaryMenu.Hide();
+            BinaryMenu1.Hide();
+            BlurMI.Visible = false;
+            SharpenMI.Visible = false;
+            GradientMI.Visible = false;
+            
+            BinaryTitleLabel.Hide();
+            ConvolutionTitleLabel.Hide();
+            ToBinaryBtn.Hide();
+            ResetBtn.Hide();
+            
+        }
+
+        public void ShowAll()
+        {
+            ConvolutionTitlePanel.Height = 20;
+            BinaryTitlePanel.Height = 20;
+            ConvolutionMenu.Show();
+            BinaryMenu.Show();
+            BinaryMenu1.Show();
+
+            BlurMI.Visible = true;
+            SharpenMI.Visible = true;
+            GradientMI.Visible = true;
+
+            //BlurMI.Invalidate();
+            //SharpenMI.Invalidate();
+            //GradientMI.Invalidate();
+
+
+            BinaryTitleLabel.Show();
+            ConvolutionTitleLabel.Show();
+            ToBinaryBtn.Show();
+            ResetBtn.Show();
+
+            Application.DoEvents();
+        }
+
         #region History
         public string ConvolutionToString(int C, string kernelStr)
         {

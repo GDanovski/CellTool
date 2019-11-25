@@ -59,7 +59,8 @@ namespace Cell_Tool_3
         public Panel MainPanel = new Panel();
         /////////////////////////////////////////
         //Task bar
-        public ToolStrip taskTS;
+        public ToolStrip taskTS, taskTS2, taskTS3;
+        Panel TaskPanel; // holds taskTS1,2,3
         public ToolStripComboBox ZoomValue = new ToolStripComboBox();
         //Roi type
         public ToolStripButton TrackingBtn = new ToolStripButton();
@@ -172,12 +173,14 @@ namespace Cell_Tool_3
         public void MainFormInitialize(Form MainForm)
         {
             this.MainForm = MainForm;
+            MainForm.BackColor = Color.Gray;
             // Set Main Form settings
             MainForm.SuspendLayout();
             MainForm.Icon = Properties.Resources.CT_done;
             MainForm.Text = "CellTool";
             MainForm.WindowState = FormWindowState.Maximized;
             
+
             //MainForm closing
             MainForm.FormClosing += new FormClosingEventHandler(CloseProgram);
             //MainPanel options
@@ -193,11 +196,15 @@ namespace Cell_Tool_3
             });
             //Add MenuItem
             Menu(MainPanel);
-            TaskBar(MainPanel);
+            
             AccBox_Add();
             StatusPanel();
             //File browsers
             FileBrowser.Initialize(ActiveAccountIndex, MainPanel, BackGroundColor, BackGround2Color, ShriftColor,  TitlePanelColor, TaskBtnColor, TaskBtnClickedColor);
+            TaskBar(MainPanel);
+            TaskPanel.SendToBack();
+
+
             FileBrowser.StatusLabel = StatusLabel;
             //Tab Pages control
             TabPages.OpenPanel = FileBrowser.OpenPanel;
@@ -223,10 +230,11 @@ namespace Cell_Tool_3
             TabPages.AddPlugIns();
             //Add hot keys to main form
             MainForm.KeyPreview = true;
-            MainForm.KeyDown += new KeyEventHandler(Form1_KeyPress);
+            MainForm.KeyUp += new KeyEventHandler(Form1_KeyPress);
 
             // Keep all properties collapsed except for the one currently clicked
             TabPages.configurePropPanelsCollapse();
+            
 
             // Show form on the screen
             MainForm.ResumeLayout(true);
@@ -391,9 +399,13 @@ namespace Cell_Tool_3
         }
         private void CloseProgram(object sander, FormClosingEventArgs e)
         {
-            Application.Exit();
-            return;
-            if (update) return;
+
+
+            if (update)
+            {
+                Application.Exit();
+                return;
+            }
             Helpers.Settings.SaveSettings();
             // Check is it ok to close the program
             string message = "Do you want to exit the program?";
@@ -406,46 +418,61 @@ namespace Cell_Tool_3
             if (result == System.Windows.Forms.DialogResult.Yes)
             {
                 e.Cancel = false;
+                update = true;
+                CloseProgram(sander, e);
             }
             else
             {
                 e.Cancel = true;
+                update = false;
             }
+            
+            
         }
         private void CloseProgram1(object sender, EventArgs e)
         {
             Application.Exit();
         }
 
+
+
         void Form1_KeyPress(object sender, KeyEventArgs e)
         {
-            //if (Control.ModifierKeys == Keys.Control)
-            if (e.Control)
+
+            // Shift is indicated by setting the 16th bit
+            bool Shift = ((int)e.KeyValue & (1 << 16)) != 0;
+            int KeyValue = (int)e.KeyValue & 0xEFFFF; // remove the shift bit
+
+            // Control is indicated by setting the 17th bit
+            bool Ctrl = (KeyValue & (1 << 17)) != 0;
+            KeyValue = KeyValue & 0xDFFFF; // remove the control bit
+
+            if (Ctrl)
             {
-                switch (e.KeyCode)
+                switch ((MacKeys)KeyValue)
                 {
-                    case Keys.Z:
+                    case MacKeys.Z:
                         UnDoBtn.PerformClick();
                         e.Handled = true;
                         e.SuppressKeyPress = true;
                         break;
-                    case Keys.Y:
+                    case MacKeys.Y:
                         ReDoBtn.PerformClick();
                         e.Handled = true;
                         e.SuppressKeyPress = true;
                         break;
-                    case Keys.N:
+                    case MacKeys.N:
                         NewToolStripMenuItem.PerformClick();
                         e.Handled = true;
                         e.SuppressKeyPress = true;
                         break;
-                    case Keys.O:
+                    case MacKeys.O:
                         e.Handled = true;
                         e.SuppressKeyPress = true;
                         OpenBtn.PerformClick();
                         break;
-                    case Keys.S:
-                        if (e.Shift)
+                    case MacKeys.S:
+                        if (Shift)
                         {
                             SaveAsBtn.PerformClick();
                             e.SuppressKeyPress = true;
@@ -458,8 +485,8 @@ namespace Cell_Tool_3
                             e.Handled = true;
                         }
                         break;
-                    case Keys.A:
-                        if (e.Shift)
+                    case MacKeys.A:
+                        if (Shift)
                         {
                             SaveAllBtn.PerformClick();
                             e.SuppressKeyPress = true;
@@ -471,12 +498,12 @@ namespace Cell_Tool_3
 
                         }
                         break;
-                    case Keys.E:
+                    case MacKeys.E:
                         ExportBtn.PerformClick();
                         e.SuppressKeyPress = true;
                         e.Handled = true;
                         break;
-                    case Keys.Oemplus:
+                    case MacKeys.Oemplus:
                         if (ZoomValue.SelectedIndex < ZoomValue.Items.Count - 1)
                         {
                             ZoomValue.SelectedIndex += 1;
@@ -484,7 +511,7 @@ namespace Cell_Tool_3
                             e.Handled = true;
                         }
                         break;
-                    case Keys.OemMinus:
+                    case MacKeys.OemMinus:
                         if (ZoomValue.SelectedIndex > 0)
                         {
                             ZoomValue.SelectedIndex -= 1;
@@ -492,7 +519,7 @@ namespace Cell_Tool_3
                             e.Handled = true;
                         }
                         break;
-                    case Keys.Add:
+                    case MacKeys.Add:
                         if (ZoomValue.SelectedIndex < ZoomValue.Items.Count - 1)
                         {
                             ZoomValue.SelectedIndex += 1;
@@ -500,7 +527,7 @@ namespace Cell_Tool_3
                             e.Handled = true;
                         }
                         break;
-                    case Keys.Subtract:
+                    case MacKeys.Subtract:
                         if (ZoomValue.SelectedIndex > 0)
                         {
                             ZoomValue.SelectedIndex -= 1;
@@ -508,32 +535,32 @@ namespace Cell_Tool_3
                             e.Handled = true;
                         }
                         break;
-                    case Keys.T:
+                    case MacKeys.T:
                         IA.RoiMan.AddBtn_Click(sender, e);
                         e.SuppressKeyPress = true;
                         e.Handled = true;
                         break;
-                    case Keys.D:
+                    case MacKeys.D:
                         IA.RoiMan.DeleteBtn_Click(sender, e);
                         e.SuppressKeyPress = true;
                         e.Handled = true;
                         break;
-                    case Keys.M:
+                    case MacKeys.M:
                         IA.RoiMan.MeasureBtn_Click(sender, e);
                         e.SuppressKeyPress = true;
                         e.Handled = true;
                         break;
-                    case Keys.C:
+                    case MacKeys.C:
                         if (!(MainForm.ActiveControl is TextBox &&
                             ((TextBox)MainForm.ActiveControl).SelectionLength > 0))
                             IA.RoiMan.CopyRois(sender, e);
                         break;
-                    case Keys.X:
+                    case MacKeys.X:
                         if (!(MainForm.ActiveControl is TextBox &&
                             ((TextBox)MainForm.ActiveControl).SelectionLength > 0))
                             IA.RoiMan.CutRois(sender, e);
                         break;
-                    case Keys.V:
+                    case MacKeys.V:
                         if (!(MainForm.ActiveControl is TextBox &&
                             ((TextBox)MainForm.ActiveControl).SelectionLength > 0))
                             IA.RoiMan.PasteRois(sender, e);
@@ -545,7 +572,6 @@ namespace Cell_Tool_3
                             e.Handled = true;
                         }
                         break;
-
                 }
             }
             else
@@ -635,14 +661,19 @@ namespace Cell_Tool_3
             Panel MenuPanel = new Panel();
             MenuPanel.Height = 25;
             MenuPanel.Dock = DockStyle.Top;
+            MenuPanel.Name = "MenuBar";
+            
             MainPanel.Controls.Add(MenuPanel);
             //Start Menu
             MenuStrip StartMenu = new MenuStrip();           
             StartMenu.AutoSize = true;
             StartMenu.Dock = DockStyle.Fill;
-            //StartMenu.BackColor = BackGroundColor;
-            //StartMenu.ForeColor = ShriftColor;
             MenuPanel.Controls.Add(StartMenu);
+
+            MenuStrip AccountMenu = new MenuStrip();
+            AccountMenu.AutoSize = true;
+            AccountMenu.Dock = DockStyle.Top;
+            FileBrowser.DataSourcesPanel.Controls.Add(AccountMenu);
             //File menu 
             { 
                 ToolStripMenuItem FileToolStripMenuItem = new ToolStripMenuItem();
@@ -889,12 +920,13 @@ namespace Cell_Tool_3
             //Account
             {
                 AccountToolStripMenuItem.Image = Properties.Resources.accImage;
-                AccountToolStripMenuItem.Alignment = ToolStripItemAlignment.Right;
+                AccountToolStripMenuItem.Alignment = ToolStripItemAlignment.Left;
                 AccountToolStripMenuItem.DropDownOpened += new EventHandler(menuItem_Opened);
                 AccountToolStripMenuItem.DropDownClosed += new EventHandler(menuItem_Closed);
                 AccountToolStripMenuItem.Margin = new System.Windows.Forms.Padding(3, 1, 10, 2);
-                StartMenu.Items.Add(AccountToolStripMenuItem);
                 
+                AccountMenu.Items.Add(AccountToolStripMenuItem);
+
                 LogOutToolStripMenuItem.Text = "Log out";
                 AccountToolStripMenuItem.DropDownItems.Add(LogOutToolStripMenuItem);
 
@@ -1143,23 +1175,50 @@ namespace Cell_Tool_3
         private void TaskBar(Panel MainPanel)
         {
             // build panel
-            Panel TaskPanel = new Panel();
-            TaskPanel.Height = 26;
+            TaskPanel = new Panel();
+            TaskPanel.Height = 70;
             TaskPanel.Dock = DockStyle.Top;
             TaskPanel.BackColor = TaskBtnColor;
-            MainPanel.Controls.Add(TaskPanel);
+            TaskPanel.Name = "TaskBar";
+            FileBrowser.DataSourcesPanel.Controls.Add(TaskPanel);
             TaskPanel.BringToFront();
             // add task bar
             taskTS = new ToolStrip();
-             taskTS.GripStyle = ToolStripGripStyle.Hidden;
+            taskTS2 = new ToolStrip();
+            taskTS3 = new ToolStrip();
+
+            taskTS.GripStyle = ToolStripGripStyle.Hidden;
             taskTS.Renderer = new MySR();
             {
                 taskTS.BackColor = TaskBtnColor;
                 taskTS.ForeColor = ShriftColor;
                 taskTS.Dock = DockStyle.Top;
                 taskTS.ImageScalingSize = new System.Drawing.Size(20, 20);
-                TaskPanel.Controls.Add(taskTS);
+                
             }
+
+            taskTS2.GripStyle = ToolStripGripStyle.Hidden;
+            taskTS2.Renderer = new MySR();
+            {
+                taskTS2.BackColor = TaskBtnColor;
+                taskTS2.ForeColor = ShriftColor;
+                taskTS2.Dock = DockStyle.Top;
+                taskTS2.ImageScalingSize = new System.Drawing.Size(20, 20);
+                
+            }
+
+            taskTS3.GripStyle = ToolStripGripStyle.Hidden;
+            taskTS3.Renderer = new MySR();
+            {
+                taskTS3.BackColor = TaskBtnColor;
+                taskTS3.ForeColor = ShriftColor;
+                taskTS3.Dock = DockStyle.Top;
+                taskTS3.ImageScalingSize = new System.Drawing.Size(20, 20);
+                
+            }
+            TaskPanel.Controls.Add(taskTS3);
+            TaskPanel.Controls.Add(taskTS2);
+            TaskPanel.Controls.Add(taskTS);
             //add buttons to taskBar
             {
                 {
@@ -1237,7 +1296,7 @@ namespace Cell_Tool_3
                     ExportBtn.Text = "Export (Ctrl + E)";
                     ExportBtn.BackColor = TaskBtnColor;
                     ExportBtn.Image = Properties.Resources.export;
-                    taskTS.Items.Add(ExportBtn);
+                    taskTS3.Items.Add(ExportBtn);
                     
                 }
                 ToolStripSeparator Separator3 = new ToolStripSeparator();
@@ -1251,7 +1310,7 @@ namespace Cell_Tool_3
                     StaticBtn.Image = DrawClicetBorder(Properties.Resources.Static_ROI);
                     StaticBtn.Click += new EventHandler(tracking_Static_Btn_click);
                     StaticBtn.BackColor = TaskBtnClickedColor;
-                    taskTS.Items.Add(StaticBtn);
+                    taskTS2.Items.Add(StaticBtn);
                   
                     TrackingBtn.DisplayStyle = ToolStripItemDisplayStyle.Image;
                     TrackingBtn.Margin = new System.Windows.Forms.Padding(3, 1, 3, 2);
@@ -1260,11 +1319,11 @@ namespace Cell_Tool_3
                     TrackingBtn.Image = Properties.Resources.Tracking_ROI_2;
                     TrackingBtn.Click += new EventHandler(tracking_Static_Btn_click);
                     TrackingBtn.BackColor = TaskBtnColor;
-                    taskTS.Items.Add(TrackingBtn);
+                    taskTS2.Items.Add(TrackingBtn);
 
                     ToolStripSeparator Separator4a = new ToolStripSeparator();
                     Separator4a.Margin = new System.Windows.Forms.Padding(8, 1, 8, 2);
-                    taskTS.Items.Add(Separator4a);
+                    taskTS2.Items.Add(Separator4a);
 
                     DoubleRoiBtn.DisplayStyle = ToolStripItemDisplayStyle.Image;
                     DoubleRoiBtn.Margin = new System.Windows.Forms.Padding(3, 1, 3, 2);
@@ -1273,11 +1332,11 @@ namespace Cell_Tool_3
                     DoubleRoiBtn.Image = Properties.Resources.bulls_eye;
                     DoubleRoiBtn.Click += new EventHandler(DoubleRoiBtn_click);
                     DoubleRoiBtn.BackColor = TaskBtnColor;
-                    taskTS.Items.Add(DoubleRoiBtn);
+                    taskTS2.Items.Add(DoubleRoiBtn);
                 }
                 ToolStripSeparator Separator4 = new ToolStripSeparator();
                 Separator4.Margin = new System.Windows.Forms.Padding(8, 1, 8, 2);
-                taskTS.Items.Add(Separator4);
+                taskTS2.Items.Add(Separator4);
                 {
                     
                     RectangularBtn.DisplayStyle = ToolStripItemDisplayStyle.Image;
@@ -1287,7 +1346,7 @@ namespace Cell_Tool_3
                     RectangularBtn.Image = DrawClicetBorder(Properties.Resources.Rectangle_1);
                     RectangularBtn.Click += new EventHandler(ShapeRoi_Change);
                     RectangularBtn.BackColor = TaskBtnClickedColor;
-                    taskTS.Items.Add(RectangularBtn);
+                    taskTS2.Items.Add(RectangularBtn);
                     
                     OvalBtn.DisplayStyle = ToolStripItemDisplayStyle.Image;
                     OvalBtn.Margin = new System.Windows.Forms.Padding(3, 1, 3, 2);
@@ -1296,7 +1355,7 @@ namespace Cell_Tool_3
                     OvalBtn.Image = Properties.Resources.Circle;
                     OvalBtn.Click += new EventHandler(ShapeRoi_Change);
                     OvalBtn.BackColor = TaskBtnColor;
-                    taskTS.Items.Add(OvalBtn);
+                    taskTS2.Items.Add(OvalBtn);
                                         
                     PolygonBtn.DisplayStyle = ToolStripItemDisplayStyle.Image;
                     PolygonBtn.Margin = new System.Windows.Forms.Padding(3, 1, 3, 2);
@@ -1305,7 +1364,7 @@ namespace Cell_Tool_3
                     PolygonBtn.Image = Properties.Resources.Polygon;
                     PolygonBtn.Click += new EventHandler(ShapeRoi_Change);
                     PolygonBtn.BackColor = TaskBtnColor;
-                    taskTS.Items.Add(PolygonBtn);
+                    taskTS2.Items.Add(PolygonBtn);
 
                     FreehandBtn.DisplayStyle = ToolStripItemDisplayStyle.Image;
                     FreehandBtn.Margin = new System.Windows.Forms.Padding(3, 1, 3, 2);
@@ -1314,7 +1373,7 @@ namespace Cell_Tool_3
                     FreehandBtn.Image = Properties.Resources.freeselection_1;
                     FreehandBtn.Click += new EventHandler(ShapeRoi_Change);
                     FreehandBtn.BackColor = TaskBtnColor;
-                    taskTS.Items.Add(FreehandBtn);
+                    taskTS2.Items.Add(FreehandBtn);
 
                     MagicWandBtn.DisplayStyle = ToolStripItemDisplayStyle.Image;
                     MagicWandBtn.Margin = new System.Windows.Forms.Padding(3, 1, 3, 2);
@@ -1323,17 +1382,17 @@ namespace Cell_Tool_3
                     MagicWandBtn.Image = Properties.Resources.magic;
                     MagicWandBtn.Click += new EventHandler(ShapeRoi_Change);
                     MagicWandBtn.BackColor = TaskBtnColor;
-                    taskTS.Items.Add(MagicWandBtn);
+                    taskTS2.Items.Add(MagicWandBtn);
                 }
                 ToolStripSeparator Separator5 = new ToolStripSeparator();
                 Separator5.Margin = new System.Windows.Forms.Padding(8, 1, 8, 2);
-                taskTS.Items.Add(Separator5);
+                taskTS3.Items.Add(Separator5);
                 //Zoom
                 {
                     ToolStripLabel ZoomLabel = new ToolStripLabel();
                     ZoomLabel.Text = "Zoom:";
                     ZoomLabel.ForeColor = Color.Black;
-                    taskTS.Items.Add(ZoomLabel);
+                    taskTS3.Items.Add(ZoomLabel);
 
                     ZoomValue.Items.AddRange(new string[] 
                         {6.25.ToString() +" %",12.5.ToString() +" %","25 %","50 %",
@@ -1343,11 +1402,11 @@ namespace Cell_Tool_3
                     ZoomValue.SelectedIndex = 4;
                     ZoomValue.AutoSize = false;
                     ZoomValue.Width = 80;
-                    taskTS.Items.Add(ZoomValue);
+                    taskTS3.Items.Add(ZoomValue);
                 }
                 ToolStripSeparator Separator6 = new ToolStripSeparator();
                 Separator6.Margin = new System.Windows.Forms.Padding(8, 1, 8, 2);
-                taskTS.Items.Add(Separator6);
+                taskTS3.Items.Add(Separator6);
             }
         }
         
@@ -1453,6 +1512,7 @@ namespace Cell_Tool_3
             StatusPanel.Height = 30;
             StatusPanel.Dock = DockStyle.Bottom;
             StatusPanel.BackColor = BackGroundColor;
+            StatusPanel.Name = "BottomStatusBar";
             MainPanel.Controls.Add(StatusPanel);
             StatusPanel.BringToFront();
 
@@ -1482,6 +1542,7 @@ namespace Cell_Tool_3
         
         private void StatusLabel_TextChange(object sender, EventArgs e)
         {
+              
             if (StatusLabel.Text == "Ready" | StatusLabel.Text == "Reading Tif Image...")
             {
                 MainPanel.Cursor = Cursors.Default;
@@ -1490,6 +1551,7 @@ namespace Cell_Tool_3
                 // Linux change
                 MainForm.Enabled = true;
                 MainForm.Focus();
+
             }
             else
             {
@@ -1504,9 +1566,11 @@ namespace Cell_Tool_3
                     StatusProgressBar.Style = ProgressBarStyle.Marquee;
                 }
                 StatusProgressBar.Visible = true;
-                MainForm.Refresh();
-                MainForm.Update();
+                //MainForm.Refresh();
+                //MainForm.Update();
+
                 
+
             }
         }
         private void StatusProgressBar_visibleChanged(object sender, EventArgs e)

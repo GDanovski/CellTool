@@ -3230,12 +3230,14 @@ namespace Cell_Tool_3
             xBtn.Click += new EventHandler(IA.TabPages.DeleteTabbtn_Click);
 
             IA.TabPages.Collections.Add(smallCollection);
+            
 
             IA.TabPages.inactivate_Tabs();
             IA.TabPages.SelectedIndex = IA.TabPages.Collections.Count - 1;
             IA.TabPages.selectTab_event(IA.TabPages.SelectedIndex);
 
             IA.TabPages.findStartIndex();
+
 
             #endregion Create new TabPage
         }

@@ -267,25 +267,25 @@ namespace Cell_Tool_3
         {
             return new string[]
             {
-                Keys.O.ToString(),
-                Keys.S.ToString(),
-                Keys.A.ToString(),
-                Keys.E.ToString(),
-                Keys.Z.ToString(),
-                Keys.Y.ToString(),
-                Keys.OemMinus.ToString(),
-                Keys.OemMinus.ToString(),
-                Keys.Add.ToString(),
-                Keys.Subtract.ToString(),
-                Keys.T.ToString(),
-                Keys.D.ToString(),
-                Keys.M.ToString(),
-                Keys.C.ToString(),
-                Keys.X.ToString(),
-                Keys.V.ToString(),
-                Keys.F2.ToString(),
-                Keys.F5.ToString(),
-                Keys.N.ToString()
+                MacKeys.O.ToString(),
+                MacKeys.S.ToString(),
+                MacKeys.A.ToString(),
+                MacKeys.E.ToString(),
+                MacKeys.Z.ToString(),
+                MacKeys.Y.ToString(),
+                MacKeys.OemMinus.ToString(),
+                MacKeys.OemMinus.ToString(),
+                MacKeys.Add.ToString(),
+                MacKeys.Subtract.ToString(),
+                MacKeys.T.ToString(),
+                MacKeys.D.ToString(),
+                MacKeys.M.ToString(),
+                MacKeys.C.ToString(),
+                MacKeys.X.ToString(),
+                MacKeys.V.ToString(),
+                MacKeys.F2.ToString(),
+                MacKeys.F5.ToString(),
+                MacKeys.N.ToString()
             };
         }
         public void LoadAccountSettings()
@@ -889,11 +889,11 @@ namespace Cell_Tool_3
             }
             private void KeyTB_KeyPressed(object sender, KeyEventArgs e)
             {
-                if (e.KeyCode == Keys.ControlKey) return;
-                if (e.KeyCode == Keys.Delete || e.KeyCode == Keys.Back)
+                if ((MacKeys)e.KeyValue == MacKeys.Control) return;
+                if ((MacKeys)e.KeyValue == MacKeys.Delete || (MacKeys)e.KeyValue == MacKeys.Back)
                     buffer = "";
                 else
-                    buffer = e.KeyCode.ToString();
+                    buffer = e.KeyValue.ToString();
             }
             private void KeyTB_TextChanged(object sender, EventArgs e)
             {
