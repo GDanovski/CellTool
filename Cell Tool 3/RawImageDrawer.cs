@@ -263,7 +263,7 @@ namespace Cell_Tool_3
                     imageDrawer_3D.StartDrawing(GLControl1, fi);
                     return;
                 }
-
+                
                 //Prepare MatrixMode
                 GL.MatrixMode(MatrixMode.Projection);
                 GL.LoadIdentity();
