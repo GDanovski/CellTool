@@ -36,8 +36,16 @@ namespace Cell_Tool_3
         /// Draw the image
         /// </summary>
         /// <param name="GLcontrol1"></param>
-        /// <param name="fi"></param>
+        /// <param name="fi"></param>       
         public void StartDrawing(GLControl GLcontrol1, TifFileInfo fi)
+        {
+
+        }
+        public void initProgram()
+        {
+
+        }
+        public void ClearProgram()
         {
 
         }

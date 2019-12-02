@@ -401,12 +401,16 @@ namespace Cell_Tool_3
                 if (IDrawer.imageDrawer_3D.isImage3D(fi))
                 {
                     fi.tpTaskbar.Btn2D.Enabled = true;
+                    fi.tpTaskbar.Btn3D.BackColor = FileBrowser.TaskBtnClickColor1;
                     fi.tpTaskbar.Btn3D.Enabled = false;
+                    fi.tpTaskbar.Btn2D.BackColor = FileBrowser.BackGroundColor1;
                 }
                 else if (fi.sizeZ > 1)
                 {
                     fi.tpTaskbar.Btn2D.Enabled = false;
+                    fi.tpTaskbar.Btn2D.BackColor = FileBrowser.TaskBtnClickColor1;
                     fi.tpTaskbar.Btn3D.Enabled = true;
+                    fi.tpTaskbar.Btn3D.BackColor = FileBrowser.BackGroundColor1;
                 }
                 //Chart properties refresh
                 chart.Properties.LoadFI(fi);
