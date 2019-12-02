@@ -62,23 +62,9 @@ namespace Cell_Tool_3
         /// <param name="fi"></param>       
         public void StartDrawing(GLControl GLcontrol1, TifFileInfo fi)
         {
+            if (fi == null) return;
             GLcontrol1.MakeCurrent();
-            MessageBox.Show("Start!");
-            GL.Viewport(0, 0, GLcontrol1.Width, GLcontrol1.Height);
-            GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
-            GL.Enable(EnableCap.DepthTest);
-
-            GL.EnableVertexAttribArray(attribute_vpos);
-            GL.EnableVertexAttribArray(attribute_vcol);
-
-            // GL.DrawArrays(BeginMode.Triangles, 0, 3);
-            GL.DrawElements(BeginMode.Triangles, this.fi3D.indicedata.Length, DrawElementsType.UnsignedInt, 0);
-
-            GL.DisableVertexAttribArray(attribute_vpos);
-            GL.DisableVertexAttribArray(attribute_vcol);
-
-            //On update frame
-            time += 10;
+            time += (float)0.05;
 
             GL.BindBuffer(BufferTarget.ArrayBuffer, vbo_position);
             GL.BufferData<Vector3>(BufferTarget.ArrayBuffer, (IntPtr)(this.fi3D.vertdata.Length * Vector3.SizeInBytes), this.fi3D.vertdata, BufferUsageHint.StaticDraw);
@@ -89,6 +75,7 @@ namespace Cell_Tool_3
             GL.VertexAttribPointer(attribute_vcol, 3, VertexAttribPointerType.Float, true, 0, 0);
             zoom = -30f;
             depth = (float)2 * fi.sizeZ;
+
 
             mviewdata[0] =
                 Matrix4.CreateRotationY(0.55f * time) *
@@ -105,13 +92,27 @@ namespace Cell_Tool_3
             GL.BindBuffer(BufferTarget.ElementArrayBuffer, ibo_elements);
             GL.BufferData(BufferTarget.ElementArrayBuffer, (IntPtr)(this.fi3D.indicedata.Length * sizeof(int)), this.fi3D.indicedata, BufferUsageHint.StaticDraw);
 
-            //flush
-            MessageBox.Show("End!");
+            ///
+            GL.Viewport(0, 0, GLcontrol1.Width, GLcontrol1.Height);
+            GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
+            GL.Enable(EnableCap.DepthTest);
+
+            GL.EnableVertexAttribArray(attribute_vpos);
+            GL.EnableVertexAttribArray(attribute_vcol);
+
+            // GL.DrawArrays(BeginMode.Triangles, 0, 3);
+            GL.DrawElements(BeginMode.Triangles, this.fi3D.indicedata.Length, DrawElementsType.UnsignedInt, 0);
+
+            GL.DisableVertexAttribArray(attribute_vpos);
+            GL.DisableVertexAttribArray(attribute_vcol);
+
+
             GL.Flush();
             GLcontrol1.SwapBuffers();
-        }        
-        public void initProgram(GLControl GLcontrol1)
-        {
+
+        }
+        public void initProgram(GLControl GLcontrol1, TifFileInfo fi)
+        {            
             GLcontrol1.MakeCurrent();
             //Create the program and get its ID
             this.pgmID = GL.CreateProgram();
@@ -140,6 +141,8 @@ namespace Cell_Tool_3
             this.mviewdata = new Matrix4[]{
                 Matrix4.Identity
             };
+
+            this.fi3D = new _3DTiffFileInfo(fi);
         }
         private void loadShader(string filename, ShaderType type, int program, out int address)
         {

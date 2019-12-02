@@ -611,16 +611,19 @@ namespace Cell_Tool_3
 
             if (((Button)sender) == Btn2D)
             {
-                IA.IDrawer.imageDrawer_3D.ClearProgram(IA.GLControl1);
                 fi.is3D = false;
+                IA.IDrawer.imageDrawer_3D.ClearProgram(IA.GLControl1);                
             }
             else if (((Button)sender) == Btn3D)
             {
-                IA.IDrawer.imageDrawer_3D.initProgram(IA.GLControl1);
                 fi.is3D = true;
+                IA.IDrawer.imageDrawer_3D.initProgram(IA.GLControl1,fi);        
+                
             }
 
             IA.ReloadImages();
+            IA.ReloadImages();
+
         }
         private void DimmentionsControl_MouseOver(object sender, EventArgs e)
         {
