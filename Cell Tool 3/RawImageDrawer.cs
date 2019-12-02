@@ -32,11 +32,10 @@ namespace Cell_Tool_3
 {
     class ImageDrawer
     {
-
         public ImageAnalyser IA = null;
         public Panel corePanel = new Panel();
         public ContentPipe ImageTexture = new ContentPipe();
-        private ImageDrawer_3D imageDrawer_3D = new ImageDrawer_3D();
+        public ImageDrawer_3D imageDrawer_3D = new ImageDrawer_3D();
 
         #region Position on screen
         public Rectangle[][] coRect;
