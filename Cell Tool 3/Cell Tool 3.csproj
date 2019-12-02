@@ -209,6 +209,7 @@
     <Compile Include="FRAPA_Model.cs" />
     <Compile Include="FRAPA_ReactionDiffusion.cs" />
     <Compile Include="ImageAnalyser.cs" />
+    <Compile Include="ImageDrawer_3D.cs" />
     <Compile Include="Interface.cs" />
     <Compile Include="KMeans.cs" />
     <Compile Include="MetadataProp.cs" />

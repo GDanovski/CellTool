@@ -33,6 +33,7 @@ namespace Cell_Tool_3
         public double zoom = 1;
         public double Xposition = 0;
         public double Yposition = 0;
+        public bool is3D = false;
         //Chart
         public int xAxisTB = 0;
         public int yAxisTB = 1;

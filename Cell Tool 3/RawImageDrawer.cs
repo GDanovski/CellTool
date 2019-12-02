@@ -36,6 +36,7 @@ namespace Cell_Tool_3
         public ImageAnalyser IA = null;
         public Panel corePanel = new Panel();
         public ContentPipe ImageTexture = new ContentPipe();
+        private ImageDrawer_3D imageDrawer_3D = new ImageDrawer_3D();
 
         #region Position on screen
         public Rectangle[][] coRect;
@@ -256,6 +257,13 @@ namespace Cell_Tool_3
                 //Load background
                 GL.ClearColor(IA.FileBrowser.BackGround2Color1);
                 GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
+
+                //if the 3D is enabled - send to imageDrawer_3D
+                if (imageDrawer_3D.isImage3D(fi))
+                {
+                    imageDrawer_3D.StartDrawing(GLControl1, fi);
+                    return;
+                }
                 //Prepare MatrixMode
                 GL.MatrixMode(MatrixMode.Projection);
                 GL.LoadIdentity();
@@ -1215,6 +1223,9 @@ namespace Cell_Tool_3
                 fi = IA.TabPages.TabCollections[IA.TabPages.SelectedIndex].tifFI;
 
                 if (fi == null) { return; }
+                //if the 3D is enabled - send to imageDrawer_3D
+                if (imageDrawer_3D.isImage3D(fi)) return;
+
                 double zoom = fi.zoom;
                 double X1 = e.X / zoom - valX;
                 double Y1 = e.Y / zoom - valY;
@@ -1338,6 +1349,13 @@ namespace Cell_Tool_3
                 }
                 catch { return; }
                 if (fi == null) { return; }
+
+                //if the 3D is enabled - send to imageDrawer_3D
+                if (imageDrawer_3D.isImage3D(fi))
+                {
+                    imageDrawer_3D.GLControl1_MouseClick(GLControl1, fi, e);
+                    return;
+                }
 
                 double zoom = fi.zoom;
                 double X1 = e.X / zoom - valX;
@@ -1583,19 +1601,27 @@ namespace Cell_Tool_3
         private int oldY = 0;
         private void GLControl1_MouseDown(object sender, MouseEventArgs e)
         {
+            TifFileInfo fi;
+            try
+            {
+                fi = IA.TabPages.TabCollections[IA.TabPages.SelectedIndex].tifFI;
+            }
+            catch
+            {
+                return;
+            }
+            if (fi == null) { return; }
+
+            //if the 3D is enabled - send to imageDrawer_3D
+            if (imageDrawer_3D.isImage3D(fi))
+            {
+                imageDrawer_3D.GLControl1_MouseDown((GLControl)sender, fi, e);
+                return;
+            }
+
             if ((e.Button == MouseButtons.Right & Control.ModifierKeys == Keys.Control)
                 | e.Button == MouseButtons.Middle)
             {
-                TifFileInfo fi;
-                try
-                {
-                    fi = IA.TabPages.TabCollections[IA.TabPages.SelectedIndex].tifFI;
-                }
-                catch
-                {
-                    return;
-                }
-                if (fi == null) { return; }
 
                 fieldMove = true;
                 oldX = e.X;
@@ -1618,19 +1644,26 @@ namespace Cell_Tool_3
         }
         private void GLControl1_MouseMove(object sender, MouseEventArgs e)
         {
+            TifFileInfo fi;
+            try
+            {
+                fi = IA.TabPages.TabCollections[IA.TabPages.SelectedIndex].tifFI;
+            }
+            catch
+            {
+                return;
+            }
+            if (fi == null) { return; }
+
+            //if the 3D is enabled - send to imageDrawer_3D
+            if (imageDrawer_3D.isImage3D(fi))
+            {
+                imageDrawer_3D.GLControl1_MouseMove((GLControl)sender, fi, e);
+                return;
+            }
+
             if (fieldMove == true & (Control.ModifierKeys == Keys.Control | e.Button == MouseButtons.Middle))
             {
-                TifFileInfo fi;
-                try
-                {
-                    fi = IA.TabPages.TabCollections[IA.TabPages.SelectedIndex].tifFI;
-                }
-                catch
-                {
-                    return;
-                }
-                if (fi == null) { return; }
-
                 int X = oldX - e.X;
                 int Y = oldY - e.Y;
                 changeXY = false;
@@ -1688,6 +1721,23 @@ namespace Cell_Tool_3
         }
         private void GLControl1_MouseUp(object sender, MouseEventArgs e)
         {
+            TifFileInfo fi;
+            try
+            {
+                fi = IA.TabPages.TabCollections[IA.TabPages.SelectedIndex].tifFI;
+            }
+            catch
+            {
+                return;
+            }
+            if (fi == null) { return; }
+            //if the 3D is enabled - send to imageDrawer_3D
+            if (imageDrawer_3D.isImage3D(fi))
+            {
+                imageDrawer_3D.GLControl1_MouseUp((GLControl)sender, fi, e);
+                return;
+            }
+
             if (fieldMove == true)
             {
                 fieldMove = false;
