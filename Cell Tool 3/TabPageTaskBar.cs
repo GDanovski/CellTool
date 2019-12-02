@@ -591,9 +591,9 @@ namespace Cell_Tool_3
                 btn.FlatAppearance.BorderSize = 0;
                 btn.FlatStyle = FlatStyle.Flat;
                 btn.BackColor = IA.FileBrowser.BackGroundColor1;
-                btn.Tag = "2D view";
+                btn.Tag = "Switch to 2D view";
                 btn.Text = "2D";
-                btn.ForeColor = Color.White;
+                btn.ForeColor = Color.Black;
                 btn.Font = new Font(btn.Font.FontFamily, 9, FontStyle.Bold);
                 btn.Width = 35;
                 btn.Height = 25;
@@ -608,9 +608,9 @@ namespace Cell_Tool_3
                 btn.FlatAppearance.BorderSize = 0;
                 btn.FlatStyle = FlatStyle.Flat;
                 btn.BackColor = IA.FileBrowser.BackGroundColor1;
-                btn.Tag = "3D view";
+                btn.Tag = "Switch to 3D view";
                 btn.Text = "3D";
-                btn.ForeColor = Color.White;
+                btn.ForeColor = Color.Black;
                 btn.Font = new Font(btn.Font.FontFamily, 9, FontStyle.Bold);
                 btn.Width = 35;
                 btn.Height = 25;
@@ -626,9 +626,15 @@ namespace Cell_Tool_3
             TifFileInfo fi = IA.TabPages.TabCollections[IA.TabPages.SelectedIndex].tifFI;
 
             if (((Button)sender) == Btn2D)
+            {
+                IA.IDrawer.imageDrawer_3D.ClearProgram();
                 fi.is3D = false;
+            }
             else if (((Button)sender) == Btn3D)
+            {
+                IA.IDrawer.imageDrawer_3D.initProgram();
                 fi.is3D = true;
+            }
 
             IA.ReloadImages();
         }
