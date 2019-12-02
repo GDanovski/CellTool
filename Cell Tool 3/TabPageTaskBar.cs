@@ -627,12 +627,12 @@ namespace Cell_Tool_3
 
             if (((Button)sender) == Btn2D)
             {
-                IA.IDrawer.imageDrawer_3D.ClearProgram();
+                IA.IDrawer.imageDrawer_3D.ClearProgram(IA.GLControl1);
                 fi.is3D = false;
             }
             else if (((Button)sender) == Btn3D)
             {
-                IA.IDrawer.imageDrawer_3D.initProgram();
+                IA.IDrawer.imageDrawer_3D.initProgram(IA.GLControl1);
                 fi.is3D = true;
             }
 

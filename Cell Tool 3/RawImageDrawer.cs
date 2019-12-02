@@ -224,7 +224,7 @@ namespace Cell_Tool_3
         }
         private void GLDrawing_Start(GLControl GLControl1)
         {
-            try
+            //try
             {
                 TifFileInfo fi;
                 try
@@ -248,8 +248,8 @@ namespace Cell_Tool_3
                 CalculateImages(fi);
 
                 fi.tpTaskbar.TopBar.SendToBack();
+                
                 //Start Drawing
-
                 //Activate Control
                 GLControl1.MakeCurrent();
                 GL.Disable(EnableCap.Texture2D);
@@ -263,6 +263,7 @@ namespace Cell_Tool_3
                     imageDrawer_3D.StartDrawing(GLControl1, fi);
                     return;
                 }
+
                 //Prepare MatrixMode
                 GL.MatrixMode(MatrixMode.Projection);
                 GL.LoadIdentity();
@@ -360,7 +361,7 @@ namespace Cell_Tool_3
 
                 GLControl1.SwapBuffers();                
             }
-            catch { }
+            //catch { }
         }
         private void DrawLine()
         {
