@@ -48,7 +48,6 @@ namespace Cell_Tool_3
         // Z refers to zoom
         float timeX = 0.0f;
         float timeY = 0.0f;
-        float timeZ = 0.0f;
 
         private float speed = 0.05f;
         public float zoom = -30f;
@@ -77,8 +76,7 @@ namespace Cell_Tool_3
             if (fi == null) return;
             GLcontrol1.MakeCurrent();
 
-            this.fi3D.LoadShape(fi);
-
+            this.fi3D.LoadShape(fi, fi.cValue);
 
             GL.BindBuffer(BufferTarget.ArrayBuffer, vbo_position);
             GL.BufferData<Vector3>(BufferTarget.ArrayBuffer, (IntPtr)(this.fi3D.vertdata.Length * Vector3.SizeInBytes), this.fi3D.vertdata, BufferUsageHint.StaticDraw);
@@ -88,21 +86,19 @@ namespace Cell_Tool_3
 
             GL.BufferData<Vector4>(BufferTarget.ArrayBuffer, (IntPtr)(this.fi3D.coldata.Length * Vector3.SizeInBytes), this.fi3D.coldata, BufferUsageHint.StaticDraw);
             GL.VertexAttribPointer(attribute_vcol, 3, VertexAttribPointerType.Float, true, 0, 0);
-            zoom = -300f / (float)fi.zoom;
-            depth = FindDepth(fi);
-
+            zoom = -300/(float)fi.zoom;
+            depth = (float)int.MaxValue;
 
             // Implement the actual transformation depending on the time flow in each direction
             mviewdata[0] =
                 Matrix4.CreateRotationY(0.5f * timeX) *
                 Matrix4.CreateRotationX(0.5f * timeY) *
-                Matrix4.CreateTranslation(0f, 0f, zoom + 10 * timeZ) *
-                Matrix4.CreatePerspectiveFieldOfView(1.3f, GLcontrol1.Width / (float)GLcontrol1.Height, 1f, depth);
-
+                Matrix4.CreateTranslation(0f, 0f, zoom) *
+                Matrix4.CreatePerspectiveFieldOfView(1.3f, GLcontrol1.Width / (float)GLcontrol1.Height, 1f,-zoom + depth+50);
+           
             GL.UniformMatrix4(uniform_mview, false, ref mviewdata[0]);
-
+            
             GL.UseProgram(pgmID);
-
 
             GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
 
@@ -111,6 +107,7 @@ namespace Cell_Tool_3
 
             ///
             GL.Viewport(0, 0, GLcontrol1.Width, GLcontrol1.Height);
+           // GL.ClearColor(System.Drawing.Color.Black);
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
             GL.Enable(EnableCap.DepthTest);// TODO - why do we need this? It messes up 2D and has no effect on 3D
 
@@ -129,18 +126,7 @@ namespace Cell_Tool_3
 
             GL.Flush();
             GLcontrol1.SwapBuffers();
-        }
-        public float FindDepth(TifFileInfo fi)
-        {
-            float output = fi.sizeX;
-
-            if (output < fi.sizeY)
-                output = fi.sizeY;
-            else if (output < fi.sizeZ)
-                output = fi.sizeZ;
-
-            return (float)Math.Sqrt(2 * Math.Pow(output, 2));
-        }
+        }        
         public void initProgram(GLControl GLcontrol1, TifFileInfo fi)
         {
             GLcontrol1.MakeCurrent();
@@ -263,26 +249,40 @@ namespace Cell_Tool_3
                 vertdata = null;
                 coldata = null;
             }
-            public void LoadShape(TifFileInfo fi)
+            public void LoadShape(TifFileInfo fi, int C)
             {
+                int startZ = fi.sizeZ * fi.sizeC * (fi.frame) + C;
                 int colorCount = 0;
                 int VertexCount = 0;
-                for (float x = 0; x < fi.sizeX; x++)
-                    for (float y = 0; y < fi.sizeY; y++)
-                        for (float z = 0; z < fi.sizeZ; z++)
-                        {
+                int value = 0;
+                float R = (float)(fi.LutList[C].R / 255f);
+                float G = (float)(fi.LutList[C].G / 255f);
+                float B = (float)(fi.LutList[C].B / 255f);
+                Vector4 currentCol;
 
+                for (float z = 0, frame = startZ; z < fi.sizeZ; z+=1, frame+=fi.sizeC)
+                    for (float x = 0; x < fi.sizeX; x++)
+                        for (float y = 0; y < fi.sizeY; y++)
+                        {
                             // Load the colors - each of the 6 faces of a cube is colored by the voxel value
                             //TODO 8bit images
-                            if ((fi.image16bit[(int)z][(int)y][(int)x] - fi.MinBrightness[fi.cValue]) < 0) continue;
+
+                            switch (fi.bitsPerPixel)
+                            {
+                                case 8:
+                                    value = (int)fi.image8bit[(int)frame][(int)y][(int)x];
+                                    break;
+                                case 16:
+                                    value = (int)fi.image16bit[(int)frame][(int)y][(int)x];
+                                    break;
+                            }
+                            if ((value - fi.MinBrightness[C]) < 0) continue;
+
+                             currentCol = new Vector4(R, G, B,fi.adjustedLUT[C][value]);
+                          //currentCol = new Vector4(fi.adjustedLUT[0][value], fi.adjustedLUT[0][value], fi.adjustedLUT[0][value], 0f);
+
                             for (int i = 0; i < numFacesInPrimitiveShape; i++)
                             {
-                                Vector4 currentCol = new Vector4(
-                                    fi.adjustedLUT[0][fi.image16bit[(int)z][(int)y][(int)x]],
-                                    fi.adjustedLUT[0][fi.image16bit[(int)z][(int)y][(int)x]],
-                                    fi.adjustedLUT[0][fi.image16bit[(int)z][(int)y][(int)x]],
-                                    0.0f);
-
                                 this.coldata[colorCount++] = currentCol;
                             }
 
