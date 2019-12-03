@@ -88,21 +88,21 @@ namespace Cell_Tool_3
 
             GL.BufferData<Vector4>(BufferTarget.ArrayBuffer, (IntPtr)(this.fi3D.coldata.Length * Vector3.SizeInBytes), this.fi3D.coldata, BufferUsageHint.StaticDraw);
             GL.VertexAttribPointer(attribute_vcol, 3, VertexAttribPointerType.Float, true, 0, 0);
-            zoom = - 300f / (float)fi.zoom;
-            depth = (float)50 * fi.sizeZ;
+            zoom = -300f / (float)fi.zoom;
+            depth = FindDepth(fi);
 
-            
+
             // Implement the actual transformation depending on the time flow in each direction
             mviewdata[0] =
                 Matrix4.CreateRotationY(0.5f * timeX) *
                 Matrix4.CreateRotationX(0.5f * timeY) *
                 Matrix4.CreateTranslation(0f, 0f, zoom + 10 * timeZ) *
                 Matrix4.CreatePerspectiveFieldOfView(1.3f, GLcontrol1.Width / (float)GLcontrol1.Height, 1f, depth);
-            
+
             GL.UniformMatrix4(uniform_mview, false, ref mviewdata[0]);
-            
+
             GL.UseProgram(pgmID);
-            
+
 
             GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
 
@@ -112,7 +112,7 @@ namespace Cell_Tool_3
             ///
             GL.Viewport(0, 0, GLcontrol1.Width, GLcontrol1.Height);
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
-            //GL.Enable(EnableCap.DepthTest); TODO - why do we need this? It messes up 2D and has no effect on 3D
+            GL.Enable(EnableCap.DepthTest);// TODO - why do we need this? It messes up 2D and has no effect on 3D
 
             GL.EnableVertexAttribArray(attribute_vpos);
             GL.EnableVertexAttribArray(attribute_vcol);
@@ -125,12 +125,24 @@ namespace Cell_Tool_3
             GL.DisableVertexAttribArray(attribute_vpos);
             GL.DisableVertexAttribArray(attribute_vcol);
 
+            GL.Disable(EnableCap.DepthTest);
+
             GL.Flush();
             GLcontrol1.SwapBuffers();
+        }
+        public float FindDepth(TifFileInfo fi)
+        {
+            float output = fi.sizeX;
 
+            if (output < fi.sizeY)
+                output = fi.sizeY;
+            else if (output < fi.sizeZ)
+                output = fi.sizeZ;
+
+            return (float)Math.Sqrt(2 * Math.Pow(output, 2));
         }
         public void initProgram(GLControl GLcontrol1, TifFileInfo fi)
-        {            
+        {
             GLcontrol1.MakeCurrent();
             //Create the program and get its ID
             this.pgmID = GL.CreateProgram();
@@ -175,7 +187,10 @@ namespace Cell_Tool_3
         }
         public void ClearProgram(GLControl GLcontrol1)
         {
+            if (this.fi3D == null) return;
 
+            this.fi3D.Dispose();
+            this.fi3D = null;
         }
         public void GLControl1_MouseClick(GLControl GLcontrol1, TifFileInfo fi, MouseEventArgs e)
         {
@@ -191,15 +206,15 @@ namespace Cell_Tool_3
             if (MousePosition.X == -1) return;
 
             if (e.X > MousePosition.X) { timeX += speed; }
-            else                       { timeX -= speed; }
+            else { timeX -= speed; }
             if (e.Y > MousePosition.Y) { timeY += speed; }
-            else                       { timeY -= speed; }
+            else { timeY -= speed; }
 
             StartDrawing(GLcontrol1, fi);
 
             MousePosition.X = e.X;
             MousePosition.Y = e.Y;
-            
+
         }
         public void GLControl1_MouseUp(GLControl GLcontrol1, TifFileInfo fi, MouseEventArgs e)
         {
@@ -207,7 +222,7 @@ namespace Cell_Tool_3
 
         }
 
-        class _3DTiffFileInfo
+        class _3DTiffFileInfo : IDisposable
         {
             public int[] indicedata;
             public Vector3[] vertdata;
@@ -241,8 +256,13 @@ namespace Cell_Tool_3
 
                         microIndicedata[y] += numVerticesInPrimitiveShape;
                 }
-        }
-
+            }
+            public void Dispose()
+            {
+                indicedata = null;
+                vertdata = null;
+                coldata = null;
+            }
             public void LoadShape(TifFileInfo fi)
             {
                 int colorCount = 0;
@@ -253,6 +273,7 @@ namespace Cell_Tool_3
                         {
 
                             // Load the colors - each of the 6 faces of a cube is colored by the voxel value
+                            //TODO 8bit images
                             if ((fi.image16bit[(int)z][(int)y][(int)x] - fi.MinBrightness[fi.cValue]) < 0) continue;
                             for (int i = 0; i < numFacesInPrimitiveShape; i++)
                             {
@@ -271,7 +292,7 @@ namespace Cell_Tool_3
                         }
 
                 // Delete unnecessary vertices
-                for (int i = VertexCount+1; i < vertdata.Length; i++)
+                for (int i = VertexCount + 1; i < vertdata.Length; i++)
                 {
                     vertdata[i] = new Vector3();
                 }
