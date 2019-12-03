@@ -1493,7 +1493,9 @@ namespace Cell_Tool_3
         {
             Body.SuspendLayout();
             ResultsExtractorMainPanel.Controls.Clear();
-           
+            //Clear the 3D viewer
+            IA.IDrawer.imageDrawer_3D.ClearProgram(IA.GLControl1);
+
             if (Collections.Count > index) {
                 Collections[index][0].BackColor = TitlePanelColor1;
                 Collections[index][1].BackColor = TitlePanelColor1;
@@ -1504,8 +1506,7 @@ namespace Cell_Tool_3
                 {
                     TabCollections[index].tifFI.selected = true;
                     TabCollections[index].tifFI.tpTaskbar.TopBar.BackColor = BackGroundColor1;
-
-
+                    
                     if (TabCollections[index].tifFI.sizeZ > 1)
                     {
                         zTrackBar.Refresh(TabCollections[index].tifFI.zValue + 1, 1, TabCollections[index].tifFI.sizeZ);
@@ -1537,6 +1538,13 @@ namespace Cell_Tool_3
 
                     ImageMainPanel.Visible = true;
                     ResultsExtractorMainPanel.Visible = false;
+
+                    //start 3D viewer if 3D is enabled
+                    if (IA.IDrawer.imageDrawer_3D.isImage3D(TabCollections[index].tifFI))
+                    {
+                        IA.IDrawer.imageDrawer_3D.initProgram(IA.GLControl1, TabCollections[index].tifFI);
+                        IA.ReloadImages();//for some reason we need to call this twice
+                    }
 
                     IA.ReloadImages();
                     try

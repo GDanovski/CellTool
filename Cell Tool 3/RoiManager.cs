@@ -2628,6 +2628,11 @@ namespace Cell_Tool_3
             }
             catch { return; }
             if (fi == null) return;
+            //Return if the image is 3D
+            if (IA.IDrawer.imageDrawer_3D.isImage3D(fi))
+            {
+                return;
+            }
             if (fi.tpTaskbar.MethodsBtnList[0].ImageIndex == 1) return;
             if (fi.selectedPictureBoxColumn != 0)
             {
@@ -2724,7 +2729,11 @@ namespace Cell_Tool_3
             }
             catch { return; }
             if (fi == null) return;
-
+            //Return if the image is 3D
+            if (IA.IDrawer.imageDrawer_3D.isImage3D(fi))
+            {
+                return;
+            }
             //calculate frame
             FrameCalculator FC = new FrameCalculator();
             int frame = FC.Frame(fi);
@@ -2788,6 +2797,11 @@ namespace Cell_Tool_3
             }
             catch { return; }
             if (fi == null) return;
+            //Return if the image is 3D
+            if (IA.IDrawer.imageDrawer_3D.isImage3D(fi))
+            {
+                return;
+            }
             //calculate frame
             FrameCalculator FC = new FrameCalculator();
             int frame = FC.Frame(fi);
@@ -3610,7 +3624,11 @@ namespace Cell_Tool_3
             }
             catch { return; }
             if (fi == null) return;
-
+            //Return if the image is 3D
+            if (IA.IDrawer.imageDrawer_3D.isImage3D(fi))
+            {
+                return;
+            }
             //calculate frame
             FrameCalculator FC = new FrameCalculator();
             int frame = FC.Frame(fi);
