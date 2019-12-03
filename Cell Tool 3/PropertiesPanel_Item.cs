@@ -34,7 +34,7 @@ namespace Cell_Tool_3
         public Label Name = new Label();
         public bool Resizable = false;
 
-        public Panel NamePanel = new Panel();
+        private Panel NamePanel = new Panel();
         public Panel ResizePanel = new Panel();
         private Color TitleBackColor;
 
@@ -51,25 +51,21 @@ namespace Cell_Tool_3
             Panel.Resize += new EventHandler(Panel_HeightChange);
             
             NamePanel.Dock = DockStyle.Top;
-            NamePanel.Height = 26;
-            
+            NamePanel.Height = 21;
+            Panel.Controls.Add(NamePanel);
             NamePanel.MouseHover += new EventHandler(Control_MouseOver);
             NamePanel.Click += new EventHandler(Control_Click);
             NamePanel.MouseEnter += new EventHandler(Title_HighLight);
             NamePanel.MouseLeave += new EventHandler(Title_Normal);
-            NamePanel.LostFocus += new EventHandler(Title_Focus);
 
             Name.Width = 150;
-            Name.AutoSize = true;
             Name.Location = new System.Drawing.Point(10, 5);
             NamePanel.Controls.Add(Name);
             Name.MouseHover += new EventHandler(Control_MouseOver);
             Name.Click += new EventHandler(Control_Click);
             Name.MouseEnter += new EventHandler(Title_HighLight);
             Name.MouseLeave += new EventHandler(Title_Normal);
-            
 
-            /*
             Panel Resize1 = new Panel();
             Resize1.Tag = PropertiesPanel;
             Resize1.Dock = DockStyle.Bottom;
@@ -79,12 +75,10 @@ namespace Cell_Tool_3
             if(!ForRoiMan) Resize1.MouseUp += new MouseEventHandler(Resize1_MouseUp);
             else Resize1.MouseUp += new MouseEventHandler(RoiMan_Resize1_MouseUp);
             Resize1.MouseMove += new MouseEventHandler(Resize1_MouseMove);
-            */
-            //Body.Dock = DockStyle.Fill;
-            //Panel.Controls.Add(Body);
-            Panel.Controls.Add(NamePanel);
 
-            /*
+            Body.Dock = DockStyle.Fill;
+            Panel.Controls.Add(Body);
+
             ResizePanel.Anchor = (AnchorStyles.Top | AnchorStyles.Bottom);
             ResizePanel.Visible = false;
             ResizePanel.BackColor = Color.FromArgb(100, 10, 10, 10);
@@ -94,7 +88,6 @@ namespace Cell_Tool_3
             //reorder panels
            
             ResizePanel.BringToFront();
-            */
         }
         #region Title Panel Hendlers
        
@@ -104,23 +97,20 @@ namespace Cell_Tool_3
             TurnOnToolTip.SetToolTip(ctr, "Show/Hide " + Name.Text);
         }
         //Add handler for resize
-        public void Control_Click(object sender, EventArgs e)
+        private void Control_Click(object sender, EventArgs e)
         {
             Panel p = (Panel)PropertiesPanel.Parent;
             if (Panel.Height != 26)
             {
-                //Panel.Height = 26;
+                Panel.Height = 26;
             }
             else
             {
                 Panel.Height = Height;
             }
             //PropertiesPanel.Refresh();
-            //p.Refresh();
+            p.Refresh();
         }
-
-        public bool IsExpanded() {  return (Panel.Height != 26); }
-
         private void Title_HighLight(object sender, EventArgs e)
         {
             Panel ctr = NamePanel;
@@ -138,14 +128,6 @@ namespace Cell_Tool_3
             NamePanel.BackColor = TitleBackColor;
             Name.BackColor = TitleBackColor;
         }
-
-        /* When the name loses focus, it will be brought to front.
-         * This is necessary on a Mac OS, otherwise it becomes invisible.
-         */
-        private void Title_Focus(object sender, EventArgs e) {
-            NamePanel.Focus();
-        }
-
         #endregion
 
         #region Color options
@@ -240,8 +222,13 @@ namespace Cell_Tool_3
                 if (razlika > Panel.Location.Y + 59)
                 {
                     oldY = e.Y;
-                    ResizePanel.Location = new System.Drawing.Point(15, razlika);
-                    ResizePanel.BringToFront();
+                    if (razlika != ResizePanel.Location.Y)
+                    {
+                        ResizePanel.Location = new System.Drawing.Point(15, razlika);
+                        this.PropertiesPanel.Refresh();
+                        ResizePanel.BringToFront();
+                        Application.DoEvents();
+                    }
                 }
                  ResizePanel.Visible = true;
             }

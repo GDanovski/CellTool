@@ -27,20 +27,15 @@ using System.Windows.Forms;
 
 using OpenTK.Graphics.OpenGL;
 using OpenTK;
-using System.ComponentModel;
-using System.Threading;
 
 namespace Cell_Tool_3
 {
     class ImageDrawer
     {
-
         public ImageAnalyser IA = null;
         public Panel corePanel = new Panel();
         public ContentPipe ImageTexture = new ContentPipe();
-        private GLControl GLControl1;
-        BackgroundWorker BitmapDrawer = new BackgroundWorker();
-
+        public ImageDrawer_3D imageDrawer_3D = new ImageDrawer_3D();
 
         #region Position on screen
         public Rectangle[][] coRect;
@@ -52,20 +47,11 @@ namespace Cell_Tool_3
         public double valX = 0;
         public double valY = 0;
         bool changeXY = true;
-
         #endregion
 
         #region New Image Drawing
         public void Initialize(GLControl GLControl1)
         {
-
-            this.GLControl1 = GLControl1;
-            GLControl1.SuspendLayout();
-            
-            GLControl1.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            GLControl1.ResumeLayout(false);
-
-
             GLControl1.Load += GLControl_Load;
             GLControl1.Paint += GLControl_Paint;
             GLControl1.Resize += GLControl_Resize;
@@ -78,12 +64,11 @@ namespace Cell_Tool_3
             GLControl1.MouseMove += GLControl1_MouseMove;
             GLControl1.MouseUp += GLControl1_MouseUp;
 
-            GLControl1.ResumeLayout(true);
-            
+            GLControl1.Dock = DockStyle.Fill;
             TabPageControl tpContr = IA.TabPages;
             tpContr.ImageMainPanel.SuspendLayout();
-            //tpContr.ImageMainPanel.Controls.Add(GLControl1);
-            
+
+            tpContr.ImageMainPanel.Controls.Add(GLControl1);
             //ScrollBars
             Panel VertPanel = IA.GLControl1_VerticalPanel;
             VertPanel.Dock = DockStyle.Right;
@@ -132,42 +117,7 @@ namespace Cell_Tool_3
             corePanel.Dock = DockStyle.Top;
             tpContr.ImageMainPanel.Controls.Add(corePanel);
             tpContr.ImageMainPanel.ResumeLayout(true);
-
-            Size MainSize = IA.TabPages.MainForm.Size;
-            int StartWidth = IA.FileBrowser.DataSourcesPanelWidth;
-
-            GLControl1.Location = new Point(StartWidth + 5, 0);
-            GLControl1.Size = new Size(MainSize.Width - 2 * StartWidth -10, MainSize.Height - 200);
-            
-            IA.TabPages.MainForm.Controls.Add(GLControl1);
-            GLControl1.BringToFront();
-            
-            // Resize the GL control upon resizing the main form
-            IA.TabPages.MainForm.SizeChanged += new EventHandler (delegate(object o, EventArgs e) {
-                Size MainFormSize = IA.TabPages.MainForm.Size;
-                GLControl1.Location = new Point(StartWidth + 5, 0);
-                GLControl1.Size = new Size(MainFormSize.Width - 2 * StartWidth-10, MainFormSize.Height - 200);
-            });
-
-            
-
-
         }
-
-
-
-
-            public void MakeTransparent(Control ctrl)
-        {
-            if (ctrl == null) return;
-
-            if (ctrl is Panel) {
-                ((Panel)ctrl).BackColor = Color.Transparent;
-            }
-            MakeTransparent(ctrl.Parent);
-            
-        }
-
         private void HorizontalScroll_ValueChanged(object sender, EventArgs e)
         {
             if (changeXY == false) { return; }
@@ -213,8 +163,7 @@ namespace Cell_Tool_3
             try
             {
                 //Activate Control
-                if (IA.GLControl1 != null)
-                    IA.GLControl1.MakeCurrent();
+                IA.GLControl1.MakeCurrent();
                 //Load background
                 GL.ClearColor(IA.FileBrowser.BackGround2Color1);
                 GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
@@ -272,11 +221,10 @@ namespace Cell_Tool_3
             //Global variables
             GLControl GLControl1 = sender as GLControl;
             GLDrawing_Start(GLControl1);
-
         }
         private void GLDrawing_Start(GLControl GLControl1)
         {
-            try
+            //try
             {
                 TifFileInfo fi;
                 try
@@ -300,14 +248,23 @@ namespace Cell_Tool_3
                 CalculateImages(fi);
 
                 fi.tpTaskbar.TopBar.SendToBack();
+                
                 //Start Drawing
-
                 //Activate Control
                 GLControl1.MakeCurrent();
                 GL.Disable(EnableCap.Texture2D);
                 //Load background
                 GL.ClearColor(IA.FileBrowser.BackGround2Color1);
                 GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
+
+                //if the 3D is enabled - send to imageDrawer_3D
+                if (imageDrawer_3D.isImage3D(fi))
+                {
+                    imageDrawer_3D.StartDrawing(GLControl1, fi);
+                    return;
+                }
+                GL.UseProgram(0); // Remove the shader program from the 3D view
+
                 //Prepare MatrixMode
                 GL.MatrixMode(MatrixMode.Projection);
                 GL.LoadIdentity();
@@ -316,13 +273,12 @@ namespace Cell_Tool_3
 
                 GL.MatrixMode(MatrixMode.Modelview);
                 //GL.LoadIdentity();
-                //GL.Translate(-valX, -valY, 0);
+                GL.Translate(-valX, -valY, 0);
                 valX = 0;
                 valY = 0;
 
                 //Set viewpoint
                 GL.Viewport(0, 0, GLControl1.Width, GLControl1.Height);
-
                 //scale the image
                 if (oldScale != fi.zoom)
                 {
@@ -406,7 +362,7 @@ namespace Cell_Tool_3
 
                 GLControl1.SwapBuffers();                
             }
-            catch { }
+            //catch { }
         }
         private void DrawLine()
         {
@@ -1268,6 +1224,9 @@ namespace Cell_Tool_3
                 fi = IA.TabPages.TabCollections[IA.TabPages.SelectedIndex].tifFI;
 
                 if (fi == null) { return; }
+                //if the 3D is enabled - send to imageDrawer_3D
+                if (imageDrawer_3D.isImage3D(fi)) return;
+
                 double zoom = fi.zoom;
                 double X1 = e.X / zoom - valX;
                 double Y1 = e.Y / zoom - valY;
@@ -1392,6 +1351,13 @@ namespace Cell_Tool_3
                 catch { return; }
                 if (fi == null) { return; }
 
+                //if the 3D is enabled - send to imageDrawer_3D
+                if (imageDrawer_3D.isImage3D(fi))
+                {
+                    imageDrawer_3D.GLControl1_MouseClick(GLControl1, fi, e);
+                    return;
+                }
+
                 double zoom = fi.zoom;
                 double X1 = e.X / zoom - valX;
                 double Y1 = e.Y / zoom - valY;
@@ -1419,7 +1385,6 @@ namespace Cell_Tool_3
                                     fi.selectedPictureBoxColumn = i;
                                     fi.cValue = j;
                                     //Reload
-                                    IA.SwitchBrightnessAndSegmentation();
                                     IA.ReloadImages();
                                     return;
                                 }
@@ -1604,11 +1569,11 @@ namespace Cell_Tool_3
                 }
                 else {
                     //data source panel
-                    FileBrowser.DataSourcesPanelWidth = 300; // int.Parse(settings.DataSourcesPanelValues[AccInd]);
+                    FileBrowser.DataSourcesPanelWidth = int.Parse(settings.DataSourcesPanelValues[AccInd]);
 
                     if (settings.DataSourcesPanelVisible[AccInd] == "y")
                     {
-                        FileBrowser.DataSourcesPanel.Width = 300; // int.Parse(settings.DataSourcesPanelValues[AccInd]);
+                        FileBrowser.DataSourcesPanel.Width = int.Parse(settings.DataSourcesPanelValues[AccInd]);
                     }
                     else
                     {
@@ -1621,7 +1586,7 @@ namespace Cell_Tool_3
                     }
                     else
                     {
-                        TabPages.propertiesPanel.Width = 2 * int.Parse(settings.PropertiesPanelWidth[AccInd]);
+                        TabPages.propertiesPanel.Width = int.Parse(settings.PropertiesPanelWidth[AccInd]);
                     }
                     TabPages.hidePropAndBrows = false;
 
@@ -1637,19 +1602,27 @@ namespace Cell_Tool_3
         private int oldY = 0;
         private void GLControl1_MouseDown(object sender, MouseEventArgs e)
         {
+            TifFileInfo fi;
+            try
+            {
+                fi = IA.TabPages.TabCollections[IA.TabPages.SelectedIndex].tifFI;
+            }
+            catch
+            {
+                return;
+            }
+            if (fi == null) { return; }
+
+            //if the 3D is enabled - send to imageDrawer_3D
+            if (imageDrawer_3D.isImage3D(fi))
+            {
+                imageDrawer_3D.GLControl1_MouseDown((GLControl)sender, fi, e);
+                return;
+            }
+
             if ((e.Button == MouseButtons.Right & Control.ModifierKeys == Keys.Control)
                 | e.Button == MouseButtons.Middle)
             {
-                TifFileInfo fi;
-                try
-                {
-                    fi = IA.TabPages.TabCollections[IA.TabPages.SelectedIndex].tifFI;
-                }
-                catch
-                {
-                    return;
-                }
-                if (fi == null) { return; }
 
                 fieldMove = true;
                 oldX = e.X;
@@ -1672,19 +1645,26 @@ namespace Cell_Tool_3
         }
         private void GLControl1_MouseMove(object sender, MouseEventArgs e)
         {
+            TifFileInfo fi;
+            try
+            {
+                fi = IA.TabPages.TabCollections[IA.TabPages.SelectedIndex].tifFI;
+            }
+            catch
+            {
+                return;
+            }
+            if (fi == null) { return; }
+
+            //if the 3D is enabled - send to imageDrawer_3D
+            if (imageDrawer_3D.isImage3D(fi))
+            {
+                imageDrawer_3D.GLControl1_MouseMove((GLControl)sender, fi, e);
+                return;
+            }
+
             if (fieldMove == true & (Control.ModifierKeys == Keys.Control | e.Button == MouseButtons.Middle))
             {
-                TifFileInfo fi;
-                try
-                {
-                    fi = IA.TabPages.TabCollections[IA.TabPages.SelectedIndex].tifFI;
-                }
-                catch
-                {
-                    return;
-                }
-                if (fi == null) { return; }
-
                 int X = oldX - e.X;
                 int Y = oldY - e.Y;
                 changeXY = false;
@@ -1742,6 +1722,23 @@ namespace Cell_Tool_3
         }
         private void GLControl1_MouseUp(object sender, MouseEventArgs e)
         {
+            TifFileInfo fi;
+            try
+            {
+                fi = IA.TabPages.TabCollections[IA.TabPages.SelectedIndex].tifFI;
+            }
+            catch
+            {
+                return;
+            }
+            if (fi == null) { return; }
+            //if the 3D is enabled - send to imageDrawer_3D
+            if (imageDrawer_3D.isImage3D(fi))
+            {
+                imageDrawer_3D.GLControl1_MouseUp((GLControl)sender, fi, e);
+                return;
+            }
+
             if (fieldMove == true)
             {
                 fieldMove = false;
@@ -3009,7 +3006,5 @@ namespace Cell_Tool_3
             //return results
             return bmp;
         }
-
-        
     }
 }

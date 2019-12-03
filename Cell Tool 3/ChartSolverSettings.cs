@@ -171,13 +171,7 @@ namespace Cell_Tool_3
                     {
                         this.SelectedNode.Text = tb.Text;
                     }
-                    if (this.Controls.Contains(tb))
-                    {
-                        tb.Visible = false;
-                        this.Controls.Remove(tb);
-                        tb.Dispose();
-                        Application.DoEvents();
-                    }
+                    tb.Dispose();
                 });
                 tb.KeyDown += new KeyEventHandler(delegate (Object o, KeyEventArgs a)
                 {
@@ -186,17 +180,10 @@ namespace Cell_Tool_3
                         a.Handled = true;
                         a.SuppressKeyPress = true;
                         this.SelectedNode.Text = tb.Text;
-                        if (this.Controls.Contains(tb))
-                        {
-                            tb.Visible = false;
-                            this.Controls.Remove(tb);
-                            tb.Dispose();
-                            Application.DoEvents();
-                        }
+                        tb.Dispose();
                     }
 
                 });
-                /*
                 this.AfterSelect += new TreeViewEventHandler(delegate (Object o, TreeViewEventArgs a)
                 {
                     tb.Dispose();
@@ -204,7 +191,7 @@ namespace Cell_Tool_3
                 this.MouseWheel += new MouseEventHandler(delegate (Object o, MouseEventArgs a)
                 {
                     tb.Dispose();
-                });*/
+                });
             }
                  
             private void ApplyBtn_Click(object sender, EventArgs e)
@@ -716,6 +703,7 @@ namespace Cell_Tool_3
                         if (nSource.Checked)
                         {
                             ResultsExtractor.DataNode n = (ResultsExtractor.DataNode)nSource.Tag;
+
                             //find smallest array size
                             int arraySize = form1.dataTV.Xaxis.Length;
                             if (n.Series.Length < arraySize) arraySize = n.Series.Length;
@@ -878,10 +866,7 @@ namespace Cell_Tool_3
             }
             private void Edit_Click(object sender, EventArgs e)
             {
-
-                form1.StatusLabel.Text = "Dialog open";
                 SolverFunctions1.dialog.ShowDialog();
-                form1.StatusLabel.Text = "Ready";
             }
             public void cmbBox_ChangeIndex(object sender, EventArgs e)
             {
@@ -902,7 +887,7 @@ namespace Cell_Tool_3
                     this.Height = 60;
                     return;
                 }
-
+                
                 if (f == null)
                 {
                     this.Height = 60;
@@ -954,15 +939,19 @@ namespace Cell_Tool_3
                         FRAPA_Model.AllModels.SetConstValues(current.Parameters.ElementAt(i).Value);
 
                     parBoxList[i].LoadParameter(current.Parameters.ElementAt(i).Value);
-
+                    
                     if (cmbBox.SelectedIndex < FRAPA_Model.nModels)
+                    {
                         FRAPA_Model.AllModels.CheckConstValues(cmbBox.SelectedIndex, parBoxList[i]);
+                    }
                     else
+                    {
                         parBoxList[i].IsConstant(false);
+                    }
 
                     parBoxList[i].Visible = true;
                 }
-
+                
                 int h = 60;
 
                 if (current.Parameters.Count > 0)
@@ -1075,7 +1064,7 @@ namespace Cell_Tool_3
                         f1.GetFormula2 == fit.GetFormula2 &&
                         f1.GetFormulaIF == fit.GetFormulaIF)
                     {
-                        cmbBox.SelectedIndex = SolverFunctions1.dialog.tw.Nodes.IndexOf(n) + FRAPA_Model.nModels;
+                        cmbBox.SelectedIndex = SolverFunctions1.dialog.tw.Nodes.IndexOf(n)+ FRAPA_Model.nModels;
                         return;
                     }
                 }
@@ -1155,7 +1144,7 @@ namespace Cell_Tool_3
                     w += 50;
 
                     this.Dock = DockStyle.Top;
-                    //this.Resize += This_Resize;
+                    this.Resize += This_Resize;
                 }
                 private void This_Resize(object sender, EventArgs e)
                 {
@@ -1340,7 +1329,7 @@ namespace Cell_Tool_3
                 w += 50;
 
                 this.Dock = DockStyle.Top;
-                //this.Resize += This_Resize;
+                this.Resize += This_Resize;
             }
             private void This_Resize(object sender, EventArgs e)
             {
@@ -1383,17 +1372,15 @@ namespace Cell_Tool_3
             public FitChart()
             {
                 Titles = new ListBox();
-                //Titles.Dock = DockStyle.Bottom;
-                Titles.Location = new Point(0, 280);
+                Titles.Dock = DockStyle.Top;
                 Titles.Font = new Font("Arial", 8);
-                Titles.Width = 300;
                 Titles.SelectionMode = SelectionMode.None;
                 Titles.Height = 10;
                 Titles.BackColor = Color.White;
                 Titles.ForeColor = Color.Black;
                 Titles.BorderStyle = BorderStyle.None;
                
-                //this.Dock = DockStyle.Fill;
+                this.Dock = DockStyle.Fill;
                 this.Build(null);
                 //Chart
                                
@@ -1582,7 +1569,7 @@ namespace Cell_Tool_3
                 {
                     Raw.Points.AddXY(Xvals[i1], Yvals[i1]);
                 }
-
+                
                 for (int i = 0; i < CalcFitVals.Length; i++)
                 {
                     //create new chart series
@@ -1612,7 +1599,8 @@ namespace Cell_Tool_3
                     curFit.StDev = 0;
                 }
                 FitFormulas[0].Color = Color.Green;
-                if (CalcFitVals.Length > 1)
+
+                if(CalcFitVals.Length > 1)
                     FitFormulas[1].Color = Color.Magenta;
 
                 this.Titles.Items.Clear();
@@ -1640,6 +1628,7 @@ namespace Cell_Tool_3
                     "\tBinding + Diffusion eq. = " + Math.Pow(FRAPA_Model.ComputeCorelationCoeff(Yvals, CalcFitVals[0],frame),2)
                     });
                 }
+
                 this.GLDrawing_Start();
             }
             private int ColorIndex(int i)

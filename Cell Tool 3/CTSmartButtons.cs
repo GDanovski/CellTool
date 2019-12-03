@@ -21,12 +21,7 @@ namespace Cell_Tool_3
         public void SmartBtnToolStripMenuItem_Click(object sender, EventArgs e)
         {
             dialog.RefreshValues();
-
-            // Linux change
-            this.CTInterface.FileBrowser.StatusLabel.Text = "Dialog open";
             dialog.ShowDialog();
-            this.CTInterface.FileBrowser.StatusLabel.Text = "Ready";
-
             StoreToSettings();
             LoadAccSettings();
         }

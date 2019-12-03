@@ -1,14 +1,17 @@
 ﻿/*
  CellTool - software for bio-image analysis
  Copyright (C) 2018  Georgi Danovski
+
  This program is free software: you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
  the Free Software Foundation, either version 3 of the License, or
  (at your option) any later version.
+
  This program is distributed in the hope that it will be useful,
  but WITHOUT ANY WARRANTY; without even the implied warranty of
  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  GNU General Public License for more details.
+
  You should have received a copy of the GNU General Public License
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
@@ -26,12 +29,12 @@ namespace Cell_Tool_3
     class BrightnessAndContrast
     {
         public ImageAnalyser IA = null;
-        public PropertiesPanel_Item PropPanel = new PropertiesPanel_Item();
+        private PropertiesPanel_Item PropPanel = new PropertiesPanel_Item();
         public Panel panel;
         //Chart
         public BrightnessAndContrast_ChartPanel Chart1 = new BrightnessAndContrast_ChartPanel();
         public BrightnessAndContrast_ChartPanel.BrightnessAndContrast_Chart.Series Values = new BrightnessAndContrast_ChartPanel.BrightnessAndContrast_Chart.Series();
-
+        
         //CheckBoxes
         public CheckBox applyToAll = new CheckBox();
         public CheckBox autoDetect = new CheckBox();
@@ -43,20 +46,6 @@ namespace Cell_Tool_3
         //Chart_move event
         private bool moveMax = false;
         private bool moveMin = false;
-
-        public Form_auxiliary FormBrightnessContrast; // For holding theGLControl of the historgram
-
-        public void HideAll()
-        {
-            applyToAll.Hide();
-            autoDetect.Hide();
-        }
-
-        public void ShowAll()
-        {
-            applyToAll.Show();
-            autoDetect.Show();
-        }
         public void BackColor(Color color)
         {
             PropPanel.BackColor(color);
@@ -67,9 +56,8 @@ namespace Cell_Tool_3
         }
         public void TitleColor(Color color)
         {
-            PropPanel.TitleColor(color);
+              PropPanel.TitleColor(color);
         }
-        
         private void Control_MouseOver(object sender, EventArgs e)
         {
             var ctr = (Control)sender;
@@ -79,10 +67,10 @@ namespace Cell_Tool_3
         {
             //PropPanel properties
             PropPanel.Initialize(propertiesPanel);
-            PropPanel.Resizable = false; // true;
+            PropPanel.Resizable = true;
             PropPanel.Name.Text = "Brightness And Contrast";
             PropertiesBody.Controls.Add(PropPanel.Panel);
-
+          
             panel = PropPanel.Panel;
             panel.Visible = false;
             //Create Interface
@@ -114,87 +102,50 @@ namespace Cell_Tool_3
             autoDetect.MouseHover += new EventHandler(Control_MouseOver);
             Panel1.Controls.Add(autoDetect);
             applyToAll.BringToFront();
-            /*
-            Panel1.Resize += new EventHandler(delegate (object o, EventArgs a)
+
+            Panel1.Resize += new EventHandler(delegate (object o, EventArgs a) 
             {
                 int x1 = autoDetect.Width + 35;
                 if (x1 + 40 > Panel1.Width) { x1 = Panel1.Width - 40; }
                 applyToAll.Location = new Point(x1, 3);
-
             });
-            */
             //Chart
             BrightnessAndContrast_ChartPanel.BrightnessAndContrast_Chart CA = Chart1.CA;
             //CA.BackColor = PropPanel.Body.BackColor;
             CA.BackGroundColor = IA.FileBrowser.BackGroundColor1;
             CA.ShowMinAndMax = true;
-
+             
             CA.Visible = true;
-
+            
             Values.Enabled = true;
             Values.UseGradientStyle = true;
             Values.BorderColor = Color.White;
             Values.BackSecondaryColor = Color.White;
             Values.Color = Color.Black;
             Chart1.Series.Add(Values);
-
-            //Chart1.Dock = DockStyle.Fill;
+                        
+            Chart1.Dock = DockStyle.Fill;
             Chart1.BackColor = PropPanel.Body.BackColor;
-
-            Size MainSize = IA.TabPages.MainForm.Size;
-            int StartWidth = IA.FileBrowser.DataSourcesPanelWidth;
-            Chart1.CA.Location = new Point(MainSize.Width - StartWidth, 0);
-            Chart1.CA.Anchor = AnchorStyles.Right | AnchorStyles.Top;
-            Chart1.CA.Size = new Size(StartWidth - 5, 200);
-            //IA.TabPages.MainForm.Controls.Add(Chart1.CA);
-            //this.FormBrightnessContrast = new Form_auxiliary(this.panel, 10, 30, -10, -60, "Brigtness");
-            //this.FormBrightnessContrast.Controls.Add(Chart1);
-            //this.FormBrightnessContrast.Show();
-            
-
-            //PropPanel.Panel.Controls.Add(Chart1);
+            PropPanel.Panel.Controls.Add(Chart1);
             CA.MouseMove += new MouseEventHandler(Chart1_MouseMove);
             CA.MouseDown += new MouseEventHandler(Chart1_MouseDown);
             CA.MouseUp += new MouseEventHandler(Chart1_MouseUp);
             CA.MouseClick += new MouseEventHandler(Chart1_MouseClick);
             //Chart1.MouseHover += new MouseEventHandler(Chart1_MouseHover);
-            Chart1.CA.BringToFront();
-
-            // Resize the GL control upon resizing the main form
-            //IA.TabPages.MainForm.ResizeEnd += ResizeEnd;
-            IA.TabPages.MainForm.SizeChanged += ResizeEnd;
-
-
+            Chart1.BringToFront();
+           
         }
-
-        private void ResizeEnd(object o, EventArgs e)
-        {
-            int StartWidth = IA.FileBrowser.DataSourcesPanelWidth;
-            Size MainFormSize = IA.TabPages.MainForm.Size;
-            bool IsVisible = false;
-            if (IA.TabPages.MainForm.Controls.Contains(Chart1.CA))
-            {
-                IA.TabPages.MainForm.Controls.Remove(Chart1.CA);
-                IsVisible = true;
-            }
-            Chart1.CA.Location = new Point(MainFormSize.Width - StartWidth, 0);
-            Chart1.CA.Size = new Size(StartWidth - 5, 200);
-            if (IsVisible)
-            {
-                IA.TabPages.AddImageGLControls();
-            }
-
-        }
+        
         private void OptionForm_KeyPress(object sender, KeyEventArgs e)
         {
 
-            if (e.KeyCode == Keys.Enter)
+            if(e.KeyCode == Keys.Enter)
             {
                 ((sender as Form).Tag as Button).Focus();
                 ((sender as Form).Tag as Button).PerformClick();
                 e.Handled = true;
             }
-            else if (e.KeyCode == Keys.Escape)
+            else if(e.KeyCode == Keys.Escape)
             {
                 (sender as Form).Close();
                 e.Handled = true;
@@ -202,7 +153,7 @@ namespace Cell_Tool_3
         }
         private void Chart1_MouseClick(object sender, MouseEventArgs e)
         {
-            if (e.Button != MouseButtons.Right) { return; }
+            if(e.Button != MouseButtons.Right) { return; }
             TifFileInfo fi = IA.TabPages.TabCollections[IA.TabPages.SelectedIndex].tifFI;
 
             Form OptionForm = new Form();
@@ -245,7 +196,7 @@ namespace Cell_Tool_3
                 l.ForeColor = Color.White;
                 l.Location = new Point(15, 45);
                 OptionForm.Controls.Add(l);
-
+                
                 tbMin.Location = new Point(85, 40);
                 tbMin.Width = 75;
                 tbMin.Height = 20;
@@ -261,7 +212,7 @@ namespace Cell_Tool_3
                 l.ForeColor = Color.White;
                 l.Location = new Point(15, 75);
                 OptionForm.Controls.Add(l);
-
+                
                 tbMax.Location = new Point(85, 70);
                 tbMax.Width = 75;
                 tbMax.Height = 20;
@@ -280,7 +231,7 @@ namespace Cell_Tool_3
             {
                 int min = 0;
                 int max = 0;
-                try { min = int.Parse(tbMin.Text); }
+                try {min = int.Parse(tbMin.Text); }
                 catch
                 {
                     MessageBox.Show("Incorrect minimum value!");
@@ -293,7 +244,7 @@ namespace Cell_Tool_3
                     min = 0;
                 }
 
-                try { max = int.Parse(tbMax.Text); }
+                try {max = int.Parse(tbMax.Text); }
                 catch
                 {
                     MessageBox.Show("Incorrect maximum value!");
@@ -308,7 +259,7 @@ namespace Cell_Tool_3
 
                 if (min > max)
                 {
-                    MessageBox.Show("Minimum must be lower then the maximum!");
+                MessageBox.Show("Minimum must be lower then the maximum!");
                     return;
                 }
                 if (min != fi.MinBrightness[fi.cValue] | max != fi.MaxBrightness[fi.cValue])
@@ -324,7 +275,7 @@ namespace Cell_Tool_3
                     MinPrew = fi.MinBrightness[fi.cValue];
                     MaxPrew = fi.MaxBrightness[fi.cValue];
 
-                    adjustBrightness(min, max, fi, -1);
+                    adjustBrightness(min, max, fi,-1);
 
                     applyToHistory(fi.cValue, min, max);
 
@@ -334,11 +285,7 @@ namespace Cell_Tool_3
                 }
                 OptionForm.Close();
             });
-
-            // Linux change
-            IA.FileBrowser.StatusLabel.Text = "Dialog open";
             OptionForm.ShowDialog();
-            IA.FileBrowser.StatusLabel.Text = "Ready";
             foreach (Button btn in fi.tpTaskbar.ColorBtnList)
             {
                 btn.Focus();
@@ -354,9 +301,9 @@ namespace Cell_Tool_3
             IA.TabPages.TabCollections[IA.TabPages.SelectedIndex].tifFI.delHist = true;
             IA.DeleteFromHistory();
 
-            if (applyToAll.Checked == true & applyToAll.Visible == true)
+            if(applyToAll.Checked == true & applyToAll.Visible == true)
             {
-                for (int i = 0; i < fi.sizeC; i++)
+                for(int i = 0; i<fi.sizeC; i++)
                 {
                     WriteApplyToHistory(i, min, max, fi);
                 }
@@ -422,7 +369,7 @@ namespace Cell_Tool_3
                     min.ToString() + "," +
                     max.ToString() + ")";
             if (IA.oldComand == val) { return; }
-
+            
             fi.History.Add("B&C(" + chanel.ToString() + "," +
                     MinPrew.ToString() + "," +
                     MaxPrew.ToString() + ")");
@@ -430,10 +377,10 @@ namespace Cell_Tool_3
             fi.History.Add(val);
             IA.oldComand = val;
             IA.CheckSizeHistory(fi);
-
+            
         }
 
-        private void changeLUT(object sender, EventArgs e)
+        private void changeLUT(object sender,EventArgs e)
         {
             TifFileInfo fi = IA.TabPages.TabCollections[IA.TabPages.SelectedIndex].tifFI;
 
@@ -472,19 +419,19 @@ namespace Cell_Tool_3
             if (result == DialogResult.OK)
             {
                 (sender as Button).BackColor = colorDialog1.Color;
-
+                
                 IA.Input.ChangeValueFunction("LUT(" + fi.cValue.ToString() + "," +
                         ColorTranslator.ToHtml(colorDialog1.Color).ToString() + ")");
-
+                
             }
         }
         public void SetBrightness(int chanel, int min, int max)
         {
             TifFileInfo fi = IA.TabPages.TabCollections[IA.TabPages.SelectedIndex].tifFI;
-            if (chanel == -1) { chanel = fi.cValue; }
+            if(chanel == -1) { chanel = fi.cValue; }
             fi.MinBrightness[chanel] = min;
             fi.MaxBrightness[chanel] = max;
-        }
+         }
         private void Chart1_MouseDown(object sender, MouseEventArgs e)
         {
             double min = Chart1.CA.ValueToPixelPosition(lastMin);
@@ -492,7 +439,7 @@ namespace Cell_Tool_3
             MinPrew = lastMin;
             MaxPrew = lastMax;
 
-            if ((e.X > min - 6 & e.X < min + 6))
+            if ((e.X > min - 2 & e.X < min + 2))
             {
                 Chart1.Cursor = Cursors.SizeWE;
                 //var rc = Chart1.RectangleToScreen(new Rectangle(Point.Empty, Chart1.ClientSize));
@@ -501,13 +448,13 @@ namespace Cell_Tool_3
                 moveMax = false;
                 moveMin = true;
             }
-            else if (e.X > max - 6 & e.X < max + 6)
+            else if (e.X > max - 2 & e.X < max + 2)
             {
                 Chart1.Cursor = Cursors.SizeWE;
                 //var rc = Chart1.RectangleToScreen(new Rectangle(Point.Empty, Chart1.ClientSize));
                 //System.Windows.Forms.Cursor.Clip = rc;
                 //Chart1.Capture = true;
-
+                
                 moveMax = true;
                 moveMin = false;
             }
@@ -522,9 +469,9 @@ namespace Cell_Tool_3
             TifFileInfo fi = IA.TabPages.TabCollections[IA.TabPages.SelectedIndex].tifFI;
             moveMax = false;
             moveMin = false;
-
-            applyToHistory(fi.cValue,
-                fi.MinBrightness[fi.cValue],
+           
+            applyToHistory(fi.cValue, 
+                fi.MinBrightness[fi.cValue], 
                 fi.MaxBrightness[fi.cValue]);
 
             Chart1.Cursor = Cursors.Default;
@@ -542,13 +489,13 @@ namespace Cell_Tool_3
                 fi.cValue = curC;
                 calculateHistogramArray(fi, true);
             }
-
+          
             IA.ReloadImages();
         }
         private void Chart1_MouseMoveImageReload()
         {
             TifFileInfo fi = IA.TabPages.TabCollections[IA.TabPages.SelectedIndex].tifFI;
-
+           
             calculateHistogramArray(fi, true);
             if (applyToAll.Checked == true & autoDetect.Checked == false)
             {
@@ -576,7 +523,7 @@ namespace Cell_Tool_3
                 if (oldFI.histogramArray == null) { return; }
                 if (moveMin == true)
                 {
-                    //higher then max
+                   //higher then max
                     int MineX = e.X;
                     int maxeX = Convert.ToInt32(Chart1.CA.ValueToPixelPosition(oldFI.MaxBrightness[oldFI.cValue]) - 1);
                     if (e.X > maxeX) { MineX = maxeX; }
@@ -594,7 +541,7 @@ namespace Cell_Tool_3
                         }
 
                         oldFI.MinBrightness[oldFI.cValue] = newMin;
-
+                        
                         // IA.MarkAsNotSaved();
                         Chart1_MouseMoveImageReload();
                     }
@@ -616,7 +563,7 @@ namespace Cell_Tool_3
                     int mineX = Convert.ToInt32(Chart1.CA.ValueToPixelPosition(oldFI.MinBrightness[oldFI.cValue])) + 1;
                     if (e.X < mineX) { maxeX = mineX; }
                     int newMax = Convert.ToInt32(Chart1.CA.PixelPositionToValue(maxeX));
-
+                   
                     //calculate max
                     if (newMax != oldFI.MaxBrightness[oldFI.cValue] & newMax > oldFI.MinBrightness[oldFI.cValue] & newMax <= absMax)
                     {
@@ -632,8 +579,7 @@ namespace Cell_Tool_3
                         Chart1_MouseMoveImageReload();
                     }
                 }
-                else
-                {
+                else {
                     double min = Chart1.CA.ValueToPixelPosition(lastMin);
                     double max = Chart1.CA.ValueToPixelPosition(lastMax);
                     if ((e.X > min - 2 & e.X < min + 2) | (e.X > max - 2 & e.X < max + 2))
@@ -648,14 +594,14 @@ namespace Cell_Tool_3
             }
             catch { }
         }
-
-        private void autoDetect_Checked(object sender, EventArgs e)
+       
+        private void autoDetect_Checked(object sender,EventArgs e)
         {
             if (autoDetect.Focused == false) { return; }
 
             TifFileInfo fi = IA.TabPages.TabCollections[IA.TabPages.SelectedIndex].tifFI;
             if (fi == null) { return; }
-            if (autoDetect.Checked == true)
+            if(autoDetect.Checked == true)
             {
                 autoBandC_toHistory(fi);
             }
@@ -679,7 +625,7 @@ namespace Cell_Tool_3
         }
         private void applyToAll_Checked(object sender, EventArgs e)
         {
-            if (applyToAll.Focused == false) { return; }
+            if(applyToAll.Focused == false) { return; }
 
             TifFileInfo fi = IA.TabPages.TabCollections[IA.TabPages.SelectedIndex].tifFI;
             if (fi == null) { return; }
@@ -714,12 +660,11 @@ namespace Cell_Tool_3
             switch (fi.bitsPerPixel)
             {
                 case 8:
-                    for (int i = 0; i < fi.sizeC; i++)
-                    {
+                    for (int i = 0; i < fi.sizeC; i++) {
                         fi.histogramArray[i] = new int[byte.MaxValue + 1];
-                        fi.adjustedLUT[i] = new float[byte.MaxValue + 1];
+                        fi.adjustedLUT[i] = new float[byte.MaxValue  + 1];
                     }
-
+                   
                     break;
                 case 16:
                     for (int i = 0; i < fi.sizeC; i++)
@@ -727,16 +672,16 @@ namespace Cell_Tool_3
                         fi.histogramArray[i] = new int[ushort.MaxValue + 1];
                         fi.adjustedLUT[i] = new float[ushort.MaxValue + 1];
                     }
-
+                   
                     break;
             }
             //prepare min and max arrays
-            if (fi.MinBrightness == null)
+            if(fi.MinBrightness == null)
                 fi.MinBrightness = new int[fi.sizeC];
             if (fi.MaxBrightness == null)
                 fi.MaxBrightness = new int[fi.sizeC];
         }
-        public void calculateHistogramArray(TifFileInfo fi, bool LoadChart)
+        public void calculateHistogramArray(TifFileInfo fi,bool LoadChart)
         {
             TifFileInfo oldFI = IA.TabPages.TabCollections[IA.TabPages.SelectedIndex].tifFI;
             if (fi.image16bit == null & fi.image8bit == null) { return; }
@@ -765,7 +710,7 @@ namespace Cell_Tool_3
                     check = calculateHistogram16bit(fi, frame);
                     break;
             }
-            if (check == false)
+            if(check == false)
             {
                 return;
             }
@@ -791,7 +736,7 @@ namespace Cell_Tool_3
                 return true;
             }
             catch { return false; }
-
+           
         }
         private bool calculateHistogram16bit(TifFileInfo fi, int frame)
         {
@@ -816,7 +761,7 @@ namespace Cell_Tool_3
             //Don't reload chart if chart mouse down active
             if (moveMax || moveMin) return;
             //find range
-            int correction = Convert.ToInt32(fi.MaxBrightness[fi.cValue] * 0.2);
+            int correction = Convert.ToInt32(fi.MaxBrightness[fi.cValue]* 0.2);
             if (correction < 10) { correction = 10; }
             int range = fi.MaxBrightness[fi.cValue] + correction;
             int step = 1;
@@ -825,33 +770,33 @@ namespace Cell_Tool_3
                 step = range / byte.MaxValue;
             }
             //add values
-            if (Values.Points.Count > 0) { Values.Points.Clear(); }
+            if (Values.Points.Count > 0){ Values.Points.Clear();}
 
             int length = fi.histogramArray[fi.cValue].Length;
-            for (int i = 0; i <= fi.MaxBrightness[fi.cValue] + correction; i += step)
+            for (int i = 0; i <= fi.MaxBrightness[fi.cValue] + correction; i+=step)
             {
                 int val = 0;
-
+                
                 for (int j = i; j < i + step; j++)
                 {
                     if (0 <= j & j < length)
                     {
                         val += fi.histogramArray[fi.cValue][j];
                     }
-
+                    
                 }
                 Values.Points.AddXY(i, val);
-
+               
             }
-
+           
             //Color
             Values.BackSecondaryColor = fi.LutList[fi.cValue];
-
-
+            
+            
             Chart1.DrawToScreen(fi);
-
+ 
         }
-
+       
         public void autoBrightness(TifFileInfo fi)
         {
             //pragova stoinost
@@ -859,16 +804,16 @@ namespace Cell_Tool_3
             //values
             int min = -1;
             int max = 0;
-            for (int i = 0; i < fi.histogramArray[fi.cValue].Length; i++)
+            for(int i = 0; i < fi.histogramArray[fi.cValue].Length;i++)
             {
-                if (min == -1 & fi.histogramArray[fi.cValue][i] > dev) { min = i; }
-                if (fi.histogramArray[fi.cValue][i] > dev) { max = i; }
+                if(min == -1 & fi.histogramArray[fi.cValue][i] > dev) { min = i; }
+                if(fi.histogramArray[fi.cValue][i] > dev) { max = i; }
             }
-            if (min == -1) { min = 0; }
+            if(min == -1) { min = 0; }
             //apply changes to fi
-            adjustBrightness(min, max, fi, -1);
+            adjustBrightness(min, max, fi,-1);
         }
-
+        
         private void DetectBandC(TifFileInfo fi)
         {
             if (autoDetect.Checked == true)
@@ -894,21 +839,21 @@ namespace Cell_Tool_3
             }
             else if (fi.MaxBrightness[fi.cValue] > 0)
             {
-                adjustBrightness(fi.MinBrightness[fi.cValue], fi.MaxBrightness[fi.cValue], fi, -1);
+                adjustBrightness(fi.MinBrightness[fi.cValue], fi.MaxBrightness[fi.cValue], fi,-1);
             }
             else
             {
-                adjustBrightness(lastMin, lastMax, fi, -1);
+                adjustBrightness(lastMin, lastMax, fi,-1);
             }
-
+          
         }
         public void adjustBrightness(int min, int max, TifFileInfo fi, int chanel)
         {
             if (chanel == -1) { chanel = fi.cValue; }
             if (applyToAll.Checked == true & applyToAll.Visible == true)
             {
-
-                for (int i = 0; i < fi.MinBrightness.Length; i++)
+               
+                for(int i = 0; i < fi.MinBrightness.Length; i++)
                 {
                     SetBrightness(i, min, max);
                 }
@@ -916,7 +861,7 @@ namespace Cell_Tool_3
             else
             {
                 SetBrightness(chanel, min, max);
-
+               
             }
             lastMax = max;
             lastMin = min;
@@ -924,8 +869,7 @@ namespace Cell_Tool_3
         }
         private void adjustLUT(TifFileInfo fi, int chanel)
         {
-            try
-            {
+            try {
                 //less then MinBrightness
                 float val = 0f;
 
@@ -953,7 +897,7 @@ namespace Cell_Tool_3
                 }
                 //Higher then Maxbrightness
                 val = 1f;
-                for (int i = fi.MaxBrightness[chanel] + 1; i < fi.adjustedLUT[chanel].Length; i++)
+                for (int i = fi.MaxBrightness[chanel]+1; i < fi.adjustedLUT[chanel].Length; i++)
                 {
                     fi.adjustedLUT[chanel][i] = val;
                 }

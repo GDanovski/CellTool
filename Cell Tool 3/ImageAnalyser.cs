@@ -48,11 +48,10 @@ namespace Cell_Tool_3
         public TrackSpots Tracking;
         public RoiManager RoiMan;
         public ImageDrawer IDrawer = new ImageDrawer();
-        public OpenTK.GLControl GLControl1 = new GLControl();
+        public GLControl GLControl1 = new GLControl();
         public Panel GLControl1_VerticalPanel = new Panel();
         public Panel GLControl1_HorizontalPanel = new Panel();
         public Panel GLControl1_TraserPanel = new Panel();
-
 
         public ToolStripComboBox zoomValue = null;
               
@@ -100,9 +99,6 @@ namespace Cell_Tool_3
 
             SpotDetectorEnabled=System.IO.File.Exists(Application.StartupPath + "/PlugIns/SpotDetector.txt");
             DeleteEmptyEnabled = !System.IO.File.Exists(Application.StartupPath + "/PlugIns/DeleteEmptyResults.txt");
-
-
-
         }
         
         private void Input_TextChange(object sender, ChangeValueEventArgs e)
@@ -362,9 +358,11 @@ namespace Cell_Tool_3
             TabPages.zTrackBar.TextBox1.Enabled = val;
         }
         public void ReloadImages()
-        {
-            if (RoiMan == null) { return;  }
-            if (TabPages.Collections.Count < 1) 
+        { 
+            TabPages.PropertiesBody.SuspendLayout();
+            TabPages.propertiesPanel.SuspendLayout();
+
+            if (TabPages.Collections.Count < 1)
             {
                 chart.Series.panel.Visible = false;
                 chart.Properties.panel.Visible = false;
@@ -372,22 +370,23 @@ namespace Cell_Tool_3
                 TabPages.zTrackBar.Panel.Visible = false;
                 BandC.panel.Visible = false;
                 Meta.panel.Visible = false;
-                Segmentation.LibPanel.Visible = false;
+               // Segmentation.LibPanel.Visible = false;
                 Segmentation.DataPanel.Visible = false;
                 Segmentation.HistogramPanel.Visible = false;
                 Segmentation.tresholdsPanel.Visible = false;
                 Segmentation.SpotDetPanel.Visible = false;
-                Segmentation.Otsu1D.panel.Visible = false;
                 RoiMan.panel.Visible = false;
                 Tracking.panel.Visible = false;
                 UnDoBtn.Enabled = false;
                 ReDoBtn.Enabled = false;
                 GLControl1_VerticalPanel.Visible = false;
                 GLControl1_TraserPanel.Visible = false;
-
-
+                TabPages.PropertiesBody.ResumeLayout();
+                TabPages.propertiesPanel.ResumeLayout();
+                
                 return;
             }
+            bool turnOnRoiMan = false;
 
             TifFileInfo fi = null;
             try
@@ -396,346 +395,295 @@ namespace Cell_Tool_3
             }
             catch { }
 
-
             if (fi != null)
             {
-                try
+                //3D buttons set
+                if (IDrawer.imageDrawer_3D.isImage3D(fi))
                 {
-                    if (fi.sizeZ > 1)
-                    {
-                        if (TabPages.zTrackBar.TrackBar1.Maximum != fi.sizeZ)
-                            TabPages.zTrackBar.Refresh(fi.zValue + 1, 1, fi.sizeZ);
-                        if (!TabPages.zTrackBar.Panel.Visible)
-                            TabPages.zTrackBar.Panel.Visible = true;
-                    }
-                    else if (fi.sizeZ <= 1 && TabPages.zTrackBar.Panel.Visible != false)
-                    {
-                        TabPages.zTrackBar.Panel.Visible = false;
-                    }
-
-                    if (fi.sizeT > 1)
-                    {
-                        if (TabPages.tTrackBar.TrackBar1.Maximum != fi.sizeT)
-                            TabPages.tTrackBar.Refresh(fi.frame + 1, 1, fi.sizeT);
-                        if (!TabPages.tTrackBar.Panel.Visible)
-                            TabPages.tTrackBar.Panel.Visible = true;
-                    }
-                    else if (fi.sizeT <= 1 && TabPages.tTrackBar.Panel.Visible != false)
-                    {
-                        TabPages.tTrackBar.Panel.Visible = false;
-                    }
-
-
-                    if (/*fi.loaded && */fi.tpTaskbar != null
-                        && fi.tpTaskbar.TopBar.BackColor != FileBrowser.BackGroundColor1)
-                    {
-                        fi.tpTaskbar.TopBar.BackColor = FileBrowser.BackGroundColor1;
-
-                        TabPages.AddImageGLControls();
-
-                        IDrawer.corePanel.BringToFront();
-                        fi.tpTaskbar.TopBar.BringToFront();
-
-                        IDrawer.corePanel.Dock = DockStyle.Bottom;
-                        fi.tpTaskbar.TopBar.Dock = DockStyle.Bottom;
-
-                        
-
-                        fi.tpTaskbar.TopBar.ResumeLayout(true);
-                        fi.tpTaskbar.TopBar.Invalidate();
-                        fi.tpTaskbar.TopBar.Update();
-                        fi.tpTaskbar.TopBar.Refresh();
-
-
-
-                        Application.DoEvents();
-                    }
-
-                    
+                    fi.tpTaskbar.Btn2D.Enabled = true;
+                    fi.tpTaskbar.Btn3D.BackColor = FileBrowser.TaskBtnClickColor1;
+                    fi.tpTaskbar.Btn3D.Enabled = false;
+                    fi.tpTaskbar.Btn2D.BackColor = FileBrowser.BackGroundColor1;
                 }
-                catch { }
-
-                
+                else if (fi.sizeZ > 1)
+                {
+                    fi.tpTaskbar.Btn2D.Enabled = false;
+                    fi.tpTaskbar.Btn2D.BackColor = FileBrowser.TaskBtnClickColor1;
+                    fi.tpTaskbar.Btn3D.Enabled = true;
+                    fi.tpTaskbar.Btn3D.BackColor = FileBrowser.BackGroundColor1;
+                }
                 //Chart properties refresh
                 chart.Properties.LoadFI(fi);
                 chart.Series.LoadFI(fi);
-
                 //set z and t
                 EnabletrackBars(fi.loaded);
-                
+                //
+                if (fi.openedImages < fi.sizeC * fi.sizeZ)
+                {
+                    TabPages.propertiesPanel.ResumeLayout();
+                    TabPages.PropertiesBody.ResumeLayout();
+                    return;
+                }
+
                 //zoomValue refresh
                 zoomValue_Set(fi.zoom);
                 BandC.autoDetect.Checked = fi.autoDetectBandC;
                 BandC.applyToAll.Checked = fi.applyToAllBandC;
-
                 //Segmentation
-                //
-                
-                if (Segmentation.DataPropPanel.IsExpanded())
-                {
-                    //Segmentation.ProtocolCBox.SelectedIndex = fi.SegmentationProtocol[fi.cValue];
-                    
-                    Segmentation.SegmentationCBox.SelectedIndex = fi.SegmentationCBoxIndex[fi.cValue];
-                    Segmentation.Otsu1D.thresholdsNumCB.SelectedIndex = fi.thresholdsCBoxIndex[fi.cValue];
-                    Segmentation.Otsu1D.sumHistogramsCheckBox.Checked = fi.sumHistogramChecked[fi.cValue];
-                    //Segmentation.Otsu1D.loadThreshAndColorBtns(fi);
-                }
-
-                if (Segmentation.SpotDetPropPanel.IsExpanded())
-                    Segmentation.SpotDet.ReloadImage(fi);
-
+                //Segmentation.ProtocolCBox.SelectedIndex = fi.SegmentationProtocol[fi.cValue];
+                Segmentation.SegmentationCBox.SelectedIndex = fi.SegmentationCBoxIndex[fi.cValue];
+                Segmentation.Otsu1D.thresholdsNumCB.SelectedIndex = fi.thresholdsCBoxIndex[fi.cValue];
+                Segmentation.Otsu1D.sumHistogramsCheckBox.Checked = fi.sumHistogramChecked[fi.cValue];
+                Segmentation.Otsu1D.loadThreshAndColorBtns(fi);
+                Segmentation.SpotDet.ReloadImage(fi);
                 Segmentation.MyFilters.LoadImageInfo(fi);
-
                 //Tracking
                 Tracking.LoadSettings(fi);
-
                 //RoiManager
-                if (RoiMan.PropPanel.IsExpanded())
-                {
-                    RoiMan.FillRoiManagerList(fi);
-                    RoiMan.fillTextBox(fi);
-                    RoiMan.calculateRoiAccessRect(fi);
-                } 
-
+                RoiMan.FillRoiManagerList(fi);
+                RoiMan.fillTextBox(fi);
+                RoiMan.calculateRoiAccessRect(fi);
                 //Image Drawer
                 try
                 {
-                    IDrawer.DrawToScreen();
-                    BandC.Chart1.DrawToScreen(fi);
-                    Segmentation.Chart1.DrawToScreen(fi);
+                   IDrawer.DrawToScreen();
                 }
                 catch { }
                 //Prop Panel settings
-                
-                if (Meta.PropPanel.IsExpanded() && fi.selectedPictureBoxColumn == 0 & fi.cValue < fi.sizeC
+                #region Raw Image
+                if (fi.selectedPictureBoxColumn == 0 & fi.cValue < fi.sizeC 
                     & fi.tpTaskbar.ColorBtnList[fi.cValue].ImageIndex == 0
                     & fi.tpTaskbar.MethodsBtnList[0].ImageIndex == 0)
                 {
-                    Meta.UpdateInfo();
-                }
-                
+                    turnOnRoiMan = true;
 
-                //load histogram
-                Segmentation.Segmentation_LoadHistogramToChart(fi);
-                
-                if (!RoiMan.panel.Visible)
-                {
-
-
-                    chart.Series.panel.Visible = true;
-                    chart.Properties.panel.Visible = true;
-                    //TabPages.tTrackBar.Panel.Visible = true;
-                    //TabPages.zTrackBar.Panel.Visible = true;
-                    BandC.panel.Visible = true;
-                    Meta.panel.Visible = true;
-                    Segmentation.LibPanel.Visible = true;
-                    Segmentation.DataPanel.Visible = true;
-                    Segmentation.HistogramPanel.Visible = true;
-                    Segmentation.tresholdsPanel.Visible = true;
-                    Segmentation.SpotDetPanel.Visible = true;
-                    Segmentation.Otsu1D.panel.Visible = true;
-                    RoiMan.panel.Visible = true;
-                    Tracking.panel.Visible = true;
-                    UnDoBtn.Enabled = true;
-                    ReDoBtn.Enabled = true;
-                    GLControl1_VerticalPanel.Visible = true;
-                    GLControl1_TraserPanel.Visible = true;
-
-                    
-                    chart.Series.panel.BringToFront();
-                    chart.Properties.panel.BringToFront();
-                    TabPages.tTrackBar.Panel.BringToFront();
-                    TabPages.zTrackBar.Panel.BringToFront();
-                    BandC.panel.BringToFront();
-                    Meta.panel.BringToFront();
-                    Segmentation.LibPanel.BringToFront();
-                    Segmentation.DataPanel.BringToFront();
-                    Segmentation.HistogramPanel.BringToFront();
-                    Segmentation.tresholdsPanel.BringToFront();
-                    Segmentation.SpotDetPanel.BringToFront();
-                    Segmentation.Otsu1D.panel.BringToFront();
-                    RoiMan.panel.BringToFront();
-                    Tracking.panel.BringToFront();
-                    RoiMan.panel.BringToFront();
-
-                    TabPages.configurePropPanelsCollapse();
-
-                    // Initially, show the MetaData, while all others are hidden
-                    Meta.PropPanel.Control_Click(Meta.PropPanel.Name, new EventArgs());
-
-
-                }
-                
-
-            }
-
-
-            refresh_properties_panels();
-
-
-        }
-
-        public void SwitchBrightnessAndSegmentation()
-        {
-            TifFileInfo fi = null;
-            try
-            {
-                fi = TabPages.TabCollections[TabPages.SelectedIndex].tifFI;
-            }
-            catch { }
-
-
-            if (fi != null)
-            {
-                try
-                {
-
-                    // Show the Brightness histogram or the Segmentation histogram depending on the selected image
-                    if (fi.selectedPictureBoxColumn == 0 & fi.cValue < fi.sizeC
-                    & fi.tpTaskbar.ColorBtnList[fi.cValue].ImageIndex == 0
-                    & fi.tpTaskbar.MethodsBtnList[0].ImageIndex == 0)
+                    if (settings.BandCVis[TabPages.ActiveAccountIndex] != "y")
                     {
-                        // Remove all controls from the main form; add the GLControl1, containing the image;
-                        // then add back the remaining controls
-                        Control[] MainControls = new Control[TabPages.MainForm.Controls.Count];
-
-                        if (TabPages.MainForm.Controls.Contains(Segmentation.Chart1.CA))
-                            TabPages.MainForm.Controls.Remove(Segmentation.Chart1.CA);
-
-                        TabPages.MainForm.Controls.CopyTo(MainControls, 0);
-                        TabPages.MainForm.Controls.Clear();
-
-                        TabPages.MainForm.Controls.Add(BandC.Chart1.CA);
-
-                        foreach (Control ctrl in MainControls)
-                        {
-                            if (ctrl != null)
-                                TabPages.MainForm.Controls.Add(ctrl);
-                        }
-
+                        BandC.panel.Height = 26;
                     }
-                    else if (fi.selectedPictureBoxColumn == 1 & fi.cValue < fi.sizeC
+                    BandC.panel.Visible = true;
+
+                    if (settings.MetaVis[TabPages.ActiveAccountIndex] != "y")
+                    {
+                        Meta.panel.Height = 26;
+                    }
+                    else
+                    {
+                        Meta.panel.Height = 126;
+                    }
+                    Meta.UpdateInfo();
+                    Meta.panel.Visible = true;
+                    Meta.panel.BringToFront();
+                }
+                else
+                {
+                    BandC.panel.Visible = false;
+                    Meta.panel.Visible = false;
+                }
+                #endregion Raw Image
+
+                #region Filtered image
+                if (fi.selectedPictureBoxColumn == 1 & fi.cValue < fi.sizeC
                     & fi.tpTaskbar.ColorBtnList[fi.cValue].ImageIndex == 0
                     & fi.tpTaskbar.MethodsBtnList[1].ImageIndex == 0)
-                    {
-                        if (TabPages.MainForm.Controls.Contains(BandC.Chart1.CA))
-                            TabPages.MainForm.Controls.Remove(BandC.Chart1.CA);
-                        if (!TabPages.MainForm.Controls.Contains(Segmentation.Chart1.CA))
-                            TabPages.MainForm.Controls.Add(Segmentation.Chart1.CA);
-                    }
-                }
-                catch { }
-            }
-        }
-
-        public void refresh_properties_panels()
-        {
-
-            if (RoiMan == null) { return; }
-
-            if (!RoiMan.PropPanel.IsExpanded())
-            {
-                RoiMan.clear_ROI_selection();
-            } else {
-                /*
-                refresh_controls(chart.Series.PropPanel.NamePanel);
-                refresh_controls(chart.Properties.PropPanel.NamePanel);
-                refresh_controls(Tracking.PropPanel.NamePanel);
-                refresh_controls(Segmentation.SpotDetPropPanel.NamePanel);
-                refresh_controls(Segmentation.DataPropPanel.NamePanel);
-                refresh_controls(Segmentation.LibPropPanel.NamePanel);
-                refresh_controls(Segmentation.HistogramPropPanel.NamePanel);
-                refresh_controls(Segmentation.tresholdsPropPanel.NamePanel);
-                refresh_controls(BandC.PropPanel.NamePanel);
-                refresh_controls(Meta.PropPanel.NamePanel);
-                refresh_controls(RoiMan.PropPanel.NamePanel);
-                */
-            }
-
-
-            //if (Segmentation.tresholdsPropPanel.IsExpanded())   { Segmentation.tresholdsPanel.ShowAll(); }
-            //else                                                { Segmentation.tresholdsPanel.HideAll(); }
-
-            
-
-            if (chart.Series.PropPanel.IsExpanded()) { chart.Series.ShowAll(); }
-            else { chart.Series.HideAll(); }
-            if (chart.Properties.PropPanel.IsExpanded()) { chart.Properties.ShowAll(); }
-            else { chart.Properties.HideAll(); }
-            if (BandC.PropPanel.IsExpanded()) { BandC.ShowAll(); }
-            else { BandC.HideAll(); }
-            if (Meta.PropPanel.IsExpanded()) { Meta.ShowAll(); }
-            else { Meta.HideAll(); }
-
-            if (Segmentation.DataPropPanel.IsExpanded())        { Segmentation.MyFilters.ShowAll(); }
-            else                                                { Segmentation.MyFilters.HideAll(); }
-            if (Segmentation.LibPropPanel.IsExpanded())         { Segmentation.ShowLib(); }
-            else                                                { Segmentation.HideLib(); }
-            
-            if (Segmentation.tresholdsPropPanel.IsExpanded())   { Segmentation.ShowAll(); }
-            else                                                { Segmentation.HideAll(); }
-            if (Segmentation.SpotDetPropPanel.IsExpanded()) { Segmentation.SpotDet.ShowAll(); }
-            else { Segmentation.SpotDet.HideAll(); }
-            if (Tracking.PropPanel.IsExpanded()) { Tracking.ShowAll(); }
-            else { Tracking.HideAll(); }
-            if (RoiMan.PropPanel.IsExpanded()) { RoiMan.ShowAll(); }
-            else { RoiMan.HideAll(); }
-
-            /*
-            // Refresh the TaskBar and MainBar - find them by name
-            // This is necessary to remove the drawing artefacts from the properties panel refreshing
-            foreach (Control ctrl in TabPages.MainPanel.Controls)
-            {
-                if (ctrl.Name.Contains("Bar")) { refresh_controls(ctrl); }
-            }
-
-            // Refresh the Properties Title Label - it gets hidden when refreshing the properties menu names
-            foreach (Control ctrl in TabPages.propertiesPanel.Controls)
-            {
-                foreach (Control ctrl_inner in ctrl.Controls)
                 {
-                    if (ctrl_inner.Text.Equals("Properties")) {
-                        ctrl_inner.BringToFront();
-                        refresh_controls(ctrl);
-                        refresh_controls(ctrl_inner);
+                    turnOnRoiMan = true;
+                    //Tracking panel
+                    if (settings.TrackingVis[TabPages.ActiveAccountIndex] != "y")
+                    {
+                        Tracking.panel.Height = 26;
+                    }
+                    else
+                    {
+                        Tracking.panel.Height = 105;
+                    }
+                    //LibPanel
+                    /*
+                    if (settings.SegmentLibPanelVis[TabPages.ActiveAccountIndex] != "y")
+                    {
+                        Segmentation.LibPanel.Height = 26;
+                    }
+                    else
+                    {
+                        Segmentation.LibPanel.Height = 50;
+                    }*/
+                    //Data Panel
+                    if (settings.SegmentDataPanelVis[TabPages.ActiveAccountIndex] != "y")
+                    {
+                        Segmentation.DataPanel.Height = 26;
+                    }
+                    else
+                    {
+                        Segmentation.DataPanel.Height = 170;
+                    }
+
+                    //HistogramPanel
+                    if (settings.SegmentHistPanelVis[TabPages.ActiveAccountIndex] != "y")
+                    {
+                        Segmentation.HistogramPanel.Height = 26;
+                    }
+                    else
+                    {
+                        Segmentation.HistogramPanel.Height =
+                            int.Parse(settings.SegmentHistPanelHeight[TabPages.ActiveAccountIndex]);
+                        //load histogram
+                        Segmentation.Segmentation_LoadHistogramToChart(fi);
+                    }
+
+                    //tresholdsPanel
+                    if (settings.SegmentTreshPanelVis[TabPages.ActiveAccountIndex] != "y")
+                    {
+                        Segmentation.tresholdsPanel.Height = 26;
+                    }
+                    else
+                    {
+                        switch (Segmentation.SegmentationCBox.SelectedIndex)
+                        {
+                            case 1:
+                                Segmentation.Otsu1D.sumHistogramsCheckBox.Visible = true;
+                                Segmentation.tresholdsPanel.Height = 56 +
+                                    Segmentation.Otsu1D.panel.Height;
+                                break;
+                            case 2:
+                                Segmentation.Otsu1D.sumHistogramsCheckBox.Visible = true;
+                                Segmentation.tresholdsPanel.Height = 56 +
+                                   Segmentation.Otsu1D.panel.Height;
+                                break;
+                            default:
+                                Segmentation.tresholdsPanel.Height = 56;
+                                break;
+                        }
+                    }
+                    //SpotDetPanel
+                    if (settings.SegmentSpotDetPanelVis[TabPages.ActiveAccountIndex] != "y")
+                    {
+                        Segmentation.SpotDetPanel.Height = 26;
+                    }
+                    else
+                    {
+                        Segmentation.SpotDetPanel.Height = 104;
+                    }
+                    //reorder
+
+                    if (Segmentation.LibPanel.Visible != true)
+                    {
+                        //Segmentation.LibPanel.Visible = true;
+                        //Segmentation.LibPanel.BringToFront();
+                    }
+
+                    if (Segmentation.HistogramPanel.Visible != true)
+                    {
+                        Segmentation.HistogramPanel.Visible = true;
+                        Segmentation.HistogramPanel.BringToFront();
+                    }
+                    
+                    if (Segmentation.DataPanel.Visible != true)
+                    {
+                        Segmentation.DataPanel.Visible = true;
+                        Segmentation.DataPanel.BringToFront();
+                    }
+
+                    if (Segmentation.tresholdsPanel.Visible != true)
+                    {
+                        Segmentation.tresholdsPanel.Visible = true;
+                        Segmentation.tresholdsPanel.BringToFront();
+                    }
+
+                    if (/*SpotDetectorEnabled &&*/ Segmentation.SpotDetPanel.Visible != true)
+                    {
+                        Segmentation.SpotDetPanel.Visible = true;
+                        Segmentation.SpotDetPanel.BringToFront();
+                    }
+
+                    if (Tracking.panel.Visible != true)
+                    {
+                        Tracking.panel.Visible = true;
+                        Tracking.panel.BringToFront();
                     }
                 }
+                else
+                {
+                    //Segmentation.LibPanel.Visible = false;
+                    Segmentation.DataPanel.Visible = false;
+                    Segmentation.HistogramPanel.Visible = false;
+                    Segmentation.tresholdsPanel.Visible = false;
+                    Segmentation.SpotDetPanel.Visible = false;
+                    Tracking.panel.Visible = false;
+                }
+                #endregion Filtered image
+                
+                #region Chart
+                if (fi.selectedPictureBoxColumn == 2 & fi.cValue < fi.sizeC
+                    & fi.tpTaskbar.ColorBtnList[fi.cValue].ImageIndex == 0 & fi.tpTaskbar.MethodsBtnList[2].ImageIndex == 0)
+                {
+                    turnOnRoiMan = true;
+                    if (settings.CTChart_PropertiesVis[TabPages.ActiveAccountIndex] != "y")
+                    {
+                        chart.Properties.panel.Height = 26;
+                    }
+                    else
+                    {
+                        chart.Properties.panel.Height = 90;
+                    }
+                    
+
+                    if (settings.CTChart_SeriesVis[TabPages.ActiveAccountIndex] != "y")
+                    {
+                        chart.Series.panel.Height = 26;
+                    }
+                    else
+                    {
+                        chart.Series.panel.Height =int.Parse(settings.CTChart_SeriesHeight[TabPages.ActiveAccountIndex]);
+                    }
+
+                    if (chart.Properties.panel.Visible != true)
+                    {
+                        chart.Properties.panel.Visible = true;
+                        chart.Properties.panel.BringToFront();
+                    }
+
+                    if (chart.Series.panel.Visible != true)
+                    {
+                        chart.Series.panel.Visible = true;
+                        chart.Series.panel.BringToFront();
+                    }
+                }
+                else
+                {
+                    chart.Properties.panel.Visible = false;
+                    chart.Series.panel.Visible = false;
+                }
+                #endregion Chart
+
+                #region Roi Manager
+                //Roi manager
+                if (turnOnRoiMan == true)
+                {
+                    if (settings.RoiManVis[TabPages.ActiveAccountIndex] != "y")
+                        RoiMan.panel.Height = 26;
+                    else
+                        RoiMan.panel.Height = int.Parse(settings.RoiManHeight[TabPages.ActiveAccountIndex]);
+                    RoiMan.panel.Visible = true;
+                    RoiMan.panel.BringToFront();
+
+                }
+                else
+                    RoiMan.panel.Visible = false;
+
+                #endregion Roi Manager
             }
-            */
-            TabPages.ImageMainPanel.BringToFront();
+            //LibPanel
+            if (settings.SegmentLibPanelVis[TabPages.ActiveAccountIndex] != "y")
+            {
+                Segmentation.LibPanel.Height = 26;
+            }
+            else
+            {
+                Segmentation.LibPanel.Height = 50;
+            }
 
-            Application.DoEvents();
-        }
-
-        public void refresh_name_labels()
-        {
-            // Refresh each properties submenu title in turn
-            
-            refresh_controls(chart.Series.PropPanel.NamePanel);
-            refresh_controls(chart.Properties.PropPanel.NamePanel);
-            refresh_controls(Tracking.PropPanel.NamePanel);
-            refresh_controls(Segmentation.SpotDetPropPanel.NamePanel);
-            refresh_controls(Segmentation.DataPropPanel.NamePanel);
-            refresh_controls(Segmentation.LibPropPanel.NamePanel);
-            refresh_controls(Segmentation.HistogramPropPanel.NamePanel);
-            refresh_controls(Segmentation.tresholdsPropPanel.NamePanel);
-            refresh_controls(BandC.PropPanel.NamePanel);
-            refresh_controls(Meta.PropPanel.NamePanel);
-            refresh_controls(RoiMan.PropPanel.NamePanel);
-            
-        }
-
-        public void refresh_controls(Control ctrl)
-        {
-            //BeginControlUpdate(ctrl);
-            //EndControlUpdate(ctrl);
-            return;
-            ctrl.Invalidate();
-            
-            
-            Application.DoEvents();
-            foreach (Control ctrl2 in ctrl.Controls) { refresh_controls(ctrl2); }
-
+            TabPages.PropertiesBody.ResumeLayout();
+            TabPages.propertiesPanel.ResumeLayout();
         }
         
         private void ChangeT(string Val)
@@ -1636,25 +1584,6 @@ namespace Cell_Tool_3
             //});
             //wait the process to finish
             //t.Wait();
-        }
-
-
-        public void SetDoubleBuffered(System.Windows.Forms.Control c)
-        {
-            //Taxes: Remote Desktop Connection and painting
-            //http://blogs.msdn.com/oldnewthing/archive/2006/01/03/508694.aspx
-            if (System.Windows.Forms.SystemInformation.TerminalServerSession)
-                return;
-
-            System.Reflection.PropertyInfo aProp =
-                  typeof(System.Windows.Forms.Control).GetProperty(
-                        "DoubleBuffered",
-                        System.Reflection.BindingFlags.NonPublic |
-                        System.Reflection.BindingFlags.Instance);
-
-            
-            aProp.SetValue(c, true, null);
-            object doubleBuff = aProp.GetValue((object)c);
         }
     }
 }

@@ -32,16 +32,5 @@ namespace Cell_Tool_3
         {
             return input.Replace("/", "\\");
         }
-        public static bool isWinOS
-        {
-            get
-            {
-                if (System.Environment.OSVersion.Platform == PlatformID.MacOSX ||
-                System.Environment.OSVersion.Platform == PlatformID.Unix)
-                    return false;
-                else
-                    return true;
-            }
-        }
     }
 }

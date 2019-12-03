@@ -30,7 +30,7 @@ namespace Cell_Tool_3
         //controls
         public ImageAnalyser IA;
         public Ncalc_Adapter Ncalc;
-        public PropertiesPanel_Item PropPanel;
+        private PropertiesPanel_Item PropPanel;
         public Panel panel;
         public ComboBox xAxisTB;
         public ComboBox yAxisTB;
@@ -38,8 +38,6 @@ namespace Cell_Tool_3
         private Form OptionForm = new Form();
         private ComboBox nameCBox = new ComboBox();
         private TextBox fTBox = new TextBox();
-        private Label xAxisLabel, yAxisLabel;
-        private Button functionBtn;
         public string[] functions = null;
         //tooltip 
         private ToolTip TurnOnToolTip = new ToolTip();
@@ -52,31 +50,6 @@ namespace Cell_Tool_3
             PropPanel_Initialize(propertiesPanel, PropertiesBody);
             //GLControl event
             //IA.GLControl1.MouseDown += GLControl_MouseClick_tracking;
-        }
-
-        public void HideAll()
-        {
-            Application.DoEvents();
-            xAxisLabel.Hide();
-            xAxisTB.Hide();
-            yAxisLabel.Hide();
-            yAxisTB.Hide();
-            //functionBtn.Hide();
-
-        }
-
-        public void ShowAll()
-        {
-            xAxisLabel.Show();
-            xAxisTB.Show();
-            yAxisLabel.Show();
-            yAxisTB.Show();
-            //functionBtn.Show();
-
-            
-
-
-
         }
         private void Control_MouseOver(object sender, EventArgs e)
         {
@@ -114,7 +87,7 @@ namespace Cell_Tool_3
         }
         private void BuildOptions()
         {
-            xAxisLabel = new Label();
+            Label xAxisLabel = new Label();
             xAxisLabel.Text = "X axis:";
             xAxisLabel.Location = new Point(5, 35);
             panel.Controls.Add(xAxisLabel);
@@ -136,7 +109,7 @@ namespace Cell_Tool_3
             xAxisTB.AutoSize = false;
             xAxisTB.SelectedIndexChanged += xAxisTB_ChangeIndex;
 
-            yAxisLabel = new Label();
+            Label yAxisLabel = new Label();
             yAxisLabel.Text = "Y axis:";
             yAxisLabel.Location = new Point(5, 60);
             panel.Controls.Add(yAxisLabel);
@@ -154,30 +127,25 @@ namespace Cell_Tool_3
             yAxisTB.SelectedIndexChanged += yAxisTB_ChangeIndex;
 
             //function btn
-            functionBtn = new Button();
-            
-            functionBtn.Location = new Point(120, 57);
-            functionBtn.Width = 21;
-            functionBtn.Height = 21;
-            functionBtn.FlatStyle = FlatStyle.Flat;
-            functionBtn.BackColor = IA.FileBrowser.BackGround2Color1;
-            functionBtn.ForeColor = IA.FileBrowser.ShriftColor1;
-            functionBtn.Image = new Bitmap(Properties.Resources.settings, new Size(18, 18));
-            functionBtn.FlatAppearance.BorderSize = 0;
-            functionBtn.Text = "";
-            panel.Controls.Add(functionBtn);
-            functionBtn.BringToFront();
-            functionBtn.AutoSize = false;
+            Button btn = new Button();
+            btn.Width = 21;
+            btn.Height = 21;
+            btn.FlatStyle = FlatStyle.Flat;
+            btn.BackColor = IA.FileBrowser.BackGround2Color1;
+            btn.ForeColor = IA.FileBrowser.ShriftColor1;
+            btn.Image = new Bitmap(Properties.Resources.settings, new Size(18, 18));
+            btn.FlatAppearance.BorderSize = 0;
+            btn.Text = "";
+            PropPanel.Panel.Controls.Add(btn);
+            btn.BringToFront();
+            btn.Location = new Point(120, 57);
+            btn.Anchor = AnchorStyles.Left | AnchorStyles.Top;
 
-            //btn.Anchor = AnchorStyles.Left | AnchorStyles.Top;
-
-            functionBtn.MouseHover += new EventHandler(delegate (object o, EventArgs e)
+            btn.MouseHover += new EventHandler(delegate (object o, EventArgs e)
             {
-                TurnOnToolTip.SetToolTip(functionBtn, "Function editor");
+                TurnOnToolTip.SetToolTip(btn, "Function editor");
             });
-            functionBtn.Click += optionForm_Show;
-
-            
+            btn.Click += optionForm_Show;
 
             BuildDialog();
         }
@@ -531,10 +499,7 @@ namespace Cell_Tool_3
                 }
             });
 
-            // Unix change
-            IA.FileBrowser.StatusLabel.Text = "Dialog open";
             dialog.ShowDialog();
-            IA.FileBrowser.StatusLabel.Text = "Ready";
         }
         public string GetFunction(int ind)
         {
@@ -728,10 +693,7 @@ namespace Cell_Tool_3
                 }
             });
 
-            // Linux change
-            IA.FileBrowser.StatusLabel.Text = "Dialog open";
             dialog.ShowDialog();
-            IA.FileBrowser.StatusLabel.Text = "Ready";
         }
         private void nameCBox_IndexChanged(object sender, EventArgs e)
         {
@@ -766,11 +728,8 @@ namespace Cell_Tool_3
             }
             else
                 fTBox.Text = "";
-
-            // Linux change
-            IA.FileBrowser.StatusLabel.Text = "Dialog open";
+            
             OptionForm.ShowDialog();
-            IA.FileBrowser.StatusLabel.Text = "Ready";
         }
         private void optionForm_Hide()
         {

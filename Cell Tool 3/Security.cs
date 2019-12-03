@@ -47,7 +47,7 @@ namespace Cell_Tool_3
             {
                 settings.EndTrialDate = date.AddDays(31);
                 settings.TrialActive = true;
-                SaveSettings(settings);
+                settings.Save();
             }
             StartProgram = true;
             return;
@@ -63,7 +63,7 @@ namespace Cell_Tool_3
             if (settings.TrialActive == false)
             {
                 settings.EndTrialDate = date.AddDays(31);
-                SaveSettings(settings);
+                settings.Save();
             }
             else if(DateTime.Compare(settings.EndTrialDate,date) == -1)
             {
@@ -80,7 +80,7 @@ namespace Cell_Tool_3
                     //settings.Reset();
                     settings.TrialActive = false;
                     settings.EndTrialDate = date.AddDays(31);
-                    SaveSettings(settings);
+                    settings.Save();
                 }
                 else
                 {
@@ -112,7 +112,7 @@ namespace Cell_Tool_3
             if (settings.IncorrectPass > 2)
             {
                 settings.BlockProgram = true;
-                SaveSettings(settings);
+                settings.Save();
             }
         }
         private Boolean IsTrialActive()
@@ -154,11 +154,9 @@ namespace Cell_Tool_3
             OkBtn.Click += new EventHandler(OkBtn_Click);
             TrialForm.Controls.Add(OkBtn);
             // Show dialog
-            PassBox_config();
-
-            // TODO - change status label
-            TrialForm.ShowDialog();
-        }
+           PassBox_config();
+           TrialForm.ShowDialog();
+      }
         private void PassBox_config()
         {
             PassBox.Text = "";
@@ -185,7 +183,7 @@ namespace Cell_Tool_3
             {
                 settings.IncorrectPass = 0;
                 settings.TrialActive = true;
-                SaveSettings(settings);
+                settings.Save();
                 StartProgram = true;
                 TrialForm.Close();
             }
@@ -193,7 +191,7 @@ namespace Cell_Tool_3
             {
                 PassBox_config();
                 settings.IncorrectPass += 1;
-                SaveSettings(settings);
+                settings.Save();
                 MessageBox.Show("Wrong key!");
             }
         }
@@ -294,7 +292,7 @@ namespace Cell_Tool_3
                 NewAccPanel.ForeColor = Color.White;
                 NewAccPanel.Dock = DockStyle.Fill;
                 NewAccPanel.Visible = false;
-                AccForm.Controls.Add(NewAccPanel);
+                //AccForm.Controls.Add(NewAccPanel);
 
                 //labels
                 Label accLabel = new Label();
@@ -368,7 +366,7 @@ namespace Cell_Tool_3
                 AccListPanel.ForeColor = Color.White;
                 AccListPanel.Dock = DockStyle.Fill;
                 AccListPanel.Visible = false;
-                AccForm.Controls.Add(AccListPanel);
+                //AccForm.Controls.Add(AccListPanel);
                 //Add ListBox
                 AccListBox.Dock = DockStyle.Top;
                 AccListBox.BackColor = Color.DimGray;
@@ -495,29 +493,14 @@ namespace Cell_Tool_3
             PassPanel.VisibleChanged += Panel_VisibleChange;
             NewAccPanel.VisibleChanged += Panel_VisibleChange;
 
-            // TODO - change status label
             AccForm.ShowDialog();
         }
         private void Panel_VisibleChange(object sender, EventArgs e)
         {
-            Panel pnl = (Panel)sender;
-
-            pnl.Invalidate();
-            Application.DoEvents();
-
-            foreach (Control ctr in pnl.Controls)
-            {
-                ctr.Visible = pnl.Visible;
-                ctr.Invalidate();
-                Application.DoEvents();
-            }
-
-            
-            /*
             if (!((Panel)sender).Visible) return;
 
             AccForm.Controls.Clear();
-            AccForm.Controls.Add((Panel)sender);*/
+            AccForm.Controls.Add((Panel)sender);
         }
         private void changeAdminPass_ShowDialog(object sender, EventArgs e)
         {
@@ -542,6 +525,7 @@ namespace Cell_Tool_3
         {
             AccForm.Height = 200;
             AccForm.Text = "New";
+            PassPanel.Visible = false;
             AccListPanel.Visible = false;
             NewAccPanel.Visible = true;
         }
@@ -579,9 +563,9 @@ namespace Cell_Tool_3
             //Auto commence
             AutoComenceTbox();
             //Panels settings
+            PassPanel.Visible = true;
             NewAccPanel.Visible = false;
             AccListPanel.Visible = false;
-            PassPanel.Visible = true;
         }
         private void Login_Event(object sender,EventArgs e)
         {
@@ -629,10 +613,9 @@ namespace Cell_Tool_3
                 AccListBox.Items.Add(Str);
             }
             AccForm.Height = 180;
-            
+            AccListPanel.Visible = true;
             PassPanel.Visible = false;
             NewAccPanel.Visible = false;
-            AccListPanel.Visible = true;
         }
         private void CreateAccount()
         {
@@ -662,7 +645,7 @@ namespace Cell_Tool_3
                 settings.AccList.Add(accTbox1.Text);
                 settings.AccPass.Add(passTbox1.Text);
                 AddSettings();
-                SaveSettings(settings);
+                settings.Save();
 
                 //LogIn
                 for (int i = 0; i < settings.AccList.Count; i++)
@@ -715,7 +698,7 @@ namespace Cell_Tool_3
                         settings.AccList.RemoveAt(i);
                         settings.AccPass.RemoveAt(i);
                         DeleteSettings(i);
-                        SaveSettings(settings);
+                        settings.Save();
                         deleted = true;
                     }
                     i++;
@@ -731,8 +714,6 @@ namespace Cell_Tool_3
             //Delete all settings
             BackBtn_click(sender, e);
             //Start Dialog
-
-            // TODO - change status label
             AccForm.ShowDialog();
         }
         public void ChangePass_event(object sender, EventArgs e)
@@ -740,8 +721,6 @@ namespace Cell_Tool_3
             NewPassTextBox.Text = "";
             reNewPassTextBox.Text = "";
             oldPassTextBox.Text = "";
-
-            // TODO - change status label
             ChangePassForm.ShowDialog();
         }
         private void ChangePassTBox_KeyDown(object sender,KeyEventArgs e)
@@ -775,14 +754,14 @@ namespace Cell_Tool_3
                     ChangeAdminPass = false;
                     settings.AccPass[0] = NewPassTextBox.Text;
                     AdminPass = NewPassTextBox.Text;
-                    SaveSettings(settings);
+                    settings.Save();
                     ChangePassForm_clear();
                     Admin_Event();
                 }
                 else if (oldPassTextBox.Text == settings.AccPass[AccIndex])
                 {
                         settings.AccPass[AccIndex] = NewPassTextBox.Text;
-                        SaveSettings(settings);
+                        settings.Save();
                         ChangePassForm_clear();
                 }
                 else
@@ -845,7 +824,7 @@ namespace Cell_Tool_3
             }
             catch { }
             //Save Changes
-            SaveSettings(settings);
+            settings.Save();
         }
         private void AddSettings()
         {
@@ -897,7 +876,7 @@ namespace Cell_Tool_3
             }
             catch {}
             //Save Changes
-            SaveSettings(settings);
+            settings.Save();
         }
         private void rescueSettings()
         {
@@ -945,7 +924,7 @@ namespace Cell_Tool_3
             rescue(settings.HotKeys);
             rescue(settings.SmartBtns);
             //Save
-            SaveSettings(settings);
+            settings.Save();
         }
         private void rescue(System.Collections.Specialized.StringCollection vals)
         {
@@ -1132,14 +1111,6 @@ namespace Cell_Tool_3
                     break;
             }
         }
-  
-		public static void SaveSettings(Properties.Settings settings)
-		{
-			if ((System.Environment.OSVersion.Platform != PlatformID.MacOSX) &&
-			    (System.Environment.OSVersion.Platform != PlatformID.Unix)) {
-			
-				settings.Save ();
-			}
-		}
-	} 
+    }
+   
 }

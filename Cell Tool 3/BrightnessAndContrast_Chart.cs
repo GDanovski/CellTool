@@ -24,10 +24,10 @@ namespace Cell_Tool_3
             this.Controls.Add(CA);
             //CA.Dock = DockStyle.Fill;
             Panel labPanel = new Panel();
-            //labPanel.Dock = DockStyle.Bottom;
-            
-            labPanel.Visible = true;
-            //this.Controls.Add(labPanel);
+            labPanel.Dock = DockStyle.Bottom;
+            labPanel.Height = 25;
+            labPanel.Visible = false;
+            this.Controls.Add(labPanel);
             CA.labelPanel = labPanel;
 
             for(int i = 0; i<Labels.Length; i++)
@@ -58,16 +58,15 @@ namespace Cell_Tool_3
         }
         private void CalculateLabelsLocations()
         {
-            int step = (int)(CA.Width / 5);
+            int step = (int)(CA.Width / 4);
 
             CA.labelPanel.SuspendLayout();
 
-            for(int i = 0, X = 3/*CA.Location.X*/; i < Labels.Length; i++, X+=step)
+            for(int i = 0, X = CA.Location.X; i < Labels.Length; i++, X+=step)
             {
-                Labels[i].AutoSize = true;
                 Labels[i].Text = CA.Labels[i].ToString();
                 Labels[i].Width = TextRenderer.MeasureText(Labels[i].Text, Labels[i].Font).Width;
-                Labels[i].Location = new Point(X - Labels[i].Width / 2, 10);
+                Labels[i].Location = new Point(X - Labels[i].Width / 2, 1);
             }
 
             CA.labelPanel.ResumeLayout(true);

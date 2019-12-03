@@ -54,7 +54,7 @@ namespace Cell_Tool_3
         private List<ROI> OriginalROIList = null;
         //controls
         public ImageAnalyser IA;
-        public PropertiesPanel_Item PropPanel;
+        private PropertiesPanel_Item PropPanel;
         private Panel InsidePanel = new Panel();
         public Panel panel;
         //Variable controls
@@ -71,17 +71,12 @@ namespace Cell_Tool_3
         CTTextBox finishT_tb = null;
         CTTextBox startZ_tb = null;
         CTTextBox finishZ_tb = null;
-
-        private GroupBox gb;
         //tooltip 
         private ToolTip TurnOnToolTip = new ToolTip();
 
         const float DEG2RAD = (float)(3.14159 / 180.0);
         //History
         string HistBuf = "";
-
-        // Keep track of the node currently selected
-        TreeNode selectedNode = null;
         #region Initialize
         public RoiManager(Panel propertiesPanel, Panel PropertiesBody, ImageAnalyser IA)
         {
@@ -252,8 +247,7 @@ namespace Cell_Tool_3
             saveFileDialog1.Filter = formatStr;
             saveFileDialog1.FilterIndex = 1;
             saveFileDialog1.RestoreDirectory = false;
-            saveFileDialog1.InitialDirectory = OSStringConverter.StringToDir(
-                node.Tag.ToString().Substring(0, node.Tag.ToString().Length - (node.Text.Length + 1)));
+            saveFileDialog1.InitialDirectory = node.Tag.ToString().Substring(0, node.Tag.ToString().Length - (node.Text.Length + 1));
             saveFileDialog1.FileName = node.Text.Replace(".tif", "");
             saveFileDialog1.OverwritePrompt = true;
             saveFileDialog1.Title = "Measure ROIs to:";
@@ -480,7 +474,6 @@ namespace Cell_Tool_3
 
             if (ofd.ShowDialog() == DialogResult.OK)
             {
-
                 using (StreamReader sr = new StreamReader(ofd.FileName))
                 {
                     string str = sr.ReadToEnd();
@@ -490,7 +483,6 @@ namespace Cell_Tool_3
                             roi_new(val, fi);
                     }
                 }
-
                 IA.ReloadImages();
             }
         }
@@ -504,7 +496,7 @@ namespace Cell_Tool_3
             catch { return; }
             if (fi == null) { return; }
 
-            using (StreamReader sr = new StreamReader(OSStringConverter.StringToDir(dir)))
+            using (StreamReader sr = new StreamReader(dir))
             {
                 string str = sr.ReadToEnd();
                 foreach (string val in str.Split(new string[] { "\r\n" }, StringSplitOptions.None))
@@ -560,9 +552,8 @@ namespace Cell_Tool_3
             saveFileDialog1.Filter = formatStr;
             saveFileDialog1.FilterIndex = 1;
             saveFileDialog1.RestoreDirectory = false;
-            saveFileDialog1.InitialDirectory = OSStringConverter.StringToDir(
-                node.Tag.ToString().Substring(0, node.Tag.ToString().Length - (node.Text.Length + 1)));
-            saveFileDialog1.FileName = node.Text.Replace(".tif", "");
+            saveFileDialog1.InitialDirectory = node.Tag.ToString().Substring(0, node.Tag.ToString().Length - (node.Text.Length + 1));
+            saveFileDialog1.FileName = node.Text;
 
             if(node.Text.LastIndexOf(".")>-1)
                 saveFileDialog1.FileName = node.Text.Substring(0, node.Text.LastIndexOf("."));
@@ -585,8 +576,7 @@ namespace Cell_Tool_3
                     foreach (TreeNode n in roiTV.Nodes)
                     {
                         ROI roi = (ROI)n;
-                        //sw.WriteLine(roi_new(fi.cValue, roi));
-                        sw.Write(roi_new(fi.cValue, roi) + "\r\n");
+                        sw.WriteLine(roi_new(fi.cValue, roi));
                     }
                     //MessageBox.Show("Roi set saved to:\n" + dir);
                 }
@@ -607,7 +597,8 @@ namespace Cell_Tool_3
             tb.Width = node.Bounds.Width;
             tb.Height = node.Bounds.Height;
             tb.Visible = true;
-
+            roiTV.Controls.Add(tb);
+            tb.Focus();
             if (!String.IsNullOrEmpty(tb.Text))
             {
                 tb.SelectionStart = 0;
@@ -616,19 +607,16 @@ namespace Cell_Tool_3
 
             tb.TextChanged += new EventHandler(delegate (Object o, EventArgs a)
             {
-                if (tb.Text == "") return;
-               
                 int w = TextRenderer.MeasureText(tb.Text, tb.Font).Width + 5;
                 if (tb.Width < w)
-               {
-                        tb.Width = w;
-               }
+                {
+                    tb.Width = w;
+                }
             });
 
             tb.LostFocus += new EventHandler(delegate (Object o, EventArgs a)
             {
-                string str = tb.Text;
-                if (str.IndexOf("=") > -1)
+                if (tb.Text.IndexOf("=") > -1)
                 {
                     MessageBox.Show("Symbol \"=\" is not allowed!");
                 }
@@ -641,26 +629,22 @@ namespace Cell_Tool_3
                     }
                     catch { return; }
                     if (fi == null) return;
+
                     #region History
                     if (fi.roiList[fi.cValue] != null && fi.roiList[fi.cValue].IndexOf(node) > -1)
                         addToHistoryOldInfo(roi_getStat(node, fi, "Comment"), fi);
 
                     #endregion History
-                    node.Comment = str;
+
+                    node.Comment = tb.Text;
+
                     #region History
                     if (fi.roiList[fi.cValue] != null && fi.roiList[fi.cValue].IndexOf(node) > -1)
                         addToHistoryNewInfo(roi_getStat(node, fi, "Comment"), fi);
                     #endregion History
                 }
 
-                if (roiTV.Controls.Contains(tb))
-                {
-                    tb.Visible = false;
-                    roiTV.Controls.Remove(tb);
-                    tb.Dispose();
-                    IA.ReloadImages();
-                    Application.DoEvents();
-                }
+                tb.Dispose();
             });
             tb.KeyDown += new KeyEventHandler(delegate (Object o, KeyEventArgs a)
             {
@@ -692,26 +676,26 @@ namespace Cell_Tool_3
                         if (fi.roiList[fi.cValue] != null && fi.roiList[fi.cValue].IndexOf(node) > -1)
                             addToHistoryNewInfo(roi_getStat(node, fi, "Comment"), fi);
                         #endregion History
+
+
                     }
 
-                    if (roiTV.Controls.Contains(tb))
-                    {
-                        tb.Visible = false;
-                        roiTV.Controls.Remove(tb);
-                        tb.Dispose();
-                        IA.ReloadImages();
-                        Application.DoEvents();
-                    }
+                    tb.Dispose();
 
                     a.Handled = true;
                     a.SuppressKeyPress = true;
                 }
+
             });
-
-            roiTV.Controls.Add(tb);
-            tb.Focus();
+            roiTV.AfterSelect += new TreeViewEventHandler(delegate (Object o, TreeViewEventArgs a)
+            {
+                tb.Dispose();
+            });
+            roiTV.MouseWheel += new MouseEventHandler(delegate (Object o, MouseEventArgs a)
+            {
+                tb.Dispose();
+            });
         }
-
         private void RenameBtn_Click(object sender, EventArgs e)
         {
             ROI node = (ROI)((MenuItem)sender).Tag;
@@ -983,11 +967,11 @@ namespace Cell_Tool_3
             string name = fi.Dir.Substring(fi.Dir.LastIndexOf("\\") + 1, fi.Dir.Length - fi.Dir.LastIndexOf("\\") - 1);
             List<string> roiInfo = new List<string>();
 
-            if (!File.Exists(OSStringConverter.StringToDir(dir + "\\RoiInfo.txt"))) return;
+            if (!File.Exists(dir + "\\RoiInfo.txt")) return;
 
             try
             {
-                using (StreamReader sr = new StreamReader(OSStringConverter.StringToDir(dir + "\\RoiInfo.txt")))
+                using (StreamReader sr = new StreamReader(dir + "\\RoiInfo.txt"))
                 {
                     string str = sr.ReadLine();
                     while (str != null)
@@ -1841,12 +1825,8 @@ namespace Cell_Tool_3
         }
         private void roiTV_selectedNodeChange(object sender, EventArgs e)
         {
-            if (roiTV.SelectedNode != selectedNode)
-            {
-                selectedNode = roiTV.SelectedNode;
-                selectedRoiChanged((ROI)roiTV.SelectedNode);
-                IA.ReloadImages();
-            }
+            selectedRoiChanged((ROI)roiTV.SelectedNode);
+            IA.ReloadImages();
         }
         public void DeleteBtn_Click(object sender, EventArgs e)
         {
@@ -1897,7 +1877,7 @@ namespace Cell_Tool_3
             panel.Controls.Add(p);
             p.BringToFront();
 
-            gb = new GroupBox();
+            GroupBox gb = new GroupBox();
             gb.Text = "Options:";
             gb.Dock = DockStyle.Bottom;
             gb.Height = 200;
@@ -1931,15 +1911,15 @@ namespace Cell_Tool_3
             n_tb = CTTextBox_Add(5, 170, gb, "Stack:", "Number of layers in ROI stack");
             n_tb.Value.Changed += n_tb_textChanged;
 
-            w_tb = CTTextBox_Add(155, 70, gb, "W:", "Width");
+            w_tb = CTTextBox_Add(125, 70, gb, "W:", "Width");
             w_tb.Value.Changed += w_tb_textChanged;
-            h_tb = CTTextBox_Add(155, 95, gb, "H:", "Height");
+            h_tb = CTTextBox_Add(125, 95, gb, "H:", "Height");
             h_tb.Value.Changed += h_tb_textChanged;
-            finishT_tb = CTTextBox_Add(155, 120, gb, "to T:", "The last time frame of which ROI is avaliable");
+            finishT_tb = CTTextBox_Add(125, 120, gb, "to T:", "The last time frame of which ROI is avaliable");
             finishT_tb.Value.Changed += ToT_tb_textChanged;
-            finishZ_tb = CTTextBox_Add(155, 145, gb, "to Z:", "The last Z frame of which ROI is avaliable");
+            finishZ_tb = CTTextBox_Add(125, 145, gb, "to Z:", "The last Z frame of which ROI is avaliable");
             finishZ_tb.Value.Changed += ToZ_tb_textChanged;
-            d_tb = CTTextBox_Add(155, 170, gb, "D:", "Width of layer");
+            d_tb = CTTextBox_Add(125, 170, gb, "D:", "Width of layer");
             d_tb.Value.Changed += d_tb_textChanged;
             //Roi List Control
             TreeView tv = new TreeView();
@@ -1964,53 +1944,6 @@ namespace Cell_Tool_3
             //select node event
             tv.AfterSelect += roiTV_selectedNodeChange;
             tv.AfterCheck += roiTV_CheckNode;
-
-        }
-
-        public void HideAll()
-        {
-            gb.Hide();
-
-            foreach (Control ctrl in gb.Controls)
-            {
-                if (ctrl is Label) { ctrl.Hide(); }
-            }
-            RoiName.Hide();
-            RoiTypeL.Hide();
-            //roiTV
-            x_tb.HideAll();
-            y_tb.HideAll();
-            w_tb.HideAll();
-            h_tb.HideAll();
-            d_tb.HideAll();
-            n_tb.HideAll();
-            startT_tb.HideAll();
-            finishT_tb.HideAll();
-            startZ_tb.HideAll();
-            finishZ_tb.HideAll();
-        }
-
-        public void ShowAll()
-        {
-            gb.Show();
-            foreach (Control ctrl in gb.Controls)
-            {
-                if (ctrl is Label) { ctrl.Show(); }
-            }
-
-            RoiName.Show();
-            RoiTypeL.Show();
-            //roiTV
-            x_tb.ShowAll();
-            y_tb.ShowAll();
-            w_tb.ShowAll();
-            h_tb.ShowAll();
-            d_tb.ShowAll();
-            n_tb.ShowAll();
-            startT_tb.ShowAll();
-            finishT_tb.ShowAll();
-            startZ_tb.ShowAll();
-            finishZ_tb.ShowAll();
         }
         private Bitmap ExtendedBitmap(Bitmap source)
         {
@@ -2404,8 +2337,7 @@ namespace Cell_Tool_3
             RoiMeasure.Measure(current, fi, fi.cValue, IA);
             IA.ReloadImages();
         }
-
-        public void clear_ROI_selection()
+        private void clear_ROI_selection()
         {
             x_tb.Disable();
             y_tb.Disable();
@@ -2417,9 +2349,6 @@ namespace Cell_Tool_3
             finishT_tb.Disable();
             startZ_tb.Disable();
             finishZ_tb.Disable();
-
-            // Remove the focus
-            x_tb.label.Focus();
 
             RoiName.Text = "Name: ";
             RoiTypeL.Text = "Type: ";
@@ -2561,7 +2490,7 @@ namespace Cell_Tool_3
             Label lb = new Label();
             lb.Text = title;
             lb.Tag = tag;
-            lb.Width = 60;
+            lb.Width = 40;
             lb.Location = new Point(X, Y + 3);
             gb.Controls.Add(lb);
             lb.MouseHover += Control_MouseOver;
@@ -3927,7 +3856,7 @@ namespace Cell_Tool_3
             saveFileDialog1.FilterIndex = 1;
             saveFileDialog1.RestoreDirectory = false;
             //saveFileDialog1.InitialDirectory = node.Tag.ToString().Substring(0, node.Tag.ToString().Length - (node.Text.Length + 1));
-            saveFileDialog1.InitialDirectory = OSStringConverter.StringToDir(fi.Dir.Substring(0, fi.Dir.LastIndexOf("\\")));
+            saveFileDialog1.InitialDirectory = fi.Dir.Substring(0, fi.Dir.LastIndexOf("\\"));
             saveFileDialog1.FileName = node.Text.Replace(".tif", "");
             saveFileDialog1.OverwritePrompt = true;
             saveFileDialog1.Title = "Mesure ROIs to:";
@@ -3961,7 +3890,7 @@ namespace Cell_Tool_3
             TreeNode node = IA.TabPages.Collections[IA.TabPages.SelectedIndex][0].Tag as TreeNode;
 
             //string dir = node.Tag.ToString().Replace(".tif", "");
-            string dir = OSStringConverter.StringToDir(fi.Dir.Replace(".tif", ""));
+            string dir = fi.Dir.Replace(".tif", "");
 
             //background worker
 
@@ -4391,10 +4320,7 @@ namespace Cell_Tool_3
 
             OptionForm.ResumeLayout();
 
-            // Linux change
-            IA.FileBrowser.StatusLabel.Text = "Dialog open";
             OptionForm.ShowDialog();
-            IA.FileBrowser.StatusLabel.Text = "Ready";
             OptionForm.Dispose();
 
             if (secoundROI == null) return;

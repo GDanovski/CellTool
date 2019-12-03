@@ -62,7 +62,7 @@ namespace Cell_Tool_3
             
             try
             {
-                FirstReader.setId(OSStringConverter.StringToDir(path));
+                FirstReader.setId(path);
             }
             catch
             {
@@ -79,7 +79,7 @@ namespace Cell_Tool_3
             TifFileInfo fi = tp.tifFI;
             fi.seriesCount = reader.getSeriesCount();
             //Select which series to open!!!!!
-            int ser = SelectSeries(reader, IA.TabPages.FileBrowser.StatusLabel);
+            int ser = SelectSeries(reader);
             if(ser == -1)
             {
                 fi = null;
@@ -217,7 +217,7 @@ namespace Cell_Tool_3
                 if (isLibTifCompatible(path) && !isRGB)
                 {
                     int[] dimOrder = GetFrameIndexes(reader, fi);
-                    Tiff image = Tiff.Open(OSStringConverter.StringToDir(path), "r");
+                    Tiff image = Tiff.Open(path, "r");
                     //prepare array and read file
                     int midFrame = fi.sizeC * fi.sizeZ;
                     switch (fi.bitsPerPixel)
@@ -441,7 +441,7 @@ namespace Cell_Tool_3
         {
             if (!dir.EndsWith(".tif")) return false;
 
-            using (Tiff tif = Tiff.Open(OSStringConverter.StringToDir(dir), "r"))
+            using (Tiff tif = Tiff.Open(dir, "r"))
             {
                 if (tif == null)
                 {
@@ -469,7 +469,7 @@ namespace Cell_Tool_3
         private static string getLibTifFileDescription(string dir)
         {
             string des = "";
-            using (Tiff tif = Tiff.Open(OSStringConverter.StringToDir(dir), "r"))
+            using (Tiff tif = Tiff.Open(dir, "r"))
             {
                 if (tif == null)
                     return "";
@@ -740,7 +740,7 @@ namespace Cell_Tool_3
 
             return indexes;
         }
-        private static int SelectSeries(loci.formats.ChannelSeparator reader, ToolStripStatusLabel StatusLabel)
+        private static int SelectSeries(loci.formats.ChannelSeparator reader)
         {
             int res = -1;
             if (reader.getSeriesCount() == 1)
@@ -822,10 +822,8 @@ namespace Cell_Tool_3
                     }
                 });
 
-                StatusLabel.Text = "Dialog open";
                 OptionForm.ShowDialog();
                 OptionForm.Dispose();
-                StatusLabel.Text = "Ready";
             }
             return res;
         }

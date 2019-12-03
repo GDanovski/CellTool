@@ -24,7 +24,6 @@ using System.Data;
 using System.Drawing;
 using System.Globalization;
 using System.Linq;
-using System.Security.Permissions;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -36,21 +35,6 @@ namespace Cell_Tool_3
     {
         Interface Interface = new Interface();
         Security SecurityControl = new Security();
-
-        /*
-        [System.Security.Permissions.SecurityPermission(SecurityAction.Demand, Flags = SecurityPermissionFlag.UnmanagedCode)]
-        protected override void WndProc(ref Message m)
-        {
-                // The WParam value identifies what is occurring.
-                bool appActive = (int)m.WParam != 0;
-                Console.WriteLine(m.Msg);
-
-                // Invalidate to get new text painted.
-                //this->Invalidate();
-
-            base.WndProc(ref m);
-        }
-        */
         protected override bool ProcessCmdKey(ref Message msg, Keys keyData)
         {
             switch (keyData)
@@ -97,31 +81,9 @@ namespace Cell_Tool_3
             Application.AddMessageFilter(gmh);
            //Start the component
             InitializeComponent();
-
-            this.EnabledChanged += new EventHandler(delegate (object o, EventArgs e)
-            {
-                try
-                {
-                    
-                    if (!Enabled && Interface.TabPages.propertiesPanel.Width != 15)
-                    {
-                        Interface.TabPages.IA.refresh_name_labels();
-                        Interface.TabPages.properties_hidden = true;
-                    }
-                    if (Enabled && Interface.TabPages.properties_hidden)
-                    {
-                        Interface.TabPages.IA.refresh_properties_panels();
-                        Interface.TabPages.IA.refresh_name_labels();
-                        Interface.TabPages.properties_hidden = false;
-                    }
-                }
-                catch { }
-            });
             
         }
-
-        
-
+       
         void gmh_TheMouseMoved()
         {
             //Get cursor position
@@ -174,7 +136,7 @@ namespace Cell_Tool_3
         private void CellToolMainForm_Load(object sender, EventArgs e)
         {
             Thread.CurrentThread.CurrentCulture = CultureInfo.CreateSpecificCulture("en-GB");
-            
+
             this.SuspendLayout();
             //Hide main form
             this.Hide();
@@ -184,15 +146,12 @@ namespace Cell_Tool_3
             //Show Log0
             Updater.UpdateSettings();
             Interface.ShowLogo();
-
             //Security control check - is It ok to continue with initializing the program
             SecurityControl.Initialize();
             SecurityControl.ChooseAccount();
-            Interface.ActiveAccountIndex = SecurityControl.AccIndex;			
+            Interface.ActiveAccountIndex = SecurityControl.AccIndex;
             //set main form propertties
             Interface.MainFormInitialize(this);
-
-            Helpers.Settings.SaveSettings();
 
             //Developer menu
             Interface.IA.PlugIns = new PlugInEngine(Interface.DeveloperToolStripMenuItem, Interface.IA);
@@ -204,10 +163,6 @@ namespace Cell_Tool_3
             
             //resize
             this.Resize += new EventHandler(Form1_Resize);
-
-            // Make the main form always maximized
-            this.TopMost = true;
-
             this.MinimumSize = new Size(400, 400);
             //Add Account settings Hendlers
             Interface.LogOutToolStripMenuItem.Click += new EventHandler(LogOut_event);
@@ -218,13 +173,11 @@ namespace Cell_Tool_3
             Interface.TabPages.ImageMainPanel.Visible = false;
 
             this.ResumeLayout(true);
-            base.Show();
-
+            this.Show();
 
             Form_StartWithFile();
-        }
 
-        
+        }
         private void Form1_Resize(object sender, EventArgs e)
         {
             if (this.WindowState == FormWindowState.Minimized) return;
@@ -243,7 +196,7 @@ namespace Cell_Tool_3
             {
                 if (SecurityControl.settings.DataSourcesPanelVisible[SecurityControl.AccIndex] == "y")
                 {
-                    Interface.FileBrowser.DataSourcesPanel.Width = 300; // int.Parse(SecurityControl.settings.DataSourcesPanelValues[SecurityControl.AccIndex]);
+                    Interface.FileBrowser.DataSourcesPanel.Width = int.Parse(SecurityControl.settings.DataSourcesPanelValues[SecurityControl.AccIndex]);
                 }
             }
 
@@ -271,9 +224,9 @@ namespace Cell_Tool_3
                     if (dir.Length > 5)
                     {
                         if (dir.Substring(dir.Length - 4, 4) != ".exe") {
-                            TreeNode node = Interface.FileBrowser.CheckForFile(OSStringConverter.GetWinString(dir));
+                            TreeNode node = Interface.FileBrowser.CheckForFile(dir);
                             if (node != null) { Interface.FileBrowser.Openlabel.Tag = node; }
-                            Interface.FileBrowser.Openlabel.Text = "'" + OSStringConverter.GetWinString(dir) + "'";
+                            Interface.FileBrowser.Openlabel.Text = "'" + dir + "'";
                             Interface.FileBrowser.Openlabel.Text = "";
                         }
                     }
@@ -290,9 +243,9 @@ namespace Cell_Tool_3
            string[] dirList = e.Data.GetData(DataFormats.FileDrop) as string[];
          foreach (string dir in dirList)
             {
-                TreeNode node = Interface.FileBrowser.CheckForFile(OSStringConverter.GetWinString(dir));
+                TreeNode node = Interface.FileBrowser.CheckForFile(dir);
                 if (node != null) { Interface.FileBrowser.Openlabel.Tag = node; }
-                Interface.FileBrowser.Openlabel.Text = "'" + OSStringConverter.GetWinString(dir) + "'";
+                Interface.FileBrowser.Openlabel.Text = "'" + dir + "'";
                 Interface.FileBrowser.Openlabel.Text = "";
             }
         }
@@ -331,11 +284,11 @@ namespace Cell_Tool_3
                 Interface.IA.BandC.panel.Visible = false;
             }
             //data source panel
-            Interface.FileBrowser.DataSourcesPanelWidth = 300; // int.Parse(SecurityControl.settings.DataSourcesPanelValues[SecurityControl.AccIndex]);
+            Interface.FileBrowser.DataSourcesPanelWidth = int.Parse(SecurityControl.settings.DataSourcesPanelValues[SecurityControl.AccIndex]);
             Interface.FileBrowser.ActiveAccountIndex = SecurityControl.AccIndex;
             if (SecurityControl.settings.DataSourcesPanelVisible[SecurityControl.AccIndex] == "y")
             {
-                Interface.FileBrowser.DataSourcesPanel.Width = 300; // int.Parse(SecurityControl.settings.DataSourcesPanelValues[SecurityControl.AccIndex]);
+                Interface.FileBrowser.DataSourcesPanel.Width = int.Parse(SecurityControl.settings.DataSourcesPanelValues[SecurityControl.AccIndex]);
             }
             else
             {
@@ -410,7 +363,7 @@ namespace Cell_Tool_3
             //Chart
             Interface.IA.chart.Properties.LoadFunctions();
             //Properties
-			Interface.IA.Segmentation.AutoSetUp.ApplyToNewCheckB.Checked = bool.Parse(SecurityControl.settings.AutoProtocolSettings[SecurityControl.AccIndex]);
+            Interface.IA.Segmentation.AutoSetUp.ApplyToNewCheckB.Checked = bool.Parse(SecurityControl.settings.AutoProtocolSettings[SecurityControl.AccIndex]);
             Interface.IA.Segmentation.AutoSetUp.LoadSettings();
             //HotKeys
             Interface.HotKays.LoadAccountSettings();
@@ -515,41 +468,28 @@ namespace Cell_Tool_3
             Interface.HotKeysToolStripMenuItem.Click += Interface.HotKays.HotKeysToolStripMenuItem_Click;
             Interface.SmartBtnToolStripMenuItem.Click += Interface.SmartButtons.SmartBtnToolStripMenuItem_Click;
         }
-
-        
         private void OpenFile(object sender, EventArgs e)
         {
-
-
-            CTFileDialog.OpenFileDialog ofd = new CTFileDialog.OpenFileDialog();
+            OpenFileDialog ofd = new OpenFileDialog();
             string formatStr = "TIF files (*.tif)|*.tif|All files (*.*)|*.*";
             /*
             foreach (string formatMiniStr in Interface.TabPages.myFileDecoder.Formats)
             {
-                formatStr += "|" + formatMiniStr.Substring(1, formatMiniStr.Length - 1) +show
+                formatStr += "|" + formatMiniStr.Substring(1, formatMiniStr.Length - 1) +
                 " files (*" + formatMiniStr + ")|*" + formatMiniStr;
             }*/
                         
             ofd.Filter = formatStr;
             ofd.FilterIndex = 1;
-            ofd.CheckFileExists = false;
-            
-            try
+            ofd.RestoreDirectory = true;
+                       
+            if (ofd.ShowDialog() == DialogResult.OK)
             {
-                //DialogResult dialogRes = ofd.ShowDialog();
-                if (ofd.ShowDialog() == DialogResult.OK)
-                {
-
-                    TreeNode node = Interface.FileBrowser.CheckForFile(OSStringConverter.GetWinString(ofd.FileName));
-                    if (node != null) { Interface.FileBrowser.Openlabel.Tag = node; }
-                    Interface.FileBrowser.Openlabel.Text = "'" + OSStringConverter.GetWinString(ofd.FileName) + "'";
-                    Interface.FileBrowser.Openlabel.Text = "";
-                }
-            } catch {
-                Console.WriteLine("Failed to open file.");
-                //Application.Exit();
+                TreeNode node = Interface.FileBrowser.CheckForFile(ofd.FileName);
+                if(node != null) { Interface.FileBrowser.Openlabel.Tag = node; }
+                Interface.FileBrowser.Openlabel.Text = "'" + ofd.FileName + "'";
+                Interface.FileBrowser.Openlabel.Text = "";
             }
         }
-
     }
 }

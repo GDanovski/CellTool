@@ -114,12 +114,8 @@ namespace Cell_Tool_3
                     MessageBox.Show("Image is not avaliable yet!");
                     return;
                 }
-
-                // Linux change
-                IA.FileBrowser.StatusLabel.Text = "Edit...";
+               
                 ProjectionForm.ShowDialog();
-                IA.FileBrowser.StatusLabel.Text = "Ready";
-
             });
            
             CropToolStripMenuItem.Text = "Crop";
@@ -312,7 +308,7 @@ namespace Cell_Tool_3
             }
         }
         #region Substack
-        private static int[][] SubstackDialog(TifFileInfo fi, ToolStripStatusLabel StatusLabel)
+        private static int[][] SubstackDialog(TifFileInfo fi)
         {
             int[][] res = null;
 
@@ -517,11 +513,10 @@ namespace Cell_Tool_3
                         break;
                 }
             });
-            
-            StatusLabel.Text = "Dialog open";
+
             OptionForm.ShowDialog();
             OptionForm.Dispose();
-            StatusLabel.Text = "Ready";
+
             return res;
         }
         private void SubstackToolStripMenuItem_click(object sender, EventArgs e)
@@ -535,7 +530,7 @@ namespace Cell_Tool_3
             if (fi == null) { return; }
             if (fi.available == false) return;
 
-            int[][] dim = SubstackDialog(fi,this.IA.FileBrowser.StatusLabel);
+            int[][] dim = SubstackDialog(fi);
 
             if (dim == null) return;
 
@@ -1900,10 +1895,7 @@ namespace Cell_Tool_3
             okBtn.Location = new Point(OptionForm.Width/2 - 10 -okBtn.Width, 10);
             cancelBtn.Location = new Point(OptionForm.Width / 2 - 5, 10);
 
-            // Linux change
-            IA.FileBrowser.StatusLabel.Text = "Dialog open";
             OptionForm.ShowDialog();
-            IA.FileBrowser.StatusLabel.Text = "Ready";
 
             return res;
         }
@@ -3230,14 +3222,12 @@ namespace Cell_Tool_3
             xBtn.Click += new EventHandler(IA.TabPages.DeleteTabbtn_Click);
 
             IA.TabPages.Collections.Add(smallCollection);
-            
 
             IA.TabPages.inactivate_Tabs();
             IA.TabPages.SelectedIndex = IA.TabPages.Collections.Count - 1;
             IA.TabPages.selectTab_event(IA.TabPages.SelectedIndex);
 
             IA.TabPages.findStartIndex();
-
 
             #endregion Create new TabPage
         }

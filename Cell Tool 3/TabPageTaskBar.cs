@@ -140,6 +140,8 @@ namespace Cell_Tool_3
 
         public List<Button> ColorBtnList = new List<Button>();
         public List<Button> MethodsBtnList = new List<Button>();
+        public Button Btn2D;
+        public Button Btn3D;
 
         private ToolTip TurnOnToolTip = new ToolTip();
 
@@ -157,13 +159,7 @@ namespace Cell_Tool_3
 
             TopBar.Width = MainPanel.Width - w;
             TopBar.Height = h;
-            //TopBar.Dock = DockStyle.Top;
-
-            // Find the size of the main form to use it as a reference for setting up the screen view
-            Size MainSize = IA.TabPages.MainForm.Size;
-            int StartWidth = IA.FileBrowser.DataSourcesPanelWidth;
-
-            TopBar.Location = new Point(StartWidth, MainSize.Height - 200);
+            TopBar.Dock = DockStyle.Top;
             //MainPanel.Controls.Add(TopBar);
             IA.IDrawer.corePanel.Height = TopBar.Height;
             IA.IDrawer.corePanel.Controls.Add(TopBar);
@@ -217,16 +213,6 @@ namespace Cell_Tool_3
 
             VisualizeColorBtns();
             VisualizeMethodsBtns();
-
-            Panel fillerPanel = new Panel();
-            fillerPanel.BackColor = IA.FileBrowser.BackGroundColor1;
-            fillerPanel.Dock = DockStyle.Fill;
-            TopBar.Controls.Add(fillerPanel);
-
-            this.TopBar.Invalidate();
-            this.TopBar.Update();
-            this.TopBar.Refresh();
-            Application.DoEvents();
         }
 
         private void Control_MouseDown(object sender, MouseEventArgs e)
@@ -403,7 +389,19 @@ namespace Cell_Tool_3
                 MethodsPanel.Controls.Add(btn);
                 btn.Location = new Point(w, 5);
                 w += btn.Width;
-            }
+            };
+
+            w += Btn2D.Width;
+            
+            Btn2D.Location = new Point(w, 5);
+            w += Btn2D.Width;
+            MethodsPanel.Controls.Add(Btn2D);
+
+            Btn3D.Location = new Point(w, 5);
+            w += Btn3D.Width;
+            MethodsPanel.Controls.Add(Btn3D);
+
+
             MethodsPanel.Width = w;
         }
         public void Refresh()
@@ -570,6 +568,69 @@ namespace Cell_Tool_3
                 btn.MouseDown += new MouseEventHandler(MethodControl_MouseDown);
             }
             #endregion Chart
+            #region 2Dand3D
+            {
+                Button btn = new Button();
+               
+                btn.FlatAppearance.BorderSize = 0;
+                btn.FlatStyle = FlatStyle.Flat;
+                btn.BackColor = IA.FileBrowser.BackGroundColor1;
+                btn.Tag = "Switch to 2D view";
+                btn.Text = "2D";
+                btn.ForeColor = Color.Black;
+                btn.Font = new Font(btn.Font.FontFamily, 9, FontStyle.Bold);
+                btn.Width = 35;
+                btn.Height = 25;
+                Btn2D = btn;
+                btn.Enabled = false;
+                btn.MouseHover += DimmentionsControl_MouseOver;
+                btn.MouseDown += DimmentionsControl_MouseClick;
+            }
+            {
+                Button btn = new Button();
+
+                btn.FlatAppearance.BorderSize = 0;
+                btn.FlatStyle = FlatStyle.Flat;
+                btn.BackColor = IA.FileBrowser.BackGroundColor1;
+                btn.Tag = "Switch to 3D view";
+                btn.Text = "3D";
+                btn.ForeColor = Color.Black;
+                btn.Font = new Font(btn.Font.FontFamily, 9, FontStyle.Bold);
+                btn.Width = 35;
+                btn.Height = 25;
+                Btn3D = btn;
+                btn.Enabled = false;
+                btn.MouseHover += DimmentionsControl_MouseOver;
+                 btn.MouseDown += DimmentionsControl_MouseClick;
+            }
+            #endregion 2Dand3D
+        }
+        private void DimmentionsControl_MouseClick(object sender, EventArgs e)
+        {
+            TifFileInfo fi = IA.TabPages.TabCollections[IA.TabPages.SelectedIndex].tifFI;
+
+            if (((Button)sender) == Btn2D)
+            {
+                fi.is3D = false;
+                IA.IDrawer.imageDrawer_3D.ClearProgram(IA.GLControl1);                
+            }
+            else if (((Button)sender) == Btn3D)
+            {
+                fi.is3D = true;
+                IA.IDrawer.imageDrawer_3D.initProgram(IA.GLControl1,fi);        
+                
+            }
+
+            IA.ReloadImages();
+            IA.ReloadImages();
+
+        }
+        private void DimmentionsControl_MouseOver(object sender, EventArgs e)
+        {
+            Button ctr = (Button)sender;
+            string txt = ctr.Tag.ToString();
+            
+            TurnOnToolTip.SetToolTip(ctr, txt);
         }
         private void MethodControl_MouseOver(object sender, EventArgs e)
         {

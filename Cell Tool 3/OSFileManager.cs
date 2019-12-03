@@ -1,4 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.ComponentModel;
 using System.IO;
@@ -7,13 +11,9 @@ namespace Cell_Tool_3
 {
     class OSFileManager
     {
-        public static void CopyFile(string Dir, string NewDir, ToolStripStatusLabel StatusLabel)
+        public static void CopyFile(string Dir, string NewDir)
         {
-            Dir = OSStringConverter.StringToDir(Dir);
-            NewDir = OSStringConverter.StringToDir(NewDir);
-
             if (!File.Exists(Dir)) return;
-            
             try
             {
                 if (File.Exists(NewDir)) File.Delete(NewDir);
@@ -23,7 +23,20 @@ namespace Cell_Tool_3
                 MessageBox.Show("Target directory is not avaliable!");
                 return;
             }
-            
+
+            try
+            {
+                if (System.Environment.OSVersion.Platform != PlatformID.MacOSX &&
+                    System.Environment.OSVersion.Platform != PlatformID.Unix)
+                {
+                    Microsoft.VisualBasic.FileIO.FileSystem.CopyFile(Dir, NewDir,
+                        Microsoft.VisualBasic.FileIO.UIOption.AllDialogs,
+                        Microsoft.VisualBasic.FileIO.UICancelOption.DoNothing);
+                    return;
+                }
+            }
+            catch { }
+
             var bgw = new BackgroundWorker();
             bgw.DoWork += new DoWorkEventHandler(delegate (Object o, DoWorkEventArgs a)
             {
@@ -32,15 +45,12 @@ namespace Cell_Tool_3
 
                 ((BackgroundWorker)o).ReportProgress(0);
             });
-            
             InfoForm form = new InfoForm();
-            form.SetUp("Copy File", Dir, NewDir, bgw,StatusLabel);
+            form.SetUp("Copy File", Dir, NewDir, bgw);
 
         }
-        public static void CopyDirectory(string Dir, string NewDir, ToolStripStatusLabel StatusLabel)
+        public static void CopyDirectory(string Dir, string NewDir)
         {
-            Dir = OSStringConverter.StringToDir(Dir);
-            NewDir = OSStringConverter.StringToDir(NewDir);
             if (!Directory.Exists(Dir)) return;
             try
             {
@@ -52,6 +62,21 @@ namespace Cell_Tool_3
                 return;
             }
 
+            try
+            {
+                if (System.Environment.OSVersion.Platform != PlatformID.MacOSX &&
+                    System.Environment.OSVersion.Platform != PlatformID.Unix)
+                {
+                    
+                    Microsoft.VisualBasic.FileIO.FileSystem.CopyDirectory(Dir, NewDir,
+                Microsoft.VisualBasic.FileIO.UIOption.AllDialogs,
+                Microsoft.VisualBasic.FileIO.UICancelOption.DoNothing);
+                    
+                    return;
+                }
+            }
+            catch { }
+            
             var bgw = new BackgroundWorker();
             bgw.DoWork += new DoWorkEventHandler(delegate (Object o, DoWorkEventArgs a)
             {
@@ -61,15 +86,27 @@ namespace Cell_Tool_3
                 ((BackgroundWorker)o).ReportProgress(0);
             });
             InfoForm form = new InfoForm();
-            form.SetUp("Copy Directory", Dir, NewDir, bgw,StatusLabel);
+            form.SetUp("Copy Directory", Dir, NewDir, bgw);
 
         }
-
-        public static void DeleteDirectory(string Dir, ToolStripStatusLabel StatusLabel)
+       
+        public static void DeleteDirectory(string Dir)
         {
-            Dir = OSStringConverter.StringToDir(Dir);
             if (!Directory.Exists(Dir)) return;
-            
+            try
+            {
+                if (System.Environment.OSVersion.Platform != PlatformID.MacOSX &&
+                    System.Environment.OSVersion.Platform != PlatformID.Unix)
+                {
+                    Microsoft.VisualBasic.FileIO.FileSystem.DeleteDirectory(Dir,
+                Microsoft.VisualBasic.FileIO.UIOption.AllDialogs,
+                Microsoft.VisualBasic.FileIO.RecycleOption.SendToRecycleBin,
+                Microsoft.VisualBasic.FileIO.UICancelOption.DoNothing);
+                    return;
+                }
+            }
+            catch { }
+
             var bgw = new BackgroundWorker();
             bgw.DoWork += new DoWorkEventHandler(delegate (Object o, DoWorkEventArgs a)
             {
@@ -79,14 +116,26 @@ namespace Cell_Tool_3
                 ((BackgroundWorker)o).ReportProgress(0);
             });
             InfoForm form = new InfoForm();
-            form.SetUp("Delete Directory", Dir, "", bgw,StatusLabel);
+            form.SetUp("Delete Directory", Dir, "", bgw);
 
         }
-        public static void DeleteFile(string Dir, ToolStripStatusLabel StatusLabel)
+        public static void DeleteFile(string Dir)
         {
-            Dir = OSStringConverter.StringToDir(Dir);
             if (!File.Exists(Dir)) return;
-           
+            try
+            {
+                if (System.Environment.OSVersion.Platform != PlatformID.MacOSX &&
+                    System.Environment.OSVersion.Platform != PlatformID.Unix)
+                {
+                    Microsoft.VisualBasic.FileIO.FileSystem.DeleteFile(Dir,
+                Microsoft.VisualBasic.FileIO.UIOption.AllDialogs,
+                Microsoft.VisualBasic.FileIO.RecycleOption.SendToRecycleBin,
+                Microsoft.VisualBasic.FileIO.UICancelOption.DoNothing);
+                    return;
+                }
+            }
+            catch { }
+
             var bgw = new BackgroundWorker();
             bgw.DoWork += new DoWorkEventHandler(delegate (Object o, DoWorkEventArgs a)
             {
@@ -96,17 +145,14 @@ namespace Cell_Tool_3
                 ((BackgroundWorker)o).ReportProgress(0);
             });
             InfoForm form = new InfoForm();
-            form.SetUp("Delete File", Dir, "", bgw, StatusLabel);
+            form.SetUp("Delete File", Dir, "", bgw);
 
         }
-        public static void MoveFile(string Dir, string NewDir, ToolStripStatusLabel StatusLabel)
+        public static void MoveFile(string Dir, string NewDir)
         {
-            Dir = OSStringConverter.StringToDir(Dir);
-            NewDir = OSStringConverter.StringToDir(NewDir);
-
             if (!File.Exists(Dir)) return;
             try
-            {
+            { 
                 if (File.Exists(NewDir)) File.Delete(NewDir);
             }
             catch
@@ -114,7 +160,20 @@ namespace Cell_Tool_3
                 MessageBox.Show("Target directory is not avaliable!");
                 return;
             }
-            
+
+            try
+            {
+                if (System.Environment.OSVersion.Platform != PlatformID.MacOSX &&
+                    System.Environment.OSVersion.Platform != PlatformID.Unix)
+                {
+                    Microsoft.VisualBasic.FileIO.FileSystem.MoveFile(Dir, NewDir,
+                Microsoft.VisualBasic.FileIO.UIOption.AllDialogs,
+                Microsoft.VisualBasic.FileIO.UICancelOption.DoNothing);
+                    return;
+                }
+            }
+            catch { }
+
             var bgw = new BackgroundWorker();
             bgw.DoWork += new DoWorkEventHandler(delegate (Object o, DoWorkEventArgs a)
             {
@@ -123,20 +182,16 @@ namespace Cell_Tool_3
 
                 ((BackgroundWorker)o).ReportProgress(0);
             });
-
             InfoForm form = new InfoForm();
-            form.SetUp("Move File", Dir, NewDir, bgw, StatusLabel);
+            form.SetUp("Move File", Dir, NewDir, bgw);
 
         }
-        public static void MoveDirectory(string Dir, string NewDir, ToolStripStatusLabel StatusLabel)
+        public static void MoveDirectory(string Dir, string NewDir)
         {
-            Dir = OSStringConverter.StringToDir(Dir);
-            NewDir = OSStringConverter.StringToDir(NewDir);
-
             if (!Directory.Exists(Dir)) return;
             try
-            {
-                if (Directory.Exists(NewDir)) Directory.Delete(NewDir, true);
+            { 
+                if (Directory.Exists(NewDir)) Directory.Delete(NewDir,true);
             }
             catch
             {
@@ -144,6 +199,18 @@ namespace Cell_Tool_3
                 return;
             }
 
+            try
+            {
+                if (System.Environment.OSVersion.Platform != PlatformID.MacOSX &&
+                    System.Environment.OSVersion.Platform != PlatformID.Unix)
+                {
+                    Microsoft.VisualBasic.FileIO.FileSystem.MoveDirectory(Dir, NewDir,
+                Microsoft.VisualBasic.FileIO.UIOption.AllDialogs,
+                Microsoft.VisualBasic.FileIO.UICancelOption.DoNothing);
+                    return;
+                }
+            }
+            catch { }
             var bgw = new BackgroundWorker();
             bgw.DoWork += new DoWorkEventHandler(delegate (Object o, DoWorkEventArgs a)
             {
@@ -153,12 +220,10 @@ namespace Cell_Tool_3
                 ((BackgroundWorker)o).ReportProgress(0);
             });
             InfoForm form = new InfoForm();
-            form.SetUp("Move Directory", Dir, NewDir, bgw, StatusLabel);
+            form.SetUp("Move Directory", Dir, NewDir, bgw);
         }
         private static void DirectoryCopy(string sourceDirName, string destDirName, bool copySubDirs)
         {
-            sourceDirName = OSStringConverter.StringToDir(sourceDirName);
-            destDirName = OSStringConverter.StringToDir(destDirName);
             // Get the subdirectories for the specified directory.
             DirectoryInfo dir = new DirectoryInfo(sourceDirName);
 
@@ -194,7 +259,7 @@ namespace Cell_Tool_3
                 }
             }
         }
-        private class InfoForm : Form
+        private class InfoForm:Form
         {
             private Label lab_From;
             private Label lab_To;
@@ -213,7 +278,6 @@ namespace Cell_Tool_3
                 this.Width = 300;
                 this.Height = 150;
                 this.Icon = Properties.Resources.CT_done;
-                this.Load += Form_Load;
 
                 lab_From = new Label();
                 lab_To = new Label();
@@ -249,7 +313,7 @@ namespace Cell_Tool_3
                 this.pb.Anchor = AnchorStyles.Left | AnchorStyles.Right;
                 this.Controls.Add(pb);
             }
-            public void SetUp(string name, string FromDir, string ToDir, BackgroundWorker bgw, ToolStripStatusLabel StatusLabel)
+            public void SetUp(string name, string FromDir, string ToDir, BackgroundWorker bgw)
             {
                 this.Text = name;
                 this.FromDir = FromDir;
@@ -261,21 +325,13 @@ namespace Cell_Tool_3
 
                 bgw.ProgressChanged += new ProgressChangedEventHandler(delegate (Object o, ProgressChangedEventArgs a)
                 {
-                     this.Close();
+                    this.Close();
+                    this.Dispose();
                 });
 
-               
-                // StatusLabel.Text = "Dialog open";                
+                bgw.RunWorkerAsync();
+
                 this.ShowDialog();
-                // StatusLabel.Text = "Ready";
-            }     
-            private void Form_Load(object sender, EventArgs e)
-            {
-                this.bgw.RunWorkerAsync();
-                this.Invalidate();
-                this.Update();
-                this.Refresh();
-                Application.DoEvents();
             }
             private void Label_TextChanged(object sender, EventArgs e)
             {
