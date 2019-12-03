@@ -1,14 +1,17 @@
 ﻿/*
  CellTool - software for bio-image analysis
  Copyright (C) 2019  Georgi Danovski
+
  This program is free software: you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
  the Free Software Foundation, either version 3 of the License, or
  (at your option) any later version.
+
  This program is distributed in the hope that it will be useful,
  but WITHOUT ANY WARRANTY; without even the implied warranty of
  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  GNU General Public License for more details.
+
  You should have received a copy of the GNU General Public License
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
@@ -19,7 +22,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.ComponentModel;
 using System.Drawing;
-///using Microsoft.VisualBasic.Devices;
+using Microsoft.VisualBasic.Devices;
 using BitMiracle.LibTiff.Classic;
 
 namespace Cell_Tool_3
@@ -34,14 +37,14 @@ namespace Cell_Tool_3
         /// <param name="tp"></param>
         /// <param name="IA1"></param>
         /// <returns></returns>
-        public static bool OpenBigImage(string path, List<TabPage> Collection, TabPage tp, ImageAnalyser IA)
+        public static bool OpenBigImage(string path, List<TabPage> Collection,  TabPage tp, ImageAnalyser IA)
         {
             //Check the file size in bytes
             long FileSize = new System.IO.FileInfo(path).Length;
             //Check the free ram memory in bytes
-            //long RAM = (long)new ComputerInfo().AvailablePhysicalMemory;
-            long RAM = 10000000;
-            if (FileSize < RAM)
+            long RAM = (long)new ComputerInfo().AvailablePhysicalMemory;
+           // RAM = 10000000;
+            if(FileSize<RAM)
                 return false;
             else
             {
@@ -58,7 +61,7 @@ namespace Cell_Tool_3
                     return false;
                 }
 
-                if (reader == null)
+                if(reader == null)
                 {
                     MessageBox.Show("Error: Not avaliable file format!");
                     IA.FileBrowser.StatusLabel.Text = "Ready";
@@ -69,7 +72,7 @@ namespace Cell_Tool_3
                 int[][] matrix = null;
                 while (!CheckSize(RAM, matrix, tp.tifFI))
                 {
-                    matrix = SubstackDialog(tp.tifFI, IA.TabPages.FileBrowser.StatusLabel);
+                    matrix = SubstackDialog(tp.tifFI);
 
                     if (matrix == null)
                     {
@@ -79,7 +82,7 @@ namespace Cell_Tool_3
                         return false;
                     }
                 }
-
+                
                 return SubstackToolStripMenuItem_click(path, Collection, tp, IA, reader, matrix);
             }
         }
@@ -89,13 +92,13 @@ namespace Cell_Tool_3
             if (matrix != null)
                 FileSize =
                 (long)(fi.sizeX * fi.sizeY * fi.bitsPerPixel)//frame size in bits
-                * (long)((matrix[0][1] - matrix[0][0] + 1) / matrix[0][2])// T slices
-                * (long)((matrix[1][1] - matrix[1][0] + 1) / matrix[1][2]) //Z slices
-                * (long)((matrix[2][1] - matrix[2][0] + 1) / matrix[2][2]); //C chanels
+                * (long)((matrix[0][1] - matrix[0][0]+1) / matrix[0][2])// T slices
+                * (long)((matrix[1][1] - matrix[1][0]+1) / matrix[1][2]) //Z slices
+                * (long)((matrix[2][1] - matrix[2][0]+1) / matrix[2][2]); //C chanels
             else
                 FileSize =
                 (long)(fi.sizeX * fi.sizeY * fi.bitsPerPixel) * (long)fi.sizeT * (long)fi.sizeZ * (long)fi.sizeC;
-
+            
             if (FileSize < RAM)
             {
                 return true;
@@ -120,7 +123,7 @@ namespace Cell_Tool_3
                 IA.FileBrowser.StatusLabel.Text = "Ready";
                 return null;
             }
-
+            
             bool isRGB = FirstReader.isRGB();
             //check is it rgb colored
             loci.formats.ChannelSeparator reader = loci.formats.ChannelSeparator.makeChannelSeparator(FirstReader);
@@ -129,7 +132,7 @@ namespace Cell_Tool_3
             TifFileInfo fi = tp.tifFI;
             fi.seriesCount = reader.getSeriesCount();
             //Select which series to open!!!!!
-            int ser = SelectSeries(reader, IA.TabPages.FileBrowser.StatusLabel);
+            int ser = SelectSeries(reader);
             if (ser == -1)
             {
                 fi = null;
@@ -278,7 +281,7 @@ namespace Cell_Tool_3
 
             return des;
         }
-        private static int SelectSeries(loci.formats.ChannelSeparator reader, ToolStripStatusLabel StatusLabel)
+        private static int SelectSeries(loci.formats.ChannelSeparator reader)
         {
             int res = -1;
             if (reader.getSeriesCount() == 1)
@@ -360,10 +363,8 @@ namespace Cell_Tool_3
                     }
                 });
 
-                StatusLabel.Text = "Dialog open";
                 OptionForm.ShowDialog();
                 OptionForm.Dispose();
-                StatusLabel.Text = "Ready";                
             }
             return res;
         }
@@ -607,7 +608,7 @@ namespace Cell_Tool_3
             }
             if (LutList.Count == fi.sizeC) { fi.LutList = LutList; }
         }
-        private static int[][] SubstackDialog(TifFileInfo fi, ToolStripStatusLabel StatusLabel)
+        private static int[][] SubstackDialog(TifFileInfo fi)
         {
             int[][] res = null;
 
@@ -812,11 +813,10 @@ namespace Cell_Tool_3
                         break;
                 }
             });
-            
-            StatusLabel.Text = "Dialog open";
+
             OptionForm.ShowDialog();
             OptionForm.Dispose();
-            StatusLabel.Text = "Ready";
+
             return res;
         }
         private static bool SubstackToolStripMenuItem_click(string path, List<TabPage> Collection, TabPage tp, ImageAnalyser IA, loci.formats.ChannelSeparator reader, int[][] dim)
@@ -887,7 +887,7 @@ namespace Cell_Tool_3
                 newFI.LutList = colList;
 
                 //read image
-
+                
                 //Read the first T
                 //prepare array and read file
                 if (isLibTifCompatible(path) && !reader.isRGB())
@@ -1011,81 +1011,81 @@ namespace Cell_Tool_3
                     ((BackgroundWorker)o).ReportProgress(1);
                 }
 
-            });
-            bgw.ProgressChanged += new ProgressChangedEventHandler(delegate (Object o, ProgressChangedEventArgs a)
-            {
-                if (a.ProgressPercentage == 0)
+                });
+                bgw.ProgressChanged += new ProgressChangedEventHandler(delegate (Object o, ProgressChangedEventArgs a)
                 {
-
-                    fi.openedImages = fi.sizeC * fi.sizeZ;
-                    try
+                    if (a.ProgressPercentage == 0)
                     {
-                        IA.ReloadImages();
-                    }
-                    catch { }
-                }
-                else if (a.ProgressPercentage == 1)
-                {
-                    //dispose the reader
-                    reader.close();
-                    reader = null;
-                    //mark as loaded
-                    fi.openedImages = fi.imageCount;
-                    fi.available = true;
-                    fi.loaded = true;
-                    newFI.original = false;
 
-                    IA.TabPages.myFileDecoder.CalculateAllRois(fi);
-
-                    IA.ReloadImages();
-                    bool check = true;
-                    foreach (TabPage tp1 in Collection)
-                    {
-                        if (tp1.tifFI != null && tp1.tifFI.available == false)
+                        fi.openedImages = fi.sizeC * fi.sizeZ;
+                        try
                         {
-                            check = false;
-                            break;
+                            IA.ReloadImages();
+                        }
+                        catch { }
+                    }
+                    else if (a.ProgressPercentage == 1)
+                    {
+                        //dispose the reader
+                        reader.close();
+                        reader = null;
+                        //mark as loaded
+                        fi.openedImages = fi.imageCount;
+                        fi.available = true;
+                        fi.loaded = true;
+                        newFI.original = false;
+
+                        IA.TabPages.myFileDecoder.CalculateAllRois(fi);
+
+                        IA.ReloadImages();
+                        bool check = true;
+                        foreach (TabPage tp1 in Collection)
+                        {
+                            if (tp1.tifFI != null && tp1.tifFI.available == false)
+                            {
+                                check = false;
+                                break;
+                            }
+                        }
+                        if (check == true)
+                        {
+                            IA.TabPages.myFileDecoder.loadingTimer.Stop();
+                            IA.FileBrowser.StatusLabel.Text = "Ready";
+                        }
+
+                        if (IA.Segmentation.AutoSetUp.LibTB.SelectedIndex > 0 &&
+                        IA.Segmentation.AutoSetUp.ApplyToNewCheckB.Checked &&
+                        MessageBox.Show("Do you want to open the image with the following protocol:\n" +
+                        IA.Segmentation.AutoSetUp.LibTB.Text,
+                                   "", MessageBoxButtons.YesNo) == System.Windows.Forms.DialogResult.Yes)
+                        {
+                            IA.Segmentation.AutoSetUp.ApplyCT3Tags(IA.Segmentation.AutoSetUp.protocols[
+                            IA.Segmentation.AutoSetUp.LibTB.SelectedIndex].Split(
+                            new string[] { ";\n" }, StringSplitOptions.None), fi);
                         }
                     }
-                    if (check == true)
-                    {
-                        IA.TabPages.myFileDecoder.loadingTimer.Stop();
-                        IA.FileBrowser.StatusLabel.Text = "Ready";
-                    }
-
-                    if (IA.Segmentation.AutoSetUp.LibTB.SelectedIndex > 0 &&
-                    IA.Segmentation.AutoSetUp.ApplyToNewCheckB.Checked &&
-                    MessageBox.Show("Do you want to open the image with the following protocol:\n" +
-                    IA.Segmentation.AutoSetUp.LibTB.Text,
-                               "", MessageBoxButtons.YesNo) == System.Windows.Forms.DialogResult.Yes)
-                    {
-                        IA.Segmentation.AutoSetUp.ApplyCT3Tags(IA.Segmentation.AutoSetUp.protocols[
-                        IA.Segmentation.AutoSetUp.LibTB.SelectedIndex].Split(
-                        new string[] { ";\n" }, StringSplitOptions.None), fi);
-                    }
-                }
-            });
+                });
 
             //Start background worker
             IA.FileBrowser.StatusLabel.Text = "Reading Image...";
-            //Clear OldImage
-            IA.IDrawer.ClearImage();
+                //Clear OldImage
+                IA.IDrawer.ClearImage();
 
-            //start bgw
-            bgw.RunWorkerAsync();
-            //add taskbar
-            tp.tifFI.tpTaskbar.Initialize(IA.TabPages.ImageMainPanel, IA, fi);
+                //start bgw
+                bgw.RunWorkerAsync();
+                //add taskbar
+                tp.tifFI.tpTaskbar.Initialize(IA.TabPages.ImageMainPanel, IA, fi);
 
-            try
-            {
-                if (loaded == true)
+                try
                 {
-                    IA.ReloadImages();
+                    if (loaded == true)
+                    {
+                        IA.ReloadImages();
+                    }
                 }
-            }
-            catch { }
-            //output
-            return true;
+                catch { }
+                //output
+                return true;                        
         }
         private static int[] GetFrameIndexes(loci.formats.ChannelSeparator reader, TifFileInfo fi)
         {

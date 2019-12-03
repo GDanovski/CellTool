@@ -159,13 +159,7 @@ namespace Cell_Tool_3
 
             TopBar.Width = MainPanel.Width - w;
             TopBar.Height = h;
-            //TopBar.Dock = DockStyle.Top;
-
-            // Find the size of the main form to use it as a reference for setting up the screen view
-            Size MainSize = IA.TabPages.MainForm.Size;
-            int StartWidth = IA.FileBrowser.DataSourcesPanelWidth;
-
-            TopBar.Location = new Point(StartWidth, MainSize.Height - 200);
+            TopBar.Dock = DockStyle.Top;
             //MainPanel.Controls.Add(TopBar);
             IA.IDrawer.corePanel.Height = TopBar.Height;
             IA.IDrawer.corePanel.Controls.Add(TopBar);
@@ -219,16 +213,6 @@ namespace Cell_Tool_3
 
             VisualizeColorBtns();
             VisualizeMethodsBtns();
-
-            Panel fillerPanel = new Panel();
-            fillerPanel.BackColor = IA.FileBrowser.BackGroundColor1;
-            fillerPanel.Dock = DockStyle.Fill;
-            TopBar.Controls.Add(fillerPanel);
-
-            this.TopBar.Invalidate();
-            this.TopBar.Update();
-            this.TopBar.Refresh();
-            Application.DoEvents();
         }
 
         private void Control_MouseDown(object sender, MouseEventArgs e)

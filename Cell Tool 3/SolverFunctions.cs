@@ -22,6 +22,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Drawing;
+using System.Collections.Generic;
 using System.IO;
 
 namespace Cell_Tool_3
@@ -166,22 +167,22 @@ namespace Cell_Tool_3
                 this.Controls.Add(MenuPanel);
 
                 MenuStrip Menu = new MenuStrip();
-                //Menu.BackColor = ResultsExtractor.Parametars.BackGroundColor;
-                //Menu.ForeColor = ResultsExtractor.Parametars.ShriftColor;
+                Menu.BackColor = ResultsExtractor.Parametars.BackGroundColor;
+                Menu.ForeColor = ResultsExtractor.Parametars.ShriftColor;
                 MenuPanel.Controls.Add(Menu);
 
                 //Open Btn
                 ToolStripMenuItem OpenBtn = new ToolStripMenuItem();
                 OpenBtn.Text = "Load";
-                //OpenBtn.BackColor = ResultsExtractor.Parametars.BackGroundColor;
-                //OpenBtn.ForeColor = ResultsExtractor.Parametars.ShriftColor;
+                OpenBtn.BackColor = ResultsExtractor.Parametars.BackGroundColor;
+                OpenBtn.ForeColor = ResultsExtractor.Parametars.ShriftColor;
                 OpenBtn.Click += Load_Click;
                 Menu.Items.Add(OpenBtn);
 
                 ToolStripMenuItem ExportBtn = new ToolStripMenuItem();
                 ExportBtn.Text = "Export";
-                //ExportBtn.BackColor = ResultsExtractor.Parametars.BackGroundColor;
-                //ExportBtn.ForeColor = ResultsExtractor.Parametars.ShriftColor;
+                ExportBtn.BackColor = ResultsExtractor.Parametars.BackGroundColor;
+                ExportBtn.ForeColor = ResultsExtractor.Parametars.ShriftColor;
                 ExportBtn.Click += Export_Click;
                 Menu.Items.Add(ExportBtn);
 

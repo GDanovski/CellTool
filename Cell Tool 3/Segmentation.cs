@@ -1,14 +1,17 @@
 ﻿/*
  CellTool - software for bio-image analysis
  Copyright (C) 2018  Georgi Danovski
+
  This program is free software: you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
  the Free Software Foundation, either version 3 of the License, or
  (at your option) any later version.
+
  This program is distributed in the hope that it will be useful,
  but WITHOUT ANY WARRANTY; without even the implied warranty of
  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  GNU General Public License for more details.
+
  You should have received a copy of the GNU General Public License
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
@@ -27,11 +30,11 @@ namespace Cell_Tool_3
     {
         public ImageAnalyser IA = null;
         //Lib Panel 
-        public PropertiesPanel_Item LibPropPanel;
+        private PropertiesPanel_Item LibPropPanel;
         public Panel LibPanel;
         public AutoApplySettingsClass AutoSetUp;
         //Spot detector Panel
-        public PropertiesPanel_Item SpotDetPropPanel;
+        private PropertiesPanel_Item SpotDetPropPanel;
         public Panel SpotDetPanel;
         public SpotDetector SpotDet;
         //Convolution Methods Panel
@@ -39,16 +42,15 @@ namespace Cell_Tool_3
         public Panel DataPanel;
         public Filters MyFilters;
         //histogram Panel
-        public PropertiesPanel_Item HistogramPropPanel;
+        private PropertiesPanel_Item HistogramPropPanel;
         public Panel HistogramPanel;
         public BrightnessAndContrast_ChartPanel Chart1 = new BrightnessAndContrast_ChartPanel();
         private BrightnessAndContrast_ChartPanel.BrightnessAndContrast_Chart.Series Values = new BrightnessAndContrast_ChartPanel.BrightnessAndContrast_Chart.Series();
         private BrightnessAndContrast_ChartPanel.BrightnessAndContrast_Chart.Series[] Otsu1dSeries = new BrightnessAndContrast_ChartPanel.BrightnessAndContrast_Chart.Series[5];
         private BrightnessAndContrast_ChartPanel.BrightnessAndContrast_Chart.Series Spots = new BrightnessAndContrast_ChartPanel.BrightnessAndContrast_Chart.Series();
-        public Form_auxiliary FormSegmentation; // For holding the GL control of the segmentation histogram
 
         //Segmentation Panel
-        public PropertiesPanel_Item tresholdsPropPanel;
+        private PropertiesPanel_Item tresholdsPropPanel;
         public Panel tresholdsPanel;
         public OtsuSegmentation Otsu1D;
         public KMeansSegmentation Kmeans;
@@ -59,12 +61,6 @@ namespace Cell_Tool_3
         public ComboBox ProtocolCBox = new ComboBox();
         public ComboBox SegmentationCBox = new ComboBox();
         public Button AutoBtn = new Button();
-
-        private Label LibName;
-        private ComboBox LibTB;
-
-        private Label MethodName;
-        private ComboBox MethodTB;
 
         #region Initializing componends
 
@@ -81,20 +77,17 @@ namespace Cell_Tool_3
             //Data Panel initialize
             DataPropPanel = new PropertiesPanel_Item();
             DataPanel_Initialize(propertiesPanel, PropertiesBody);
-            /*
             DataPropPanel.Panel.Resize += new EventHandler(delegate (object o, EventArgs e)
             {
                 //Resize event -> 26 is minimized box
                 if (DataPropPanel.Height != 26)
                 {
-                    DataPropPanel.Height = 180;
+                    DataPropPanel.Height = 170;
                 }
             });
-            */
-            //Lib Panel initialize
-            LibPropPanel = new PropertiesPanel_Item();
+           //Lib Panel initialize
+           LibPropPanel = new PropertiesPanel_Item();
             LibPanel_Initialize(propertiesPanel, PropertiesBody);
-            /*
             LibPropPanel.Panel.Resize += new EventHandler(delegate (object o, EventArgs e)
             {
                 //Resize event -> 26 is minimized box
@@ -103,12 +96,9 @@ namespace Cell_Tool_3
                     LibPropPanel.Height = 50;
                 }
             });
-            */
             //SpotDet Panel initialize
             SpotDetPropPanel = new PropertiesPanel_Item();
             SpotDetPanel_Initialize(propertiesPanel, PropertiesBody);
-
-            
         }
         private void Control_MouseOver(object sender, EventArgs e)
         {
@@ -153,7 +143,7 @@ namespace Cell_Tool_3
 
             SpotDetPanel = SpotDetPropPanel.Panel;
 
-            SpotDetPanel.Visible = true;
+            SpotDetPanel.Visible = false;
 
             SpotDet = new SpotDetector(SpotDetPanel, IA);
         }
@@ -169,15 +159,14 @@ namespace Cell_Tool_3
 
             //LibPanel.Visible = false;
             //items
-            LibName = new Label();
+            Label LibName = new Label();
             LibName.Text = "Protocol:";
             LibName.Width = TextRenderer.MeasureText(LibName.Text, LibName.Font).Width;
             LibName.Location = new Point(5, 30);
-            LibName.AutoSize = true;
             LibPanel.Controls.Add(LibName);
             LibName.BringToFront();
 
-            LibTB = ProtocolCBox;
+            ComboBox LibTB = ProtocolCBox;
             LibTB.Text = "None";
             LibTB.Items.Add("None");
             int w = LibPanel.Width - 126;
@@ -192,15 +181,14 @@ namespace Cell_Tool_3
             LibTB.DropDownStyle = ComboBoxStyle.DropDownList;
             LibTB.SelectedIndex = 0;
             LibTB.AutoSize = false;
+            
 
-            /*
             LibPanel.Resize += new EventHandler(delegate (object o, EventArgs a)
             {
                 int x1 = LibPanel.Width - 126;
                 if (x1 < 20) { x1 = 20; }
                 LibTB.Width = x1;
             });
-            */
             //Add button on top
             {
                 Button btn = new Button();
@@ -224,7 +212,7 @@ namespace Cell_Tool_3
             }
             //Apply Protocol
             {
-
+                
                 Button btn = AutoBtn;
                 btn.Width = 21;
                 btn.Height = 21;
@@ -244,36 +232,8 @@ namespace Cell_Tool_3
                 });
                 btn.Click += AutoSetUp.LibBtn_Click;
             }
-
-
-        }
-
-        public void HideLib()
-        {
-            LibTB.Hide();
-            LibName.Hide();
-        }
-
-        public void ShowLib()
-        {
-            LibTB.Show();
-            LibName.Show();
-        }
-
-        public void HideAll()
-        {
-            MethodTB.Hide();
-            MethodName.Hide();
-            if (Otsu1D != null)
-                Otsu1D.HideAll();
-        }
-
-        public void ShowAll()
-        {
-            MethodTB.Show();
-            MethodName.Show();
-            if (Otsu1D != null)
-                Otsu1D.ShowAll();
+            
+            
         }
         private void DataPanel_Initialize(Panel propertiesPanel, Panel PropertiesBody)
         {
@@ -290,7 +250,7 @@ namespace Cell_Tool_3
 
             DataPanel = DataPropPanel.Panel;
 
-            DataPanel.Visible = true;
+            DataPanel.Visible = false;
             DataPanel.Controls.Add((Panel)MyFilters);
             MyFilters.BringToFront();
             /*
@@ -302,6 +262,7 @@ namespace Cell_Tool_3
                 LibName.Location = new Point(7, 30);
                 DataPanel.Controls.Add(LibName);
                 LibName.BringToFront();
+
                 int Y = 26;
                 int W = DataPanel.Width - 105;
                 int H = 26;
@@ -315,6 +276,7 @@ namespace Cell_Tool_3
                 btn.MouseHover += Control_MouseOver;
                 btn.Click += DataSourceCBox_SelectedIndexChange;
                 #endregion Identity button
+
                 #region Sharpen button
                 btn = ConvolutionMethodBtn_addBtn(DataPanel, Y);
                 btn.Text = "Sharpen";
@@ -324,6 +286,7 @@ namespace Cell_Tool_3
                 btn.MouseHover += Control_MouseOver;
                 btn.Click += DataSourceCBox_SelectedIndexChange;
                 #endregion Sharpen button
+
                 #region Box blur 3x3 button
                 btn = ConvolutionMethodBtn_addBtn(DataPanel, Y);
                 btn.Text = "3x3 Box blur";
@@ -333,6 +296,7 @@ namespace Cell_Tool_3
                 btn.MouseHover += Control_MouseOver;
                 btn.Click += DataSourceCBox_SelectedIndexChange;
                 #endregion Box blur 3x3 button
+
                 #region Box blur 5x5 button
                 btn = ConvolutionMethodBtn_addBtn(DataPanel, Y);
                 btn.Text = "5x5 Box blur";
@@ -342,6 +306,7 @@ namespace Cell_Tool_3
                 btn.MouseHover += Control_MouseOver;
                 btn.Click += DataSourceCBox_SelectedIndexChange;
                 #endregion Box blur 5x5 button
+
                 #region Gaussian blur 3x3 button
                 btn = ConvolutionMethodBtn_addBtn(DataPanel, Y);
                 btn.Text = "3x3 Gaussian blur";
@@ -351,6 +316,7 @@ namespace Cell_Tool_3
                 btn.MouseHover += Control_MouseOver;
                 btn.Click += DataSourceCBox_SelectedIndexChange;
                 #endregion Gaussian blur 3x3 button
+
                 #region Gaussian blur 5x5 button
                 btn = ConvolutionMethodBtn_addBtn(DataPanel, Y);
                 btn.Text = "5x5 Gaussian blur";
@@ -360,6 +326,7 @@ namespace Cell_Tool_3
                 btn.MouseHover += Control_MouseOver;
                 btn.Click += DataSourceCBox_SelectedIndexChange;
                 #endregion Gaussian blur 5x5 button
+
                 #region Unsharp masking 5x5 button
                 btn = ConvolutionMethodBtn_addBtn(DataPanel, Y);
                 btn.Text = "5x5 Unsharp masking";
@@ -369,6 +336,7 @@ namespace Cell_Tool_3
                 btn.MouseHover += Control_MouseOver;
                 btn.Click += DataSourceCBox_SelectedIndexChange;
                 #endregion Unsharp masking 5x5 button
+
                 #region Edge detection button
                 btn = ConvolutionMethodBtn_addBtn(DataPanel, Y);
                 btn.Text = "Edge detection";
@@ -378,6 +346,7 @@ namespace Cell_Tool_3
                 btn.MouseHover += Control_MouseOver;
                 btn.Click += DataSourceCBox_SelectedIndexChange;
                 #endregion Edge detection button
+
                 #region Watershed
                 btn = ConvolutionMethodBtn_addBtn(DataPanel, Y);
                 btn.Text = "Watershed";
@@ -386,6 +355,7 @@ namespace Cell_Tool_3
                 btn.MouseHover += Control_MouseOver;
                 btn.Click += Watershed.StartDialog;
                 #endregion Watershed
+
             }
             */
         }
@@ -402,7 +372,7 @@ namespace Cell_Tool_3
             btn.Anchor = AnchorStyles.Right | AnchorStyles.Left | AnchorStyles.Top;
             return btn;
         }
-
+       
         private void DataSourceCBox_SelectedIndexChange(object sender, EventArgs e)
         {
             TifFileInfo fi = IA.TabPages.TabCollections[IA.TabPages.SelectedIndex].tifFI;
@@ -418,7 +388,7 @@ namespace Cell_Tool_3
             ApplyFilter(fi, selectedInd);
         }
         public BackgroundWorker ApplyFilter(TifFileInfo fi, int selectedInd)
-        {
+        { 
             var bgw = new BackgroundWorker();
             bgw.WorkerReportsProgress = true;
 
@@ -447,7 +417,7 @@ namespace Cell_Tool_3
                 fi.FilterHistory.Clear();
             else
                 fi.FilterHistory.Add(selectedInd);
-
+            
             fi.available = false;
 
             bgw.DoWork += new DoWorkEventHandler(delegate (Object o, DoWorkEventArgs a)
@@ -505,21 +475,20 @@ namespace Cell_Tool_3
 
             return bgw;
         }
-
+        
         private void HistogramPanel_Initialize(Panel propertiesPanel, Panel PropertiesBody)
         {
-
+            
             //PropPanel properties
             HistogramPropPanel.Initialize(propertiesPanel);
             HistogramPropPanel.Resizable = true;
             HistogramPropPanel.Name.Text = "Histogram";
-            //PropertiesBody.Controls.Add(HistogramPropPanel.Panel);
+            PropertiesBody.Controls.Add(HistogramPropPanel.Panel);
 
             HistogramPanel = HistogramPropPanel.Panel;
 
             HistogramPanel.Visible = false;
-            HistogramPropPanel.Body.Visible = false;
-
+            
             //Chart
             Chart1.CA.BackGroundColor = IA.FileBrowser.BackGroundColor1;
             Chart1.ForeColor = IA.FileBrowser.ShriftColor1;
@@ -530,9 +499,9 @@ namespace Cell_Tool_3
             Values.BackSecondaryColor = Color.White;
             Values.Color = Color.Black;
             Chart1.Series.Add(Values);
-
+            
             //1DOtsu colors btns
-            for (int i = 0; i < Otsu1dSeries.Length; i++)
+            for(int i = 0; i < Otsu1dSeries.Length;i++)
             {
                 var ser = new BrightnessAndContrast_ChartPanel.BrightnessAndContrast_Chart.Series();
                 ser.Enabled = true;
@@ -553,44 +522,11 @@ namespace Cell_Tool_3
                 Spots = ser;
             }
 
-            //Chart1.Dock = DockStyle.Fill;
+            Chart1.Dock = DockStyle.Fill;
             Chart1.BackColor = HistogramPropPanel.Body.BackColor;
-            //HistogramPropPanel.Panel.Controls.Add(Chart1);
-
-            Size MainSize = IA.TabPages.MainForm.Size;
-            int StartWidth = IA.FileBrowser.DataSourcesPanelWidth;
-
-            Chart1.CA.Location = new Point(MainSize.Width - StartWidth, 0);
-            Chart1.CA.Anchor = AnchorStyles.Right | AnchorStyles.Top;
-            Chart1.CA.Size = new Size(StartWidth - 5, 200);
-            //IA.TabPages.MainForm.Controls.Add(Chart1.CA);
+            HistogramPropPanel.Panel.Controls.Add(Chart1);
             
-
-
             Chart1.BringToFront();
-
-            // Resize the GL control upon resizing the main form
-            //IA.TabPages.MainForm.ResizeEnd += ResizeEnd;
-            IA.TabPages.MainForm.SizeChanged += ResizeEnd;
-
-        }
-
-        private void ResizeEnd (object o, EventArgs e) {
-            int StartWidth = IA.FileBrowser.DataSourcesPanelWidth;
-            Size MainFormSize = IA.TabPages.MainForm.Size;
-            bool IsVisible = false;
-            if (IA.TabPages.MainForm.Controls.Contains(Chart1.CA))
-            {
-                IA.TabPages.MainForm.Controls.Remove(Chart1.CA);
-                IsVisible = true;
-            }
-            Chart1.CA.Location = new Point(MainFormSize.Width - StartWidth, 0);
-            Chart1.CA.Size = new Size(StartWidth - 5, 200);
-            if (IsVisible)
-            {
-                IA.TabPages.AddImageGLControls();
-            }
-
         }
         private void tresholdsPanel_Initialize(Panel propertiesPanel, Panel PropertiesBody)
         {
@@ -599,10 +535,10 @@ namespace Cell_Tool_3
             tresholdsPropPanel.Resizable = false;
             tresholdsPropPanel.Name.Text = "Segmentation";
             PropertiesBody.Controls.Add(tresholdsPropPanel.Panel);
-
+            
             tresholdsPanel = tresholdsPropPanel.Panel;
 
-            tresholdsPanel.Visible = true;
+            tresholdsPanel.Visible = false;
 
             //add method
             Panel p = new Panel();
@@ -611,55 +547,45 @@ namespace Cell_Tool_3
             tresholdsPanel.Controls.Add(p);
             p.BringToFront();
 
-            MethodName = new Label();
-            MethodName.Text = "Method:";
-            MethodName.Width = TextRenderer.MeasureText(MethodName.Text, MethodName.Font).Width;
-            MethodName.Location = new Point(5, 9);
-            p.Controls.Add(MethodName);
-            MethodName.BringToFront();
-
-            MethodTB = SegmentationCBox;
-            MethodTB.Text = "None";
-            MethodTB.Items.Add("None");
+            Label LibName = new Label();
+            LibName.Text = "Method:";
+            LibName.Width = TextRenderer.MeasureText(LibName.Text, LibName.Font).Width;
+            LibName.Location = new Point(5, 9);
+            p.Controls.Add(LibName);
+            LibName.BringToFront();
+            
+            ComboBox LibTB = SegmentationCBox;
+            LibTB.Text = "None";
+            LibTB.Items.Add("None");
 
             int w = tresholdsPanel.Width - 105;
             if (w < 20) { w = 20; }
-            MethodTB.Width = w;
-            MethodTB.Width = 150;
-            MethodTB.Location = new Point(80, 6);
-            p.Controls.Add(MethodTB);
-            MethodTB.BringToFront();
-            MethodTB.MouseHover += Control_MouseOver;
+            LibTB.Width = w;
+            LibTB.Width = 150;
+            LibTB.Location = new Point(80, 6);
+            p.Controls.Add(LibTB);
+            LibTB.BringToFront();
+            LibTB.MouseHover += Control_MouseOver;
 
-            MethodTB.DropDownStyle = ComboBoxStyle.DropDownList;
-            MethodTB.SelectedIndex = 0;
-            MethodTB.AutoSize = false;
+            LibTB.DropDownStyle = ComboBoxStyle.DropDownList;
+            LibTB.SelectedIndex = 0;
+            LibTB.AutoSize = false;
+            
+            LibTB.SelectedIndexChanged += SegmentationCBox_SelectedIndexChange;
 
-            MethodTB.SelectedIndexChanged += SegmentationCBox_SelectedIndexChange;
-            /*
             tresholdsPanel.Resize += new EventHandler(delegate (object o, EventArgs a)
             {
                 int x1 = tresholdsPanel.Width - 105;
                 if (x1 < 20) { x1 = 20; }
-                MethodTB.Width = x1;
-
-                if (!tresholdsPropPanel.IsExpanded())
-                {
-                    Otsu1D.optionGB.Hide();
-                    Otsu1D.threshGB.Hide();
-                } else
-                {
-                    Otsu1D.optionGB.Show();
-                    Otsu1D.threshGB.Show();
-                }
+                LibTB.Width = x1;
             });
-            */
+
             #region Types of segmentation
             //Add Otsu segmentation
-            //MethodTB.Items.Add("1D Maximum Between-class Variance");
-            MethodTB.Items.Add("Otsu Thresholding");
+            //LibTB.Items.Add("1D Maximum Between-class Variance");
+            LibTB.Items.Add("Otsu Thresholding");
             Otsu1D = new OtsuSegmentation(tresholdsPanel, IA);
-            MethodTB.Items.Add("K-Means");
+            LibTB.Items.Add("K-Means");
             Kmeans = new KMeansSegmentation(IA);
             #endregion Types of segmentation
         }
@@ -686,7 +612,7 @@ namespace Cell_Tool_3
                 IA.delHist = true;
                 IA.UnDoBtn.Enabled = true;
                 IA.DeleteFromHistory();
-                fi.History.Add("segmentation.ChangeMethod(" + fi.cValue.ToString() + ","
+                fi.History.Add("segmentation.ChangeMethod(" + fi.cValue.ToString() +","
                     + fi.SegmentationCBoxIndex[fi.cValue].ToString() + ")");
                 fi.History.Add("segmentation.ChangeMethod(" + fi.cValue.ToString() + ","
                     + SegmentationCBox.SelectedIndex.ToString() + ")");
@@ -697,7 +623,7 @@ namespace Cell_Tool_3
             //set value
             fi.SegmentationCBoxIndex[fi.cValue] = SegmentationCBox.SelectedIndex;
             //hide panels
-            //Otsu1D.panel.Visible = false;
+            Otsu1D.panel.Visible = false;
             //Show panels
             if (IA.settings.SegmentTreshPanelVis[IA.TabPages.ActiveAccountIndex] != "y")
             {
@@ -705,39 +631,34 @@ namespace Cell_Tool_3
             }
             else
             {
-                //tresholdsPanel.Height = 200 + Otsu1D.panel.Height;
-
                 switch (SegmentationCBox.SelectedIndex)
                 {
                     case 1:
-                        Otsu1D.sumHistogramsCheckBox.Enabled = true;
-                        Otsu1D.ProcessBtn.Enabled = true;
+                        Otsu1D.sumHistogramsCheckBox.Visible = true;
+                        tresholdsPanel.Height = 56 + Otsu1D.panel.Height;
+                        Otsu1D.panel.Visible = true;
                         break;
                     case 2:
-                        Otsu1D.sumHistogramsCheckBox.Enabled = true;
-                        Otsu1D.ProcessBtn.Enabled = true;
+                        Otsu1D.sumHistogramsCheckBox.Visible = true;
+                        tresholdsPanel.Height = 56 + Otsu1D.panel.Height;
+                        Otsu1D.panel.Visible = true;
                         break;
                     default:
-                        Otsu1D.sumHistogramsCheckBox.Enabled = false;
-                        Otsu1D.ProcessBtn.Enabled = false;
+                        tresholdsPanel.Height = 56;
+                        Otsu1D.panel.Visible = false;
                         break;
                 }
             }
             if (((ComboBox)sender).Focused == true)
             {
-                IA.ReloadImages();
+               IA.ReloadImages();
             }
-            Otsu1D.thresholdsNumCB.SelectedIndex = fi.thresholdsCBoxIndex[fi.cValue];
-            Otsu1D.sumHistogramsCheckBox.Checked = fi.sumHistogramChecked[fi.cValue];
-            Otsu1D.loadThreshAndColorBtns(fi);
-
-            //IA.refresh_properties_panels();
         }
         #endregion Segmentation
 
         #region Smooth the image
         //source https://en.wikipedia.org/wiki/Kernel_(image_processing)
-        public void SmoothImage(int method, TifFileInfo fi)
+        public void SmoothImage(int method,TifFileInfo fi)
         {
             //choose kernel table
             int[][] kernel = KernelMatrix(method);
@@ -774,7 +695,7 @@ namespace Cell_Tool_3
                 ushort[][] selectedImage = new ushort[fi.sizeY][];
                 ushort[][] origSelectedImage = image[frame];
 
-                for (int y = 0; y < fi.sizeY; y++)
+                for(int y = 0; y<fi.sizeY; y++)
                 {
                     ushort[] row = new ushort[fi.sizeX];
                     for (int x = 0; x < fi.sizeX; x++)
@@ -785,17 +706,17 @@ namespace Cell_Tool_3
                         for (int pInd = 0; pInd < plist.Length; pInd++)
                         {
                             Point p = plist[pInd];
-                            val += ((double)origSelectedImage[p.Y][p.X] * (double)pxlVals[pInd]);
+                            val += ((double)origSelectedImage[p.Y][p.X]*(double)pxlVals[pInd]);
                         }
 
                         //normalize
-                        if (coeficient != 1)
+                        if(coeficient != 1)
                             if (coeficient == 0)
                                 val = Math.Abs(val);
                             else
                                 val /= coeficient;
 
-                        //check the range of the value and apply
+                       //check the range of the value and apply
                         if (val > maxVal)
                             row[x] = maxVal;
                         else if (val < MinValue)
@@ -845,7 +766,7 @@ namespace Cell_Tool_3
                                 val /= coeficient;
                         //check the range of the value and apply
                         if (val >= maxVal)
-                            row[x] = byte.MaxValue - 1;
+                            row[x] = byte.MaxValue-1;
                         else if (val < MinValue)
                             row[x] = byte.MinValue;
                         else
@@ -860,7 +781,7 @@ namespace Cell_Tool_3
             //return result image
             return newImage;
         }
-
+        
         private Point[][][] ImagePxlMatrix(Point[] pxlCords, TifFileInfo fi, int[][] kernel)
         {
             //prepare matrix
@@ -886,7 +807,7 @@ namespace Cell_Tool_3
             int w = ImagePxlMatr[0].Length;
             int h = ImagePxlMatr.Length;
 
-            for (int i = 0; i < CornerConst; i++)
+            for(int i = 0; i< CornerConst; i++)
             {
                 //up rows
                 foreach (Point[] pList in ImagePxlMatr[i])
@@ -926,7 +847,7 @@ namespace Cell_Tool_3
                         pList[countP] = p;
                     }
                     //right column
-
+                
                     pList = ImagePxlMatr[y][(w - 1) - i];
                     for (int countP = 0; countP < pList.Length; countP++)
                     {
@@ -950,7 +871,7 @@ namespace Cell_Tool_3
                 for (int x = 0; x < kernel[y].Length; x++)
                     if (kernel[y][x] != 0)
                         val.Add(kernel[y][x]);
-
+                   
             int[] pxlVal = val.ToArray();
 
             return pxlVal;
@@ -960,16 +881,16 @@ namespace Cell_Tool_3
             List<Point> pixels = new List<Point>();
             int index = -(kernel.Length - 1) / 2;
             //check the table for non zero values and calculate the coordinates
-            for (int y = 0; y < kernel.Length; y++)
+            for(int y = 0; y< kernel.Length; y++)
                 for (int x = 0; x < kernel[y].Length; x++)
                     if (kernel[y][x] != 0)
                         pixels.Add(new Point(x + index, y + index));
-
+                 
             Point[] pxlArray = pixels.ToArray();
 
             return pxlArray;
         }
-
+       
         private int KernelCoeficient(int[][] kernel)
         {
             int sum = 0;
@@ -977,7 +898,7 @@ namespace Cell_Tool_3
             foreach (int[] row in kernel)
                 foreach (int val in row)
                     sum += val;
-
+               
             return sum;
         }
         private int[][] KernelMatrix(int method)
@@ -998,7 +919,7 @@ namespace Cell_Tool_3
                     kernel = new int[3][];
                     kernel[0] = new int[] { 0, -1, 0 };
                     kernel[1] = new int[] { -1, 5, -1 };
-                    kernel[2] = new int[] { 0, -1, 0 };
+                    kernel[2] = new int[] { 0, -1, 0};
                     break;
                 case 2:
                     //Box blur 3x3
@@ -1010,7 +931,7 @@ namespace Cell_Tool_3
                 case 3:
                     //Box blur 5x5
                     kernel = new int[5][];
-                    kernel[0] = new int[] { 1, 1, 1, 1, 1 };
+                    kernel[0] = new int[] { 1,1,1,1,1 };
                     kernel[1] = new int[] { 1, 1, 1, 1, 1 };
                     kernel[2] = new int[] { 1, 1, 1, 1, 1 };
                     kernel[3] = new int[] { 1, 1, 1, 1, 1 };
@@ -1046,12 +967,12 @@ namespace Cell_Tool_3
                     kernel = new int[3][];
                     kernel[0] = new int[] { 1, 2, 1 };
                     kernel[1] = new int[] { 0, 0, 0 };
-                    kernel[2] = new int[] { -1, -2, -1 };
+                    kernel[2] = new int[] { -1, -2, -1};
                     break;
                 case 8:
                     //Edge detection right
                     kernel = new int[3][];
-                    kernel[0] = new int[] { -1, 0, 1 };
+                    kernel[0] = new int[] { -1,0, 1 };
                     kernel[1] = new int[] { -2, 0, 2 };
                     kernel[2] = new int[] { -1, 0, 1 };
                     break;
@@ -1066,7 +987,7 @@ namespace Cell_Tool_3
             //choose kernel table
             int[][] kernelTopDown = KernelMatrix(7);
             int[][] kernelLeftRight = KernelMatrix(8);
-
+            
             //prepare array with exact coordinates for the kernel table mumbers with val
             Point[] pxlCordsTopDown = KernelPxlCord(kernelTopDown);
             Point[] pxlCordsLeftRight = KernelPxlCord(kernelLeftRight);
@@ -1092,9 +1013,9 @@ namespace Cell_Tool_3
                     fi.image16bitFilter = image16bit;
                     break;
             }
-
+            
         }
-        private byte[][][] detectEdgesAllStack8bit(Point[][][] ImagePxlMatrTopDown, Point[][][] ImagePxlMatrLeftRight,
+        private byte[][][] detectEdgesAllStack8bit(Point[][][] ImagePxlMatrTopDown, Point[][][] ImagePxlMatrLeftRight, 
             TifFileInfo fi, int[] pxlValsTopDown, int[] pxlValsLeftRight)
         {
             byte[][][] image = fi.image8bitFilter;
@@ -1129,7 +1050,7 @@ namespace Cell_Tool_3
                         }
                         valLeftRight = Math.Abs(valLeftRight);
                         //sum
-                        double val = (valLeftRight + valTopDown) / 2;
+                        double val = (valLeftRight + valTopDown)/2;
                         //check the value range
                         if (val >= maxVal)
                             row[x] = byte.MaxValue - 1;
@@ -1180,7 +1101,7 @@ namespace Cell_Tool_3
                         }
                         valLeftRight = Math.Abs(valLeftRight);
                         //sum
-                        double val = (valLeftRight + valTopDown) / 2;
+                        double val = (valLeftRight + valTopDown)/2;
                         if (val > maxVal)
                             row[x] = maxVal;
                         else if (val < MinValue)
@@ -1199,14 +1120,14 @@ namespace Cell_Tool_3
         #region Histogram
         public void Segmentation_LoadHistogramToChart(TifFileInfo fi)
         {
-            if (fi.selectedPictureBoxColumn != 1 && fi.selectedPictureBoxColumn != 2) return;
+            if(fi.selectedPictureBoxColumn != 1 && fi.selectedPictureBoxColumn != 2) return; 
             TifFileInfo oldFI = IA.TabPages.TabCollections[IA.TabPages.SelectedIndex].tifFI;
             if (fi.image16bitFilter == null & fi.image8bitFilter == null) { return; }
             oldFI = fi;
             FrameCalculator FC = new FrameCalculator();
             int frame = FC.Frame(fi);
             if (fi.openedImages < frame) { return; }
-
+            
             //create histogram array
             int[] histArray = null;
             switch (fi.bitsPerPixel)
@@ -1225,7 +1146,7 @@ namespace Cell_Tool_3
         {
             //find range
             int MaxBrightness = fi.MaxBrightness[fi.cValue];
-            for (int i = histArray.Length - 1; i > 0; i--)
+            for(int i = histArray.Length - 1; i > 0; i--)
             {
                 if (histArray[i] > 0) { MaxBrightness = i; break; }
             }
@@ -1254,7 +1175,7 @@ namespace Cell_Tool_3
                 if (i <= fi.thresholds[fi.cValue])
                 {
                     otsu1dColorList[i] = fi.thresholdValues[fi.cValue][i];
-                    if (i == 4) { otsu1dColorList[5] = ushort.MaxValue; }
+                    if(i == 4) { otsu1dColorList[5] = ushort.MaxValue; }
                 }
                 else if (i == fi.thresholds[fi.cValue] + 1)
                     otsu1dColorList[i] = ushort.MaxValue;
@@ -1290,14 +1211,14 @@ namespace Cell_Tool_3
                         val += histArray[j];
                     }
                 }
-
+                
                 Values.Points.AddXY(i, val);
-
+                
                 //1dOtsu
                 for (int z = 0; z < Otsu1dSeries.Length; z++)
                 {
                     var ser = Otsu1dSeries[z];
-                    if (i <= otsu1dColorList[z + 1] && i >= otsu1dColorList[z]
+                    if (i <= otsu1dColorList[z+1] && i >= otsu1dColorList[z] 
                         && ser.Color != Color.Transparent)
                         ser.Points.AddXY(i, val);
                 }
@@ -1312,7 +1233,7 @@ namespace Cell_Tool_3
             Values.UseGradientStyle = true;
             Chart1.DrawToScreen(fi);
         }
-
+        
         private int[] calculateHistogram8bit(TifFileInfo fi, int frame)
         {
             int[] array = new int[byte.MaxValue + 1];
@@ -1323,7 +1244,7 @@ namespace Cell_Tool_3
                 foreach (byte[] row in fi.image8bitFilter[frame])
                     foreach (byte val in row)
                         array[val] += 1;
-
+                   
             }
             catch { }
 
@@ -1331,7 +1252,7 @@ namespace Cell_Tool_3
         }
         private int[] calculateHistogram16bit(TifFileInfo fi, int frame)
         {
-            int[] array = new int[ushort.MaxValue + 1];
+            int[] array = new int[ushort.MaxValue+1];
             try
             {
                 int cVal = fi.cValue;
@@ -1339,7 +1260,7 @@ namespace Cell_Tool_3
                 foreach (ushort[] row in fi.image16bitFilter[frame])
                     foreach (ushort val in row)
                         array[val] += 1;
-
+                    
             }
             catch { }
 

@@ -59,8 +59,7 @@ namespace Cell_Tool_3
         public Panel MainPanel = new Panel();
         /////////////////////////////////////////
         //Task bar
-        public ToolStrip taskTS, taskTS2, taskTS3;
-        Panel TaskPanel; // holds taskTS1,2,3
+        public ToolStrip taskTS;
         public ToolStripComboBox ZoomValue = new ToolStripComboBox();
         //Roi type
         public ToolStripButton TrackingBtn = new ToolStripButton();
@@ -157,30 +156,21 @@ namespace Cell_Tool_3
             LogoForm.FormBorderStyle = FormBorderStyle.FixedDialog;
 
             LogoForm.Show();
-            //Force update GUI
-            Application.DoEvents();
-            LogoForm.Invalidate();
-            LogoForm.Update();
-            LogoForm.Refresh();
-            Application.DoEvents();
-
             //Stop the tread
             Thread.Sleep(3000);
             LogoForm.Close();
-            LogoForm.Dispose();
+            
         }
 
         public void MainFormInitialize(Form MainForm)
         {
             this.MainForm = MainForm;
-            MainForm.BackColor = Color.Gray;
             // Set Main Form settings
             MainForm.SuspendLayout();
             MainForm.Icon = Properties.Resources.CT_done;
             MainForm.Text = "CellTool";
             MainForm.WindowState = FormWindowState.Maximized;
             
-
             //MainForm closing
             MainForm.FormClosing += new FormClosingEventHandler(CloseProgram);
             //MainPanel options
@@ -196,15 +186,11 @@ namespace Cell_Tool_3
             });
             //Add MenuItem
             Menu(MainPanel);
-            
+            TaskBar(MainPanel);
             AccBox_Add();
             StatusPanel();
             //File browsers
             FileBrowser.Initialize(ActiveAccountIndex, MainPanel, BackGroundColor, BackGround2Color, ShriftColor,  TitlePanelColor, TaskBtnColor, TaskBtnClickedColor);
-            TaskBar(MainPanel);
-            TaskPanel.SendToBack();
-
-
             FileBrowser.StatusLabel = StatusLabel;
             //Tab Pages control
             TabPages.OpenPanel = FileBrowser.OpenPanel;
@@ -230,12 +216,8 @@ namespace Cell_Tool_3
             TabPages.AddPlugIns();
             //Add hot keys to main form
             MainForm.KeyPreview = true;
-            MainForm.KeyUp += new KeyEventHandler(Form1_KeyPress);
-
-            // Keep all properties collapsed except for the one currently clicked
-            TabPages.configurePropPanelsCollapse();
+            MainForm.KeyDown += new KeyEventHandler(Form1_KeyPress);
             
-
             // Show form on the screen
             MainForm.ResumeLayout(true);
             
@@ -245,27 +227,9 @@ namespace Cell_Tool_3
         }
         private void InitializeAnimations()
         {
-            BackgroundWorker tTimer = new BackgroundWorker();
-            tTimer.WorkerSupportsCancellation = true;
-            tTimer.WorkerReportsProgress = true;
-
-            BackgroundWorker zTimer = new BackgroundWorker();
-            zTimer.WorkerSupportsCancellation = true;
-            zTimer.WorkerReportsProgress = true;
-
-            // On every time interval, report progress to trigger size updates, until canceled
-            tTimer.DoWork += delegate (Object o, DoWorkEventArgs a)
-            {
-                while (!tTimer.CancellationPending)
-                {
-                    Thread.Sleep(100);
-                    ((BackgroundWorker)o).ReportProgress(0);
-                }
-                if (tTimer.CancellationPending) { a.Cancel = true; }
-            };
-
+            System.Windows.Forms.Timer tTimer = new System.Windows.Forms.Timer();
             bool tTimerRunning = false;
-            
+            System.Windows.Forms.Timer zTimer = new System.Windows.Forms.Timer();
             bool zTimerRunning = false;
 
             TifFileInfo oldFI = null;
@@ -275,7 +239,7 @@ namespace Cell_Tool_3
                 if (zTimerRunning) return;
 
                 TabPages.tPlayStop.Image = Properties.Resources.Play;
-                tTimer.CancelAsync();
+                tTimer.Stop();
                 oldFI = null;
 
                 if (tTimerRunning)
@@ -298,53 +262,39 @@ namespace Cell_Tool_3
 
                 tTimerRunning = true;
                 TabPages.tPlayStop.Image = Properties.Resources.Stop;
-                tTimer.RunWorkerAsync();
+                tTimer.Start();
             });
 
-            tTimer.ProgressChanged += delegate (Object o, ProgressChangedEventArgs a)
+            tTimer.Tick += new EventHandler(delegate (object o, EventArgs a) 
             {
-                if (a.ProgressPercentage == 0)
+                TifFileInfo fi = null;
+                try
                 {
-                    TifFileInfo fi = null;
-                    try
-                    {
-                        fi = TabPages.TabCollections[TabPages.SelectedIndex].tifFI;
-                    }
-                    catch { }
-
-                    if (fi == null ||
-                    fi != oldFI ||
-                    !fi.loaded ||
-                    fi.frame + 1 >= fi.sizeT)
-                    {
-                        oldFI = null;
-                        tTimerRunning = false;
-                        TabPages.tPlayStop.Image = Properties.Resources.Play;
-                        tTimer.CancelAsync();
-                    }
-
-                    TimeTrackBar_Forward();
-                } // end if progress reported
-            };
-
-            //Z
-
-            // On every time interval, report progress to trigger size updates, until canceled
-            zTimer.DoWork += delegate (Object o, DoWorkEventArgs a)
-            {
-                while (!zTimer.CancellationPending)
-                {
-                    Thread.Sleep(100);
-                    ((BackgroundWorker)o).ReportProgress(0);
+                    fi = TabPages.TabCollections[TabPages.SelectedIndex].tifFI;
                 }
-                if (zTimer.CancellationPending) { a.Cancel = true; }
-            };
+                catch { }
+
+                if (fi == null ||
+                fi != oldFI ||
+                !fi.loaded ||
+                fi.frame + 1 >= fi.sizeT)
+                {
+                    oldFI = null;
+                    tTimerRunning = false;
+                    TabPages.tPlayStop.Image = Properties.Resources.Play;
+                    tTimer.Stop();
+                }
+
+                TimeTrackBar_Forward();
+            });
+            tTimer.Interval = 40;
+       //Z
 
             TabPages.zPlayStop.Click += new EventHandler(delegate (object o, EventArgs a)
             {
                 if (tTimerRunning) return;
                 TabPages.zPlayStop.Image = Properties.Resources.Play;
-                zTimer.CancelAsync();
+                zTimer.Stop();
                 oldFI = null;
 
                 if (zTimerRunning)
@@ -367,10 +317,10 @@ namespace Cell_Tool_3
 
                 zTimerRunning = true;
                 TabPages.zPlayStop.Image = Properties.Resources.Stop;
-                zTimer.RunWorkerAsync();
+                zTimer.Start();
             });
 
-            zTimer.ProgressChanged += delegate (Object o, ProgressChangedEventArgs a)
+            zTimer.Tick += new EventHandler(delegate (object o, EventArgs a)
             {
                 TifFileInfo fi = null;
                 try
@@ -387,11 +337,13 @@ namespace Cell_Tool_3
                     oldFI = null;
                     zTimerRunning = false;
                     TabPages.zPlayStop.Image = Properties.Resources.Play;
-                    zTimer.CancelAsync();
+                    zTimer.Stop();
                 }
 
                 zTrackBar_Forward();
-            };
+            });
+
+            zTimer.Interval = 40;
         }
         public void AccBox_Add()
         {
@@ -399,14 +351,7 @@ namespace Cell_Tool_3
         }
         private void CloseProgram(object sander, FormClosingEventArgs e)
         {
-
-
-            if (update)
-            {
-                Application.Exit();
-                return;
-            }
-            Helpers.Settings.SaveSettings();
+            if (update) return;
             // Check is it ok to close the program
             string message = "Do you want to exit the program?";
             string caption = "CellTool";
@@ -418,61 +363,46 @@ namespace Cell_Tool_3
             if (result == System.Windows.Forms.DialogResult.Yes)
             {
                 e.Cancel = false;
-                update = true;
-                CloseProgram(sander, e);
             }
             else
             {
                 e.Cancel = true;
-                update = false;
             }
-            
-            
         }
         private void CloseProgram1(object sender, EventArgs e)
         {
             Application.Exit();
         }
 
-
-
         void Form1_KeyPress(object sender, KeyEventArgs e)
         {
-
-            // Shift is indicated by setting the 16th bit
-            bool Shift = ((int)e.KeyValue & (1 << 16)) != 0;
-            int KeyValue = (int)e.KeyValue & 0xEFFFF; // remove the shift bit
-
-            // Control is indicated by setting the 17th bit
-            bool Ctrl = (KeyValue & (1 << 17)) != 0;
-            KeyValue = KeyValue & 0xDFFFF; // remove the control bit
-
-            if (Ctrl)
+            //if (Control.ModifierKeys == Keys.Control)
+            if (e.Control)
             {
-                switch ((MacKeys)KeyValue)
+                switch (e.KeyCode)
                 {
-                    case MacKeys.Z:
+                    case Keys.Z:
                         UnDoBtn.PerformClick();
                         e.Handled = true;
                         e.SuppressKeyPress = true;
                         break;
-                    case MacKeys.Y:
+                    case Keys.Y:
                         ReDoBtn.PerformClick();
                         e.Handled = true;
                         e.SuppressKeyPress = true;
                         break;
-                    case MacKeys.N:
+                    case Keys.N:
                         NewToolStripMenuItem.PerformClick();
                         e.Handled = true;
                         e.SuppressKeyPress = true;
                         break;
-                    case MacKeys.O:
+                    case Keys.O:
                         e.Handled = true;
                         e.SuppressKeyPress = true;
                         OpenBtn.PerformClick();
                         break;
-                    case MacKeys.S:
-                        if (Shift)
+                    case Keys.S:
+                        if (e.Shift)
                         {
                             SaveAsBtn.PerformClick();
                             e.SuppressKeyPress = true;
@@ -485,8 +415,8 @@ namespace Cell_Tool_3
                             e.Handled = true;
                         }
                         break;
-                    case MacKeys.A:
-                        if (Shift)
+                    case Keys.A:
+                        if (e.Shift)
                         {
                             SaveAllBtn.PerformClick();
                             e.SuppressKeyPress = true;
@@ -498,12 +428,12 @@ namespace Cell_Tool_3
 
                         }
                         break;
-                    case MacKeys.E:
+                    case Keys.E:
                         ExportBtn.PerformClick();
                         e.SuppressKeyPress = true;
                         e.Handled = true;
                         break;
-                    case MacKeys.Oemplus:
+                    case Keys.Oemplus:
                         if (ZoomValue.SelectedIndex < ZoomValue.Items.Count - 1)
                         {
                             ZoomValue.SelectedIndex += 1;
@@ -511,7 +441,7 @@ namespace Cell_Tool_3
                             e.Handled = true;
                         }
                         break;
-                    case MacKeys.OemMinus:
+                    case Keys.OemMinus:
                         if (ZoomValue.SelectedIndex > 0)
                         {
                             ZoomValue.SelectedIndex -= 1;
@@ -519,7 +449,7 @@ namespace Cell_Tool_3
                             e.Handled = true;
                         }
                         break;
-                    case MacKeys.Add:
+                    case Keys.Add:
                         if (ZoomValue.SelectedIndex < ZoomValue.Items.Count - 1)
                         {
                             ZoomValue.SelectedIndex += 1;
@@ -527,7 +457,7 @@ namespace Cell_Tool_3
                             e.Handled = true;
                         }
                         break;
-                    case MacKeys.Subtract:
+                    case Keys.Subtract:
                         if (ZoomValue.SelectedIndex > 0)
                         {
                             ZoomValue.SelectedIndex -= 1;
@@ -535,32 +465,32 @@ namespace Cell_Tool_3
                             e.Handled = true;
                         }
                         break;
-                    case MacKeys.T:
+                    case Keys.T:
                         IA.RoiMan.AddBtn_Click(sender, e);
                         e.SuppressKeyPress = true;
                         e.Handled = true;
                         break;
-                    case MacKeys.D:
+                    case Keys.D:
                         IA.RoiMan.DeleteBtn_Click(sender, e);
                         e.SuppressKeyPress = true;
                         e.Handled = true;
                         break;
-                    case MacKeys.M:
+                    case Keys.M:
                         IA.RoiMan.MeasureBtn_Click(sender, e);
                         e.SuppressKeyPress = true;
                         e.Handled = true;
                         break;
-                    case MacKeys.C:
+                    case Keys.C:
                         if (!(MainForm.ActiveControl is TextBox &&
                             ((TextBox)MainForm.ActiveControl).SelectionLength > 0))
                             IA.RoiMan.CopyRois(sender, e);
                         break;
-                    case MacKeys.X:
+                    case Keys.X:
                         if (!(MainForm.ActiveControl is TextBox &&
                             ((TextBox)MainForm.ActiveControl).SelectionLength > 0))
                             IA.RoiMan.CutRois(sender, e);
                         break;
-                    case MacKeys.V:
+                    case Keys.V:
                         if (!(MainForm.ActiveControl is TextBox &&
                             ((TextBox)MainForm.ActiveControl).SelectionLength > 0))
                             IA.RoiMan.PasteRois(sender, e);
@@ -572,6 +502,7 @@ namespace Cell_Tool_3
                             e.Handled = true;
                         }
                         break;
+
                 }
             }
             else
@@ -655,31 +586,23 @@ namespace Cell_Tool_3
             IA.TabPages.zTrackBar.Refresh(fi.zValue + 1, 1, fi.sizeZ);
             IA.ReloadImages();
         }
-       
         private void Menu(Panel MainPanel)
         {
             Panel MenuPanel = new Panel();
-            MenuPanel.Height = 25;
+            MenuPanel.Height = 23;
             MenuPanel.Dock = DockStyle.Top;
-            MenuPanel.Name = "MenuBar";
-            
             MainPanel.Controls.Add(MenuPanel);
             //Start Menu
-            MenuStrip StartMenu = new MenuStrip();           
-            StartMenu.AutoSize = true;
-            StartMenu.Dock = DockStyle.Fill;
+            MenuStrip StartMenu = new MenuStrip();
+            StartMenu.BackColor = BackGroundColor;
+            StartMenu.ForeColor = ShriftColor;
             MenuPanel.Controls.Add(StartMenu);
-
-            MenuStrip AccountMenu = new MenuStrip();
-            AccountMenu.AutoSize = true;
-            AccountMenu.Dock = DockStyle.Top;
-            FileBrowser.DataSourcesPanel.Controls.Add(AccountMenu);
             //File menu 
             { 
                 ToolStripMenuItem FileToolStripMenuItem = new ToolStripMenuItem();
                 FileToolStripMenuItem.Text = "File";
-                //FileToolStripMenuItem.BackColor = BackGroundColor;
-                //FileToolStripMenuItem.ForeColor = ShriftColor;
+                FileToolStripMenuItem.BackColor = BackGroundColor;
+                FileToolStripMenuItem.ForeColor = ShriftColor;
                 FileToolStripMenuItem.DropDownOpened += new EventHandler(menuItem_Opened);
                 FileToolStripMenuItem.DropDownClosed += new EventHandler(menuItem_Closed);
                 StartMenu.Items.Add(FileToolStripMenuItem);
@@ -903,7 +826,7 @@ namespace Cell_Tool_3
                 ToolStripMenuItem TutorialsMenuItem = new ToolStripMenuItem();
                 TutorialsMenuItem.Text = "Tutorials";
                 TutorialsMenuItem.Click += Tutorials_Click;
-                if(OSStringConverter.isWinOS) HelpToolStripMenuItem.DropDownItems.Add(TutorialsMenuItem);
+                HelpToolStripMenuItem.DropDownItems.Add(TutorialsMenuItem);
 
                 HotKeysToolStripMenuItem.Text = "Hot Keys";
                 HelpToolStripMenuItem.DropDownItems.Add(HotKeysToolStripMenuItem);
@@ -920,13 +843,12 @@ namespace Cell_Tool_3
             //Account
             {
                 AccountToolStripMenuItem.Image = Properties.Resources.accImage;
-                AccountToolStripMenuItem.Alignment = ToolStripItemAlignment.Left;
+                AccountToolStripMenuItem.Alignment = ToolStripItemAlignment.Right;
                 AccountToolStripMenuItem.DropDownOpened += new EventHandler(menuItem_Opened);
                 AccountToolStripMenuItem.DropDownClosed += new EventHandler(menuItem_Closed);
                 AccountToolStripMenuItem.Margin = new System.Windows.Forms.Padding(3, 1, 10, 2);
+                StartMenu.Items.Add(AccountToolStripMenuItem);
                 
-                AccountMenu.Items.Add(AccountToolStripMenuItem);
-
                 LogOutToolStripMenuItem.Text = "Log out";
                 AccountToolStripMenuItem.DropDownItems.Add(LogOutToolStripMenuItem);
 
@@ -944,12 +866,12 @@ namespace Cell_Tool_3
         void menuItem_Opened(object sender, EventArgs e)
         {
             ToolStripMenuItem item1 = sender as ToolStripMenuItem;
-            //item1.ForeColor = Color.Black;
+            item1.ForeColor = Color.Black;
         }
         void menuItem_Closed(object sender, EventArgs e)
         {
             ToolStripMenuItem item1 = sender as ToolStripMenuItem;
-            //item1.ForeColor = ShriftColor;
+            item1.ForeColor = ShriftColor;
         }
         void Support_Click(object sender, EventArgs e)
         {
@@ -971,11 +893,7 @@ namespace Cell_Tool_3
             rtb.Text = Properties.Resources.LicenseAgreementCT;
 
             msgForm.Controls.Add(rtb);
-
-            // Linux change
-            StatusLabel.Text = "Dialog open";
             msgForm.ShowDialog();
-            StatusLabel.Text = "Ready";
         }
         void Tutorials_Click(object sender, EventArgs e)
         {
@@ -1002,20 +920,14 @@ namespace Cell_Tool_3
             rtb.LinkClicked += new System.Windows.Forms.LinkClickedEventHandler(link_LinkClicked);
             rtb.Dock = DockStyle.Fill;
             rtb.ReadOnly = true;
-            //rtb.Rtf = Properties.Resources.Citation;
-            rtb.Text = Properties.Resources.Citation;
+            rtb.Rtf = Properties.Resources.Citation;
 
             msgForm.Controls.Add(rtb);
-
-            // Linux change
-            StatusLabel.Text = "Dialog open";
             msgForm.ShowDialog();
-            StatusLabel.Text = "Ready";
         }
         private void link_LinkClicked(object sender, LinkClickedEventArgs e)
         {
-            if(OSStringConverter.isWinOS)
-                System.Diagnostics.Process.Start(e.LinkText);
+            System.Diagnostics.Process.Start(e.LinkText);
         }
         void AccordLicense_Click(object sender, EventArgs e)
         {
@@ -1033,11 +945,7 @@ namespace Cell_Tool_3
             rtb.Text = Properties.Resources.AccordLicence;
 
             msgForm.Controls.Add(rtb);
-
-            // Linux change
-            StatusLabel.Text = "Dialog open";
             msgForm.ShowDialog();
-            StatusLabel.Text = "Ready";
         }
         void MathNET_NumericsLicense_Click(object sender, EventArgs e)
         {
@@ -1055,11 +963,7 @@ namespace Cell_Tool_3
             rtb.Text = Properties.Resources.MathNET_NumericsLicense;
 
             msgForm.Controls.Add(rtb);
-
-            // Linux change
-            StatusLabel.Text = "Dialog open";
             msgForm.ShowDialog();
-            StatusLabel.Text = "Ready";
         }
         void NcalcLicense_Click(object sender, EventArgs e)
         {
@@ -1077,11 +981,7 @@ namespace Cell_Tool_3
             rtb.Text = Properties.Resources.NcalcLicense;
 
             msgForm.Controls.Add(rtb);
-
-            // Linux change
-            StatusLabel.Text = "Dialog open";
             msgForm.ShowDialog();
-            StatusLabel.Text = "Ready";
         }
         void LibTifLicense_Click(object sender, EventArgs e)
         {
@@ -1099,11 +999,7 @@ namespace Cell_Tool_3
             rtb.Text = Properties.Resources.LicenseAgreementLibTif;
 
             msgForm.Controls.Add(rtb);
-
-            // Linux change
-            StatusLabel.Text = "Dialog open";
             msgForm.ShowDialog();
-            StatusLabel.Text = "Ready";
         }
         void BioFormatsLicense_Click(object sender, EventArgs e)
         {
@@ -1121,11 +1017,7 @@ namespace Cell_Tool_3
             rtb.Text = Properties.Resources.BioFormats;
 
             msgForm.Controls.Add(rtb);
-
-            // Linux change
-            StatusLabel.Text = "Dialog open";
             msgForm.ShowDialog();
-            StatusLabel.Text = "Ready";
         }
         void ikvmLicense_Click(object sender, EventArgs e)
         {
@@ -1143,11 +1035,7 @@ namespace Cell_Tool_3
             rtb.Text = Properties.Resources.ikvm;
 
             msgForm.Controls.Add(rtb);
-
-            // Linux change
-            StatusLabel.Text = "Dialog open";
             msgForm.ShowDialog();
-            StatusLabel.Text = "Ready";
         }
 
         void openTKLicense_Click(object sender, EventArgs e)
@@ -1166,59 +1054,28 @@ namespace Cell_Tool_3
             rtb.Text = Properties.Resources.OpenTK;
 
             msgForm.Controls.Add(rtb);
-
-            // Linux change
-            StatusLabel.Text = "Dialog open";
             msgForm.ShowDialog();
-            StatusLabel.Text = "Ready";
         }
         private void TaskBar(Panel MainPanel)
         {
             // build panel
-            TaskPanel = new Panel();
-            TaskPanel.Height = 70;
+            Panel TaskPanel = new Panel();
+            TaskPanel.Height = 26;
             TaskPanel.Dock = DockStyle.Top;
             TaskPanel.BackColor = TaskBtnColor;
-            TaskPanel.Name = "TaskBar";
-            FileBrowser.DataSourcesPanel.Controls.Add(TaskPanel);
+            MainPanel.Controls.Add(TaskPanel);
             TaskPanel.BringToFront();
             // add task bar
             taskTS = new ToolStrip();
-            taskTS2 = new ToolStrip();
-            taskTS3 = new ToolStrip();
-
-            taskTS.GripStyle = ToolStripGripStyle.Hidden;
+             taskTS.GripStyle = ToolStripGripStyle.Hidden;
             taskTS.Renderer = new MySR();
             {
                 taskTS.BackColor = TaskBtnColor;
                 taskTS.ForeColor = ShriftColor;
                 taskTS.Dock = DockStyle.Top;
                 taskTS.ImageScalingSize = new System.Drawing.Size(20, 20);
-                
+                TaskPanel.Controls.Add(taskTS);
             }
-
-            taskTS2.GripStyle = ToolStripGripStyle.Hidden;
-            taskTS2.Renderer = new MySR();
-            {
-                taskTS2.BackColor = TaskBtnColor;
-                taskTS2.ForeColor = ShriftColor;
-                taskTS2.Dock = DockStyle.Top;
-                taskTS2.ImageScalingSize = new System.Drawing.Size(20, 20);
-                
-            }
-
-            taskTS3.GripStyle = ToolStripGripStyle.Hidden;
-            taskTS3.Renderer = new MySR();
-            {
-                taskTS3.BackColor = TaskBtnColor;
-                taskTS3.ForeColor = ShriftColor;
-                taskTS3.Dock = DockStyle.Top;
-                taskTS3.ImageScalingSize = new System.Drawing.Size(20, 20);
-                
-            }
-            TaskPanel.Controls.Add(taskTS3);
-            TaskPanel.Controls.Add(taskTS2);
-            TaskPanel.Controls.Add(taskTS);
             //add buttons to taskBar
             {
                 {
@@ -1296,7 +1153,7 @@ namespace Cell_Tool_3
                     ExportBtn.Text = "Export (Ctrl + E)";
                     ExportBtn.BackColor = TaskBtnColor;
                     ExportBtn.Image = Properties.Resources.export;
-                    taskTS3.Items.Add(ExportBtn);
+                    taskTS.Items.Add(ExportBtn);
                     
                 }
                 ToolStripSeparator Separator3 = new ToolStripSeparator();
@@ -1310,7 +1167,7 @@ namespace Cell_Tool_3
                     StaticBtn.Image = DrawClicetBorder(Properties.Resources.Static_ROI);
                     StaticBtn.Click += new EventHandler(tracking_Static_Btn_click);
                     StaticBtn.BackColor = TaskBtnClickedColor;
-                    taskTS2.Items.Add(StaticBtn);
+                    taskTS.Items.Add(StaticBtn);
                   
                     TrackingBtn.DisplayStyle = ToolStripItemDisplayStyle.Image;
                     TrackingBtn.Margin = new System.Windows.Forms.Padding(3, 1, 3, 2);
@@ -1319,11 +1176,11 @@ namespace Cell_Tool_3
                     TrackingBtn.Image = Properties.Resources.Tracking_ROI_2;
                     TrackingBtn.Click += new EventHandler(tracking_Static_Btn_click);
                     TrackingBtn.BackColor = TaskBtnColor;
-                    taskTS2.Items.Add(TrackingBtn);
+                    taskTS.Items.Add(TrackingBtn);
 
                     ToolStripSeparator Separator4a = new ToolStripSeparator();
                     Separator4a.Margin = new System.Windows.Forms.Padding(8, 1, 8, 2);
-                    taskTS2.Items.Add(Separator4a);
+                    taskTS.Items.Add(Separator4a);
 
                     DoubleRoiBtn.DisplayStyle = ToolStripItemDisplayStyle.Image;
                     DoubleRoiBtn.Margin = new System.Windows.Forms.Padding(3, 1, 3, 2);
@@ -1332,11 +1189,11 @@ namespace Cell_Tool_3
                     DoubleRoiBtn.Image = Properties.Resources.bulls_eye;
                     DoubleRoiBtn.Click += new EventHandler(DoubleRoiBtn_click);
                     DoubleRoiBtn.BackColor = TaskBtnColor;
-                    taskTS2.Items.Add(DoubleRoiBtn);
+                    taskTS.Items.Add(DoubleRoiBtn);
                 }
                 ToolStripSeparator Separator4 = new ToolStripSeparator();
                 Separator4.Margin = new System.Windows.Forms.Padding(8, 1, 8, 2);
-                taskTS2.Items.Add(Separator4);
+                taskTS.Items.Add(Separator4);
                 {
                     
                     RectangularBtn.DisplayStyle = ToolStripItemDisplayStyle.Image;
@@ -1346,7 +1203,7 @@ namespace Cell_Tool_3
                     RectangularBtn.Image = DrawClicetBorder(Properties.Resources.Rectangle_1);
                     RectangularBtn.Click += new EventHandler(ShapeRoi_Change);
                     RectangularBtn.BackColor = TaskBtnClickedColor;
-                    taskTS2.Items.Add(RectangularBtn);
+                    taskTS.Items.Add(RectangularBtn);
                     
                     OvalBtn.DisplayStyle = ToolStripItemDisplayStyle.Image;
                     OvalBtn.Margin = new System.Windows.Forms.Padding(3, 1, 3, 2);
@@ -1355,7 +1212,7 @@ namespace Cell_Tool_3
                     OvalBtn.Image = Properties.Resources.Circle;
                     OvalBtn.Click += new EventHandler(ShapeRoi_Change);
                     OvalBtn.BackColor = TaskBtnColor;
-                    taskTS2.Items.Add(OvalBtn);
+                    taskTS.Items.Add(OvalBtn);
                                         
                     PolygonBtn.DisplayStyle = ToolStripItemDisplayStyle.Image;
                     PolygonBtn.Margin = new System.Windows.Forms.Padding(3, 1, 3, 2);
@@ -1364,7 +1221,7 @@ namespace Cell_Tool_3
                     PolygonBtn.Image = Properties.Resources.Polygon;
                     PolygonBtn.Click += new EventHandler(ShapeRoi_Change);
                     PolygonBtn.BackColor = TaskBtnColor;
-                    taskTS2.Items.Add(PolygonBtn);
+                    taskTS.Items.Add(PolygonBtn);
 
                     FreehandBtn.DisplayStyle = ToolStripItemDisplayStyle.Image;
                     FreehandBtn.Margin = new System.Windows.Forms.Padding(3, 1, 3, 2);
@@ -1373,7 +1230,7 @@ namespace Cell_Tool_3
                     FreehandBtn.Image = Properties.Resources.freeselection_1;
                     FreehandBtn.Click += new EventHandler(ShapeRoi_Change);
                     FreehandBtn.BackColor = TaskBtnColor;
-                    taskTS2.Items.Add(FreehandBtn);
+                    taskTS.Items.Add(FreehandBtn);
 
                     MagicWandBtn.DisplayStyle = ToolStripItemDisplayStyle.Image;
                     MagicWandBtn.Margin = new System.Windows.Forms.Padding(3, 1, 3, 2);
@@ -1382,17 +1239,17 @@ namespace Cell_Tool_3
                     MagicWandBtn.Image = Properties.Resources.magic;
                     MagicWandBtn.Click += new EventHandler(ShapeRoi_Change);
                     MagicWandBtn.BackColor = TaskBtnColor;
-                    taskTS2.Items.Add(MagicWandBtn);
+                    taskTS.Items.Add(MagicWandBtn);
                 }
                 ToolStripSeparator Separator5 = new ToolStripSeparator();
                 Separator5.Margin = new System.Windows.Forms.Padding(8, 1, 8, 2);
-                taskTS3.Items.Add(Separator5);
+                taskTS.Items.Add(Separator5);
                 //Zoom
                 {
                     ToolStripLabel ZoomLabel = new ToolStripLabel();
                     ZoomLabel.Text = "Zoom:";
                     ZoomLabel.ForeColor = Color.Black;
-                    taskTS3.Items.Add(ZoomLabel);
+                    taskTS.Items.Add(ZoomLabel);
 
                     ZoomValue.Items.AddRange(new string[] 
                         {6.25.ToString() +" %",12.5.ToString() +" %","25 %","50 %",
@@ -1401,12 +1258,12 @@ namespace Cell_Tool_3
                     ZoomValue.DropDownStyle = ComboBoxStyle.DropDownList;
                     ZoomValue.SelectedIndex = 4;
                     ZoomValue.AutoSize = false;
-                    ZoomValue.Width = 80;
-                    taskTS3.Items.Add(ZoomValue);
+                    ZoomValue.Width = 60;
+                    taskTS.Items.Add(ZoomValue);
                 }
                 ToolStripSeparator Separator6 = new ToolStripSeparator();
                 Separator6.Margin = new System.Windows.Forms.Padding(8, 1, 8, 2);
-                taskTS3.Items.Add(Separator6);
+                taskTS.Items.Add(Separator6);
             }
         }
         
@@ -1512,7 +1369,6 @@ namespace Cell_Tool_3
             StatusPanel.Height = 30;
             StatusPanel.Dock = DockStyle.Bottom;
             StatusPanel.BackColor = BackGroundColor;
-            StatusPanel.Name = "BottomStatusBar";
             MainPanel.Controls.Add(StatusPanel);
             StatusPanel.BringToFront();
 
@@ -1542,16 +1398,10 @@ namespace Cell_Tool_3
         
         private void StatusLabel_TextChange(object sender, EventArgs e)
         {
-              
             if (StatusLabel.Text == "Ready" | StatusLabel.Text == "Reading Tif Image...")
             {
                 MainPanel.Cursor = Cursors.Default;
                 StatusProgressBar.Visible = false;
-
-                // Linux change
-                MainForm.Enabled = true;
-                MainForm.Focus();
-
             }
             else
             {
@@ -1566,46 +1416,31 @@ namespace Cell_Tool_3
                     StatusProgressBar.Style = ProgressBarStyle.Marquee;
                 }
                 StatusProgressBar.Visible = true;
-                //MainForm.Refresh();
-                //MainForm.Update();
-
+                MainForm.Refresh();
+                MainForm.Update();
                 
-
             }
         }
         private void StatusProgressBar_visibleChanged(object sender, EventArgs e)
         {
             if (StatusProgressBar.Visible == false) return;
 
-            BackgroundWorker t = new BackgroundWorker();
-            t.WorkerSupportsCancellation = true;
-            t.WorkerReportsProgress = true;
-
-            // On every time interval, report progress to trigger size updates, until canceled
-            t.DoWork += delegate (Object o, DoWorkEventArgs a)
-            {
-                while (!t.CancellationPending)
-                {
-                    Thread.Sleep(100);
-                    ((BackgroundWorker)o).ReportProgress(0);
-                }
-                if (t.CancellationPending) { a.Cancel = true; }
-            };
-
-            t.ProgressChanged += delegate (Object o, ProgressChangedEventArgs a)
+            System.Windows.Forms.Timer t = new System.Windows.Forms.Timer();
+            t.Interval = 100;
+            t.Tick += new EventHandler(delegate(object o, EventArgs a)
             {
                 if (StatusProgressBar.Visible == false)
                 {
-                    t.CancelAsync();
+                    t.Stop();
                     t.Dispose();
                 }
                 else
                 {
                     Application.DoEvents();
                 }
-            };
+            });
 
-            if (StatusProgressBar.Visible == true) t.RunWorkerAsync();
+            if (StatusProgressBar.Visible == true) t.Start();
 
         }
 

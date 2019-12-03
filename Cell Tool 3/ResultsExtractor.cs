@@ -34,49 +34,17 @@ namespace Cell_Tool_3
 {
    class ResultsExtractor
     {
-        public MyForm myPanel = null;
-        private string LoadingDir = "";
-        
-        
+        public Panel myPanel = null;
         public Panel Input(string dir, ImageAnalyser IA)
         {
             MyForm form1 = new MyForm(dir,IA);
             this.myPanel = form1;
 
-            //if (File.Exists(OSStringConverter.StringToDir(dir)))
-            //ResultsExtractor.FileSaver.ReadCTDataFile(form1, dir);
-            this.LoadingDir = dir;
-            this.myPanel.DockChanged += myPanel_EnabledChanged;
-            //this.myPanel.ParentChanged += myPanel_ParentChanged;
+            if (File.Exists(dir))
+                ResultsExtractor.FileSaver.ReadCTDataFile(form1, dir);
 
             return form1;
             //form1.Show();
-        }
-        private void myPanel_EnabledChanged(object sender, EventArgs e)
-        {
-            if(this.LoadingDir != "")
-            {
-                if (File.Exists(OSStringConverter.StringToDir(this.LoadingDir)))
-                    ResultsExtractor.FileSaver.ReadCTDataFile((MyForm)myPanel, this.LoadingDir);
-
-                this.LoadingDir = "";
-            }
-        }
-
-        private void myPanel_ParentChanged(object sender, EventArgs e)
-        {/*
-            if (this.myPanel.Parent == null)
-            {
-                ((MyForm)myPanel).formRepeats.SetVisibleState(false);
-                ((MyForm)myPanel).formResults.SetVisibleState(false);
-                ((MyForm)myPanel).formFit.SetVisibleState(false);
-            } else
-            {
-                ((MyForm)myPanel).formRepeats.SetVisibleState(true);
-                ((MyForm)myPanel).formResults.SetVisibleState(true);
-                ((MyForm)myPanel).formFit.SetVisibleState(true);
-            }
-            */
         }
         public class Parametars
         {
@@ -91,7 +59,6 @@ namespace Cell_Tool_3
         public class MyForm : Panel
         {
             public ImageAnalyser IA;
-            //public Form_auxiliary formRepeats, formResults, formFit;
             /// StatusBar
             public ToolStripProgressBar StatusProgressBar = new ToolStripProgressBar();
             public ToolStripStatusLabel StatusLabel = new ToolStripStatusLabel();
@@ -105,8 +72,7 @@ namespace Cell_Tool_3
             PropertiesPanel_Item FiltersPanel = new PropertiesPanel_Item();
             PropertiesPanel_Item DataPanel = new PropertiesPanel_Item();
             Panel ExtrPropertiesPanel = new Panel();
-            public bool IsDeleted;
-
+            
             private bool resizing = false;
             public FilterTV filterTV;
             public DataTV dataTV;
@@ -131,10 +97,6 @@ namespace Cell_Tool_3
                 repeatsCh = new RepeatsChart(this);
                 solverClass = new ChartSolverSettings(this);
 
-                resultsCh.Name = "Extractor Results";
-                repeatsCh.Name = "Extractor Repeats";
-                solverClass.fitChart1.Name = "Extractor Fits";
-
                 this.BackColor = Parametars.BackGroundColor;
                 this.Width = 800;
                 this.Height = 500;                
@@ -144,16 +106,13 @@ namespace Cell_Tool_3
                 AddMenuStrip();
                 AddFooter();
                 AddSettings();
+                AddFitSettings();
                 AddCharts();
 
-                //AdjustSize();
-                IA.TabPages.MainForm.Resize += ResizeAccordingToMain;
+                AdjustSize();
                 AddResizeHandlers();
 
                 this.ResumeLayout();
-
-
-
             }
             private void AddResizeHandlers()
             {
@@ -235,123 +194,150 @@ namespace Cell_Tool_3
             }
             private void AddCharts()
             {
-                // Find the size of the main form to use it as a reference for setting up the screen view
-                Size MainSize = IA.TabPages.MainForm.Size;
-                int StartWidth = IA.FileBrowser.DataSourcesPanelWidth;
-                
-                repeatsCh.Location = new Point(StartWidth, 0);
-                resultsCh.Location = new Point(StartWidth + (MainSize.Width - StartWidth) / 3, 0);
+                Panel chartPanel = new Panel();
+                chartPanel.AutoScroll = true;
+                chartPanel.Dock = DockStyle.Fill;
+                this.Controls.Add(chartPanel);
+                chartPanel.BringToFront();
+                //chartPanel.MinimumSize = new Size(60, 100);
 
-                repeatsCh.Size = new Size((MainSize.Width - StartWidth) / 3, MainSize.Height / 2);
-                resultsCh.Size = new Size((MainSize.Width - StartWidth) / 3, MainSize.Height / 2);
+                PropertiesPanel_Item RepeatsChartPanel = new PropertiesPanel_Item();
+                RepeatsChartPanel.Initialize(chartPanel);
+                RepeatsChartPanel.BackColor(Parametars.BackGround2Color);
+                RepeatsChartPanel.ForeColor(Parametars.ShriftColor);
+                RepeatsChartPanel.TitleColor(Parametars.TitlePanelColor);
+                RepeatsChartPanel.Resizable = false;
+                RepeatsChartPanel.Name.Text = "Repeats";
+                RepeatsChartPanel.Panel.Visible = true;
+                RepeatsChartPanel.Panel.Dock = DockStyle.Fill;
+                chartPanel.Controls.Add(RepeatsChartPanel.Panel);
+                                
+                ResultPanel.Initialize(chartPanel);
+                ResultPanel.BackColor(Parametars.BackGround2Color);
+                ResultPanel.ForeColor(Parametars.ShriftColor);
+                ResultPanel.TitleColor(Parametars.TitlePanelColor);
+                ResultPanel.Resizable = true;
+                ResultPanel.Name.Text = "Results";
+                ResultPanel.Panel.Visible = true;
+                ResultPanel.Height = 250;
+                ResultPanel.Panel.Height = 250;
+                chartPanel.Controls.Add(ResultPanel.Panel);
 
-                IA.TabPages.MainForm.Controls.Add(repeatsCh);
-                IA.TabPages.MainForm.Controls.Add(resultsCh);
-
-                repeatsCh.BringToFront();
-                resultsCh.BringToFront();
-                
+                RepeatsChartPanel.Body.Controls.Add(repeatsCh);
+                ResultPanel.Body.Controls.Add(resultsCh);
             }
-
-            public void HideAll()
+            private void AddFitSettings()
             {
-
-                if (IA.TabPages.MainForm.Controls.Contains(repeatsCh))
-                    IA.TabPages.MainForm.Controls.Remove(repeatsCh);
-                if (IA.TabPages.MainForm.Controls.Contains(resultsCh))
-                    IA.TabPages.MainForm.Controls.Remove(resultsCh);
-                if (IA.TabPages.MainForm.Controls.Contains(solverClass.fitChart1))
-                    IA.TabPages.MainForm.Controls.Remove(solverClass.fitChart1);
-            }
-
-            public void DisposeAll()
-            {
-
-                if (repeatsCh != null) 
-                    repeatsCh.Dispose();
-                if (resultsCh != null)
-                    resultsCh.Dispose();
-                if (solverClass.fitChart1 != null)
-                    solverClass.fitChart1.Dispose(); ;
-            }
-
-            public void ShowAll()
-            {
-                HideAll();
-
-                if (!IA.TabPages.MainForm.Controls.Contains(repeatsCh))
-                    IA.TabPages.MainForm.Controls.Add(repeatsCh);
-                if (!IA.TabPages.MainForm.Controls.Contains(resultsCh))
-                    IA.TabPages.MainForm.Controls.Add(resultsCh);
-                if (!IA.TabPages.MainForm.Controls.Contains(solverClass.fitChart1))
-                    IA.TabPages.MainForm.Controls.Add(solverClass.fitChart1);
-
-                repeatsCh.MakeCurrent();
-
-            }
-            
-            private void AddSettings()
-            {
-                
-
-                // Find the size of the main form to use it as a reference for setting up the screen view
-                Size MainSize = IA.TabPages.MainForm.Size;
-                int StartWidth = IA.FileBrowser.DataSourcesPanelWidth;
-
-                Panel propertiesPanel = ExtrPropertiesPanel;
+                Panel propertiesPanel = FitPropertiesPanel;
                 propertiesPanel.AutoScroll = true;
-
-                propertiesPanel.Location = new Point(0, MainSize.Height / 2 );
-                propertiesPanel.Size = new Size(MainSize.Width - StartWidth, MainSize.Height / 2 - 100);
-
+                propertiesPanel.BackColor = Parametars.BackGroundColor;
+                propertiesPanel.Width = 200;
+                propertiesPanel.Dock = DockStyle.Right;
                 this.Controls.Add(propertiesPanel);
-                
                 propertiesPanel.BringToFront();
                 propertiesPanel.MinimumSize = new Size(100, 100);
 
+                Panel midPanel = new Panel();
+                midPanel.Tag = propertiesPanel;
+                midPanel.Width = 5;
+                midPanel.Dock = DockStyle.Right;
+                this.Controls.Add(midPanel);
+                midPanel.BringToFront();
+                midPanel.MouseDown += Resize_MouseDown;
+                midPanel.MouseUp += Resize_MouseUp;
+                midPanel.MouseMove += Resize_MouseMove;
+                midPanel.MouseEnter += Resize_MouseEnter;
+                midPanel.MouseLeave += Resize_MouseLeave;
+                
+                FitHistoryPanel.Initialize(propertiesPanel);
+                FitHistoryPanel.BackColor(Parametars.BackGround2Color);
+                FitHistoryPanel.ForeColor(Parametars.ShriftColor);
+                FitHistoryPanel.TitleColor(Parametars.TitlePanelColor);
+                FitHistoryPanel.Resizable = true;
+                FitHistoryPanel.Name.Text = "Fits";
+                FitHistoryPanel.Panel.Visible = true;
+                FitHistoryPanel.Panel.Height = 160;
+                FitHistoryPanel.Height = 160;
+                propertiesPanel.Controls.Add(FitHistoryPanel.Panel);
+                FitHistoryPanel.Body.Controls.Add(solverClass.fitData);
+                solverClass.fitData.Dock = DockStyle.Fill;
+                solverClass.fitData.BringToFront();
+                
+                ParametersPanel.Initialize(propertiesPanel);
+                ParametersPanel.BackColor(Parametars.BackGround2Color);
+                ParametersPanel.ForeColor(Parametars.ShriftColor);
+                ParametersPanel.TitleColor(Parametars.TitlePanelColor);
+                ParametersPanel.Resizable = false;
+                ParametersPanel.Name.Text = "Solver Settings";
+                ParametersPanel.Panel.Visible = true;
+                ParametersPanel.Panel.Height = 80;
+                ParametersPanel.Height = 80;
+                propertiesPanel.Controls.Add(ParametersPanel.Panel);
+                ParametersPanel.Body.Controls.Add(solverClass.parametersPanel);
+                solverClass.parametersPanel.BringToFront();
+                ParametersPanel.Body.BringToFront();
+                solverClass.parametersPanel.SizeChanged += new EventHandler(delegate (object o, EventArgs a)
+                {
+                    if (ParametersPanel.Panel.Height > 30)
+                    {
+                        ParametersPanel.Height = 35 + solverClass.parametersPanel.Height;
+                        ParametersPanel.Panel.Height = ParametersPanel.Height;
+                    }
+                });
+                ParametersPanel.Height = 35 + solverClass.parametersPanel.Height;
+                ParametersPanel.Panel.Height = ParametersPanel.Height;
+
                
+                FitChartPanel.Initialize(propertiesPanel);
+                FitChartPanel.BackColor(Parametars.BackGround2Color);
+                FitChartPanel.ForeColor(Parametars.ShriftColor);
+                FitChartPanel.TitleColor(Parametars.TitlePanelColor);
+                FitChartPanel.Resizable = true;
+                FitChartPanel.Panel.Visible = true;
+                FitChartPanel.Panel.Height = 160;
+                FitChartPanel.Height = 160;
+                FitChartPanel.Name.Text = "Fitting Result";
+                FitChartPanel.Panel.Visible = true;
+                propertiesPanel.Controls.Add(FitChartPanel.Panel);
+
+                FitChartPanel.Body.Controls.Add(solverClass.fitChart1);
+                FitChartPanel.Body.Controls.Add(solverClass.fitChart1.Titles);
+                
+                /*
+                PropertiesPanel_Item DataPanel = new PropertiesPanel_Item();
                 DataPanel.Initialize(propertiesPanel);
-                DataPanel.Panel.Location = new Point(0, 0);
-                DataPanel.Panel.Size = new Size((MainSize.Width - StartWidth)/6, MainSize.Height / 2 - 100);
                 DataPanel.BackColor(Parametars.BackGround2Color);
                 DataPanel.ForeColor(Parametars.ShriftColor);
                 DataPanel.TitleColor(Parametars.TitlePanelColor);
                 DataPanel.Resizable = false;
                 DataPanel.Name.Text = "Data";
-                DataPanel.Name.AutoSize = true;
                 DataPanel.Panel.Visible = true;
+                DataPanel.Panel.Dock = DockStyle.Fill;
                 propertiesPanel.Controls.Add(DataPanel.Panel);
 
-                
+                PropertiesPanel_Item SettingsPanel = new PropertiesPanel_Item();
                 SettingsPanel.Initialize(propertiesPanel);
-                SettingsPanel.Panel.Location = new Point(DataPanel.Panel.Width, 0);
-                SettingsPanel.Panel.Size = new Size((MainSize.Width - StartWidth) / 6, MainSize.Height / 2 - 100);
                 SettingsPanel.BackColor(Parametars.BackGround2Color);
                 SettingsPanel.ForeColor(Parametars.ShriftColor);
                 SettingsPanel.TitleColor(Parametars.TitlePanelColor);
                 SettingsPanel.Resizable = false;
                 SettingsPanel.Name.Text = "Settings";
-                SettingsPanel.Name.AutoSize = true;
                 SettingsPanel.Panel.Visible = true;
-                //SettingsPanel.Panel.Height = 165;
-                //SettingsPanel.Height = 165;
+                SettingsPanel.Panel.Height = 80;
+                SettingsPanel.Height = 80;
                 propertiesPanel.Controls.Add(SettingsPanel.Panel);
 
-
+                PropertiesPanel_Item FiltersPanel = new PropertiesPanel_Item();
                 FiltersPanel.Initialize(propertiesPanel);
-                FiltersPanel.Panel.Location = new Point(5 * (MainSize.Width - StartWidth) / 6, 0);
-                FiltersPanel.Panel.Size = new Size((MainSize.Width - StartWidth) / 6, MainSize.Height / 2 - 100);
                 FiltersPanel.BackColor(Parametars.BackGround2Color);
                 FiltersPanel.ForeColor(Parametars.ShriftColor);
                 FiltersPanel.TitleColor(Parametars.TitlePanelColor);
-                FiltersPanel.Resizable = false;
+                FiltersPanel.Resizable = true;
                 FiltersPanel.Name.Text = "Filters";
                 FiltersPanel.Panel.Visible = true;
-                //FiltersPanel.Panel.Height = 80;
-                //FiltersPanel.Height = 80;
-                FiltersPanel.Name.AutoSize = true;
+                FiltersPanel.Panel.Height = 80;
+                FiltersPanel.Height = 80;
                 propertiesPanel.Controls.Add(FiltersPanel.Panel);
-
 
                 FiltersPanel.Body.Controls.Add(filterTV);
                 AddSettings(SettingsPanel.Body);
@@ -364,120 +350,81 @@ namespace Cell_Tool_3
                 DataPanel.Body.Controls.Add(checkCounterPanel);
 
                 CheckCounter.Location = new Point(5, 5);
-                CheckCounter.AutoSize = true;
                 checkCounterPanel.Controls.Add(CheckCounter);
 
                 LoadOldFilters();
-
-                FitHistoryPanel.Initialize(propertiesPanel);
-                FitHistoryPanel.Panel.Location = new Point(4 * (MainSize.Width - StartWidth) / 6, 0);
-                FitHistoryPanel.Panel.Size = new Size((MainSize.Width - StartWidth) / 6, MainSize.Height / 2 - 100);
-                FitHistoryPanel.BackColor(Parametars.BackGround2Color);
-                FitHistoryPanel.ForeColor(Parametars.ShriftColor);
-                FitHistoryPanel.TitleColor(Parametars.TitlePanelColor);
-                FitHistoryPanel.Resizable = false;
-                FitHistoryPanel.Name.Text = "Fits";
-                FitHistoryPanel.Name.AutoSize = true;
-                FitHistoryPanel.Panel.Visible = true;
-                
-                propertiesPanel.Controls.Add(FitHistoryPanel.Panel);
-                FitHistoryPanel.Body.Controls.Add(solverClass.fitData);
-                solverClass.fitData.Dock = DockStyle.Fill;
-                solverClass.fitData.BringToFront();
-                
-                ParametersPanel.Initialize(propertiesPanel);
-                ParametersPanel.Panel.Location = new Point((MainSize.Width - StartWidth) / 3, 0);
-                ParametersPanel.Panel.Size = new Size((MainSize.Width - StartWidth) / 3, MainSize.Height / 2 - 100);
-                ParametersPanel.BackColor(Parametars.BackGround2Color);
-                ParametersPanel.ForeColor(Parametars.ShriftColor);
-                ParametersPanel.TitleColor(Parametars.TitlePanelColor);
-                ParametersPanel.Resizable = false;
-                ParametersPanel.Name.Text = "Solver Settings";
-                ParametersPanel.Name.AutoSize = true;
-                ParametersPanel.Panel.Visible = true;
-                
-                propertiesPanel.Controls.Add(ParametersPanel.Panel);
-                ParametersPanel.Body.Controls.Add(solverClass.parametersPanel);
-                solverClass.parametersPanel.BringToFront();
-                ParametersPanel.Body.BringToFront();
-
-                /*
-                FitChartPanel.Initialize(propertiesPanel);
-                FitChartPanel.BackColor(Parametars.BackGround2Color);
-                FitChartPanel.ForeColor(Parametars.ShriftColor);
-                FitChartPanel.TitleColor(Parametars.TitlePanelColor);
-                FitChartPanel.Resizable = true;
-                FitChartPanel.Panel.Visible = true;
-                
-                FitChartPanel.Name.Text = "Fitting Result";
-                FitChartPanel.Name.AutoSize = true;
-                FitChartPanel.Panel.Visible = true;
                 */
-
-                //propertiesPanel.Controls.Add(FitChartPanel.Panel);
-
-                solverClass.fitChart1.Location = new Point(StartWidth + 2 * (MainSize.Width - StartWidth) / 3, 0);
-                solverClass.fitChart1.Size = new Size((MainSize.Width - StartWidth) / 3, MainSize.Height / 2);
-                IA.TabPages.MainForm.Controls.Add(solverClass.fitChart1);
-                ParametersPanel.Body.Controls.Add(solverClass.fitChart1.Titles);
-                solverClass.fitChart1.Titles.BringToFront();
-
-                
-
             }
-
-            private void ResizeAccordingToMain(Object sender, EventArgs args)
+            private void AddSettings()
             {
-                if (IsDeleted) return;
+                Panel propertiesPanel = ExtrPropertiesPanel;
+                propertiesPanel.AutoScroll = true;
+                propertiesPanel.Width = 200;
+                propertiesPanel.Dock = DockStyle.Left;
+                this.Controls.Add(propertiesPanel);
+                propertiesPanel.BringToFront();
+                propertiesPanel.MinimumSize = new Size(100, 100);
 
-                // Find the size of the main form to use it as a reference for setting up the screen view
-                Size MainSize = IA.TabPages.MainForm.Size;
-                int StartWidth = IA.FileBrowser.DataSourcesPanelWidth;
+                Panel midPanel = new Panel();
+                midPanel.Tag = propertiesPanel;
+                midPanel.Width = 5;
+                midPanel.Dock = DockStyle.Left;
+                this.Controls.Add(midPanel);
+                midPanel.BringToFront();
+                midPanel.MouseDown += Resize_MouseDown;
+                midPanel.MouseUp += Resize_MouseUp;
+                midPanel.MouseMove += Resize_MouseMove;
+                midPanel.MouseEnter += Resize_MouseEnter;
+                midPanel.MouseLeave += Resize_MouseLeave;
+               
+                DataPanel.Initialize(propertiesPanel);
+                DataPanel.BackColor(Parametars.BackGround2Color);
+                DataPanel.ForeColor(Parametars.ShriftColor);
+                DataPanel.TitleColor(Parametars.TitlePanelColor);
+                DataPanel.Resizable = false;
+                DataPanel.Name.Text = "Data";
+                DataPanel.Panel.Visible = true;
+                DataPanel.Panel.Dock = DockStyle.Fill;
+                propertiesPanel.Controls.Add(DataPanel.Panel);
 
-                // First, Resize the menus
-                DataPanel.Panel.Location = new Point(0, 0);
-                DataPanel.Panel.Size = new Size((MainSize.Width - StartWidth) / 6, MainSize.Height / 2 - 100);
-
-                SettingsPanel.Panel.Location = new Point(DataPanel.Panel.Width, 0);
-                SettingsPanel.Panel.Size = new Size((MainSize.Width - StartWidth) / 6, MainSize.Height / 2 - 100);
-
-                FiltersPanel.Panel.Location = new Point(5 * (MainSize.Width - StartWidth) / 6, 0);
-                FiltersPanel.Panel.Size = new Size((MainSize.Width - StartWidth) / 6, MainSize.Height / 2 - 100);
-
-                FitHistoryPanel.Panel.Location = new Point(4 * (MainSize.Width - StartWidth) / 6, 0);
-                FitHistoryPanel.Panel.Size = new Size((MainSize.Width - StartWidth) / 6, MainSize.Height / 2 - 100);
-
-                ParametersPanel.Panel.Location = new Point((MainSize.Width - StartWidth) / 3, 0);
-                ParametersPanel.Panel.Size = new Size((MainSize.Width - StartWidth) / 3, MainSize.Height / 2 - 100);
-
-
-                // Now resize the charts
-                // Resize the GL control upon resizing the main form
                 
-                IA.TabPages.MainForm.Controls.Remove(repeatsCh);
-                IA.TabPages.MainForm.Controls.Remove(resultsCh);
-                IA.TabPages.MainForm.Controls.Remove(solverClass.fitChart1);
+                SettingsPanel.Initialize(propertiesPanel);
+                SettingsPanel.BackColor(Parametars.BackGround2Color);
+                SettingsPanel.ForeColor(Parametars.ShriftColor);
+                SettingsPanel.TitleColor(Parametars.TitlePanelColor);
+                SettingsPanel.Resizable = false;
+                SettingsPanel.Name.Text = "Settings";
+                SettingsPanel.Panel.Visible = true;
+                SettingsPanel.Panel.Height = 165;
+                SettingsPanel.Height = 165;
+                propertiesPanel.Controls.Add(SettingsPanel.Panel);
 
-                Size MainFormSize = IA.TabPages.MainForm.Size;
+               
+                FiltersPanel.Initialize(propertiesPanel);
+                FiltersPanel.BackColor(Parametars.BackGround2Color);
+                FiltersPanel.ForeColor(Parametars.ShriftColor);
+                FiltersPanel.TitleColor(Parametars.TitlePanelColor);
+                FiltersPanel.Resizable = true;
+                FiltersPanel.Name.Text = "Filters";
+                FiltersPanel.Panel.Visible = true;
+                FiltersPanel.Panel.Height = 80;
+                FiltersPanel.Height = 80;
+                propertiesPanel.Controls.Add(FiltersPanel.Panel);
 
-                repeatsCh.Location = new Point(StartWidth, 0);
-                resultsCh.Location = new Point(StartWidth + (MainFormSize.Width - StartWidth) / 3, 0);
-                solverClass.fitChart1.Location = new Point(StartWidth + 2 * (MainFormSize.Width - StartWidth) / 3, 0);
+                FiltersPanel.Body.Controls.Add(filterTV);
+                AddSettings(SettingsPanel.Body);
+                DataPanel.Body.Controls.Add(dataTV);
 
-                repeatsCh.Size = new Size((MainFormSize.Width - StartWidth) / 3, MainFormSize.Height / 2);
-                resultsCh.Size = new Size((MainFormSize.Width - StartWidth) / 3, MainFormSize.Height / 2);
-                solverClass.fitChart1.Size = new Size((MainFormSize.Width - StartWidth) / 3, MainFormSize.Height / 2);
+                Panel checkCounterPanel = new Panel();
+                checkCounterPanel.AutoScroll = false;
+                checkCounterPanel.Height = 20;
+                checkCounterPanel.Dock = DockStyle.Bottom;
+                DataPanel.Body.Controls.Add(checkCounterPanel);
 
-                if (IA.TabPages.ActiveResultsExtractor != null)
-                {
-                    IA.TabPages.MainForm.Controls.Add(repeatsCh);
-                    IA.TabPages.MainForm.Controls.Add(resultsCh);
-                    IA.TabPages.MainForm.Controls.Add(solverClass.fitChart1);
-                }
+                CheckCounter.Location = new Point(5, 5);
+                checkCounterPanel.Controls.Add(CheckCounter);
 
-                // Refresh by calling the SelectTab event
-                IA.TabPages.selectTab_event(IA.TabPages.SelectedIndex);
-                
+                LoadOldFilters();
             }
             public void LoadOldFilters()
             {
@@ -523,7 +470,7 @@ namespace Cell_Tool_3
                 NormFrom0To1.ForeColor = Parametars.ShriftColor;
                 NormFrom0To1.Text = "Max = 1 && Min = 0";
                 NormFrom0To1.Checked = false;
-                NormFrom0To1.Width += 50;
+                NormFrom0To1.Width += 10;
                 NormFrom0To1.Location = new Point(25, 65);
                 p.Controls.Add(NormFrom0To1);
                 NormFrom0To1.Enabled = false;
@@ -683,10 +630,7 @@ namespace Cell_Tool_3
                     }
                 });
 
-                // Linux change
-                IA.FileBrowser.StatusLabel.Text = "Dialog open";
                 OptionForm.ShowDialog();
-                IA.FileBrowser.StatusLabel.Text = "Ready";
 
                 return newRange;
             }
@@ -768,10 +712,14 @@ namespace Cell_Tool_3
                 if (!resizing) return;
 
                 Point p = ((Panel)sender).Location;
-
                 p.X = e.X + p.X;
-                rP.Location = p;
-
+                if (rP.Location.X != p.X || rP.Location.Y != p.Y)
+                {
+                    rP.Location = p;
+                    this.Refresh();
+                    Application.DoEvents();
+                }
+                
             }
             private void Resize_MouseUp(object sender, MouseEventArgs e)
             {
@@ -815,24 +763,20 @@ namespace Cell_Tool_3
             {
                 Panel MenuPanel = new Panel();
                 MenuPanel.Height = 30;
-                //MenuPanel.Dock = DockStyle.Top;
-                int StartWidth = IA.FileBrowser.DataSourcesPanelWidth;
-                Size MainSize = IA.TabPages.MainForm.Size;
-                MenuPanel.Location = new Point(0, MainSize.Height / 2 - MenuPanel.Height);
-                MenuPanel.Size = new Size((MainSize.Width - StartWidth) / 3, 30);
+                MenuPanel.Dock = DockStyle.Top;
                 //MenuPanel.BackColor = Parametars.TaskBtnColor;
                 this.Controls.Add(MenuPanel);
 
                 MenuStrip Menu = new MenuStrip();
-                //Menu.BackColor = Parametars.BackGroundColor;
-                //Menu.ForeColor = Parametars.ShriftColor;
+                Menu.BackColor = Parametars.BackGroundColor;
+                Menu.ForeColor = Parametars.ShriftColor;
                 MenuPanel.Controls.Add(Menu);
 
                 //add Work dir
                 ToolStripMenuItem AddDirBtn = new ToolStripMenuItem();
                 AddDirBtn.Text = "Add work directory";
-                //AddDirBtn.BackColor = Parametars.BackGroundColor;
-                //AddDirBtn.ForeColor = Parametars.ShriftColor;
+                AddDirBtn.BackColor = Parametars.BackGroundColor;
+                AddDirBtn.ForeColor = Parametars.ShriftColor;
                 Menu.Items.Add(AddDirBtn);
                 AddDirBtn.Click += new EventHandler(delegate (object o, EventArgs a)
                 {
@@ -841,20 +785,19 @@ namespace Cell_Tool_3
                 //Open Btn
                 ToolStripMenuItem OpenBtn = new ToolStripMenuItem();
                 OpenBtn.Text = "Open";
-                //OpenBtn.BackColor = Parametars.BackGroundColor;
-                //OpenBtn.ForeColor = Parametars.ShriftColor;
+                OpenBtn.BackColor = Parametars.BackGroundColor;
+                OpenBtn.ForeColor = Parametars.ShriftColor;
                 Menu.Items.Add(OpenBtn);
-                
                 OpenBtn.Click += new EventHandler(delegate (object o, EventArgs a)
                 {
-                    FileSaver.Open(this, IA);
+                    FileSaver.Open(this);
                 });
 
                 //Save Btn
                 ToolStripMenuItem SaveBtn = new ToolStripMenuItem();
                 SaveBtn.Text = "Save";
-                //SaveBtn.BackColor = Parametars.BackGroundColor;
-                //SaveBtn.ForeColor = Parametars.ShriftColor;
+                SaveBtn.BackColor = Parametars.BackGroundColor;
+                SaveBtn.ForeColor = Parametars.ShriftColor;
                 Menu.Items.Add(SaveBtn);
                 SaveBtn.Click += new EventHandler(delegate (object o, EventArgs a)
                 {
@@ -864,8 +807,8 @@ namespace Cell_Tool_3
                 //Export Btn
                 ToolStripMenuItem ExportBtn = new ToolStripMenuItem();
                 ExportBtn.Text = "Export";
-                //ExportBtn.BackColor = Parametars.BackGroundColor;
-                //ExportBtn.ForeColor = Parametars.ShriftColor;
+                ExportBtn.BackColor = Parametars.BackGroundColor;
+                ExportBtn.ForeColor = Parametars.ShriftColor;
                 Menu.Items.Add(ExportBtn);
                 ExportBtn.Click += new EventHandler(delegate (object o, EventArgs a)
                 {
@@ -1263,15 +1206,15 @@ namespace Cell_Tool_3
                 fbd.Description = "Add work directory:";
                 
                 if (dir != "" && dir.IndexOf("\\") > -1 &&
-                    !Directory.Exists(OSStringConverter.StringToDir(dir)))
+                    !Directory.Exists(dir))
                     dir = dir.Substring(0, dir.LastIndexOf("\\"));
                 else if (lastDir != "" && lastDir.IndexOf("\\") > -1 &&
-                    !Directory.Exists(OSStringConverter.StringToDir(lastDir)))
+                    !Directory.Exists(lastDir))
                     dir = lastDir.Substring(0, lastDir.LastIndexOf("\\"));
                 
-                if (Directory.Exists(OSStringConverter.StringToDir(dir)))
+                if (Directory.Exists(dir))
                 {
-                    fbd.SelectedPath = OSStringConverter.StringToDir(dir);
+                    fbd.SelectedPath = dir;
                     lastDir = dir;
                 }
 
@@ -1279,7 +1222,7 @@ namespace Cell_Tool_3
                 // OK button was pressed.
                 if (result == DialogResult.OK)
                 {
-                    dir = OSStringConverter.GetWinString(fbd.SelectedPath);
+                    dir = fbd.SelectedPath;
                     TreeNode n = new TreeNode();
                     n.Tag = dir;
                     n.Checked = true;
@@ -1515,13 +1458,13 @@ namespace Cell_Tool_3
             {
                 List<string> l = new List<string>();
 
-                if (!Directory.Exists(OSStringConverter.StringToDir(Dir))) { return l; }
+                if (!Directory.Exists(Dir)) { return l; }
 
-                DirectoryInfo directoryInfo = new DirectoryInfo(OSStringConverter.StringToDir(Dir));
-                
+                DirectoryInfo directoryInfo = new DirectoryInfo(Dir);
+
                 foreach (var directory in directoryInfo.GetDirectories())
                 {
-                    l.Add(OSStringConverter.GetWinString(directory.FullName));
+                    l.Add(directory.FullName);
                 }
 
                 foreach (var file in directoryInfo.GetFiles())
@@ -1538,7 +1481,7 @@ namespace Cell_Tool_3
                                 for (int i = 1; i < titles.Length; i++)
                                 {
                                     DataNode n1 = new DataNode();
-                                    n1.Tag = OSStringConverter.GetWinString(file.FullName);
+                                    n1.Tag = file.FullName;
                                     n1.Text = file.Name + "\t" + titles[i];
                                     n1.Comment = comments[i];
                                     n1.RoiName = titles[i];
@@ -1698,12 +1641,7 @@ namespace Cell_Tool_3
 
                 tb.LostFocus += new EventHandler(delegate (Object o, EventArgs a)
                 {
-                    if (this.Controls.Contains(tb))
-                    {
-                        tb.Visible = false;
-                        this.Controls.Remove(tb);
-                        tb.Dispose();
-                    }
+                    tb.Dispose();
                 });
                 tb.KeyDown += new KeyEventHandler(delegate (Object o, KeyEventArgs a)
                 {
@@ -1712,17 +1650,12 @@ namespace Cell_Tool_3
                         a.Handled = true;
                         a.SuppressKeyPress = true;
                         this.SelectedNode.Text = tb.Text;
-                        if (this.Controls.Contains(tb))
-                        {
-                            tb.Visible = false;
-                            this.Controls.Remove(tb);
-                            tb.Dispose();
-                        }
+                        tb.Dispose();
                         form1.dataTV.RefreshAllNodes();
                         RefreshToHardDrive();
                     }
+
                 });
-                /*
                 this.AfterSelect += new TreeViewEventHandler(delegate (Object o, TreeViewEventArgs a)
                 {
                     tb.Dispose();
@@ -1730,7 +1663,7 @@ namespace Cell_Tool_3
                 this.MouseWheel += new MouseEventHandler(delegate (Object o, MouseEventArgs a)
                 {
                     tb.Dispose();
-                });*/
+                });
             }
             private void NewBtn_Click(object sender, EventArgs e)
             {
@@ -1820,15 +1753,15 @@ namespace Cell_Tool_3
                     string dir = dirs[index];
                     string str = "";
 
-                    if (File.Exists(OSStringConverter.StringToDir(dir)))
+                    if (File.Exists(dir))
                     {
                         List<string> vals = new List<string>();
-                        using (StreamReader sr = new StreamReader(OSStringConverter.StringToDir(dir)))
+                        using (StreamReader sr = new StreamReader(dir))
                         {
                             str = sr.ReadLine();
                             while (str != null)
                             {
-                                if (str != "") vals.Add(str);
+                                if(str!="") vals.Add(str);
 
                                 str = sr.ReadLine();
                             }
@@ -1893,7 +1826,7 @@ namespace Cell_Tool_3
                     form1.dataTV.Xaxis = new double[data[a][0].Series.Length];
                     form1.dataTV.OriginalXaxis = new double[data[a][0].Series.Length];
 
-                    if (File.Exists(OSStringConverter.StringToDir((string)data[a][0].Tag)))
+                    if (File.Exists((string)data[a][0].Tag))
                     {
                         string str = "";
                         /*
@@ -1911,13 +1844,13 @@ namespace Cell_Tool_3
                         }
                         */
                         List<string> allRowsList = new List<string>();
-                        using (StreamReader sr = new StreamReader(OSStringConverter.StringToDir((string)data[a][0].Tag)))
+                        using (StreamReader sr = new StreamReader((string)data[a][0].Tag))
                         {
                             str = sr.ReadLine();
                             while (str != null)
                             {
                                 if (str != "") allRowsList.Add(str);
-                                str = sr.ReadLine();
+                                 str = sr.ReadLine();
                             }
                         }
 
@@ -2048,7 +1981,7 @@ namespace Cell_Tool_3
                 TreeNode filters = new TreeNode();
                 //Add event for projection here
 
-                using (StreamReader sr = new StreamReader(OSStringConverter.StringToDir(dir)))
+                using (StreamReader sr = new StreamReader(dir))
                 {
                     string str = sr.ReadToEnd();
                     form1.dataTV.Store.Clear();
@@ -2116,7 +2049,7 @@ namespace Cell_Tool_3
                 }
 
             }
-            public static void Open(MyForm form1, ImageAnalyser IA)
+            public static void Open(MyForm form1)
             {
                 OpenFileDialog ofd = new OpenFileDialog();
                 string formatMiniStr = ".CTData";
@@ -2130,21 +2063,12 @@ namespace Cell_Tool_3
 
                 if (ofd.ShowDialog() == DialogResult.OK)
                 {
-                    ReadCTDataFile(form1, OSStringConverter.GetWinString(ofd.FileName));
-                    IA.TabPages.selectTab_event(IA.TabPages.SelectedIndex);
+                    ReadCTDataFile(form1, ofd.FileName);
                 }
-
-
             }
             private static void StrTranslator(string str, MyForm form1, TreeNode filters)
             {
                 string[] vals = str.Split(new string[] { "=" }, StringSplitOptions.None);
-
-                if (vals.Length != 2 || vals[1] == "")
-                {
-                    return;
-                }
-
                 try
                 {
                     switch (vals[0])
@@ -2248,7 +2172,7 @@ namespace Cell_Tool_3
                             form1.dataTV.Store[int.Parse(nodeAll[0])].Nodes.Add(dN);
                             break;
                         case "FitData":
-                            if (vals[1]!= null && vals[1]!="")
+                            if(vals[1]!= null && vals[1]!="")
                                 form1.solverClass.fitData.StringToData(vals[1]);
                             break;
                         case "FitF":
@@ -2258,8 +2182,8 @@ namespace Cell_Tool_3
                     }
                 }
                 catch
-                {                   
-                   MessageBox.Show("Error: " + vals[0].ToString() + "\n" + vals[1]);
+                {
+                   MessageBox.Show("Error: " + vals[0].ToString());
                 }
             }
             public static void Save(MyForm form1)
@@ -2275,7 +2199,7 @@ namespace Cell_Tool_3
 
                 if (saveFileDialog1.ShowDialog() == DialogResult.OK)
                 {
-                    string dir = OSStringConverter.GetWinString(saveFileDialog1.FileName);
+                    string dir = saveFileDialog1.FileName;
                     SaveCTDataFile(form1, dir);
                 }
             }
@@ -2287,8 +2211,8 @@ namespace Cell_Tool_3
 
                 try
                 {
-                    if (File.Exists(OSStringConverter.StringToDir(dir)))
-                        File.Delete(OSStringConverter.StringToDir(dir));
+                    if (File.Exists(dir))
+                        File.Delete(dir);
                 }
                 catch
                 {
@@ -2368,7 +2292,7 @@ namespace Cell_Tool_3
                         strL.Add("FitData=" + form1.solverClass.fitData.DataToString());
                         strL.Add("FitF=" + GetUsedFormulas(form1));
                         //Save file
-                        File.WriteAllText(OSStringConverter.StringToDir(dir), string.Join(";", strL));
+                        File.WriteAllText(dir, string.Join(";", strL));
                     }
                     form1.StatusLabel.Text = "Ready";
                 });
@@ -2422,14 +2346,14 @@ namespace Cell_Tool_3
 
                 if (saveFileDialog1.ShowDialog() == DialogResult.OK)
                 {
-                    string dir = OSStringConverter.GetWinString( saveFileDialog1.FileName);
+                    string dir = saveFileDialog1.FileName;
                     if (dir.EndsWith(formatMiniStr) == false)
                         dir += formatMiniStr;
 
                     try
                     {
-                        if (File.Exists(OSStringConverter.StringToDir(dir)))
-                            File.Delete(OSStringConverter.StringToDir(dir));
+                        if (File.Exists(dir))
+                            File.Delete(dir);
                     }
                     catch
                     {
@@ -2535,7 +2459,7 @@ namespace Cell_Tool_3
                         if (a.ProgressPercentage == 0)
                         {
                             //Save file
-                            using (StreamWriter write = new StreamWriter(OSStringConverter.StringToDir(dir)))
+                            using (StreamWriter write = new StreamWriter(dir))
                             {
                                 for (int i = 0; i < res.Length; i++)
                                 {
@@ -2565,15 +2489,14 @@ namespace Cell_Tool_3
 
                 if (saveFileDialog1.ShowDialog() == DialogResult.OK)
                 {
-                    string dir = OSStringConverter.GetWinString(saveFileDialog1.FileName);
-
+                    string dir = saveFileDialog1.FileName;
                     if (dir.EndsWith(formatMiniStr) == false)
                         dir += formatMiniStr;
 
                     try
                     {
-                        if (File.Exists(OSStringConverter.StringToDir(dir)))
-                            File.Delete(OSStringConverter.StringToDir(dir));
+                        if (File.Exists(dir))
+                            File.Delete(dir);
                     }
                     catch
                     {
@@ -2801,6 +2724,7 @@ namespace Cell_Tool_3
                                 e.Parameters["t"] = 10000;
                                 double end = 0;
                                 double.TryParse(e.Evaluate().ToString(), out end);
+
                                 ResultsExtractor_HalfTimeCalculator htCalc = new ResultsExtractor_HalfTimeCalculator();
                                 //calculate halftime of recruitment
                                 for (int i = 0; i < ind; i++)
@@ -2810,7 +2734,9 @@ namespace Cell_Tool_3
                                             HalfUp = Xvals[i];
                                         break;
                                     }
+
                                 HalfUp = htCalc.SolveHalfTime(e, 1000, Xvals[0], Xvals[ind], HalfVal, HalfUp);
+
                                 //calculate halftime of removal
                                 if (FitMax - fitVals[fitVals.Length - 1] > 0)
                                 {
@@ -2821,8 +2747,8 @@ namespace Cell_Tool_3
                                                 HalfDown = Xvals[i];
                                             break;
                                         }
-                                    HalfDown = htCalc.SolveHalfTime(e, 1000, Xvals[ind], Xvals[fitVals.Length - 1], HalfVal, HalfDown);
 
+                                    HalfDown = htCalc.SolveHalfTime(e, 1000, Xvals[ind], Xvals[fitVals.Length-1], HalfVal, HalfDown);
                                 }
                                 //recalculated halftime of removal
                                 HalfVal = (FitMax - end) / 2;
@@ -2836,9 +2762,10 @@ namespace Cell_Tool_3
 
                                             break;
                                         }
-                                    HalfDownRec = htCalc.SolveHalfTime(e, 1000, Xvals[ind], Xvals[fitVals.Length - 1], HalfVal, HalfDownRec);
 
-                                }
+                                    HalfDownRec = htCalc.SolveHalfTime(e, 1000, Xvals[ind], Xvals[fitVals.Length - 1], HalfVal, HalfDownRec);
+                                } 
+
                                 fitVals = null;
                                 //add vals
                                 constNames.Add("");
@@ -2864,7 +2791,7 @@ namespace Cell_Tool_3
                     #endregion Filter Data
 
                     #region Save file
-                    using (StreamWriter write = new StreamWriter(OSStringConverter.StringToDir(dir)))
+                    using (StreamWriter write = new StreamWriter(dir))
                     {
                         max = 0;
 
@@ -3096,7 +3023,7 @@ namespace Cell_Tool_3
                     Samp.Enabled = false;
                 }
 
-                //this.Dock = DockStyle.Fill;
+                this.Dock = DockStyle.Fill;
                 this.Visible = true;
                 this.GLDrawing_Start();
             }
@@ -3115,13 +3042,9 @@ namespace Cell_Tool_3
                 ReserveTextureID();
 
                 this.Paint += GLControl_Paint;
-                //this.Resize += GLControl_Resize;
+                this.Resize += GLControl_Resize;
                 this.MouseClick += GLControl_MouseClick;
-                this.Load += GLControl_Load;
-
-                
             }
-
             public void DrawToScreen()
             {
                 GLDrawing_Start();
@@ -3140,15 +3063,6 @@ namespace Cell_Tool_3
                 GL.LoadIdentity();
 
                 this.SwapBuffers();
-            }
-
-            public void GLControl_Load(object sender, EventArgs e)
-            {
-                GLControl GLControl1 = sender as GLControl;
-                GLControl1.MakeCurrent();
-
-                GL.ClearColor(Color.Gray);
-                
             }
 
             private void GLControl_Resize(object sender, EventArgs e)
@@ -3172,7 +3086,7 @@ namespace Cell_Tool_3
             #endregion GLControl_Events
             private void GLDrawing_Start()
             {
-                //this.Dock = DockStyle.Fill;
+                this.Dock = DockStyle.Fill;
                 if (this.Visible == false) { this.Visible = true; }
                 //Activate Control
                 this.MakeCurrent();
@@ -3285,7 +3199,6 @@ namespace Cell_Tool_3
 
             private void Render()
             {
-                
                 Rectangle OldRect = new Rectangle(0, 0, this.Width, this.Height);
 
                 double MaxY = 0;
@@ -3577,47 +3490,47 @@ namespace Cell_Tool_3
             {
                 this.PropertiesPanel = PropertiesPanel;
 
-                //Panel.Dock = DockStyle.Top;
-                Panel.BorderStyle = BorderStyle.Fixed3D;
-                //Panel.Resize += new EventHandler(Panel_HeightChange);
+                Panel.Dock = DockStyle.Top;
+                Panel.Resize += new EventHandler(Panel_HeightChange);
 
                 NamePanel.Dock = DockStyle.Top;
                 NamePanel.Height = 21;
                 Panel.Controls.Add(NamePanel);
                 NamePanel.MouseHover += new EventHandler(Control_MouseOver);
-                //NamePanel.Click += new EventHandler(Control_Click);
-                //NamePanel.MouseEnter += new EventHandler(Title_HighLight);
-                //NamePanel.MouseLeave += new EventHandler(Title_Normal);
+                NamePanel.Click += new EventHandler(Control_Click);
+                NamePanel.MouseEnter += new EventHandler(Title_HighLight);
+                NamePanel.MouseLeave += new EventHandler(Title_Normal);
 
-                
+                Name.Width = 150;
+                Name.Location = new System.Drawing.Point(10, 5);
                 NamePanel.Controls.Add(Name);
                 Name.MouseHover += new EventHandler(Control_MouseOver);
-                //Name.Click += new EventHandler(Control_Click);
-                //Name.MouseEnter += new EventHandler(Title_HighLight);
-                //Name.MouseLeave += new EventHandler(Title_Normal);
+                Name.Click += new EventHandler(Control_Click);
+                Name.MouseEnter += new EventHandler(Title_HighLight);
+                Name.MouseLeave += new EventHandler(Title_Normal);
 
-                //Panel Resize1 = new Panel();
-                //Resize1.Tag = PropertiesPanel;
-                //Resize1.Dock = DockStyle.Bottom;
-                //Resize1.Height = 5;
-                //Panel.Controls.Add(Resize1);
-                //Resize1.MouseDown += new MouseEventHandler(Resize1_MouseDown);
-                //Resize1.MouseUp += new MouseEventHandler(Resize1_MouseUp);
-                //Resize1.MouseMove += new MouseEventHandler(Resize1_MouseMove);
+                Panel Resize1 = new Panel();
+                Resize1.Tag = PropertiesPanel;
+                Resize1.Dock = DockStyle.Bottom;
+                Resize1.Height = 5;
+                Panel.Controls.Add(Resize1);
+                Resize1.MouseDown += new MouseEventHandler(Resize1_MouseDown);
+                Resize1.MouseUp += new MouseEventHandler(Resize1_MouseUp);
+                Resize1.MouseMove += new MouseEventHandler(Resize1_MouseMove);
 
                 Body.Dock = DockStyle.Fill;
                 Panel.Controls.Add(Body);
                 Body.BringToFront();
 
-                //ResizePanel.Anchor = (AnchorStyles.Top | AnchorStyles.Bottom);
-                //ResizePanel.Visible = false;
-                //ResizePanel.BackColor = Color.FromArgb(100, 10, 10, 10);
-                //ResizePanel.Width = 5;
-                //PropertiesPanel.Controls.Add(ResizePanel);
+                ResizePanel.Anchor = (AnchorStyles.Top | AnchorStyles.Bottom);
+                ResizePanel.Visible = false;
+                ResizePanel.BackColor = Color.FromArgb(100, 10, 10, 10);
+                ResizePanel.Width = 5;
+                PropertiesPanel.Controls.Add(ResizePanel);
 
                 //reorder panels
 
-                //ResizePanel.BringToFront();
+                ResizePanel.BringToFront();
             }
             #region Title Panel Hendlers
 
@@ -3734,8 +3647,13 @@ namespace Cell_Tool_3
                     if (razlika > Panel.Location.Y + 59)
                     {
                         oldY = e.Y;
-                        ResizePanel.Location = new System.Drawing.Point(0, razlika);
-                        ResizePanel.BringToFront();
+                        if (razlika != ResizePanel.Location.Y)
+                        {
+                            ResizePanel.Location = new System.Drawing.Point(0, razlika);
+                            this.PropertiesPanel.Refresh();
+                            ResizePanel.BringToFront();
+                            Application.DoEvents();
+                        }
                     }
                     ResizePanel.Visible = true;
                 }

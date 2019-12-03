@@ -51,7 +51,6 @@ namespace Cell_Tool_3
             mainPanel.Controls.Add(p1);
             p1.BringToFront();
 
-
             #region Threshold
             {
                 CTTrackBar tb = new CTTrackBar();
@@ -62,7 +61,7 @@ namespace Cell_Tool_3
                 tb.Panel.Visible = true;
                 tb.Refresh(0, 0, 10);
                 tb.Name.Text = "Threshold:";
-                tb.NamePanel.Width = 70;
+                tb.NamePanel.Width = 62;
                 mainPanel.Controls.Add(tb.Panel);
                 thresh = tb;
                 tb.Panel.BringToFront();
@@ -83,7 +82,7 @@ namespace Cell_Tool_3
                 tb.Panel.Visible = true;
                 tb.Refresh(100, 1, 100);
                 tb.Name.Text = "Sensitivity:";
-                tb.NamePanel.Width = 70;
+                tb.NamePanel.Width = 62;
                 mainPanel.Controls.Add(tb.Panel);
                 sensitivity = tb;
                 tb.Panel.BringToFront();
@@ -166,35 +165,6 @@ namespace Cell_Tool_3
 
             #endregion Options
         }
-
-        public void HideAll ()
-        {
-            thresh.HideAll();
-            sensitivity.HideAll();
-
-            selectT.Hide();
-            tType.Hide();
-            ColBtn.Hide();
-            TailType.Hide();
-        }
-        public void ShowAll()
-        {
-            thresh.ShowAll();
-            sensitivity.ShowAll();
-
-            selectT.Show();
-            tType.Show();
-            ColBtn.Show();
-            TailType.Show();
-
-            thresh.RefreshView();
-            sensitivity.RefreshView();
-            selectT.BringToFront();
-            tType.BringToFront();
-            ColBtn.BringToFront();
-            TailType.BringToFront();
-
-        }
         private void Control_MouseOver(object sender, EventArgs e)
         {
             var ctr = (Control)sender;
@@ -250,8 +220,8 @@ namespace Cell_Tool_3
             }
             else
             {
-                ColBtn.BackColor = Color.Gray;
-                ColBtn.Text = "";
+                ColBtn.BackColor = Color.White;
+                ColBtn.Text = "NaN";
             }
 
             TailType.Text = fi.SpotTailType[fi.cValue];

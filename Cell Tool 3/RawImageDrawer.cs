@@ -263,7 +263,8 @@ namespace Cell_Tool_3
                     imageDrawer_3D.StartDrawing(GLControl1, fi);
                     return;
                 }
-                
+                GL.UseProgram(0); // Remove the shader program from the 3D view
+
                 //Prepare MatrixMode
                 GL.MatrixMode(MatrixMode.Projection);
                 GL.LoadIdentity();

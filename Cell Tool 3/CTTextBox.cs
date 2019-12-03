@@ -36,21 +36,18 @@ namespace Cell_Tool_3
         private Button cancelbtn;
 
         private ToolTip TurnOnToolTip = new ToolTip();
-        private bool MouseInAcceptBtn = false;
         #region Initialize
         public CTTextBox()
-        {           
+        {
             panel = new Panel();
             {
                 panel.Height = 20;
                 panel.Width = 90;
-                /*
                 panel.Resize += new EventHandler(delegate (object o, EventArgs a) 
                 {
                     if (panel.Width < 60) panel.Width = 60;
                     if (tb != null) tb.Width = panel.Width - 40;
                 });
-                */
             }
 
             tb = new TextBox();
@@ -79,11 +76,9 @@ namespace Cell_Tool_3
                 btn.Dock = DockStyle.Left;
                 panel.Controls.Add(btn);
                 btn.BringToFront();
-                btn.Visible = true; // false;
+                btn.Visible = false;
                 btn.MouseHover += Control_MouseOver;
                 btn.Click += acceptBtn_Click;
-                btn.MouseEnter += acceptBtn_MouseEnter;
-                btn.MouseLeave += acceptBtn_MouseLeave;
             }
 
             cancelbtn = new Button();
@@ -98,7 +93,7 @@ namespace Cell_Tool_3
                 btn.Dock = DockStyle.Left;
                 panel.Controls.Add(btn);
                 btn.BringToFront();
-                btn.Visible = true; //false;
+                btn.Visible = false;
                 btn.MouseHover += Control_MouseOver;
                 btn.Click += cancelBtn_Click;
             }
@@ -119,16 +114,12 @@ namespace Cell_Tool_3
         }
         private void tb_LostFocus(object sender, EventArgs e)
         {
-            //if (MouseInAcceptBtn)
-            //{
-            //    acceptBtn.PerformClick();
-            //    return;
-            //}
+            if (acceptBtn.Focused || cancelbtn.Focused) return;
 
-            //tb.Text = (string)tb.Tag;
+            tb.Text = (string)tb.Tag;
 
-            //acceptBtn.Visible = false;
-            //cancelbtn.Visible = false;
+            acceptBtn.Visible = false;
+            cancelbtn.Visible = false;
         }
         private void Control_MouseOver(object sender, EventArgs e)
         {
@@ -149,26 +140,18 @@ namespace Cell_Tool_3
             tb.Select();
             ValueChangeFunction();
         }
-        private void acceptBtn_MouseEnter(object sender, EventArgs e)
-        {
-            MouseInAcceptBtn = true;
-        }
-        private void acceptBtn_MouseLeave(object sender, EventArgs e)
-        {
-            MouseInAcceptBtn = false;
-        }
         private void cancelBtn_Click(object sender, EventArgs e)
         {
             tb.Select();
             tb.Text = (string)tb.Tag;
 
-            //acceptBtn.Visible = false;
-            //cancelbtn.Visible = false;
+            acceptBtn.Visible = false;
+            cancelbtn.Visible = false;
         }
         private void tb_TextChanged(object sender,EventArgs e)
         {
             if (tb.Focused == false) return;
-            
+
             string oldVal = (string)tb.Tag;
             
             if(tb.Text != oldVal)
@@ -187,22 +170,22 @@ namespace Cell_Tool_3
             }
             else
             {
-                //if (acceptBtn.Visible == true) acceptBtn.Visible = false;
-                //if (cancelbtn.Visible == true) cancelbtn.Visible = false;
+                if (acceptBtn.Visible == true) acceptBtn.Visible = false;
+                if (cancelbtn.Visible == true) cancelbtn.Visible = false;
             }            
         }
         #endregion Events
         public void SetValue(string val)
         {
-            //bool focused = tb.Focused;
-            //if (tb.Focused == true) panel.Focus();
+            bool focused = tb.Focused;
+            if (tb.Focused == true) panel.Focus();
 
             tb.Text = val;
             tb.Tag = val;
 
-            //if (focused == true) tb.Focus();
-            //acceptBtn.Visible = false;
-            //cancelbtn.Visible = false;
+            if (focused == true) tb.Focus();
+            acceptBtn.Visible = false;
+            cancelbtn.Visible = false;
         }
         private void ValueChangeFunction()
         {
@@ -212,7 +195,7 @@ namespace Cell_Tool_3
             }
             catch
             {
-                //tb.Focus();
+                tb.Focus();
                 MessageBox.Show("Value must be integer!");
                 return;
             }
@@ -223,24 +206,8 @@ namespace Cell_Tool_3
                 Value.ChangeValueFunction(tb.Text);
             }
 
-            //acceptBtn.Visible = false;
-            //cancelbtn.Visible = false;
-        }
-
-        public void HideAll()
-        {
-            label.Hide();
-            tb.Hide();
-            acceptBtn.Hide();
-            cancelbtn.Hide();
-        }
-
-        public void ShowAll()
-        {
-            label.Show();
-            tb.Show();
-            acceptBtn.Show();
-            cancelbtn.Show();
+            acceptBtn.Visible = false;
+            cancelbtn.Visible = false;
         }
     }
 }

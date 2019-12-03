@@ -31,7 +31,7 @@ namespace Cell_Tool_3
         //controls
         public ImageAnalyser IA;
         Wand wand;
-        public PropertiesPanel_Item PropPanel;
+        private PropertiesPanel_Item PropPanel;
         public Panel panel;
         //Options
         private CTTextBox MinSizeTB;
@@ -90,17 +90,14 @@ namespace Cell_Tool_3
         {
             MinSizeTB = CTTextBox_Add(5, 30, panel, "Min Size:",
                 "Set minimum size for the tracked particles in pixels");
-            MinSizeTB.label.AutoSize = true;
             MinSizeTB.Value.Changed += MinSizeTB_ValueChanged;
 
             MaxSizeTB = CTTextBox_Add(5, 55, panel, "Max Size:",
                "Set maximum size for the tracked particles in pixels");
-            MaxSizeTB.label.AutoSize = true;
             MaxSizeTB.Value.Changed += MaxSizeTB_ValueChanged;
 
             SpeedTB = CTTextBox_Add(5, 80, panel, "Max Speed:",
                "Set maximum speed for the tracked particles in pixels");
-            SpeedTB.label.AutoSize = true;
             SpeedTB.Value.Changed += SpeedTB_ValueChanged;
 
         }
@@ -183,22 +180,6 @@ namespace Cell_Tool_3
             IA.MarkAsNotSaved();
             IA.ReloadImages();
         }
-
-        public void HideAll()
-        {
-            MinSizeTB.HideAll();
-            MaxSizeTB.HideAll();
-            SpeedTB.HideAll();
-            Application.DoEvents();
-        }
-
-        public void ShowAll()
-        {
-            MinSizeTB.ShowAll();
-            MaxSizeTB.ShowAll();
-            SpeedTB.ShowAll();
-            Application.DoEvents();
-        }
         private CTTextBox CTTextBox_Add(int X, int Y, Panel p, string title, string tag)
         {
             /*
@@ -216,7 +197,7 @@ namespace Cell_Tool_3
             Label lb = new Label();
             lb.Text = title;
             lb.Tag = tag;
-            lb.Width = 85;
+            lb.Width = 65;
             lb.Location = new Point(X, Y + 3);
             p.Controls.Add(lb);
             lb.BringToFront();

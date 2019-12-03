@@ -467,7 +467,16 @@ namespace Cell_Tool_3
             H *= 2;
 
             if (W > (float)rect.Width / 3 || H > (float)rect.Height / 3) return rect;
-              
+
+            GL.Begin(PrimitiveType.LineStrip);
+            GL.Color3(Color.Black);
+
+            GL.Vertex2(rect.X + W, rect.Y + H);
+            GL.Vertex2(rect.X + W, rect.Y + rect.Height - H - H * 0.5);
+            GL.Vertex2(rect.X + rect.Width - H, rect.Y + rect.Height - H - H * 0.5);
+
+            GL.End();
+
             RectangleF microRect = new RectangleF(rect.X + W, rect.Y + H, rect.Width - W - H, rect.Height - 2 * H - 0.5f * H);
 
             double stepX = microRect.Width / (30 / (float)fi.zoom);
@@ -478,28 +487,22 @@ namespace Cell_Tool_3
 
             for (double x = microRect.X, i = 0; x <= microRect.X + microRect.Width; x += microRect.Width / stepX, i += valX)
             {
-                if (((int)i).ToString().Length > 5)
-                    BitmapFromString(fi, ((int)i).ToString("0.0E0"), new PointF((float)x, (rect.Y + rect.Height - 0.5f * H - H / 2)));
-                else
-                    BitmapFromString(fi, ((int)i).ToString(), new PointF((float)x, (rect.Y + rect.Height - 0.5f * H - H / 2)));
-
                 GL.Begin(PrimitiveType.Lines);
                 GL.Color3(Color.Black);
 
                 GL.Vertex2(x, rect.Y + rect.Height - H - 0.5f * H);
                 GL.Vertex2(x, rect.Y + rect.Height - 0.5f * H - H * 0.8);
 
-                GL.End();               
+                GL.End();
+
+                if (((int)i).ToString().Length > 5)
+                    BitmapFromString(fi, ((int)i).ToString("0.0E0"), new PointF((float)x, (rect.Y + rect.Height - 0.5f * H - H / 2)));
+                else
+                    BitmapFromString(fi, ((int)i).ToString(), new PointF((float)x, (rect.Y + rect.Height - 0.5f * H - H / 2)));
             }
 
             for (double y = microRect.Y + microRect.Height, i = minY; y >= microRect.Y; y -= microRect.Height / stepY, i += valY)
             {
-
-                if (((int)i).ToString().Length > 5)
-                    BitmapFromString(fi, ((int)i).ToString("0.0E0"), new PointF(rect.X + W / 2, (float)y));
-                else
-                    BitmapFromString(fi, ((int)i).ToString(), new PointF(rect.X + W / 2, (float)y));
-
                 GL.Begin(PrimitiveType.Lines);
                 GL.Color3(Color.Black);
 
@@ -507,16 +510,12 @@ namespace Cell_Tool_3
                 GL.Vertex2(rect.X + W - H * 0.2, y);
 
                 GL.End();
+
+                if (((int)i).ToString().Length > 5)
+                    BitmapFromString(fi, ((int)i).ToString("0.0E0"), new PointF(rect.X + W / 2, (float)y));
+                else
+                    BitmapFromString(fi, ((int)i).ToString(), new PointF(rect.X + W / 2, (float)y));
             }
-
-            GL.Begin(PrimitiveType.LineStrip);
-            GL.Color3(Color.Black);
-
-            GL.Vertex2(rect.X + W, rect.Y + H);
-            GL.Vertex2(rect.X + W, rect.Y + rect.Height - H - H * 0.5);
-            GL.Vertex2(rect.X + rect.Width - H, rect.Y + rect.Height - H - H * 0.5);
-
-            GL.End();
 
             if (Properties.yAxisTB.Text.Length < 6)
                 BitmapFromString(fi, Properties.yAxisTB.Text, new PointF(rect.X + W / 2 + 1, rect.Y + H / 2), true);

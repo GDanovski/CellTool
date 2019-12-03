@@ -26,12 +26,11 @@ using System.IO;
 using System.ComponentModel;
 using System.Runtime.InteropServices;
 using System.Drawing.Imaging;
-///using Microsoft.VisualBasic.Devices;
 //LibTif
 using BitMiracle.LibTiff.Classic;
 //BioFormats
 using loci.formats.@in;
-
+using Microsoft.VisualBasic.Devices;
 
 namespace Cell_Tool_3
 {
@@ -77,7 +76,7 @@ namespace Cell_Tool_3
             if (StatusBar.Minimum != 0) { StatusBar.Minimum = 0; }
             if (StatusBar.Step != 1) { StatusBar.Step = 1; }
 
-            bool hideStatusBar = true;
+            Boolean hideStatusBar = true;
             foreach (TabPage tp in tabCollection)
             {
                 if (tp.tifFI != null && tp.tifFI.available == false && tp.tifFI.selected == true)
@@ -146,7 +145,7 @@ namespace Cell_Tool_3
             loadingTimer.Start();
 
             tp.CorePanel.Tag = path;
-            
+
             return tp.CorePanel;
         }
         /*
@@ -338,26 +337,23 @@ namespace Cell_Tool_3
         {
 
             StatusLabel.Text = "Reading Metadata...";
-            
+          
             //Check for CellTool 3 format
-            try
+            //try
             {
-                /*
                 if (BigImagesReader.OpenBigImage(path, Collection, tp, IA1)) return true;
                 else if (new System.IO.FileInfo(path).Length >= (long)new ComputerInfo().AvailablePhysicalMemory)
                 {
                     MessageBox.Show("Not enough RAM memory!");
                     return false;
                 }
-                else 
-                */
-                if (CellTool3_ReadMetadata(path, Collection, tp, IA1)) return true;
+                else if (CellTool3_ReadMetadata(path, Collection, tp, IA1)) return true;
                 else if (CellTool2_ReadMetadata(path, Collection, tp, IA1)) return true;
                 else if (BioFormats_Reader.OpenFile(Collection, path, tp, IA1, StatusLabel)) return true;
                 else StatusLabel.Text = "Ready";
 
             }
-            catch { MessageBox.Show("Error: Loading file error!"); }
+            //catch { }
 
             StatusLabel.Text = "Ready";
             return false;
@@ -645,7 +641,6 @@ namespace Cell_Tool_3
             {
 
             }
-
         }
         public void Image16bit_readFrame(int i, Tiff image, TifFileInfo fi, int[] dimOrder = null)
         {
@@ -690,7 +685,7 @@ namespace Cell_Tool_3
                     case 8:
                     Parallel.For(midFrame, (int)image1.NumberOfDirectories(), i =>
                     {
-                        using (Tiff image = Tiff.Open(OSStringConverter.StringToDir(path), "r"))
+                        using (Tiff image = Tiff.Open(path, "r"))
                         {
                             Image8bit_readFrame(i, image, fi, dimOrder);
                             image.Close();
@@ -701,7 +696,7 @@ namespace Cell_Tool_3
                     Parallel.For(midFrame, (int)image1.NumberOfDirectories(), i =>
                     {
                         
-                        using (Tiff image = Tiff.Open(OSStringConverter.StringToDir(path), "r"))
+                        using (Tiff image = Tiff.Open(path, "r"))
                         {
                             Image16bit_readFrame(i, image, fi, dimOrder);
                             image.Close();
@@ -717,7 +712,7 @@ namespace Cell_Tool_3
             newPath = newPath.Substring(0, newPath.Length - 4);
 
             string curPath = FileEncoder.FileChain_GetName(0, newPath);
-            if (!File.Exists(OSStringConverter.StringToDir(curPath))) return false;
+            if (!File.Exists(curPath)) return false;
             //Tiff.ByteArrayToShorts
             int height = fi.sizeY;
             int BitsPerPixel = fi.bitsPerPixel;
@@ -727,7 +722,7 @@ namespace Cell_Tool_3
                 case 8:
                     Parallel.For(midFrame, (int)image1.NumberOfDirectories(), i =>
                     {
-                        using (Tiff image = Tiff.Open(OSStringConverter.StringToDir(curPath), "r"))
+                        using (Tiff image = Tiff.Open(curPath, "r"))
                         {
                             Image8bit_readFrame(i, image, fi);
                             image.Close();
@@ -740,7 +735,7 @@ namespace Cell_Tool_3
                     Parallel.For(midFrame, (int)image1.NumberOfDirectories(), i =>
                     {
 
-                        using (Tiff image = Tiff.Open(OSStringConverter.StringToDir(curPath), "r"))
+                        using (Tiff image = Tiff.Open(curPath, "r"))
                         {
                             Image16bit_readFrame(i, image, fi);
                             image.Close();
@@ -753,10 +748,10 @@ namespace Cell_Tool_3
             int chainN = 1;
             curPath = FileEncoder.FileChain_GetName(chainN, newPath);
 
-            while (File.Exists(OSStringConverter.StringToDir(curPath)))
+            while (File.Exists(curPath))
             {
                 int NumbOfDirs = 0;
-                using (Tiff image = Tiff.Open(OSStringConverter.StringToDir(curPath), "r"))
+                using (Tiff image = Tiff.Open(curPath, "r"))
                 {
                     NumbOfDirs = (int)image.NumberOfDirectories();
                     image.Close();
@@ -767,7 +762,7 @@ namespace Cell_Tool_3
                     case 8:
                         Parallel.For(0, NumbOfDirs, i =>
                         {
-                            using (Tiff image = Tiff.Open(OSStringConverter.StringToDir(curPath), "r"))
+                            using (Tiff image = Tiff.Open(curPath, "r"))
                             {
                                 Image8bit_FileChains(i + midFrame, i, image, fi);
                                 image.Close();
@@ -779,7 +774,7 @@ namespace Cell_Tool_3
                     case 16:
                         Parallel.For(0, NumbOfDirs, i =>
                         {
-                            using (Tiff image = Tiff.Open(OSStringConverter.StringToDir(curPath), "r"))
+                            using (Tiff image = Tiff.Open(curPath, "r"))
                             {
                                 Image16bit_FileChains(i+midFrame,i, image, fi);
                                 image.Close();
@@ -1346,7 +1341,7 @@ namespace Cell_Tool_3
                 fi.original = false;
 
                 string[] vals = null;
-                Tiff image = Tiff.Open(OSStringConverter.StringToDir(path), "r");
+                Tiff image = Tiff.Open(path, "r");
                 {
                     fi.sizeX = int.Parse(image.GetField(TiffTag.IMAGEWIDTH)[0].ToString());
                     fi.sizeY = int.Parse(image.GetField(TiffTag.IMAGELENGTH)[0].ToString());
@@ -1676,7 +1671,7 @@ namespace Cell_Tool_3
         private void readWholeFile(string path)
         {
             // read bytes of an image
-            byte[] buffer = File.ReadAllBytes(OSStringConverter.StringToDir(path));
+            byte[] buffer = File.ReadAllBytes(path);
 
             // create a memory stream out of them
             MemoryStream ms = new MemoryStream(buffer);
@@ -1699,14 +1694,14 @@ namespace Cell_Tool_3
                 newPath = newPath.Substring(0, newPath.Length - 4);
 
                 string curPath = FileEncoder.FileChain_GetName(0, newPath);
-                if (File.Exists(OSStringConverter.StringToDir(curPath)))
+                if (File.Exists(curPath))
                 {
                     path = curPath;
                     isFileChain = true;
                 }
             }
             
-            Tiff image = Tiff.Open(OSStringConverter.StringToDir(path), "r");
+            Tiff image = Tiff.Open(path, "r");
             {
                 try
                 {
@@ -1736,7 +1731,7 @@ namespace Cell_Tool_3
             TifFileInfo fi = tp.tifFI;
             fi.Dir = path;
             fi.original = false;
-            fi.available = false;
+            //fi.available = false;
             //read tags
             int[] FilterHistory = ApplyCT3Tags(vals, fi);
             
@@ -1853,8 +1848,6 @@ namespace Cell_Tool_3
                     try
                     {
                         IA1.ReloadImages();
-
-                        //IA1.TabPages.selectTab_event(IA1.TabPages.SelectedIndex);
                     }
                     catch { }
                     
@@ -1887,8 +1880,6 @@ namespace Cell_Tool_3
                     fi.openedImages = fi.imageCount;
                     fi.available = true;
                     fi.loaded = true;
-
-                    //IA1.TabPages.selectTab_event(IA1.TabPages.SelectedIndex);
 
                     CalculateAllRois(fi);
                     IA1.ReloadImages();

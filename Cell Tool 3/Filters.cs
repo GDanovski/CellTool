@@ -31,9 +31,9 @@ namespace Cell_Tool_3
     class Filters:Panel
     {
         private ImageAnalyser IA;
-        public MenuStrip ConvolutionMenu = new MenuStrip();
-        public MenuStrip BinaryMenu = new MenuStrip();
-        public MenuStrip BinaryMenu1 = new MenuStrip();
+        private MenuStrip ConvolutionMenu = new MenuStrip();
+        private MenuStrip BinaryMenu = new MenuStrip();
+        private MenuStrip BinaryMenu1 = new MenuStrip();
 
         public Button ToBinaryBtn = new Button();
         public Button ResetBtn = new Button();
@@ -57,11 +57,6 @@ namespace Cell_Tool_3
         public ToolStripMenuItem Close = new ToolStripMenuItem();
         public ToolStripMenuItem FillHoles = new ToolStripMenuItem();
         public ToolStripMenuItem Watershed = new ToolStripMenuItem();
-
-        public ToolStripMenuItem BlurMI, SharpenMI, GradientMI, OthersMI;
-        public Label BinaryTitleLabel, ConvolutionTitleLabel;
-        public Panel BinaryTitlePanel, ConvolutionTitlePanel;
-
         #region History
         public void addToHistoryOldInfo(int C, TifFileInfo fi)
         {
@@ -397,27 +392,28 @@ namespace Cell_Tool_3
 
                 #region Convolutions
 
-            ConvolutionTitlePanel = new Panel();
+            Panel ConvolutionTitlePanel = new Panel();
             ConvolutionTitlePanel.BackColor = IA.FileBrowser.BackGroundColor1;
             ConvolutionTitlePanel.ForeColor = IA.FileBrowser.ShriftColor1;
             ConvolutionTitlePanel.Dock = DockStyle.Top;
             ConvolutionTitlePanel.Height = 20;
             this.Controls.Add(ConvolutionTitlePanel);
 
-            ConvolutionTitleLabel = new Label();
+            Label ConvolutionTitleLabel = new Label();
             ConvolutionTitleLabel.Text = "Convolutions:";
             ConvolutionTitleLabel.Location = new Point(5, 2);
             ConvolutionTitlePanel.Controls.Add(ConvolutionTitleLabel);
 
-            //ConvolutionMenu.BackColor = IA.FileBrowser.BackGround2Color1;
-            //ConvolutionMenu.ForeColor = IA.FileBrowser.ShriftColor1;
+            
+            ConvolutionMenu.BackColor = IA.FileBrowser.BackGround2Color1;
+            ConvolutionMenu.ForeColor = IA.FileBrowser.ShriftColor1;
             ConvolutionMenu.CanOverflow = true;
             this.Controls.Add(ConvolutionMenu);
 
             ToolStripItem current = null;
 
             //Blurs
-            BlurMI = new ToolStripMenuItem();
+            ToolStripMenuItem BlurMI = new ToolStripMenuItem();
             BlurMI.Text = "Smooth";
             BlurMI.Overflow = ToolStripItemOverflow.AsNeeded;
             BlurMI.DropDownOpened += new EventHandler(menuItem_Opened);
@@ -491,7 +487,7 @@ namespace Cell_Tool_3
                 BlurMI.DropDownItems.Add(current);
             }
             //Sharpen
-            SharpenMI = new ToolStripMenuItem();
+            ToolStripMenuItem SharpenMI = new ToolStripMenuItem();
             SharpenMI.Text = "Sharpen";
             SharpenMI.Overflow = ToolStripItemOverflow.AsNeeded;
             SharpenMI.DropDownOpened += new EventHandler(menuItem_Opened);
@@ -539,7 +535,7 @@ namespace Cell_Tool_3
             }
 
             //Gradient
-            GradientMI = new ToolStripMenuItem();
+            ToolStripMenuItem GradientMI = new ToolStripMenuItem();
             GradientMI.Text = "Gradient";
             GradientMI.Overflow = ToolStripItemOverflow.AsNeeded;
             GradientMI.DropDownOpened += new EventHandler(menuItem_Opened);
@@ -624,7 +620,7 @@ namespace Cell_Tool_3
             }
 
             //Gradient
-            OthersMI = new ToolStripMenuItem();
+            ToolStripMenuItem OthersMI = new ToolStripMenuItem();
             OthersMI.Text = "Others";
             OthersMI.Overflow = ToolStripItemOverflow.AsNeeded;
             OthersMI.DropDownOpened += new EventHandler(menuItem_Opened);
@@ -635,26 +631,26 @@ namespace Cell_Tool_3
 
             #region Binary operations
 
-            BinaryTitlePanel = new Panel();
+            Panel BinaryTitlePanel = new Panel();
             BinaryTitlePanel.BackColor = IA.FileBrowser.BackGroundColor1;
             BinaryTitlePanel.ForeColor = IA.FileBrowser.ShriftColor1;
-            BinaryTitlePanel.Height = 20;
             BinaryTitlePanel.Dock = DockStyle.Top;
+            BinaryTitlePanel.Height = 20;
             this.Controls.Add(BinaryTitlePanel);
 
-            BinaryTitleLabel = new Label();
+            Label BinaryTitleLabel = new Label();
             BinaryTitleLabel.Text = "Binary operations:";
             BinaryTitleLabel.Location = new Point(5, 2);
             BinaryTitlePanel.Controls.Add(BinaryTitleLabel);
 
             BinaryMenu.CanOverflow = true;
-            //BinaryMenu.BackColor = IA.FileBrowser.BackGround2Color1;
-            //BinaryMenu.ForeColor = IA.FileBrowser.ShriftColor1;
+            BinaryMenu.BackColor = IA.FileBrowser.BackGround2Color1;
+            BinaryMenu.ForeColor = IA.FileBrowser.ShriftColor1;
             this.Controls.Add(BinaryMenu);
 
             BinaryMenu1.CanOverflow = true;
-            //BinaryMenu1.BackColor = IA.FileBrowser.BackGround2Color1;
-            //BinaryMenu1.ForeColor = IA.FileBrowser.ShriftColor1;
+            BinaryMenu1.BackColor = IA.FileBrowser.BackGround2Color1;
+            BinaryMenu1.ForeColor = IA.FileBrowser.ShriftColor1;
             this.Controls.Add(BinaryMenu1);
 
             current = Erode;
@@ -715,79 +711,9 @@ namespace Cell_Tool_3
             RestorePanel.SendToBack();
             #endregion order
 
-            // Automatically resize each panel to fit the components inside
-            ConvolutionTitleLabel.AutoSize = true;
-            BinaryTitleLabel.AutoSize = true;
-            BinaryMenu1.AutoSize = true;
-            BinaryMenu.AutoSize = true;
-            //BinaryTitlePanel.AutoSize = true;
-            ConvolutionMenu.AutoSize = true;
-            //ConvolutionTitlePanel.AutoSize = true;
-            RestorePanel.AutoSize = true;
-           
-            foreach (ToolStripMenuItem menu_item in ConvolutionMenu.Items)
-            {
-                menu_item.AutoSize = true;
-                menu_item.Font = new Font(ConvolutionTitleLabel.Font.FontFamily, 9.0f);
-            }
-
-            foreach (ToolStripMenuItem menu_item in BinaryMenu.Items) {
-                menu_item.AutoSize = true;
-                menu_item.Font = new Font(ConvolutionTitleLabel.Font.FontFamily, 9.0f);
-            }
-            foreach (ToolStripMenuItem menu_item in BinaryMenu1.Items)
-            {
-                menu_item.AutoSize = true;
-                menu_item.Font = new Font(ConvolutionTitleLabel.Font.FontFamily, 9.0f);
-            }
-
-
             this.ResumeLayout();
         }
-
-        public void HideAll()
-        {
-            ConvolutionTitlePanel.Height = 0;
-            BinaryTitlePanel.Height = 0;
-            ConvolutionMenu.Hide();
-            BinaryMenu.Hide();
-            BinaryMenu1.Hide();
-            BlurMI.Visible = false;
-            SharpenMI.Visible = false;
-            GradientMI.Visible = false;
-            
-            BinaryTitleLabel.Hide();
-            ConvolutionTitleLabel.Hide();
-            ToBinaryBtn.Hide();
-            ResetBtn.Hide();
-            
-        }
-
-        public void ShowAll()
-        {
-            ConvolutionTitlePanel.Height = 20;
-            BinaryTitlePanel.Height = 20;
-            ConvolutionMenu.Show();
-            BinaryMenu.Show();
-            BinaryMenu1.Show();
-
-            BlurMI.Visible = true;
-            SharpenMI.Visible = true;
-            GradientMI.Visible = true;
-
-            //BlurMI.Invalidate();
-            //SharpenMI.Invalidate();
-            //GradientMI.Invalidate();
-
-
-            BinaryTitleLabel.Show();
-            ConvolutionTitleLabel.Show();
-            ToBinaryBtn.Show();
-            ResetBtn.Show();
-
-            Application.DoEvents();
-        }
-
+        
         #region History
         public string ConvolutionToString(int C, string kernelStr)
         {
@@ -1041,12 +967,12 @@ namespace Cell_Tool_3
         private void menuItem_Opened(object sender, EventArgs e)
         {
             ToolStripMenuItem item1 = sender as ToolStripMenuItem;
-           // item1.ForeColor = Color.Black;
+            item1.ForeColor = Color.Black;
         }
         private void menuItem_Closed(object sender, EventArgs e)
         {
             ToolStripMenuItem item1 = sender as ToolStripMenuItem;
-            //item1.ForeColor = IA.FileBrowser.ShriftColor1;
+            item1.ForeColor = IA.FileBrowser.ShriftColor1;
         }
 
         public TifFileInfo findFI()
@@ -1129,11 +1055,7 @@ namespace Cell_Tool_3
             }
 
             Form binaryForm = BinaryDialog(colorL);
-
-            // Linux change
-            IA.FileBrowser.StatusLabel.Text = "Dialog open";
             binaryForm.ShowDialog();
-            IA.FileBrowser.StatusLabel.Text = "Ready";
 
             Color selectedCol = (Color)binaryForm.Tag;
 
@@ -1628,11 +1550,7 @@ namespace Cell_Tool_3
             MyWatershed _MyWatershed = IA.Segmentation.Watershed;
             _MyWatershed.ToleranceTB.Text = _MyWatershed.tolerance.ToString();
             _MyWatershed.FillHolesCB.Checked = fi.fillHoles;
-
-            // Linux change
-            IA.FileBrowser.StatusLabel.Text = "Dialog open";
             _MyWatershed.Dialog.ShowDialog();
-            IA.FileBrowser.StatusLabel.Text = "Ready";
         }
         #endregion Binary
         public static class MyConvolution

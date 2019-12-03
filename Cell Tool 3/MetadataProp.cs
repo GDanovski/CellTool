@@ -30,7 +30,7 @@ namespace Cell_Tool_3
     class MetadataProp
     {
         public ImageAnalyser IA = null;
-        public PropertiesPanel_Item PropPanel = new PropertiesPanel_Item();
+        private PropertiesPanel_Item PropPanel = new PropertiesPanel_Item();
         public Panel panel;
         private ToolTip TurnOnToolTip = new ToolTip();
 
@@ -54,39 +54,6 @@ namespace Cell_Tool_3
             {
                 TurnOnToolTip.RemoveAll();
             }
-        }
-
-        public void HideAll()
-        {
-            fileName.Hide();
-            filePath.Hide();
-            fileDimensions.Hide();
-            fileType.Hide();
-            filePixelSize.Hide();
-            tv.Hide();
-            MetaBtn.Hide();
-
-            foreach (Control ctrl in Panel1.Controls)
-            {
-                if (ctrl is Label) { ctrl.Hide(); }
-            }
-        }
-
-        public void ShowAll()
-        {
-            fileName.Show();
-            filePath.Show();
-            fileDimensions.Show();
-            fileType.Show();
-            filePixelSize.Show();
-            tv.Show();
-            MetaBtn.Show();
-
-            foreach (Control ctrl in Panel1.Controls)
-            {
-                if (ctrl is Label) { ctrl.Show(); }
-            }
-
         }
         public void Initialize(Panel propertiesPanel, Panel PropertiesBody, ImageAnalyser IA)
         {
@@ -291,11 +258,7 @@ namespace Cell_Tool_3
             core.Dock = DockStyle.Fill;
             OptionForm.Controls.Add(core);
             OptionForm.FormClosing += OptionForm_Closing;
-
-            // Linux change
-            IA.FileBrowser.StatusLabel.Text = "Dialog open";
             OptionForm.ShowDialog();
-            IA.FileBrowser.StatusLabel.Text = "Ready";
         }
         private void OptionForm_Closing(object sender, EventArgs e)
         {
@@ -694,13 +657,9 @@ namespace Cell_Tool_3
                         OptionForm1.Close();
                     }
             });
-
-            // Linux change
-            IA.FileBrowser.StatusLabel.Text = "Dialog open";
             OptionForm1.ShowDialog();
-            IA.FileBrowser.StatusLabel.Text = "Ready";
 
-            if (applyChanges == true)
+            if(applyChanges == true)
             {
                 l[0] = Convert.ToDouble(RepTB.Text);
                 l[1] = Convert.ToDouble(TTB.Text);
@@ -760,11 +719,8 @@ namespace Cell_Tool_3
                     rtb.ForeColor = IA.FileBrowser.ShriftColor1;
                     rtb.ReadOnly = true;
                     OptionForm.Controls.Add(rtb);
-
-                    // Linux change
-                    IA.FileBrowser.StatusLabel.Text = "Dialog open";
+                    
                     OptionForm.ShowDialog();
-                    IA.FileBrowser.StatusLabel.Text = "Ready";
 
                     rtb.Dispose();
                     OptionForm.Dispose();
