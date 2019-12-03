@@ -56,6 +56,7 @@ namespace Cell_Tool_3
 
         private Vector2 MousePosition = new Vector2(-1, -1);
 
+
         /// <summary>
         /// Checks is the image 3D
         /// </summary>
@@ -66,7 +67,6 @@ namespace Cell_Tool_3
             return fi.is3D;
         }
 
-       
         /// <summary>
         /// Draw the image
         /// </summary>
@@ -76,13 +76,16 @@ namespace Cell_Tool_3
         {
             if (fi == null) return;
             GLcontrol1.MakeCurrent();
+
             this.fi3D.LoadShape(fi);
+
 
             GL.BindBuffer(BufferTarget.ArrayBuffer, vbo_position);
             GL.BufferData<Vector3>(BufferTarget.ArrayBuffer, (IntPtr)(this.fi3D.vertdata.Length * Vector3.SizeInBytes), this.fi3D.vertdata, BufferUsageHint.StaticDraw);
             GL.VertexAttribPointer(attribute_vpos, 3, VertexAttribPointerType.Float, false, 0, 0);
 
             GL.BindBuffer(BufferTarget.ArrayBuffer, vbo_color);
+
             GL.BufferData<Vector4>(BufferTarget.ArrayBuffer, (IntPtr)(this.fi3D.coldata.Length * Vector3.SizeInBytes), this.fi3D.coldata, BufferUsageHint.StaticDraw);
             GL.VertexAttribPointer(attribute_vcol, 3, VertexAttribPointerType.Float, true, 0, 0);
             zoom = - 300f / (float)fi.zoom;
@@ -100,11 +103,12 @@ namespace Cell_Tool_3
             
             GL.UseProgram(pgmID);
             
+
             GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
 
             GL.BindBuffer(BufferTarget.ElementArrayBuffer, ibo_elements);
             GL.BufferData(BufferTarget.ElementArrayBuffer, (IntPtr)(this.fi3D.indicedata.Length * sizeof(int)), this.fi3D.indicedata, BufferUsageHint.StaticDraw);
-            
+
             ///
             GL.Viewport(0, 0, GLcontrol1.Width, GLcontrol1.Height);
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
@@ -115,12 +119,12 @@ namespace Cell_Tool_3
             /*
             // GL.DrawArrays(BeginMode.Triangles, 0, 3);
             */
+
             GL.DrawElements(BeginMode.Triangles, this.fi3D.indicedata.Length, DrawElementsType.UnsignedInt, 0);
 
             GL.DisableVertexAttribArray(attribute_vpos);
             GL.DisableVertexAttribArray(attribute_vcol);
 
-            
             GL.Flush();
             GLcontrol1.SwapBuffers();
 
@@ -175,9 +179,7 @@ namespace Cell_Tool_3
         }
         public void GLControl1_MouseClick(GLControl GLcontrol1, TifFileInfo fi, MouseEventArgs e)
         {
-            
-            
-        
+
         }
         public void GLControl1_MouseDown(GLControl GLcontrol1, TifFileInfo fi, MouseEventArgs e)
         {
@@ -202,12 +204,14 @@ namespace Cell_Tool_3
         public void GLControl1_MouseUp(GLControl GLcontrol1, TifFileInfo fi, MouseEventArgs e)
         {
             MousePosition = new Vector2(-1, -1);
+
         }
 
         class _3DTiffFileInfo
         {
             public int[] indicedata;
             public Vector3[] vertdata;
+
             public Vector4[] coldata;
             private const int numVerticesInPrimitiveShape = 8; // 8 vertices in a cube
             private const int numFacesInPrimitiveShape = 6; // 6 faces in a cube
@@ -228,11 +232,13 @@ namespace Cell_Tool_3
                 this.indicedata = new int[pxlCount * microIndicedata.Length];
                 this.coldata = new Vector4[pxlCount * numVerticesInPrimitiveShape];
 
+
                 for (int i = 0; i < this.indicedata.Length; i += microIndicedata.Length)
                 {
                     Array.Copy(microIndicedata, 0, this.indicedata, i, microIndicedata.Length);
 
                     for (int y = 0; y < microIndicedata.Length; y++)
+
                         microIndicedata[y] += numVerticesInPrimitiveShape;
                 }
         }
@@ -282,6 +288,7 @@ namespace Cell_Tool_3
                 new Vector3(size+x, -size+y,  size+z),
                 new Vector3(size+x, size+y,  size+z),
                 new Vector3(-size+x, size+y,  size+z)
+
                     };
             }
         }
