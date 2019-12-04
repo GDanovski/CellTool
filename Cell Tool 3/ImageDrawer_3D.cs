@@ -40,7 +40,7 @@ namespace Cell_Tool_3
         private int vbo_color;
         private int vbo_mview;
         //buffers data
-        private _3DTiffFileInfo fi3D;
+        private List<_3DTiffFileInfo> fi3Dlist;
         private Matrix4[] mviewdata;
 
         private int ibo_elements;
@@ -78,6 +78,7 @@ namespace Cell_Tool_3
             GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
 
             int numChannelToDraw = 0;
+            int pointer = 0;
             for (int channel = 0; channel < fi.sizeC; channel++)
             {
                 int numRectangleToDraw = 0;
@@ -85,11 +86,11 @@ namespace Cell_Tool_3
 
                 if (fi.tpTaskbar.MethodsBtnList[0].ImageIndex == 0)
                 {
-                    SetViewport(GLcontrol1, fi, numRectangleToDraw++, numChannelToDraw, channel);
+                    SetViewport(GLcontrol1, fi, numRectangleToDraw++, numChannelToDraw, channel, pointer++);
                 }
                 if (fi.tpTaskbar.MethodsBtnList[1].ImageIndex == 0)
                 {
-                    SetViewport(GLcontrol1, fi, numRectangleToDraw++, numChannelToDraw, channel);
+                    SetViewport(GLcontrol1, fi, numRectangleToDraw++, numChannelToDraw, channel, pointer++);
                 }
                 numChannelToDraw++;
             }
@@ -101,13 +102,14 @@ namespace Cell_Tool_3
                 if (fi.tpTaskbar.MethodsBtnList[0].ImageIndex == 0)
                     for (int channel = 0; channel < fi.sizeC; channel++)
                     {
-                        SetViewport(GLcontrol1, fi, 0, numChannelToDraw, channel);
+                        SetViewport(GLcontrol1, fi, 0, numChannelToDraw, channel, pointer++);
+                        
                     }
 
                 if (fi.tpTaskbar.MethodsBtnList[1].ImageIndex == 0)
                     for (int channel = 0; channel < fi.sizeC; channel++)
                     {
-                        SetViewport(GLcontrol1, fi, 1, numChannelToDraw, channel);
+                        SetViewport(GLcontrol1, fi, 1, numChannelToDraw, channel, pointer++);                       
                     }
             }
 
@@ -119,16 +121,15 @@ namespace Cell_Tool_3
             GL.Flush();
             GLcontrol1.SwapBuffers();
         }
-
-        private void SetViewport(GLControl GLcontrol1, TifFileInfo fi, int numRectangle, int numChannel, int channel)
+        private void SetViewport(GLControl GLcontrol1, TifFileInfo fi, int numRectangle, int numChannel, int channel,int pointer)
         {
             zoom = -100f;
             depth = 10000f;
 
             float fractionOfWindow = (float)(fi.sizeX * fi.zoom / GLcontrol1.Width);
-
-            this.fi3D.LoadShape(fi, channel);
-            fi3D.LoadColors(fi, channel);
+            _3DTiffFileInfo fi3D = this.fi3Dlist[pointer];
+            //this.fi3D.LoadShape(fi, channel);
+            //fi3D.LoadColors(fi, channel);
 
             // Implement the actual transformation depending on the time flow in each direction
             mviewdata[0] =
@@ -144,17 +145,17 @@ namespace Cell_Tool_3
 
 
             GL.BindBuffer(BufferTarget.ArrayBuffer, vbo_position);
-            GL.BufferData<Vector3>(BufferTarget.ArrayBuffer, (IntPtr)(this.fi3D.vertdata.Length * Vector3.SizeInBytes), this.fi3D.vertdata, BufferUsageHint.StaticDraw);
+            GL.BufferData<Vector3>(BufferTarget.ArrayBuffer, (IntPtr)(fi3D.vertdata.Length * Vector3.SizeInBytes), fi3D.vertdata, BufferUsageHint.StaticDraw);
             GL.VertexAttribPointer(attribute_vpos, 3, VertexAttribPointerType.Float, false, 0, 0);
 
             GL.BindBuffer(BufferTarget.ArrayBuffer, vbo_color);
 
             GL.VertexAttribPointer(attribute_vcol, 3, VertexAttribPointerType.Float, true, 0, 0);
 
-            GL.BufferData<Vector4>(BufferTarget.ArrayBuffer, (IntPtr)(this.fi3D.coldata.Length * Vector3.SizeInBytes), this.fi3D.coldata, BufferUsageHint.StaticDraw);
+            GL.BufferData<Vector4>(BufferTarget.ArrayBuffer, (IntPtr)(fi3D.coldata.Length * Vector3.SizeInBytes), fi3D.coldata, BufferUsageHint.StaticDraw);
             GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
             GL.BindBuffer(BufferTarget.ElementArrayBuffer, ibo_elements);
-            GL.BufferData(BufferTarget.ElementArrayBuffer, (IntPtr)(this.fi3D.indicedata.Length * sizeof(int)), this.fi3D.indicedata, BufferUsageHint.StaticDraw);
+            GL.BufferData(BufferTarget.ElementArrayBuffer, (IntPtr)(fi3D.indicedata.Length * sizeof(int)), fi3D.indicedata, BufferUsageHint.StaticDraw);
             GL.Enable(EnableCap.DepthTest);
 
             GL.EnableVertexAttribArray(attribute_vpos);
@@ -166,11 +167,64 @@ namespace Cell_Tool_3
 
             GL.Viewport(X, Y, W, H);
 
-            GL.DrawElements(BeginMode.Triangles, this.fi3D.indicedata.Length, DrawElementsType.UnsignedInt, 0);
+            GL.DrawElements(BeginMode.Triangles, fi3D.indicedata.Length, DrawElementsType.UnsignedInt, 0);
 
         }
+        public void Calculate3Dfi(TifFileInfo fi)
+        {
+            Clear3Dfi();
+            
+            for (int channel = 0; channel < fi.sizeC; channel++)
+            {
+                if (fi.tpTaskbar.ColorBtnList[channel].ImageIndex != 0) continue;
 
+                if (fi.tpTaskbar.MethodsBtnList[0].ImageIndex == 0)
+                {
+                    this.fi3Dlist.Add(CreateFi3D(fi, channel));
+                }
+                if (fi.tpTaskbar.MethodsBtnList[1].ImageIndex == 0)
+                {
+                    this.fi3Dlist.Add(CreateFi3D(fi, channel));
+                }
+            }
 
+            // Composite view
+            if (fi.sizeC > 1 && fi.tpTaskbar.ColorBtnList[fi.sizeC].ImageIndex == 0)
+            {
+
+                if (fi.tpTaskbar.MethodsBtnList[0].ImageIndex == 0)
+                    for (int channel = 0; channel < fi.sizeC; channel++)
+                    {
+                        this.fi3Dlist.Add(CreateFi3D(fi, channel));
+                    }
+
+                if (fi.tpTaskbar.MethodsBtnList[1].ImageIndex == 0)
+                    for (int channel = 0; channel < fi.sizeC; channel++)
+                    {
+                        this.fi3Dlist.Add(CreateFi3D(fi, channel));
+                    }
+            }
+
+        }
+        private _3DTiffFileInfo CreateFi3D(TifFileInfo fi, int C)
+        {
+            _3DTiffFileInfo fi3D = new _3DTiffFileInfo(fi);
+            fi3D.LoadShape(fi, C);
+            fi3D.LoadColors(fi, C);
+            return fi3D;
+        }
+        private void Clear3Dfi()
+        {
+            if (this.fi3Dlist != null)
+            {
+                foreach (_3DTiffFileInfo fi3D in this.fi3Dlist)
+                    fi3D.Dispose();
+
+                this.fi3Dlist.Clear();
+            }
+            else
+                this.fi3Dlist = new List<_3DTiffFileInfo>();
+        }
 
         public void initProgram(GLControl GLcontrol1, TifFileInfo fi)
         {
@@ -202,8 +256,7 @@ namespace Cell_Tool_3
             this.mviewdata = new Matrix4[]{
                 Matrix4.Identity
             };
-
-            this.fi3D = new _3DTiffFileInfo(fi);
+            
         }
         private void loadShader(string filename, ShaderType type, int program, out int address)
         {
@@ -218,10 +271,7 @@ namespace Cell_Tool_3
         }
         public void ClearProgram(GLControl GLcontrol1)
         {
-            if (this.fi3D == null) return;
-
-            this.fi3D.Dispose();
-            this.fi3D = null;
+            Clear3Dfi();
         }
         public void GLControl1_MouseClick(GLControl GLcontrol1, TifFileInfo fi, MouseEventArgs e)
         {
@@ -234,6 +284,8 @@ namespace Cell_Tool_3
         }
         public void GLControl1_MouseMove(GLControl GLcontrol1, TifFileInfo fi, MouseEventArgs e)
         {
+            if (Math.Abs(e.X - MousePosition.X) < 10 && Math.Abs(e.X - MousePosition.X) < 10) return;
+
             if (MousePosition.X == -1) return;
 
             if (e.X > MousePosition.X) { timeX += speed; }
@@ -357,8 +409,7 @@ namespace Cell_Tool_3
                             if ((value - fi.MinBrightness[C]) < 0) continue;
 
                             currentCol = new Vector4(R, G, B, fi.adjustedLUT[C][value]);
-                            //currentCol = new Vector4(fi.adjustedLUT[0][value], fi.adjustedLUT[0][value], fi.adjustedLUT[0][value], 0f);
-
+                            
                             for (int i = 0; i < numFacesInPrimitiveShape; i++)
                             {
                                 this.coldata[colorCount++] = currentCol;
