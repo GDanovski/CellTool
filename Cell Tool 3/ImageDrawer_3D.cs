@@ -385,8 +385,9 @@ namespace Cell_Tool_3
             }
             private void Trim(int length)
             {
-                //TODO optimize this code
                 int newIndicedataLength = length * numMicroIndicedata;
+                if (!(this.indicedata.Length > newIndicedataLength)) return;
+
                 int newVertdataLength = length * numVerticesInPrimitiveShape;
                 int newColdataLength = length * numVerticesInPrimitiveShape;
 
