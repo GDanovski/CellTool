@@ -260,6 +260,7 @@ namespace Cell_Tool_3
                 //if the 3D is enabled - send to imageDrawer_3D
                 if (imageDrawer_3D.isImage3D(fi))
                 {
+                    imageDrawer_3D.Calculate3Dfi(fi);
                     imageDrawer_3D.StartDrawing(GLControl1, fi);
                     return;
                 }
