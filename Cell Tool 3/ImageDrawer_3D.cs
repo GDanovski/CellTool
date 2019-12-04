@@ -310,10 +310,11 @@ namespace Cell_Tool_3
             public Vector3[] vertdata;
             public Vector4[] coldata;
             private const int numVerticesInPrimitiveShape = 8; // 8 vertices in a cube
-            private const int numFacesInPrimitiveShape = 6; // 6 faces in a cube
+            private const int numFacesInPrimitiveShape = 6; // 6 faces in a cube  
+            private int numMicroIndicedata;
             public _3DTiffFileInfo(TifFileInfo fi)
             {
-                int[] microIndicedata = new int[]{
+                int[] microIndicedata = new int[] {
                 0, 7, 3,     0, 4, 7,     //front
                 1, 2, 6,     6, 5, 1,     //back
                 0, 2, 1,     0, 3, 2,     //left
@@ -321,7 +322,7 @@ namespace Cell_Tool_3
                 2, 3, 6,     6, 3, 7,     //top
                 0, 1, 5,     0, 5, 4      //bottom
             };
-
+                numMicroIndicedata = microIndicedata.Length;
                 long pxlCount = fi.sizeX * fi.sizeY * fi.sizeZ;
 
                 this.vertdata = new Vector3[pxlCount * numVerticesInPrimitiveShape];
@@ -349,14 +350,12 @@ namespace Cell_Tool_3
                 int startZ = fi.sizeZ * fi.sizeC * (fi.frame) + C;
                 int VertexCount = 0;
                 int value = 0;
-
+                int length = 0;
                 for (float z = 0, frame = startZ; z < fi.sizeZ; z += 1, frame += fi.sizeC)
                     for (float x = 0; x < fi.sizeX; x++)
                         for (float y = 0; y < fi.sizeY; y++)
                         {
                             // Load the colors - each of the 6 faces of a cube is colored by the voxel value
-                            //TODO 8bit images
-
                             switch (fi.bitsPerPixel)
                             {
                                 case 8:
@@ -371,13 +370,37 @@ namespace Cell_Tool_3
                             // Load the vertex locations
                             foreach (var val in getVertData(x - fi.sizeX / 2, y - fi.sizeY / 2, z - fi.sizeZ / 2, 0.25f))
                                 this.vertdata[(int)VertexCount++] = val;
+
+                            length++;
                         }
 
                 // Delete unnecessary vertices
+                //TODO create submasive
+                Trim(length);
+                /*
                 for (int i = VertexCount + 1; i < vertdata.Length; i++)
                 {
                     vertdata[i] = new Vector3();
-                }
+                }*/
+            }
+            private void Trim(int length)
+            {
+                //TODO optimize this code
+                int newIndicedataLength = length * numMicroIndicedata;
+                int newVertdataLength = length * numVerticesInPrimitiveShape;
+                int newColdataLength = length * numVerticesInPrimitiveShape;
+
+                int[] newIndicedata = new int[newIndicedataLength];
+                Vector3[] newVertdata = new Vector3[newVertdataLength];
+                Vector4[] newColdata = new Vector4[newColdataLength];
+
+                Array.Copy(this.indicedata,newIndicedata, newIndicedataLength);
+                Array.Copy(this.vertdata, newVertdata, newVertdataLength);
+                Array.Copy(this.coldata, newColdata, newColdataLength);
+
+                this.indicedata = newIndicedata;
+                this.coldata = newColdata;
+                this.vertdata = newVertdata;
             }
 
             public void LoadColors(TifFileInfo fi, int C)
