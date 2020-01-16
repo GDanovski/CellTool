@@ -35,6 +35,7 @@ namespace Cell_Tool_3
         public ImageAnalyser IA = null;
         public Panel corePanel = new Panel();
         public ContentPipe ImageTexture = new ContentPipe();
+        private ImagesTextures imagesTextures = new ImagesTextures();
         public ImageDrawer_3D imageDrawer_3D = new ImageDrawer_3D();
 
         #region Position on screen
@@ -135,7 +136,7 @@ namespace Cell_Tool_3
             if (fi.Xposition != p1.HorizontalScroll.Value / fi.zoom)
             {
                 fi.Xposition = p1.HorizontalScroll.Value / fi.zoom;
-                IA.ReloadImages();
+                IA.ReloadImages(false);
             }
         }
         private void VerticalScroll_ValueChanged(object sender, EventArgs e)
@@ -155,7 +156,7 @@ namespace Cell_Tool_3
             if (fi.Yposition != p1.VerticalScroll.Value / fi.zoom)
             {
                 fi.Yposition = p1.VerticalScroll.Value / fi.zoom;
-                IA.ReloadImages();
+                IA.ReloadImages(false);
             }
         }
         public void ClearImage()
@@ -174,9 +175,9 @@ namespace Cell_Tool_3
             }
             catch { }
         }
-        public void DrawToScreen()
+        public void DrawToScreen(bool toRecalculateImages = true)
         {
-            GLDrawing_Start(IA.GLControl1);
+            GLDrawing_Start(IA.GLControl1, toRecalculateImages);
         }
         #region GLControl_Events
         public void GLControl_Load(object sender, EventArgs e)
@@ -222,7 +223,7 @@ namespace Cell_Tool_3
             GLControl GLControl1 = sender as GLControl;
             GLDrawing_Start(GLControl1);
         }
-        private void GLDrawing_Start(GLControl GLControl1)
+        private void GLDrawing_Start(GLControl GLControl1,bool toRecalculateImages = true)
         {
             //try
             {
@@ -356,11 +357,34 @@ namespace Cell_Tool_3
 
                 List<Button> MethodsBtnList = fi.tpTaskbar.MethodsBtnList;
 
+                if (toRecalculateImages)
+                {
+                    bool toDrawRawImage = MethodsBtnList[0].ImageIndex == 0;
+                    bool toDrawFilteredImage = MethodsBtnList[1].ImageIndex == 0;
+                    //prepare the image list
+                    this.imagesTextures.PrepareImageList(fi.sizeC * 2);
+
+                    //Parallel.For(0, fi.sizeC * 2, (index) => {
+                    for (int index = 0; index < fi.sizeC * 2; index++)
+                        if ((index < fi.sizeC && toDrawRawImage) || (index >= fi.sizeC && toDrawFilteredImage))
+                        {
+                            int C = fi.sizeC > index ? index : index - fi.sizeC;
+                            //create image texture
+                            this.imagesTextures.GenerateImageData(fi, index, C);
+                        }
+                    //});
+                    //Load the images textures
+                    this.imagesTextures.LoadTextures(fi, fi.sizeC * 2);
+                }
+                //draw the images
+                GL.Enable(EnableCap.Texture2D);
                 if (MethodsBtnList[0].ImageIndex == 0)
                     DrawRawImages(fi);
 
                 if (MethodsBtnList[1].ImageIndex == 0)
                     DrawFilteredImages(fi);
+
+                GL.Disable(EnableCap.Texture2D);
 
                 GL.Disable(EnableCap.Blend);
 
@@ -499,7 +523,33 @@ namespace Cell_Tool_3
 
             GL.End();
         }
-        private void Draw16BitImage(TifFileInfo fi, int C, int rectC, int[] arrayW, int[] arrayH)
+        private void DrawImage(TifFileInfo fi, int C, int rectC)
+        {
+            try
+            {
+                Rectangle rect = new Rectangle(
+                    coRect[0][rectC].X,
+                    coRect[0][rectC].Y,
+                    coRect[0][rectC].X + fi.sizeX,
+                    coRect[0][rectC].Y + fi.sizeY);
+                imagesTextures.DrawTexture(C, rect);
+            }
+            catch { }
+        }
+        private void DrawFilteredImage(TifFileInfo fi, int C, int rectC)
+        {
+            try
+            {
+                Rectangle rect = new Rectangle(
+                    coRect[1][rectC].X,
+                    coRect[1][rectC].Y,
+                    coRect[1][rectC].X + fi.sizeX,
+                    coRect[1][rectC].Y + fi.sizeY);
+                imagesTextures.DrawTexture(fi.sizeC+C, rect);
+            }
+            catch { }
+        }
+        private void Draw16BitImage1(TifFileInfo fi, int C, int rectC, int[] arrayW, int[] arrayH)
         {
             try
             {
@@ -927,68 +977,7 @@ namespace Cell_Tool_3
         private void DrawFilteredImages(TifFileInfo fi)
         {
             //singlechanels or composite
-            int[] arrayW = new int[fi.sizeX + 1];
-            int col = coRect[1].Length - 1;
-            for (int i = 0; i < col; i++)
-            {
-                if (colors[i] == true)
-                {
-                    col = i;
-                    break;
-                }
-            }
 
-            int X = coRect[1][col].X;
-            for (int i = 0; i < arrayW.Length; i++, X++)
-            {
-                arrayW[i] = X;
-            }
-
-            for (int C = 0; C < fi.sizeC; C++)
-            {
-                if (colors[C] == true)
-                {
-                    switch (fi.bitsPerPixel)
-                    {
-                        case 8:
-                            Draw8BitFilteredImage(fi, C, C, arrayW, null);
-                            break;
-                        case 16:
-                            Draw16BitFilteredImage(fi, C, C, arrayW, null);
-                            break;
-                    }
-                }
-            }
-
-            if (composite == true)
-            {
-                int[] arrayH = new int[fi.sizeY + 1];
-                int Y = coRect[1][fi.sizeC].Y;
-                for (int i = 0; i < arrayH.Length; i++, Y++)
-                {
-                    arrayH[i] = Y;
-                }
-
-                for (int C1 = 0; C1 < fi.sizeC; C1++)
-                {
-                    switch (fi.bitsPerPixel)
-                    {
-                        case 8:
-                            Draw8BitFilteredImage(fi, C1, fi.sizeC, arrayW, null);
-                            break;
-                        case 16:
-                            Draw16BitFilteredImage(fi, C1, fi.sizeC, arrayW, null);
-                            break;
-                    }
-                }
-                arrayH = null;
-            }
-            arrayW = null;
-        }
-        private void DrawRawImages(TifFileInfo fi)
-        {
-            //singlechanels or composite
-            int[] arrayW = new int[fi.sizeX + 1];
             int col = coRect[0].Length - 1;
             for (int i = 0; i < col; i++)
             {
@@ -998,13 +987,6 @@ namespace Cell_Tool_3
                     break;
                 }
             }
-
-            int X = coRect[0][col].X;
-            for (int i = 0; i < arrayW.Length; i++, X++)
-            {
-                arrayW[i] = X;
-            }
-
             for (int C = 0; C < fi.sizeC; C++)
             {
                 if (colors[C] == true)
@@ -1012,38 +994,73 @@ namespace Cell_Tool_3
                     switch (fi.bitsPerPixel)
                     {
                         case 8:
-                            Draw8BitImage(fi, C, C, arrayW, null);
+                            DrawFilteredImage(fi, C, C);
                             break;
                         case 16:
-                            Draw16BitImage(fi, C, C, arrayW, null);
+                            DrawFilteredImage(fi, C, C);
                             break;
                     }
                 }
             }
             if (composite == true)
             {
-                int[] arrayH = new int[fi.sizeY + 1];
-                int Y = coRect[0][fi.sizeC].Y;
-                for (int i = 0; i < arrayH.Length; i++, Y++)
-                {
-                    arrayH[i] = Y;
-                }
-
                 for (int C1 = 0; C1 < fi.sizeC; C1++)
                 {
                     switch (fi.bitsPerPixel)
                     {
                         case 8:
-                            Draw8BitImage(fi, C1, fi.sizeC, arrayW, arrayH);
+                            DrawFilteredImage(fi, C1, fi.sizeC);
                             break;
                         case 16:
-                            Draw16BitImage(fi, C1, fi.sizeC, arrayW, arrayH);
+                            DrawFilteredImage(fi, C1, fi.sizeC);
                             break;
                     }
                 }
-                arrayH = null;
             }
-            arrayW = null;
+        }
+        private void DrawRawImages(TifFileInfo fi)
+        {
+            //singlechanels or composite
+            
+            int col = coRect[0].Length - 1;
+            for (int i = 0; i < col; i++)
+            {
+                if (colors[i] == true)
+                {
+                    col = i;
+                    break;
+                }
+            }    
+            for (int C = 0; C < fi.sizeC; C++)
+            {
+                if (colors[C] == true)
+                {
+                    switch (fi.bitsPerPixel)
+                    {
+                        case 8:
+                            DrawImage(fi, C, C);
+                            break;
+                        case 16:
+                            DrawImage(fi, C, C);
+                            break;
+                    }
+                }
+            }
+            if (composite == true)
+            {                
+                for (int C1 = 0; C1 < fi.sizeC; C1++)
+                {
+                    switch (fi.bitsPerPixel)
+                    {
+                        case 8:
+                            DrawImage(fi, C1, fi.sizeC);
+                            break;
+                        case 16:
+                            DrawImage(fi, C1, fi.sizeC);
+                            break;
+                    }
+                }
+            }
         }
 
         public Rectangle coRect_Calculate(GLControl GLControl1)
@@ -1476,7 +1493,7 @@ namespace Cell_Tool_3
                     if (fi.Xposition != IA.GLControl1_HorizontalPanel.HorizontalScroll.Value / fi.zoom)
                     {
                         fi.Xposition = IA.GLControl1_HorizontalPanel.HorizontalScroll.Value / fi.zoom;
-                        IA.ReloadImages();
+                        IA.ReloadImages(false);
                     }
 
                     changeXY = true;
@@ -1527,7 +1544,7 @@ namespace Cell_Tool_3
                     if (fi.Yposition != IA.GLControl1_VerticalPanel.VerticalScroll.Value / fi.zoom)
                     {
                         fi.Yposition = IA.GLControl1_VerticalPanel.VerticalScroll.Value / fi.zoom;
-                        IA.ReloadImages();
+                        IA.ReloadImages(false);
                     }
 
                     changeXY = true;
@@ -1726,7 +1743,7 @@ namespace Cell_Tool_3
                 {
                     fi.Yposition = IA.GLControl1_VerticalPanel.VerticalScroll.Value / fi.zoom;
                     fi.Xposition = IA.GLControl1_HorizontalPanel.HorizontalScroll.Value / fi.zoom;
-                    IA.ReloadImages();
+                    IA.ReloadImages(false);
                 }
                 changeXY = true;
             }
@@ -2780,6 +2797,7 @@ namespace Cell_Tool_3
 
         #endregion Draw ROI
     }
+
     class ContentPipe
     {
         #region Number Textures
@@ -2852,9 +2870,9 @@ namespace Cell_Tool_3
             GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)All.Linear);
             GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)All.Linear);
         }
-        #endregion Number Textures
+        #endregion Number Textures                
         //Generate empty texture
-        private int id;
+        private int id;       
         private int ChartID;
 
         public void ReserveTextureID()
@@ -2952,7 +2970,7 @@ namespace Cell_Tool_3
             int bytes = Math.Abs(bmpData.Stride) * bmp.Height;
             byte[] rgbValues = new byte[bytes];
             // Copy the RGB values into the array
-            System.Runtime.InteropServices.Marshal.Copy(ptr, rgbValues, 0, bytes);
+          //  System.Runtime.InteropServices.Marshal.Copy(ptr, rgbValues, 0, bytes);
             //take LUT info
 
             int position = 0;
@@ -2996,7 +3014,7 @@ namespace Cell_Tool_3
             int bytes = Math.Abs(bmpData.Stride) * bmp.Height;
             byte[] rgbValues = new byte[bytes];
             // Copy the RGB values into the array
-            System.Runtime.InteropServices.Marshal.Copy(ptr, rgbValues, 0, bytes);
+           // System.Runtime.InteropServices.Marshal.Copy(ptr, rgbValues, 0, bytes);
             //take LUT info
 
             int position = 0;

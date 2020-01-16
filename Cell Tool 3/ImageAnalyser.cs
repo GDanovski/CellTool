@@ -76,7 +76,7 @@ namespace Cell_Tool_3
             {
                 fi.zoom = zoom;
                 //reload image
-                ReloadImages();
+                ReloadImages(false);
                //MarkAsNotSaved();
             }
         }
@@ -357,7 +357,7 @@ namespace Cell_Tool_3
             TabPages.tTrackBar.TextBox1.Enabled = val;
             TabPages.zTrackBar.TextBox1.Enabled = val;
         }
-        public void ReloadImages()
+        public void ReloadImages(bool toRecalculateImages = true)
         { 
             TabPages.PropertiesBody.SuspendLayout();
             TabPages.propertiesPanel.SuspendLayout();
@@ -397,7 +397,18 @@ namespace Cell_Tool_3
 
             if (fi != null)
             {
-                //3D buttons set
+                //3D buttons set up
+                if(fi.sizeZ == 1 && fi.tpTaskbar.Btn2D.Visible == true)
+                {
+                    fi.tpTaskbar.Btn2D.Visible = false;
+                    fi.tpTaskbar.Btn3D.Visible = false;
+                }
+                else if(fi.sizeZ != 1 && fi.tpTaskbar.Btn2D.Visible == false)
+                {
+                    fi.tpTaskbar.Btn2D.Visible = true;
+                    fi.tpTaskbar.Btn3D.Visible = true;
+                }
+
                 if (IDrawer.imageDrawer_3D.isImage3D(fi))
                 {
                     fi.tpTaskbar.Btn2D.Enabled = true;
@@ -446,7 +457,7 @@ namespace Cell_Tool_3
                 //Image Drawer
                 try
                 {
-                   IDrawer.DrawToScreen();
+                   IDrawer.DrawToScreen(toRecalculateImages);
                 }
                 catch { }
                 //Prop Panel settings

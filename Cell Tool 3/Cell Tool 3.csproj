@@ -215,6 +215,7 @@
     <Compile Include="Image3DProjection.cs" />
     <Compile Include="ImageAnalyser.cs" />
     <Compile Include="ImageDrawer_3D.cs" />
+    <Compile Include="ImagesTextures.cs" />
     <Compile Include="Interface.cs" />
     <Compile Include="KMeans.cs" />
     <Compile Include="MetadataProp.cs" />
