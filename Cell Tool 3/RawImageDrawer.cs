@@ -239,16 +239,16 @@ namespace Cell_Tool_3
                 {
                     return;
                 }
-                
+
                 if (GLControl1.Visible == false) { GLControl1.Visible = true; }
-                
+
                 Rectangle fieldRect = coRect_Calculate(GLControl1);
 
                 //Calculate B&C
                 CalculateImages(fi);
 
                 fi.tpTaskbar.TopBar.SendToBack();
-                
+
                 //Start Drawing
                 //Activate Control
                 GLControl1.MakeCurrent();
@@ -260,8 +260,22 @@ namespace Cell_Tool_3
                 //if the 3D is enabled - send to imageDrawer_3D
                 if (imageDrawer_3D.isImage3D(fi))
                 {
+                    //Set viewpoint
+                    GL.Viewport(0, 0, GLControl1.Width, GLControl1.Height);
+                    //scale the image
+                    if (oldScale != fi.zoom)
+                    {
+                        double factor = fi.zoom / oldScale;
+                        oldScale = fi.zoom;
+                        if (factor != 1)
+                        {
+                            GL.Scale(factor, factor, 1);
+                        }
+                    }
+
                     imageDrawer_3D.Calculate3Dfi(fi);
                     imageDrawer_3D.StartDrawing(GLControl1, fi);
+
                     return;
                 }
 
@@ -362,7 +376,7 @@ namespace Cell_Tool_3
                 drawRoi(fi);
                 if (IA.RoiMan.current != null) drawCurrentRoi(fi);
 
-                GLControl1.SwapBuffers();                
+                GLControl1.SwapBuffers();
             }
             //catch { }
         }
@@ -385,11 +399,11 @@ namespace Cell_Tool_3
             GL.VertexPointer(2, VertexPointerType.Float, 0, para_vertex);
             GL.ColorPointer(3, ColorPointerType.Float, 0, para_color);
             GL.DrawArrays(PrimitiveType.TriangleStrip, 0, 6);
-            
+
             GL.DisableClientState(ArrayCap.VertexArray);
         }
         #endregion
-        
+
         private void DrawBackgrounds_Global(TifFileInfo fi)
         {
             //singlechanels or composite
@@ -434,7 +448,7 @@ namespace Cell_Tool_3
             GL.Vertex2(W, Y);
 
             GL.End();
- 
+
         }
         private void RawImage_DrawBackColor(Rectangle rect)
         {
@@ -477,7 +491,7 @@ namespace Cell_Tool_3
             h += y;
 
             GL.Begin(PrimitiveType.LineLoop);
-            GL.Color3( 0f, 0f, 0f);
+            GL.Color3(0f, 0f, 0f);
 
             GL.Vertex2(x, y);
             GL.Vertex2(w, y);
@@ -694,10 +708,10 @@ namespace Cell_Tool_3
                                         col = fi.SpotColor[C];
                                         GL.Color4(col);
                                     }
-                                    else if(LUT.Length > val)
+                                    else if (LUT.Length > val)
                                         GL.Color4(R, G, B, LUT[val]);
                                     else
-                                        GL.Color4(R, G, B, LUT[LUT.Length-1]);
+                                        GL.Color4(R, G, B, LUT[LUT.Length - 1]);
 
                                     break;
                                 default:
@@ -799,7 +813,7 @@ namespace Cell_Tool_3
                 float H = X + 1f;
                 int val = 0;
 
-               Color lastCol = fi.thresholdColors[C][fi.thresholds[C]];
+                Color lastCol = fi.thresholdColors[C][fi.thresholds[C]];
 
                 int Choise = fi.thresholds[C];
                 if (fi.SegmentationCBoxIndex[C] == 0) Choise = 0;
@@ -839,7 +853,7 @@ namespace Cell_Tool_3
                                         col = fi.SpotColor[C];
                                         GL.Color4(col);
                                     }
-                                    else if(LUT.Length > val)
+                                    else if (LUT.Length > val)
                                         GL.Color4(R, G, B, LUT[val]);
                                     else
                                         GL.Color4(R, G, B, LUT[LUT.Length - 1]);
@@ -1181,10 +1195,10 @@ namespace Cell_Tool_3
                     //position
                     Rectangle newRect =
                         new Rectangle((int)sizeW, (int)sizeH,
-                        (int)(fi.sizeY*1.5), (int)(fi.sizeY));
+                        (int)(fi.sizeY * 1.5), (int)(fi.sizeY));
                     coRect[2][i] = newRect;
                     //size
-                    sizeH += (int) (fi.sizeY + interval);
+                    sizeH += (int)(fi.sizeY + interval);
                     // if (biggestW < fi.sizeX) { biggestW = fi.sizeX; }
                     if (biggestW < newRect.Width) { biggestW = newRect.Width; }
                 }
@@ -1198,7 +1212,7 @@ namespace Cell_Tool_3
             #endregion Chart - index 1
             //Calculate Field
             Rectangle result = new Rectangle(0, 0, (int)sizeW, (int)biggestH);
-            
+
             return result;
 
         }
@@ -1378,7 +1392,7 @@ namespace Cell_Tool_3
                         {
                             if (coRect[i][j].Contains(p) == true)
                             {
-                                if(fi.cValue != j)
+                                if (fi.cValue != j)
                                     IA.RoiMan.current = null;
 
                                 if (fi.selectedPictureBoxColumn != i |
@@ -1400,7 +1414,7 @@ namespace Cell_Tool_3
                 }
             }
         }
-       
+
         private void GLControl1_MouseWheel(object sender, MouseEventArgs e)
         {
             if (IA.RoiMan.DrawNewRoiMode == true) return;
@@ -1569,7 +1583,8 @@ namespace Cell_Tool_3
                     TabPages.propertiesPanel.Width = 15;
                     TabPages.hidePropAndBrows = true;
                 }
-                else {
+                else
+                {
                     //data source panel
                     FileBrowser.DataSourcesPanelWidth = int.Parse(settings.DataSourcesPanelValues[AccInd]);
 
@@ -1753,8 +1768,8 @@ namespace Cell_Tool_3
         #endregion MouseMoveField event
 
         #region Draw ROI
-       const float DEG2RAD = (float)(3.14159 / 180.0);
-       private void drawEllipse(float x, float y, float xradius, float yradius)
+        const float DEG2RAD = (float)(3.14159 / 180.0);
+        private void drawEllipse(float x, float y, float xradius, float yradius)
         {
             xradius /= 2;
             yradius /= 2;
@@ -1771,7 +1786,7 @@ namespace Cell_Tool_3
                 float degInRad = i * DEG2RAD;
                 double newX = x + Math.Cos(degInRad) * xradius;
                 double newY = y + Math.Sin(degInRad) * yradius;
-                GL.Vertex2(newX,newY);
+                GL.Vertex2(newX, newY);
             }
 
             GL.End();
@@ -1779,7 +1794,7 @@ namespace Cell_Tool_3
         private void drawEllipse(float x, float y, float xradius, float yradius, Rectangle Rect)
         {
             //Check is it outside
-            if(!(x < Rect.X+0.5 | x + xradius > Rect.Width + 0.5 |
+            if (!(x < Rect.X + 0.5 | x + xradius > Rect.Width + 0.5 |
                 y < Rect.Y + 0.5 | y + yradius > Rect.Height + 0.5))
             {
                 drawEllipse(x, y, xradius, yradius);
@@ -1829,11 +1844,11 @@ namespace Cell_Tool_3
             w += x;
             h += y;
 
-            if (x <= RectF.X+0.5f) x = RectF.X  + 0.5f;
+            if (x <= RectF.X + 0.5f) x = RectF.X + 0.5f;
 
-            if (y <= RectF.Y +0.5f) y = RectF.Y + 0.5f;
+            if (y <= RectF.Y + 0.5f) y = RectF.Y + 0.5f;
 
-            if (w > RectF.Width )
+            if (w > RectF.Width)
                 w = RectF.Width;
 
             if (h > RectF.Height)
@@ -1860,7 +1875,7 @@ namespace Cell_Tool_3
 
             GL.End();
         }
-        private void drawRectangle(float x, float y, float w, float h,Rectangle Rect)
+        private void drawRectangle(float x, float y, float w, float h, Rectangle Rect)
         {
             RectangleF RectF = new RectangleF(
                (float)Rect.X,
@@ -1871,7 +1886,7 @@ namespace Cell_Tool_3
             if (!(x < RectF.X + 0.5f |
                 y < RectF.Y + 0.5f |
                 w + x > RectF.Width |
-                h + y > RectF.Height ))
+                h + y > RectF.Height))
             {
                 drawRectangle(x, y, w, h);
                 return;
@@ -1883,14 +1898,14 @@ namespace Cell_Tool_3
             {
                 return;
             }
-            
+
             w += x;
             h += y;
 
             float[] Xarr = new float[] { x, w, w, x };
             float[] Yarr = new float[] { y, y, h, h };
             PolygonalFieldCut(Xarr, Yarr, Rect);
-            
+
         }
         private void drawRectangle(float x, float y, float w, float h)
         {
@@ -1911,9 +1926,9 @@ namespace Cell_Tool_3
         {
             GL.Begin(PrimitiveType.LineLoop);
             GL.Color4(1f, 1f, 0f, 1f);
-            
-            for(int i = 0; i< x.Length; i++)
-               GL.Vertex2(x[i], y[i]);
+
+            for (int i = 0; i < x.Length; i++)
+                GL.Vertex2(x[i], y[i]);
 
             GL.End();
         }
@@ -1923,10 +1938,10 @@ namespace Cell_Tool_3
             GL.Color4(1f, 1f, 0f, 1f);
             for (int i = 0; i < x.Length; i++)
                 GL.Vertex2(x[i], y[i]);
-            
+
             GL.End();
         }
-        
+
         private List<PointF> DrawLine(PointF p1, PointF p2)
         {
             //Bresenham's line algorithm
@@ -1948,7 +1963,7 @@ namespace Cell_Tool_3
                     for (float Y = p2.Y; Y <= p1.Y; Y++)
                         pxlList.Add(new PointF(p1.X, Y));
                 }
-                
+
             }
             else if (deltaY == 0)
             {
@@ -2060,14 +2075,14 @@ namespace Cell_Tool_3
                 }
                 //calculate new values
                 deltaX = x1 - x0;
-                deltaY  = y1 - y0;
+                deltaY = y1 - y0;
                 deltaErr = Math.Abs(deltaY / deltaX);
 
                 //Assume deltax != 0 (line is not vertical),
                 //note that this division needs to be done in a way that preserves the fractional part
                 float y = y0;
                 double error1 = -1;
-                for (float x = x0; x< x1; x++)
+                for (float x = x0; x < x1; x++)
                 {
                     switch (case1)
                     {
@@ -2076,7 +2091,7 @@ namespace Cell_Tool_3
                             pxlList.Add(new PointF(x, y));
                             break;
                         case 1:
-                            pxlList.Add(new PointF(y,x));
+                            pxlList.Add(new PointF(y, x));
                             break;
                         case 2:
                             pxlList.Add(new PointF(-y, x));
@@ -2099,7 +2114,7 @@ namespace Cell_Tool_3
                     }
 
                     error1 += deltaErr;
-                    if(error1 >= 0.0)
+                    if (error1 >= 0.0)
                     {
                         y++;
                         error1 -= 1.0;
@@ -2111,7 +2126,7 @@ namespace Cell_Tool_3
         }
         private bool RectFContains(PointF p, RectangleF rectF)
         {
-            if (p.X < rectF.X | p.X > rectF.Width | 
+            if (p.X < rectF.X | p.X > rectF.Width |
                 p.Y < rectF.Y | p.Y > rectF.Height)
                 return false;
             else
@@ -2135,14 +2150,14 @@ namespace Cell_Tool_3
                 (float)Rect.Y,
                 (float)(Rect.Width + Rect.X),
                 (float)(Rect.Height + Rect.Y));
-           
+
             List<PointF> resP = new List<PointF>();
             List<PointF> potP;
 
-            PointF p0 = new PointF(X[X.Length-1],Y[Y.Length-1]);
+            PointF p0 = new PointF(X[X.Length - 1], Y[Y.Length - 1]);
             PointF p1;
             bool drawn = false;
-            
+
             bool visible;
             bool contain;//bool that shows is the point in rectF
             PointF prevP;//the one before the last selected
@@ -2159,11 +2174,11 @@ namespace Cell_Tool_3
                 else
                     p1 = new PointF(X[0], Y[0]);
                 //check is border visible
-                if(RectFContains(p0, RectF))
+                if (RectFContains(p0, RectF))
                 {
                     resP.Add(p0);
                     visible = true;
-                } 
+                }
                 else
                 {
                     drawn = true;
@@ -2213,7 +2228,7 @@ namespace Cell_Tool_3
             {
                 drawPolygon(X, Y);
             }
-            
+
         }
         /*
         private List<PointF> PolygonalAngleInPolygonal(PointF[] points, RectangleF RectF)
@@ -2377,7 +2392,7 @@ namespace Cell_Tool_3
            
         }
         */
-        private void drawCurrentStackRoi(ROI roi, int frame, int addX, int addY,Rectangle rect)
+        private void drawCurrentStackRoi(ROI roi, int frame, int addX, int addY, Rectangle rect)
         {
             if (roi.Stack < 1) return;
 
@@ -2405,9 +2420,9 @@ namespace Cell_Tool_3
 
                 float[] x = new float[2];
                 float[] y = new float[2];
-               
+
                 //top
-                x[0] = X + (W/2);
+                x[0] = X + (W / 2);
                 y[0] = Y;
                 x[1] = x[0];
                 y[1] = p.Y + addY + 0.5f;
@@ -2421,8 +2436,8 @@ namespace Cell_Tool_3
 
                 PolygonalFieldCut(x, y, rect);
                 //left
-                x[0] = X ;
-                y[0] = Y + (H/2);
+                x[0] = X;
+                y[0] = Y + (H / 2);
                 x[1] = p.X + addX + 0.5f;
                 y[1] = y[0];
 
@@ -2440,7 +2455,7 @@ namespace Cell_Tool_3
             {
                 if (IA.RoiMan.DrawNewRoiMode == true && roi == IA.RoiMan.current) return;
                 float[] x, y;
-                for (int i = 0, D = roi.D; i < roi.Stack; i++, D+=roi.D)
+                for (int i = 0, D = roi.D; i < roi.Stack; i++, D += roi.D)
                 {
                     List<Point> res = RoiMeasure.Polygon_Layers(frame, D, roi, rect);
 
@@ -2455,7 +2470,7 @@ namespace Cell_Tool_3
                     }
 
                     PolygonalFieldCut(x, y, rect);
-                }                
+                }
             }
         }
         private void drawCurrentRoi(TifFileInfo fi)
@@ -2467,12 +2482,12 @@ namespace Cell_Tool_3
             Rectangle rect = coRect[0][fi.cValue];
             int addX = rect.X;
             int addY = rect.Y;
-            
+
             FrameCalculator FC = new FrameCalculator();
             int frame = FC.Frame(fi);
 
             if (fi.frame + 1 < roi.FromT | fi.frame + 1 > roi.ToT) return;
-            if (fi.zValue + 1 < roi.FromZ | fi.zValue +1 > roi.ToZ) return;
+            if (fi.zValue + 1 < roi.FromZ | fi.zValue + 1 > roi.ToZ) return;
             if (roi.Checked == false) return;
 
             if (roi.Shape == 0)
@@ -2483,7 +2498,7 @@ namespace Cell_Tool_3
             else if (roi.Shape == 1)
             {
                 Point p = roi.GetLocation(frame)[0];
-                drawEllipse(p.X + addX + 0.5f, p.Y + addY + 0.5f, roi.Width, roi.Height, rect);                
+                drawEllipse(p.X + addX + 0.5f, p.Y + addY + 0.5f, roi.Width, roi.Height, rect);
             }
             else if (roi.Shape == 2)
             {
@@ -2530,14 +2545,14 @@ namespace Cell_Tool_3
                 Point[] points = roi.GetLocation(frame);
                 float[] x = new float[points.Length];
                 float[] y = new float[points.Length];
-                for(int i = 0; i< points.Length; i++)
+                for (int i = 0; i < points.Length; i++)
                 {
                     Point p = points[i];
                     x[i] = p.X + addX + 0.5f;
                     y[i] = p.Y + addY + 0.5f;
                 }
-                
-                if(IA.RoiMan.DrawNewRoiMode == true)
+
+                if (IA.RoiMan.DrawNewRoiMode == true)
                 {
                     drawUnfinishedPolygon(x, y);
                 }
@@ -2548,16 +2563,16 @@ namespace Cell_Tool_3
                 }
             }
             //draw stack roi
-            drawCurrentStackRoi(roi,frame,addX,addY,rect);
+            drawCurrentStackRoi(roi, frame, addX, addY, rect);
             //draw number
-            if(IA.RoiMan.roiTV.Nodes.IndexOf(roi) > -1)
-                DrawStringToGL(fi, (IA.RoiMan.roiTV.Nodes.IndexOf(roi)+1).ToString(), 
+            if (IA.RoiMan.roiTV.Nodes.IndexOf(roi) > -1)
+                DrawStringToGL(fi, (IA.RoiMan.roiTV.Nodes.IndexOf(roi) + 1).ToString(),
                     roi, frame, rect);
             //draw resize rectangles
             if (IA.RoiMan.DrawNewRoiMode == false)
             {
                 IA.RoiMan.PrepareResizeSpotsRectangle(fi, frame);
-                
+
                 if (IA.RoiMan.ResizeSpotsRectangles != null)
                 {
                     for (int i = 0; i < IA.RoiMan.ResizeSpotsRectangles.Length; i++)
@@ -2588,7 +2603,7 @@ namespace Cell_Tool_3
                     int addY = rect.Y;
 
                     FrameCalculator FC = new FrameCalculator();
-                    int frame = FC.FrameC(fi,col);
+                    int frame = FC.FrameC(fi, col);
 
                     if (fi.frame + 1 < roi.FromT | fi.frame + 1 > roi.ToT) continue;
                     if (fi.zValue + 1 < roi.FromZ | fi.zValue + 1 > roi.ToZ) continue;
@@ -2635,14 +2650,14 @@ namespace Cell_Tool_3
                     }
                     //draw stack roi
                     drawCurrentStackRoi(roi, frame, addX, addY, rect);
-                    DrawStringToGL(fi, (roiList.IndexOf(roi) + 1).ToString(),roi, frame, rect);
+                    DrawStringToGL(fi, (roiList.IndexOf(roi) + 1).ToString(), roi, frame, rect);
                 }
             }
         }
         public void tryDrawingWithoutReload()
         {
             if (IA.RoiMan.current == null) return;
-            
+
             GLControl GLControl1 = IA.GLControl1;
             TifFileInfo fi;
             try
@@ -2650,7 +2665,7 @@ namespace Cell_Tool_3
                 fi = IA.TabPages.TabCollections[IA.TabPages.SelectedIndex].tifFI;
             }
             catch { return; }
-            if (fi == null)return;
+            if (fi == null) return;
 
             //Activate Control
             GLControl1.MakeCurrent();
@@ -2675,14 +2690,14 @@ namespace Cell_Tool_3
         private void DrawTexture(TifFileInfo fi)
         {
             GLControl GLControl1 = IA.GLControl1;
-            
+
             GL.Enable(EnableCap.Texture2D);
             GL.BindTexture(TextureTarget.Texture2D, id);
 
             Rectangle rectOld = coRect[0][fi.cValue];
             Rectangle rect = new Rectangle(rectOld.X, rectOld.Y,
                 rectOld.X + rectOld.Width, rectOld.Y + rectOld.Height);
-           
+
             GL.Begin(BeginMode.Quads);
 
             GL.Color3(fi.LutList[fi.cValue]);
@@ -2700,12 +2715,12 @@ namespace Cell_Tool_3
             GL.Vertex2(rect.Width, rect.Y);
 
             GL.End();
-            
+
             GL.Disable(EnableCap.Texture2D);
 
-            
+
         }
-        public void DrawStringToGL(TifFileInfo fi,string str, ROI roi, int imageN, Rectangle Borders)
+        public void DrawStringToGL(TifFileInfo fi, string str, ROI roi, int imageN, Rectangle Borders)
         {
             if (IA.RoiMan.showLabels == false) return;
 
@@ -2713,9 +2728,9 @@ namespace Cell_Tool_3
             float W = 13f / (float)fi.zoom;
             float H = 15f / (float)fi.zoom;
             float lineSpace = 7 / (float)fi.zoom;
-            
+
             PointF midP = roi.GetMidPoint(imageN);
-            float X = Borders.X + midP.X - (lineSpace * (symb/2)) - 3/(float)fi.zoom;
+            float X = Borders.X + midP.X - (lineSpace * (symb / 2)) - 3 / (float)fi.zoom;
             float Y = Borders.Y + midP.Y - (H / 2);
 
             GLControl GLControl1 = IA.GLControl1;
@@ -2724,9 +2739,9 @@ namespace Cell_Tool_3
             GL.Enable(EnableCap.Texture2D);
 
             RectangleF rect = new RectangleF(X, Y,
-               X+W, Y+H);
+               X + W, Y + H);
 
-            RectangleF BordersF = 
+            RectangleF BordersF =
                 new RectangleF(Borders.X, Borders.Y, Borders.Width, Borders.Height);
 
             foreach (char val in str)
@@ -2737,7 +2752,7 @@ namespace Cell_Tool_3
                     int code = ImageTexture.NumberID[int.Parse(val.ToString())];
 
                     GL.BindTexture(TextureTarget.Texture2D, code);
-                    
+
                     GL.Begin(PrimitiveType.Quads);
 
                     GL.Color3(Color.Transparent);
@@ -2758,12 +2773,12 @@ namespace Cell_Tool_3
                 }
 
                 rect.X += lineSpace;
-                rect.Width = rect.X + W; 
+                rect.Width = rect.X + W;
             }
             GL.Disable(EnableCap.Texture2D);
             GL.Disable(EnableCap.Blend);
         }
-        
+
         #endregion Draw ROI
     }
     class ContentPipe
@@ -2787,11 +2802,11 @@ namespace Cell_Tool_3
         {
             Font font = new Font("Times New Roman", 9, FontStyle.Bold);
 
-            Bitmap bmp = new Bitmap(TextRenderer.MeasureText(str,font).Width,
+            Bitmap bmp = new Bitmap(TextRenderer.MeasureText(str, font).Width,
                 TextRenderer.MeasureText(str, font).Height,
                 System.Drawing.Imaging.PixelFormat.Format32bppArgb);
 
-            Rectangle rect = new Rectangle(0, 0, 
+            Rectangle rect = new Rectangle(0, 0,
                 TextRenderer.MeasureText(str, font).Width,
                 TextRenderer.MeasureText(str, font).Height);
 
@@ -2826,13 +2841,13 @@ namespace Cell_Tool_3
             //Release from memory
             texture_source.UnlockBits(bitmap_data);
             //SetUp parametars
-           /*
-            //No anti-aliasing!
-            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapS, (int)TextureWrapMode.ClampToBorder);
-            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapT, (int)TextureWrapMode.ClampToBorder);
-            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)All.Nearest);
-            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)All.Nearest);
-            */
+            /*
+             //No anti-aliasing!
+             GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapS, (int)TextureWrapMode.ClampToBorder);
+             GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapT, (int)TextureWrapMode.ClampToBorder);
+             GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)All.Nearest);
+             GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)All.Nearest);
+             */
             GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapS, (int)TextureWrapMode.ClampToEdge);
             GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapT, (int)TextureWrapMode.ClampToEdge);
             GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)All.Linear);
@@ -2842,13 +2857,13 @@ namespace Cell_Tool_3
         //Generate empty texture
         private int id;
         private int ChartID;
-        
+
         public void ReserveTextureID()
         {
             id = GL.GenTexture();
             ChartID = GL.GenTexture();
         }
-       public int LoadTexture(Bitmap bmp, bool NoAntiAliasing = false)
+        public int LoadTexture(Bitmap bmp, bool NoAntiAliasing = false)
         {
             //Load texture from file
             Bitmap texture_source = bmp;
@@ -2865,8 +2880,8 @@ namespace Cell_Tool_3
 
             //Lock pixel data to memory and prepare for pass through
             BitmapData bitmap_data = texture_source.LockBits(
-                new Rectangle(0, 0, texture_source.Width, 
-                texture_source.Height), ImageLockMode.ReadOnly, 
+                new Rectangle(0, 0, texture_source.Width,
+                texture_source.Height), ImageLockMode.ReadOnly,
                 System.Drawing.Imaging.PixelFormat.Format32bppRgb);
 
             //Tell gl to write the data from are bitmap image/data to the bound texture
@@ -2892,7 +2907,7 @@ namespace Cell_Tool_3
                 GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)All.Linear);
                 return ChartID;
             }
-           
+
         }
         public int GenerateActiveImageTexture(TifFileInfo fi)
         {
@@ -2906,7 +2921,7 @@ namespace Cell_Tool_3
                     bmp = Raw16ToBmp(fi);
                     break;
             }
-            id = LoadTexture(bmp,true);
+            id = LoadTexture(bmp, true);
             return id;
         }
         public void TextureFromBackBuffer(int Width, int Height)
@@ -2927,7 +2942,7 @@ namespace Cell_Tool_3
             //image array
             byte[][] image = fi.image8bit[FC.Frame(fi)];
             //new bitmap
-            Bitmap bmp = new Bitmap(image[0].Length, image.Length, 
+            Bitmap bmp = new Bitmap(image[0].Length, image.Length,
                 System.Drawing.Imaging.PixelFormat.Format32bppArgb);
             // Lock the bitmap's bits.
             Rectangle rect = new Rectangle(0, 0, bmp.Width, bmp.Height);
