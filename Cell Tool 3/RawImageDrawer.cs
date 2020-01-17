@@ -363,8 +363,7 @@ namespace Cell_Tool_3
                     bool toDrawFilteredImage = MethodsBtnList[1].ImageIndex == 0;
                     //prepare the image list
                     this.imagesTextures.PrepareImageList(fi.sizeC * 2);
-
-                    //Parallel.For(0, fi.sizeC * 2, (index) => {
+                    
                     for (int index = 0; index < fi.sizeC * 2; index++)
                         if ((index < fi.sizeC && toDrawRawImage) || (index >= fi.sizeC && toDrawFilteredImage))
                         {
@@ -379,10 +378,9 @@ namespace Cell_Tool_3
                                 int[] SpotDiapason = IA.Segmentation.SpotDet.CalculateBorders(fi, C);
                                 this.imagesTextures.GenerateFilteredImageData(fi, index, C, SpotDiapason);
                             }
+                            //Load the images textures
+                            this.imagesTextures.LoadTextures(fi, index);
                         }
-                    //});
-                    //Load the images textures
-                    this.imagesTextures.LoadTextures(fi, fi.sizeC * 2);
                 }
                 //draw the images
                 GL.Enable(EnableCap.Texture2D);
@@ -410,6 +408,7 @@ namespace Cell_Tool_3
                 GLControl1.SwapBuffers();
             }
             //catch { }
+
         }
         private void DrawLine()
         {
@@ -556,8 +555,7 @@ namespace Cell_Tool_3
                 imagesTextures.DrawTexture(fi.sizeC+C, rect);
             }
             catch { }
-        }
-        
+        }        
         private void DrawFilteredImages(TifFileInfo fi)
         {
             //singlechanels or composite
@@ -646,7 +644,6 @@ namespace Cell_Tool_3
                 }
             }
         }
-
         public Rectangle coRect_Calculate(GLControl GLControl1)
         {
             TifFileInfo fi = IA.TabPages.TabCollections[IA.TabPages.SelectedIndex].tifFI;
@@ -829,7 +826,6 @@ namespace Cell_Tool_3
             }
             IA.BandC.calculateHistogramArray(fi, true);
         }
-
         public void ShowXYVal(object sender, MouseEventArgs e)
         {
             TifFileInfo fi;
@@ -945,8 +941,6 @@ namespace Cell_Tool_3
                 return;
             }
         }
-
-
         private void GLControl1_MouseClick(object sender, MouseEventArgs e)
         {
             GLControl GLControl1 = sender as GLControl;
@@ -1827,169 +1821,7 @@ namespace Cell_Tool_3
                 drawPolygon(X, Y);
             }
 
-        }
-        /*
-        private List<PointF> PolygonalAngleInPolygonal(PointF[] points, RectangleF RectF)
-        {
-            
-            List<PointF> input = new List<PointF>();
-            List<PointF> output = new List<PointF>();
-            //reorder input
-            if (RectFContains(points[0], RectF) == false)
-            {
-                int l = points.Length - 1;
-                //find last visible
-                while (l > 0 & RectFContains(points[l], RectF) == false)
-                {
-                    l--;
-                }
-                //fill the beginning
-                for (int i = l + 1; i < points.Length; i++)
-                {
-                    input.Add(points[i]);
-                }
-                //fill the end
-                for (int i = 0; i <= l; i++)
-                {
-                    input.Add(points[i]);
-                }
-            }
-            else input = points.ToList();
-
-            //calculate output
-            PointF oldP = input[input.Count - 1];
-            PointF curP;
-            for (int i = 0; i< input.Count; i++)
-            {
-                curP = input[i];
-                if (RectFContains(curP, RectF) == false)
-                {
-                    List<PointF> temp = new List<PointF>();
-                    //first visible point
-                    temp.Add(oldP);
-                    //invisible points
-                    while (RectFContains(curP, RectF) == false &
-                        i < input.Count-1)
-                    {
-                        temp.Add(curP);
-                        i++;
-                        curP = input[i];
-                    }
-                    //last visible point
-                    temp.Add(curP);
-                    //Check is any corner of the Rect in the polygon
-                    Point[] tempArr = new Point[temp.Count];
-                    for (int j = 0; j < temp.Count; j++)
-                    {
-                        tempArr[j].X = (int)temp[j].X;
-                        tempArr[j].Y = (int)temp[j].Y;
-                    }
-                    //Find wich corner is inside
-                    PointF corner = PointF.Empty;
-                    if (IA.RoiMan.IsPointInPolygon(
-                        new Point((int)RectF.X, (int)RectF.Y),
-                        tempArr)) corner = new Point((int)RectF.X, (int)RectF.Y);
-                    else if (IA.RoiMan.IsPointInPolygon(
-                       new Point((int)RectF.X, (int)RectF.Height),
-                       tempArr)) corner = new Point((int)RectF.X, (int)RectF.Height);
-                    else if (IA.RoiMan.IsPointInPolygon(
-                       new Point((int)RectF.Width, (int)RectF.Height),
-                       tempArr)) corner = new Point((int)RectF.Width, (int)RectF.Height);
-                    else if (IA.RoiMan.IsPointInPolygon(
-                       new Point((int)RectF.Width, (int)RectF.Y),
-                       tempArr)) corner = new Point((int)RectF.Width, (int)RectF.Y);
-                    
-                    //corner
-                    if (corner.IsEmpty == false)
-                    {
-                        output.Add(temp[1]);
-                        output.Add(new PointF(corner.X + 0.5f, corner.Y + 0.5f));
-                        //lastinvisible
-                        output.Add(temp[temp.Count - 2]);
-                        //last visible
-                        output.Add(curP);
-                    }
-                    else
-                    {
-                        foreach (PointF p in temp)
-                            output.Add(p);
-                    }
-                }
-                else output.Add(curP);
-
-                oldP = curP;
-            }
-
-            return output;
-        }
-        private void PolygonalFieldCut(float[]X,float[]Y, Rectangle Rect)
-        {
-            //Create actual points rectangleF
-            RectangleF RectF = new RectangleF(
-                (float)Rect.X + 0.5f,
-                (float)Rect.Y + 0.5f,
-                (float)(Rect.Width + Rect.X + 0.5f),
-                (float)(Rect.Height + Rect.Y + 0.5f));
-            //create Points[]
-            PointF[] points = new PointF[X.Length];
-            for (int i = 0; i < X.Length; i++)
-            {
-                points[i].X = X[i];
-                points[i].Y = Y[i];
-            }
-            //eliminate hidden and add rect corners
-            points = PolygonalAngleInPolygonal(points, RectF).ToArray();
-
-            List<PointF> resP = new List<PointF>();
-            List<PointF> potP;
-
-
-            PointF p0 = points[points.Length - 1];
-            PointF p1;
-            bool visible = true;
-            for (int i = 0; i < points.Length; i++)
-            {
-                //set cur point
-                p1 = points[i];
-                //check is border visible
-                visible = false;
-
-                //calculate potPoint
-                potP = DrawLine(p0, p1);//Calculates all potential points
-                bool contain;//bool that shows is the point in rectF
-                PointF prevP = p1;//the one before the last selected
-                foreach (PointF p in potP)
-                {
-                    //check is point visible
-                    contain = RectFContains(p, RectF);
-
-                    if (contain != visible)
-                    {
-                        visible = !visible;
-                        if(contain == true)
-                            resP.Add(p);
-                        else if(prevP.IsEmpty == false)
-                            resP.Add(prevP);
-                    }
-                    //set prev point
-                    prevP = p;
-                }
-                //set old point
-                p0 = p1;
-            }
-            //MessageBox.Show(resP.Count.ToString() + "\n" +                X.Length.ToString());
-            //prepare results
-            float[] newX = new float[resP.Count];
-            float[] newY = new float[newX.Length];
-            for(int i = 0; i< resP.Count; i++)
-            {
-                newX[i] = resP[i].X;
-                newY[i] = resP[i].Y;
-            }
-            drawPolygon(newX, newY);
-           
-        }
-        */
+        }       
         private void drawCurrentStackRoi(ROI roi, int frame, int addX, int addY, Rectangle rect)
         {
             if (roi.Stack < 1) return;
@@ -2392,7 +2224,6 @@ namespace Cell_Tool_3
 
         #endregion Draw ROI
     }
-
     class ContentPipe
     {
         #region Number Textures
@@ -2421,15 +2252,13 @@ namespace Cell_Tool_3
             Rectangle rect = new Rectangle(0, 0,
                 TextRenderer.MeasureText(str, font).Width,
                 TextRenderer.MeasureText(str, font).Height);
-
-            //MessageBox.Show(rect.Width.ToString() + "\n" +                rect.Height.ToString());
+            
             using (Graphics g = Graphics.FromImage(bmp))
             {
                 g.FillRectangle(Brushes.Transparent, rect);
                 g.DrawString(str, font, Brushes.Yellow, rect);
                 g.Flush();
             }
-
             return bmp;
         }
         private void LoadNumberTexture(Bitmap bmp, int i)
@@ -2447,32 +2276,21 @@ namespace Cell_Tool_3
                 System.Drawing.Imaging.PixelFormat.Format32bppRgb);
 
             //Tell gl to write the data from are bitmap image/data to the bound texture
-
             GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgba, texture_source.Width, texture_source.Height, 0, OpenTK.Graphics.OpenGL.PixelFormat.Bgra, PixelType.UnsignedByte, bitmap_data.Scan0);
 
             //Release from memory
             texture_source.UnlockBits(bitmap_data);
             //SetUp parametars
-            /*
-             //No anti-aliasing!
-             GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapS, (int)TextureWrapMode.ClampToBorder);
-             GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapT, (int)TextureWrapMode.ClampToBorder);
-             GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)All.Nearest);
-             GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)All.Nearest);
-             */
             GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapS, (int)TextureWrapMode.ClampToEdge);
             GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapT, (int)TextureWrapMode.ClampToEdge);
             GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)All.Linear);
             GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)All.Linear);
         }
         #endregion Number Textures                
-        //Generate empty texture
-        private int id;       
+        //Generate empty texture           
         private int ChartID;
-
         public void ReserveTextureID()
         {
-            id = GL.GenTexture();
             ChartID = GL.GenTexture();
         }
         public int LoadTexture(Bitmap bmp, bool NoAntiAliasing = false)
@@ -2481,14 +2299,7 @@ namespace Cell_Tool_3
             Bitmap texture_source = bmp;
 
             //Link empty texture to texture2d
-            if (NoAntiAliasing)
-            {
-                GL.BindTexture(TextureTarget.Texture2D, id);
-            }
-            else
-            {
-                GL.BindTexture(TextureTarget.Texture2D, ChartID);
-            }
+            GL.BindTexture(TextureTarget.Texture2D, ChartID);
 
             //Lock pixel data to memory and prepare for pass through
             BitmapData bitmap_data = texture_source.LockBits(
@@ -2507,7 +2318,7 @@ namespace Cell_Tool_3
                 GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapT, (int)TextureWrapMode.ClampToEdge);
                 GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)All.Nearest);
                 GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)All.Nearest);
-                return id;
+
             }
             else
             {
@@ -2517,123 +2328,9 @@ namespace Cell_Tool_3
                 GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapT, (int)TextureWrapMode.ClampToEdge);
                 GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)All.Linear);
                 GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)All.Linear);
-                return ChartID;
+
             }
-
-        }
-        public int GenerateActiveImageTexture(TifFileInfo fi)
-        {
-            Bitmap bmp = null;
-            switch (fi.bitsPerPixel)
-            {
-                case 8:
-                    bmp = Raw8ToBmp(fi);
-                    break;
-                case 16:
-                    bmp = Raw16ToBmp(fi);
-                    break;
-            }
-            id = LoadTexture(bmp, true);
-            return id;
-        }
-        public void TextureFromBackBuffer(int Width, int Height)
-        {
-            GL.ReadBuffer(ReadBufferMode.Front);
-            GL.BindTexture(TextureTarget.Texture2D, id);
-            GL.CopyTexSubImage2D(TextureTarget.Texture2D, 0, 0, 0, 0, 0, Width, Height);
-            //SetUp parametars
-            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapS, (int)TextureWrapMode.Repeat);
-            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapT, (int)TextureWrapMode.Repeat);
-            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)All.Nearest);
-            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)All.Nearest);
-
-        }
-        private Bitmap Raw8ToBmp(TifFileInfo fi)
-        {
-            FrameCalculator FC = new FrameCalculator();
-            //image array
-            byte[][] image = fi.image8bit[FC.Frame(fi)];
-            //new bitmap
-            Bitmap bmp = new Bitmap(image[0].Length, image.Length,
-                System.Drawing.Imaging.PixelFormat.Format32bppArgb);
-            // Lock the bitmap's bits.
-            Rectangle rect = new Rectangle(0, 0, bmp.Width, bmp.Height);
-            BitmapData bmpData = bmp.LockBits(rect, ImageLockMode.ReadWrite, bmp.PixelFormat);
-            // Get the address of the first line.
-            IntPtr ptr = bmpData.Scan0;
-            //store rgb values
-            int bytes = Math.Abs(bmpData.Stride) * bmp.Height;
-            byte[] rgbValues = new byte[bytes];
-            // Copy the RGB values into the array
-          //  System.Runtime.InteropServices.Marshal.Copy(ptr, rgbValues, 0, bytes);
-            //take LUT info
-
-            int position = 0;
-            foreach (byte[] row in image)
-            {
-                foreach (byte val in row)
-                {
-                    byte val1 = (byte)(fi.newAdjustedLUT[fi.cValue][val]);
-                    rgbValues[position] = val1;
-                    position++;
-                    rgbValues[position] = val1;
-                    position++;
-                    rgbValues[position] = val1;
-                    position++;
-                    rgbValues[position] = 255;
-                    position++;
-                }
-            }
-
-            // Copy the RGB values back to the bitmap
-            System.Runtime.InteropServices.Marshal.Copy(rgbValues, 0, ptr, bytes);
-            // Unlock the bits.
-            bmp.UnlockBits(bmpData);
-            //return results
-            return bmp;
-        }
-        private Bitmap Raw16ToBmp(TifFileInfo fi)
-        {
-            FrameCalculator FC = new FrameCalculator();
-            //image array
-            ushort[][] image = fi.image16bit[FC.Frame(fi)];
-            //new bitmap
-            Bitmap bmp = new Bitmap(image[0].Length, image.Length,
-                System.Drawing.Imaging.PixelFormat.Format32bppArgb);
-            // Lock the bitmap's bits.
-            Rectangle rect = new Rectangle(0, 0, bmp.Width, bmp.Height);
-            BitmapData bmpData = bmp.LockBits(rect, ImageLockMode.ReadWrite, bmp.PixelFormat);
-            // Get the address of the first line.
-            IntPtr ptr = bmpData.Scan0;
-            //store rgb values
-            int bytes = Math.Abs(bmpData.Stride) * bmp.Height;
-            byte[] rgbValues = new byte[bytes];
-            // Copy the RGB values into the array
-           // System.Runtime.InteropServices.Marshal.Copy(ptr, rgbValues, 0, bytes);
-            //take LUT info
-
-            int position = 0;
-            foreach (ushort[] row in image)
-            {
-                foreach (ushort val in row)
-                {
-                    byte val1 = (byte)(fi.newAdjustedLUT[fi.cValue][val]);
-                    rgbValues[position] = val1;
-                    position++;
-                    rgbValues[position] = val1;
-                    position++;
-                    rgbValues[position] = val1;
-                    position++;
-                    rgbValues[position] = 255;
-                    position++;
-                }
-            }
-            // Copy the RGB values back to the bitmap
-            System.Runtime.InteropServices.Marshal.Copy(rgbValues, 0, ptr, bytes);
-            // Unlock the bits.
-            bmp.UnlockBits(bmpData);
-            //return results
-            return bmp;
-        }
+            return ChartID;
+        }      
     }
 }

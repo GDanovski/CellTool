@@ -61,8 +61,7 @@ namespace Cell_Tool_3
         }
         public void LoadTextures(TifFileInfo fi, int index)
         {
-            for(int i = 0; i<index;i++)
-                LoadImageTexture(Images[i].GetImage(fi.sizeX, fi.sizeY), Images[i].GetID);
+           LoadImageTexture(Images[index].GetImage(fi.sizeX, fi.sizeY), Images[index].GetID);
         }
         public void DrawTexture(int index, Rectangle rect)
         {
@@ -122,7 +121,7 @@ namespace Cell_Tool_3
             byte R = col.R;
             byte G = col.G;
             byte B = col.B;
-            
+            if (fi.image16bit == null) return;
             ushort[][] image = (fi.image16bitFilter != null)?fi.image16bitFilter[FC.FrameC(fi, C)]: fi.image16bit[FC.FrameC(fi, C)];
             if (image == null) return;
             imageData.GetImage(fi.sizeX, fi.sizeY);
@@ -220,7 +219,7 @@ namespace Cell_Tool_3
             byte R = col.R;
             byte G = col.G;
             byte B = col.B;
-
+            if (fi.image8bit == null) return;
             byte[][] image = (fi.image8bitFilter != null) ? fi.image8bitFilter[FC.FrameC(fi, C)] : fi.image8bit[FC.FrameC(fi, C)];
             if (image == null) return;
             imageData.GetImage(fi.sizeX, fi.sizeY);
@@ -309,7 +308,7 @@ namespace Cell_Tool_3
             FrameCalculator FC = new FrameCalculator();
             //image array
             Color col = fi.LutList[C];
-
+            if (fi.image16bit == null) return;
             ushort[][] image = fi.image16bit[FC.FrameC(fi,C)];
             if (image == null) return;
             imageData.GetImage(fi.sizeX, fi.sizeY);
@@ -340,7 +339,7 @@ namespace Cell_Tool_3
             FrameCalculator FC = new FrameCalculator();
             //image array
             Color col = fi.LutList[C];
-
+            if (fi.image8bit == null) return;
             byte[][] image = fi.image8bit[FC.FrameC(fi, C)];
 
             if (image == null) return;
