@@ -353,6 +353,7 @@ namespace Cell_Tool_3
             #region Segmentation variables
             fi.histogramArray = null;
             fi.adjustedLUT = null;
+            fi.newAdjustedLUT = null;
             fi.MaxBrightness = null;
             fi.MinBrightness = null;
             fi.SegmentationCBoxIndex = new int[fi.sizeC];
