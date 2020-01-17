@@ -228,7 +228,7 @@ namespace Cell_Tool_3
 
                 for (int j = 0; j < maxSize; j++) {   
                     int val = image[i * maxSize + j];
-                    byte val1 = (byte)(fi.adjustedLUT[fi.cValue][val] * 255);
+                    byte val1 = (byte)(fi.newAdjustedLUT[fi.cValue][val]);
 
                     if (val < fi.thresholdValues[C][1])
                     {

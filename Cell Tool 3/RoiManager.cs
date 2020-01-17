@@ -2681,7 +2681,7 @@ namespace Cell_Tool_3
             if (RoiShape == 2 & current != null)
             {
                 current = null;
-                IA.IDrawer.DrawToScreen();
+                IA.IDrawer.DrawToScreen(false);
                 return;
             }
             //create new current roi
@@ -2708,8 +2708,8 @@ namespace Cell_Tool_3
             SelectedROIsList.Clear();
             FillRoiManagerList(fi);
             //Redraw
-            IA.IDrawer.DrawToScreen();
-            IA.IDrawer.BindTexture(fi);
+            IA.IDrawer.DrawToScreen(false);
+            
         }
         public void GLControl_MouseMove(object sender, MouseEventArgs e)
         {
@@ -2830,7 +2830,7 @@ namespace Cell_Tool_3
                 DrawNewRoiMode = false;
                 current.Checked = true;
                 RoiMeasure.Measure(current, fi, fi.cValue, IA);
-                IA.ReloadImages();
+                IA.ReloadImages(false);
                 return;
             }
 
@@ -2858,7 +2858,7 @@ namespace Cell_Tool_3
                 if (current.Width < 1 | current.Width < 1) current = null;
                 //refresh screen
                 DrawNewRoiMode = false;
-                IA.ReloadImages();
+                IA.ReloadImages(false);
             }
             else if (current.Shape == 3)//freehand
             {
@@ -2868,7 +2868,7 @@ namespace Cell_Tool_3
                 //refresh screen
 
                 DrawNewRoiMode = false;
-                IA.ReloadImages();
+                IA.ReloadImages(false);
             }
             else if (current.Shape == 2)//polygon
             {
@@ -2903,7 +2903,7 @@ namespace Cell_Tool_3
                     }
                     else current = null;
 
-                    IA.ReloadImages();
+                    IA.ReloadImages(false);
                 }
                 else
                 {
@@ -2967,8 +2967,7 @@ namespace Cell_Tool_3
                 if (fi != null && fi.roiList[fi.cValue] != null && fi.roiList[fi.cValue].IndexOf(current) > -1)
                     HistBuf = current.getRoiResizeToHistory(fi.cValue, frame);
                 IA.GLControl1.Cursor = Cursors.Hand;
-                IA.IDrawer.DrawToScreen();
-                IA.IDrawer.BindTexture(fi);
+                IA.IDrawer.DrawToScreen(false);              
             }
 
             return MoveCurrentRoi;
@@ -3335,8 +3334,7 @@ namespace Cell_Tool_3
             {
                 if (fi != null && fi.roiList[fi.cValue] != null && fi.roiList[fi.cValue].IndexOf(current) > -1)
                     HistBuf = current.getRoiResizeToHistory(fi.cValue, frame);
-                IA.IDrawer.DrawToScreen();
-                IA.IDrawer.BindTexture(fi);
+                IA.IDrawer.DrawToScreen(false);
             }
 
             return activResizeCurrent;

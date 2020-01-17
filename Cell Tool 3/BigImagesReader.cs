@@ -1020,6 +1020,7 @@ namespace Cell_Tool_3
                         fi.openedImages = fi.sizeC * fi.sizeZ;
                         try
                         {
+                            IA.BandC.RefreshAllLUTs(fi);
                             IA.ReloadImages();
                         }
                         catch { }
@@ -1036,7 +1037,8 @@ namespace Cell_Tool_3
                         newFI.original = false;
 
                         IA.TabPages.myFileDecoder.CalculateAllRois(fi);
-
+                        IA.BandC.RefreshAllLUTs(fi);
+                        fi.autoDetectBandC = false;
                         IA.ReloadImages();
                         bool check = true;
                         foreach (TabPage tp1 in Collection)

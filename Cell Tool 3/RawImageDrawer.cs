@@ -371,7 +371,15 @@ namespace Cell_Tool_3
                         {
                             int C = fi.sizeC > index ? index : index - fi.sizeC;
                             //create image texture
-                            this.imagesTextures.GenerateImageData(fi, index, C);
+                            if (fi.sizeC > index)
+                            {
+                                this.imagesTextures.GenerateImageData(fi, index, C);
+                            }
+                            else
+                            {
+                                int[] SpotDiapason = IA.Segmentation.SpotDet.CalculateBorders(fi, C);
+                                this.imagesTextures.GenerateFilteredImageData(fi, index, C, SpotDiapason);
+                            }
                         }
                     //});
                     //Load the images textures
@@ -550,431 +558,7 @@ namespace Cell_Tool_3
             }
             catch { }
         }
-        private void Draw16BitImage1(TifFileInfo fi, int C, int rectC, int[] arrayW, int[] arrayH)
-        {
-            try
-            {
-                FrameCalculator FC = new FrameCalculator();
-                //image array
-                ushort[][] image = fi.image16bit[FC.FrameC(fi, C)];
-                float[] LUT = fi.adjustedLUT[C];
-                //Prepare RGB
-                float R = (float)(fi.LutList[C].R / 255f);
-                float G = (float)(fi.LutList[C].G / 255f);
-                float B = (float)(fi.LutList[C].B / 255f);
-                //start drawing
-
-
-                float oldI = 0f;
-                float oldJ = 0f;
-
-                //Coordinates
-                Rectangle rect = coRect[0][rectC];
-
-                float X = (float)rect.X;
-                float Y = (float)rect.Y;
-                float W = X + 1f;
-                float H = X + 1f;
-                int index = 0;
-
-                for (float i = 1f; i <= fi.sizeY; i++)
-                {
-                    if (arrayH == null)
-                    {
-                        Y = (float)rect.Y + oldI;
-                        H = (float)rect.Y + i;
-                    }
-                    else
-                    {
-                        Y = (float)arrayH[(int)oldI];
-                        H = (float)arrayH[(int)i];
-                    }
-                    GL.Begin(PrimitiveType.TriangleStrip);
-
-                    X = (float)arrayW[(int)oldJ];
-                    GL.Vertex2(X, Y);
-                    GL.Vertex2(X, H);
-
-                    for (float j = 1f; j <= fi.sizeX; j++)
-                    {
-                        W = (float)arrayW[(int)j];
-
-                        index = image[(int)oldI][(int)oldJ];
-                        if (LUT.Length > index)
-                            GL.Color4(R, G, B, LUT[index]);
-                        else
-                            GL.Color4(R, G, B, LUT[LUT.Length - 1]);
-
-                        GL.Vertex2(W, Y);
-                        GL.Vertex2(W, H);
-
-                        oldJ = j;
-                    }
-                    oldJ = 0f;
-                    oldI = i;
-
-                    GL.End();
-                }
-                //end drawing
-
-            }
-            catch { }
-        }
-        private void Draw8BitImage(TifFileInfo fi, int C, int rectC, int[] arrayW, int[] arrayH)
-        {
-            try
-            {
-                FrameCalculator FC = new FrameCalculator();
-                //image array
-                byte[][] image = fi.image8bit[FC.FrameC(fi, C)];
-                float[] LUT = fi.adjustedLUT[C];
-                //Prepare RGB
-                float R = (float)(fi.LutList[C].R / 255f);
-                float G = (float)(fi.LutList[C].G / 255f);
-                float B = (float)(fi.LutList[C].B / 255f);
-                //start drawing
-
-                float oldI = 0f;
-                float oldJ = 0f;
-
-                //Coordinates
-                Rectangle rect = coRect[0][rectC];
-
-                float X = (float)rect.X;
-                float Y = (float)rect.Y;
-                float W = X + 1f;
-                float H = X + 1f;
-                int index = 0;
-
-                for (float i = 1f; i <= fi.sizeY; i++)
-                {
-                    if (arrayH == null)
-                    {
-                        Y = (float)rect.Y + oldI;
-                        H = (float)rect.Y + i;
-                    }
-                    else
-                    {
-                        Y = (float)arrayH[(int)oldI];
-                        H = (float)arrayH[(int)i];
-                    }
-
-                    GL.Begin(PrimitiveType.TriangleStrip);
-
-                    X = (float)arrayW[(int)oldJ];
-                    GL.Vertex2(X, Y);
-                    GL.Vertex2(X, H);
-
-                    for (float j = 1f; j <= fi.sizeX; j++)
-                    {
-                        W = (float)arrayW[(int)j];
-
-                        index = image[(int)oldI][(int)oldJ];
-                        if (LUT.Length > index)
-                            GL.Color4(R, G, B, LUT[index]);
-                        else
-                            GL.Color4(R, G, B, LUT[LUT.Length - 1]);
-
-                        GL.Vertex2(W, Y);
-                        GL.Vertex2(W, H);
-
-                        oldJ = j;
-                    }
-                    oldJ = 0f;
-                    oldI = i;
-
-                    GL.End();
-                }
-                //end drawing
-
-            }
-            catch { }
-        }
-        private void Draw16BitFilteredImage(TifFileInfo fi, int C, int rectC, int[] arrayW, int[] arrayH)
-        {
-            try
-            {
-                if (fi.image16bitFilter == null) { fi.image16bitFilter = fi.image16bit; }
-                FrameCalculator FC = new FrameCalculator();
-                //image array
-                ushort[][] image = fi.image16bitFilter[FC.FrameC(fi, C)];
-                float[] LUT = fi.adjustedLUT[C];
-                //calculate spot detector diapasone
-                int[] SpotDiapason = IA.Segmentation.SpotDet.CalculateBorders(fi, C);
-                //Prepare RGB
-                float R = (float)(fi.LutList[C].R / 255f);
-                float G = (float)(fi.LutList[C].G / 255f);
-                float B = (float)(fi.LutList[C].B / 255f);
-                //start drawing
-
-                float oldI = 0f;
-                float oldJ = 0f;
-
-                //Coordinates
-                Rectangle rect = coRect[1][rectC];
-
-                float X = (float)rect.X;
-                float Y = (float)rect.Y;
-                float W = X + 1f;
-                float H = X + 1f;
-                int val = 0;
-
-                Color lastCol = fi.thresholdColors[C][fi.thresholds[C]];
-                int Choise = fi.thresholds[C];
-                if (fi.SegmentationCBoxIndex[C] == 0) Choise = 0;
-
-                for (float i = 1f; i <= fi.sizeY; i++)
-                {
-                    if (arrayH == null)
-                    {
-                        Y = (float)rect.Y + oldI;
-                        H = (float)rect.Y + i;
-                    }
-                    else
-                    {
-                        Y = (float)arrayH[(int)oldI];
-                        H = (float)arrayH[(int)i];
-                    }
-                    GL.Begin(PrimitiveType.TriangleStrip);
-
-                    X = (float)arrayW[(int)oldJ];
-                    GL.Vertex2(X, Y);
-                    GL.Vertex2(X, H);
-
-                    for (float j = 1f; j <= fi.sizeX; j++)
-                    {
-                        W = (float)arrayW[(int)j];
-                        val = (int)image[(int)oldI][(int)oldJ];
-                        #region Colors
-                        if (fi.SegmentationCBoxIndex[C] != 0 | fi.SelectedSpotThresh[C] != 0)
-                        {
-                            Color col;
-
-                            switch (Choise)
-                            {
-                                case 0:
-                                    if (val > SpotDiapason[0] & val < SpotDiapason[1])
-                                    {
-                                        col = fi.SpotColor[C];
-                                        GL.Color4(col);
-                                    }
-                                    else if (LUT.Length > val)
-                                        GL.Color4(R, G, B, LUT[val]);
-                                    else
-                                        GL.Color4(R, G, B, LUT[LUT.Length - 1]);
-
-                                    break;
-                                default:
-                                    if (val > SpotDiapason[0] & val < SpotDiapason[1])
-                                    {
-                                        col = fi.SpotColor[C];
-                                    }
-                                    else if (val < fi.thresholdValues[C][1])
-                                    {
-                                        col = fi.thresholdColors[C][0];
-                                    }
-                                    else if (val < fi.thresholdValues[C][2])
-                                    {
-                                        col = fi.thresholdColors[C][1];
-                                    }
-                                    else if (val < fi.thresholdValues[C][3])
-                                    {
-                                        col = fi.thresholdColors[C][2];
-                                    }
-                                    else if (val < fi.thresholdValues[C][4])
-                                    {
-                                        col = fi.thresholdColors[C][3];
-                                    }
-                                    else
-                                    {
-                                        col = lastCol;
-                                    }
-
-                                    if (col == Color.Transparent)
-                                    {
-                                        //GL.Color4(R, G, B, LUT[image[(int)oldI][(int)oldJ]]);
-                                        if (LUT.Length > val)
-                                            GL.Color4(R, G, B, LUT[val]);
-                                        else
-                                            GL.Color4(R, G, B, LUT[LUT.Length - 1]);
-                                    }
-                                    else
-                                    {
-                                        //col = Color.FromArgb(255, col.R, col.G, col.B);
-                                        GL.Color4(col);
-                                    }
-                                    break;
-
-                            }
-                        }
-                        else
-                        {
-                            //GL.Color4(R, G, B, LUT[image[(int)oldI][(int)oldJ]]);
-                            if (LUT.Length > val)
-                                GL.Color4(R, G, B, LUT[val]);
-                            else
-                                GL.Color4(R, G, B, LUT[LUT.Length - 1]);
-                        }
-                        #endregion Colors
-
-                        GL.Vertex2(W, Y);
-                        GL.Vertex2(W, H);
-
-                        oldJ = j;
-                    }
-                    oldJ = 0f;
-                    oldI = i;
-
-                    GL.End();
-                }
-                //end drawing
-
-            }
-            catch { }
-        }
-        private void Draw8BitFilteredImage(TifFileInfo fi, int C, int rectC, int[] arrayW, int[] arrayH)
-        {
-            try
-            {
-                if (fi.image8bitFilter == null) { fi.image8bitFilter = fi.image8bit; }
-
-                FrameCalculator FC = new FrameCalculator();
-                //image array
-                byte[][] image = fi.image8bitFilter[FC.FrameC(fi, C)];
-                float[] LUT = fi.adjustedLUT[C];
-                //calculate spot detector diapasone
-                int[] SpotDiapason = IA.Segmentation.SpotDet.CalculateBorders(fi, C);
-
-                //Prepare RGB
-                float R = (float)(fi.LutList[C].R / 255f);
-                float G = (float)(fi.LutList[C].G / 255f);
-                float B = (float)(fi.LutList[C].B / 255f);
-                //start drawing
-
-                float oldI = 0f;
-                float oldJ = 0f;
-
-                //Coordinates
-                Rectangle rect = coRect[1][rectC];
-
-                float X = (float)rect.X;
-                float Y = (float)rect.Y;
-                float W = X + 1f;
-                float H = X + 1f;
-                int val = 0;
-
-                Color lastCol = fi.thresholdColors[C][fi.thresholds[C]];
-
-                int Choise = fi.thresholds[C];
-                if (fi.SegmentationCBoxIndex[C] == 0) Choise = 0;
-
-                for (float i = 1f; i <= fi.sizeY; i++)
-                {
-                    if (arrayH == null)
-                    {
-                        Y = (float)rect.Y + oldI;
-                        H = (float)rect.Y + i;
-                    }
-                    else
-                    {
-                        Y = (float)arrayH[(int)oldI];
-                        H = (float)arrayH[(int)i];
-                    }
-
-                    GL.Begin(PrimitiveType.TriangleStrip);
-
-                    X = (float)arrayW[(int)oldJ];
-                    GL.Vertex2(X, Y);
-                    GL.Vertex2(X, H);
-
-                    for (float j = 1f; j <= fi.sizeX; j++)
-                    {
-                        W = (float)arrayW[(int)j];
-                        val = (int)image[(int)oldI][(int)oldJ];
-                        #region Colors
-                        if (fi.SegmentationCBoxIndex[C] != 0 | fi.SelectedSpotThresh[C] != 0)
-                        {
-                            Color col;
-                            switch (Choise)
-                            {
-                                case 0:
-                                    if (val > SpotDiapason[0] & val < SpotDiapason[1])
-                                    {
-                                        col = fi.SpotColor[C];
-                                        GL.Color4(col);
-                                    }
-                                    else if (LUT.Length > val)
-                                        GL.Color4(R, G, B, LUT[val]);
-                                    else
-                                        GL.Color4(R, G, B, LUT[LUT.Length - 1]);
-
-                                    break;
-                                default:
-
-                                    if (val > SpotDiapason[0] & val < SpotDiapason[1])
-                                    {
-                                        col = fi.SpotColor[C];
-                                    }
-                                    else if (val < fi.thresholdValues[C][1])
-                                    {
-                                        col = fi.thresholdColors[C][0];
-                                    }
-                                    else if (val < fi.thresholdValues[C][2])
-                                    {
-                                        col = fi.thresholdColors[C][1];
-                                    }
-                                    else if (val < fi.thresholdValues[C][3])
-                                    {
-                                        col = fi.thresholdColors[C][2];
-                                    }
-                                    else if (val < fi.thresholdValues[C][4])
-                                    {
-                                        col = fi.thresholdColors[C][3];
-                                    }
-                                    else
-                                    {
-                                        col = lastCol;
-                                    }
-
-                                    if (col == Color.Transparent)
-                                    {
-                                        if (LUT.Length > val)
-                                            GL.Color4(R, G, B, LUT[val]);
-                                        else
-                                            GL.Color4(R, G, B, LUT[LUT.Length - 1]);
-                                    }
-                                    else
-                                    {
-                                        GL.Color4(col);
-                                    }
-                                    break;
-
-                            }
-                        }
-                        else
-                        {
-                            if (LUT.Length > val)
-                                GL.Color4(R, G, B, LUT[val]);
-                            else
-                                GL.Color4(R, G, B, LUT[LUT.Length - 1]);
-                        }
-                        #endregion Colors
-
-                        GL.Vertex2(W, Y);
-                        GL.Vertex2(W, H);
-
-                        oldJ = j;
-                    }
-                    oldJ = 0f;
-                    oldI = i;
-
-                    GL.End();
-                }
-                //end drawing
-
-            }
-            catch { }
-        }
+        
         private void DrawFilteredImages(TifFileInfo fi)
         {
             //singlechanels or composite
@@ -1231,9 +815,7 @@ namespace Cell_Tool_3
             Rectangle result = new Rectangle(0, 0, (int)sizeW, (int)biggestH);
 
             return result;
-
         }
-
         public void CalculateImages(TifFileInfo fi)
         {
             if (IA.BandC.autoDetect.Checked == true | fi.adjustedLUT == null)
@@ -1418,7 +1000,7 @@ namespace Cell_Tool_3
                                     fi.selectedPictureBoxColumn = i;
                                     fi.cValue = j;
                                     //Reload
-                                    IA.ReloadImages();
+                                    IA.ReloadImages(false);
                                     return;
                                 }
                                 else
@@ -2687,7 +2269,7 @@ namespace Cell_Tool_3
             //Activate Control
             GLControl1.MakeCurrent();
             //Start Drawing
-
+           
             // Drawing the saved screen texture back to the screen:
             DrawTexture(fi);
 
@@ -2699,25 +2281,38 @@ namespace Cell_Tool_3
 
             GLControl1.SwapBuffers();
         }
-        private int id;
-        public void BindTexture(TifFileInfo fi)
-        {
-            id = ImageTexture.GenerateActiveImageTexture(fi);
-        }
+       
         private void DrawTexture(TifFileInfo fi)
         {
             GLControl GLControl1 = IA.GLControl1;
-
-            GL.Enable(EnableCap.Texture2D);
-            GL.BindTexture(TextureTarget.Texture2D, id);
 
             Rectangle rectOld = coRect[0][fi.cValue];
             Rectangle rect = new Rectangle(rectOld.X, rectOld.Y,
                 rectOld.X + rectOld.Width, rectOld.Y + rectOld.Height);
 
-            GL.Begin(BeginMode.Quads);
+            //start drawing
+            GL.Begin(PrimitiveType.Quads);
 
-            GL.Color3(fi.LutList[fi.cValue]);
+            GL.Color4(0f, 0f, 0f, 1f);
+
+            GL.Vertex2(rect.X, rect.Y);
+            GL.Vertex2(rect.X, rect.Height);
+            GL.Vertex2(rect.Width, rect.Height);
+            GL.Vertex2(rect.Width, rect.Y);
+
+            GL.End();
+
+            GL.Enable(EnableCap.Texture2D);
+            GL.BindTexture(TextureTarget.Texture2D, IA.IDrawer.imagesTextures.GetID(fi.cValue));
+
+            GL.BlendFunc(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.One);
+            GL.Enable(EnableCap.Blend);
+            GL.ShadeModel(ShadingModel.Flat);
+
+            GL.Begin(PrimitiveType.Quads);
+
+            //GL.Color3(fi.LutList[fi.cValue]);
+            GL.Color3(Color.White);
 
             GL.TexCoord2(0, 0);
             GL.Vertex2(rect.X, rect.Y);
@@ -2735,7 +2330,7 @@ namespace Cell_Tool_3
 
             GL.Disable(EnableCap.Texture2D);
 
-
+            GL.Disable(EnableCap.Blend);
         }
         public void DrawStringToGL(TifFileInfo fi, string str, ROI roi, int imageN, Rectangle Borders)
         {
@@ -2979,7 +2574,7 @@ namespace Cell_Tool_3
             {
                 foreach (byte val in row)
                 {
-                    byte val1 = (byte)(fi.adjustedLUT[fi.cValue][val] * 255);
+                    byte val1 = (byte)(fi.newAdjustedLUT[fi.cValue][val]);
                     rgbValues[position] = val1;
                     position++;
                     rgbValues[position] = val1;
@@ -3023,7 +2618,7 @@ namespace Cell_Tool_3
             {
                 foreach (ushort val in row)
                 {
-                    byte val1 = (byte)(fi.adjustedLUT[fi.cValue][val] * 255);
+                    byte val1 = (byte)(fi.newAdjustedLUT[fi.cValue][val]);
                     rgbValues[position] = val1;
                     position++;
                     rgbValues[position] = val1;

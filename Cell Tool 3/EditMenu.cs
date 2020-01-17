@@ -1685,6 +1685,7 @@ namespace Cell_Tool_3
 
                 //Refresh settings
                 fi.adjustedLUT = null;
+                fi.newAdjustedLUT = null;
                 fi.histogramArray = null;
                 fi.autoDetectBandC = true;
                 fi.bitsPerPixel = 8;
@@ -1766,6 +1767,7 @@ namespace Cell_Tool_3
 
                 //Refresh settings
                 fi.adjustedLUT = null;
+                fi.newAdjustedLUT = null;
                 fi.histogramArray = null;
                 fi.autoDetectBandC = true;
                 fi.bitsPerPixel = 16;

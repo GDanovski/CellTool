@@ -1584,6 +1584,7 @@ namespace Cell_Tool_3
                         fi.openedImages = fi.sizeC * fi.sizeZ;
                         try
                         {
+                            IA1.BandC.RefreshAllLUTs(fi);
                             IA1.ReloadImages();
                         }
                         catch { }
@@ -1604,7 +1605,8 @@ namespace Cell_Tool_3
                         fi.loaded = true;
 
                         CalculateAllRois(fi);
-
+                        IA1.BandC.RefreshAllLUTs(fi);
+                        fi.autoDetectBandC = false;
                         IA1.ReloadImages();
                         bool check = true;
                         foreach (TabPage tp1 in Collection)
@@ -1656,6 +1658,7 @@ namespace Cell_Tool_3
                 {
                     if (loaded == true)
                     {
+                        IA1.BandC.RefreshAllLUTs(fi);
                         IA1.ReloadImages();
                     }
                 }
@@ -1847,6 +1850,7 @@ namespace Cell_Tool_3
                     fi.openedImages = fi.sizeC * fi.sizeZ;
                     try
                     {
+                        IA1.BandC.RefreshAllLUTs(fi);
                         IA1.ReloadImages();
                     }
                     catch { }
@@ -1882,6 +1886,8 @@ namespace Cell_Tool_3
                     fi.loaded = true;
 
                     CalculateAllRois(fi);
+                    IA1.BandC.RefreshAllLUTs(fi);
+                    fi.autoDetectBandC = false;
                     IA1.ReloadImages();
                     bool check = true;
                     foreach (TabPage tp1 in Collection)
@@ -1941,6 +1947,7 @@ namespace Cell_Tool_3
             {
                 if (loaded == true)
                 {
+                    IA1.BandC.RefreshAllLUTs(fi);
                     IA1.ReloadImages();
                 }
             }
