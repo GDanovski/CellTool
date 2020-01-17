@@ -38,6 +38,9 @@ namespace Cell_Tool_3
         private ImagesTextures imagesTextures = new ImagesTextures();
         public ImageDrawer_3D imageDrawer_3D = new ImageDrawer_3D();
 
+        public VScrollBar verticalScrollBar;
+        public HScrollBar horizontalScrollBar;
+
         #region Position on screen
         public Rectangle[][] coRect;
         bool[] colors;
@@ -68,61 +71,63 @@ namespace Cell_Tool_3
             GLControl1.Dock = DockStyle.Fill;
             TabPageControl tpContr = IA.TabPages;
             tpContr.ImageMainPanel.SuspendLayout();
-
+            
             tpContr.ImageMainPanel.Controls.Add(GLControl1);
-            //ScrollBars
-            Panel VertPanel = IA.GLControl1_VerticalPanel;
-            VertPanel.Dock = DockStyle.Right;
-            VertPanel.Width = 17;
-            VertPanel.AutoScroll = true;
-            Panel p1 = new Panel();
-            p1.Location = new Point(0, 0);
-            p1.Width = 1;
-            p1.Height = 1000;
-            VertPanel.Tag = p1;
-            VertPanel.Controls.Add(p1);
-            VertPanel.BringToFront();
-            tpContr.ImageMainPanel.Controls.Add(VertPanel);
-            //tracer
-            Panel trPanel = IA.GLControl1_TraserPanel;
-            trPanel.Dock = DockStyle.Bottom;
-            trPanel.Height = 18;
-            tpContr.ImageMainPanel.Controls.Add(trPanel);
-            trPanel.BringToFront();
-            Panel p3 = new Panel();
-            p3.Width = 17;
-            p3.Dock = DockStyle.Right;
-            p3.BackColor = Color.White;
-            trPanel.Controls.Add(p3);
-            trPanel.Tag = p3;
-            //
-            Panel HorPanel = IA.GLControl1_HorizontalPanel;
-            HorPanel.Dock = DockStyle.Bottom;
-            HorPanel.Height = 18;
-            HorPanel.AutoScroll = true;
-            Panel p2 = new Panel();
-            p2.Location = new Point(0, 0);
-            p2.Width = 2000;
-            p2.Height = 1;
-            HorPanel.Tag = p2;
-            HorPanel.Controls.Add(p2);
-            HorPanel.BringToFront();
-            trPanel.Controls.Add(HorPanel);
-            p3.SendToBack();
-            trPanel.Visible = false;
-            VertPanel.Visible = false;
+           //new scrollBars
+           verticalScrollBar = new VScrollBar()
+            {
+                Dock = DockStyle.Right,
+                Width = 17,
+                Visible = false,
+                Value = 0,
+                Minimum = 0,
+                Maximum = 0
+            };
 
-            VertPanel.Scroll += VerticalScroll_ValueChanged;
-            HorPanel.Scroll += HorizontalScroll_ValueChanged;
+            tpContr.ImageMainPanel.Controls.Add(verticalScrollBar);
+            horizontalScrollBar = new HScrollBar()
+            {
+                Dock = DockStyle.Fill,
+                Visible = false,
+                Value = 0,
+                Minimum = 0,
+                Maximum = 0
+            };
+            
+           Panel bottomScrollPanel = new Panel()
+            {
+                Dock = DockStyle.Bottom,
+                Visible = true,
+                Height = 17
+            };
+
+            Panel rightSpacePanel = new Panel()
+            {
+                Dock = DockStyle.Right,
+                Visible = false,
+                Width = verticalScrollBar.Width,
+                BackColor = Color.White
+            };
+            horizontalScrollBar.VisibleChanged += new EventHandler(delegate (object sender, EventArgs a)
+            {
+                rightSpacePanel.Visible = horizontalScrollBar.Visible;
+            });
+
+            bottomScrollPanel.Controls.Add(horizontalScrollBar);
+            bottomScrollPanel.Controls.Add(rightSpacePanel);
+            tpContr.ImageMainPanel.Controls.Add(bottomScrollPanel);
+            
+            verticalScrollBar.Scroll += VerticalScroll_ValueChanged;
+            horizontalScrollBar.Scroll += HorizontalScroll_ValueChanged;
             //Top Bar
             corePanel.Dock = DockStyle.Top;
             tpContr.ImageMainPanel.Controls.Add(corePanel);
+            
             tpContr.ImageMainPanel.ResumeLayout(true);
         }
         private void HorizontalScroll_ValueChanged(object sender, EventArgs e)
         {
             if (changeXY == false) { return; }
-            Panel p1 = (Panel)sender;
             TifFileInfo fi;
             try
             {
@@ -133,16 +138,15 @@ namespace Cell_Tool_3
                 return;
             }
             if (fi == null) { return; }
-            if (fi.Xposition != p1.HorizontalScroll.Value / fi.zoom)
+            if (fi.Xposition != (double)this.horizontalScrollBar.Value / fi.zoom)
             {
-                fi.Xposition = p1.HorizontalScroll.Value / fi.zoom;
+                fi.Xposition = (double)this.horizontalScrollBar.Value / fi.zoom;
                 IA.ReloadImages(false);
             }
         }
         private void VerticalScroll_ValueChanged(object sender, EventArgs e)
         {
             if (changeXY == false) { return; }
-            Panel p1 = (Panel)sender;
             TifFileInfo fi;
             try
             {
@@ -153,9 +157,9 @@ namespace Cell_Tool_3
                 return;
             }
             if (fi == null) { return; }
-            if (fi.Yposition != p1.VerticalScroll.Value / fi.zoom)
+            if (fi.Yposition != (double)this.verticalScrollBar.Value / fi.zoom)
             {
-                fi.Yposition = p1.VerticalScroll.Value / fi.zoom;
+                fi.Yposition = (double)this.verticalScrollBar.Value / fi.zoom;
                 IA.ReloadImages(false);
             }
         }
@@ -280,7 +284,7 @@ namespace Cell_Tool_3
                     return;
                 }
 
-                GL.UseProgram(0); // Remove the shader program from the 3D view
+                //GL.UseProgram(0); // Remove the shader program from the 3D view
 
                 //Prepare MatrixMode
                 GL.MatrixMode(MatrixMode.Projection);
@@ -309,40 +313,40 @@ namespace Cell_Tool_3
                 //Translation
                 changeXY = false;
 
-                ((Panel)IA.GLControl1_VerticalPanel.Tag).Height = (int)(fieldRect.Height * fi.zoom);
+                this.verticalScrollBar.Maximum = 
+                    ((int)(fieldRect.Height * fi.zoom) - this.verticalScrollBar.Height+30>this.verticalScrollBar.Minimum)? 
+                    (int)(fieldRect.Height * fi.zoom) - this.verticalScrollBar.Height +30:
+                    (int)this.verticalScrollBar.Minimum +1;
 
-                if (((Panel)IA.GLControl1_VerticalPanel.Tag).Height > IA.GLControl1_VerticalPanel.Height)
+                if (this.verticalScrollBar.Maximum > 5)
                 {
-                    IA.GLControl1_VerticalPanel.Visible = true;
-                    IA.GLControl1_VerticalPanel.AutoScrollPosition = new Point(0, (int)(fi.Yposition * fi.zoom));
-                    ((Panel)IA.GLControl1_TraserPanel.Tag).Visible = true;
+                    this.verticalScrollBar.Visible = true;
+                    this.verticalScrollBar.Value =  (int)(fi.Yposition * fi.zoom);
                 }
                 else
                 {
-                    IA.GLControl1_VerticalPanel.AutoScrollPosition = new Point(0, 0);
+                    this.verticalScrollBar.Visible = false;
+                    this.verticalScrollBar.Value = 0;
                     fi.Yposition = 0;
-                    IA.GLControl1_VerticalPanel.Visible = false;
-                    ((Panel)IA.GLControl1_TraserPanel.Tag).Visible = false;
                 }
 
-            ((Panel)IA.GLControl1_HorizontalPanel.Tag).Width = (int)(fieldRect.Width * fi.zoom);
+                this.horizontalScrollBar.Maximum = 
+                    ((int)(fieldRect.Width * fi.zoom) - this.horizontalScrollBar.Width+30>this.horizontalScrollBar.Minimum)?
+                    (int)(fieldRect.Width * fi.zoom) - this.horizontalScrollBar.Width+30:
+                    (int)this.horizontalScrollBar.Minimum+1;
 
-                if (((Panel)IA.GLControl1_HorizontalPanel.Tag).Width > IA.GLControl1_HorizontalPanel.Width)
-                {
-                    IA.GLControl1_TraserPanel.Visible = true;
-
-                    IA.GLControl1_HorizontalPanel.AutoScrollPosition = new Point((int)(fi.Xposition * fi.zoom), 0);
+                if (this.horizontalScrollBar.Maximum > 5)
+                {                   
+                    this.horizontalScrollBar.Visible = true;
+                    this.horizontalScrollBar.Value = (int)(fi.Xposition * fi.zoom);
                 }
                 else
                 {
-                    IA.GLControl1_HorizontalPanel.AutoScrollPosition = new Point(0, 0);
+                    this.horizontalScrollBar.Visible = false;
+                    this.horizontalScrollBar.Value = 0;
                     fi.Xposition = 0;
-                    IA.GLControl1_TraserPanel.Visible = false;
                 }
-
-            ((Panel)IA.GLControl1_TraserPanel).BringToFront();
-                ((Panel)IA.GLControl1_VerticalPanel).BringToFront();
-
+                
                 valX = -fi.Xposition;
                 valY = -fi.Yposition;
                 GL.Translate(valX, valY, 0);
@@ -1027,7 +1031,7 @@ namespace Cell_Tool_3
             }
             else if (Control.ModifierKeys == Keys.Shift)
             {
-                if (IA.GLControl1_TraserPanel.Visible == true)
+                if (this.horizontalScrollBar.Visible == true)
                 {
                     TifFileInfo fi;
                     try
@@ -1043,33 +1047,31 @@ namespace Cell_Tool_3
                     int val = 0;
                     if (e.Delta > 0)
                     {
-                        val = IA.GLControl1_HorizontalPanel.HorizontalScroll.Value
-                            + IA.GLControl1_HorizontalPanel.HorizontalScroll.LargeChange;
+                        val = this.horizontalScrollBar.Value
+                            + this.horizontalScrollBar.LargeChange;
                     }
                     else if (e.Delta < 0)
                     {
-                        val = IA.GLControl1_HorizontalPanel.HorizontalScroll.Value
-                            - IA.GLControl1_HorizontalPanel.HorizontalScroll.LargeChange;
+                        val = this.horizontalScrollBar.Value
+                            - this.horizontalScrollBar.LargeChange;
                     }
 
-                    if (val < IA.GLControl1_HorizontalPanel.HorizontalScroll.Minimum)
+                    if (val < this.horizontalScrollBar.Minimum)
                     {
-                        IA.GLControl1_HorizontalPanel.AutoScrollPosition =
-                            new Point(IA.GLControl1_HorizontalPanel.HorizontalScroll.Minimum, 0);
+                        this.horizontalScrollBar.Value = this.horizontalScrollBar.Minimum;
                     }
-                    else if (val > IA.GLControl1_HorizontalPanel.HorizontalScroll.Maximum)
+                    else if (val > this.horizontalScrollBar.Maximum)
                     {
-                        IA.GLControl1_HorizontalPanel.AutoScrollPosition =
-                            new Point(IA.GLControl1_HorizontalPanel.HorizontalScroll.Maximum, 0);
+                        this.horizontalScrollBar.Value = this.horizontalScrollBar.Maximum;
                     }
                     else
                     {
-                        IA.GLControl1_HorizontalPanel.AutoScrollPosition = new Point(val, 0);
+                        this.horizontalScrollBar.Value = val;
                     }
 
-                    if (fi.Xposition != IA.GLControl1_HorizontalPanel.HorizontalScroll.Value / fi.zoom)
+                    if (fi.Xposition != this.horizontalScrollBar.Value / fi.zoom)
                     {
-                        fi.Xposition = IA.GLControl1_HorizontalPanel.HorizontalScroll.Value / fi.zoom;
+                        fi.Xposition = (double)this.horizontalScrollBar.Value / fi.zoom;
                         IA.ReloadImages(false);
                     }
 
@@ -1078,7 +1080,7 @@ namespace Cell_Tool_3
             }
             else
             {
-                if (IA.GLControl1_VerticalPanel.Visible == true)
+                if (this.verticalScrollBar.Visible == true)
                 {
                     TifFileInfo fi;
                     try
@@ -1094,33 +1096,31 @@ namespace Cell_Tool_3
                     int val = 0;
                     if (e.Delta < 0)
                     {
-                        val = IA.GLControl1_VerticalPanel.VerticalScroll.Value
-                            + IA.GLControl1_VerticalPanel.VerticalScroll.LargeChange;
+                        val = this.verticalScrollBar.Value
+                            + this.verticalScrollBar.LargeChange;
                     }
                     else if (e.Delta > 0)
                     {
-                        val = IA.GLControl1_VerticalPanel.VerticalScroll.Value
-                            - IA.GLControl1_VerticalPanel.VerticalScroll.LargeChange;
+                        val = this.verticalScrollBar.Value
+                            - this.verticalScrollBar.LargeChange;
                     }
 
-                    if (val < IA.GLControl1_VerticalPanel.VerticalScroll.Minimum)
+                    if (val < this.verticalScrollBar.Minimum)
                     {
-                        IA.GLControl1_VerticalPanel.AutoScrollPosition =
-                            new Point(0, IA.GLControl1_VerticalPanel.VerticalScroll.Minimum);
+                        this.verticalScrollBar.Value = this.verticalScrollBar.Minimum;
                     }
-                    else if (val > IA.GLControl1_VerticalPanel.VerticalScroll.Maximum)
+                    else if (val > this.verticalScrollBar.Maximum)
                     {
-                        IA.GLControl1_VerticalPanel.AutoScrollPosition =
-                            new Point(0, IA.GLControl1_VerticalPanel.VerticalScroll.Maximum);
+                        this.verticalScrollBar.Value = this.verticalScrollBar.Maximum;
                     }
                     else
                     {
-                        IA.GLControl1_VerticalPanel.AutoScrollPosition = new Point(0, val);
+                        this.verticalScrollBar.Value = val;
                     }
 
-                    if (fi.Yposition != IA.GLControl1_VerticalPanel.VerticalScroll.Value / fi.zoom)
+                    if (fi.Yposition != this.verticalScrollBar.Value / fi.zoom)
                     {
-                        fi.Yposition = IA.GLControl1_VerticalPanel.VerticalScroll.Value / fi.zoom;
+                        fi.Yposition = (double)this.verticalScrollBar.Value / fi.zoom;
                         IA.ReloadImages(false);
                     }
 
@@ -1238,16 +1238,16 @@ namespace Cell_Tool_3
                 oldX = e.X;
                 oldY = e.Y;
 
-                if (IA.GLControl1_TraserPanel.Visible == true &
-                    IA.GLControl1_VerticalPanel.Visible == true)
+                if (this.horizontalScrollBar.Visible == true &
+                   this.verticalScrollBar.Visible == true)
                 {
                     ((GLControl)sender).Cursor = Cursors.SizeAll;
                 }
-                else if (IA.GLControl1_TraserPanel.Visible == true)
+                else if (this.horizontalScrollBar.Visible == true)
                 {
                     ((GLControl)sender).Cursor = Cursors.SizeWE;
                 }
-                else if (IA.GLControl1_VerticalPanel.Visible == true)
+                else if (this.verticalScrollBar.Visible == true)
                 {
                     ((GLControl)sender).Cursor = Cursors.SizeNS;
                 }
@@ -1279,47 +1279,47 @@ namespace Cell_Tool_3
                 int Y = oldY - e.Y;
                 changeXY = false;
                 //vertical
-                if (IA.GLControl1_VerticalPanel.Visible == true)
+                if (this.verticalScrollBar.Visible == true)
                 {
-                    int val = IA.GLControl1_VerticalPanel.VerticalScroll.Value + Y;// * IA.GLControl1_VerticalPanel.VerticalScroll.SmallChange;
+                    int val = this.verticalScrollBar.Value + Y;// * IA.GLControl1_VerticalPanel.VerticalScroll.SmallChange;
                     oldY = e.Y;
-                    if (val < IA.GLControl1_VerticalPanel.VerticalScroll.Minimum)
+                    if (val < this.verticalScrollBar.Minimum)
                     {
-                        IA.GLControl1_VerticalPanel.AutoScrollPosition = new Point(0, IA.GLControl1_VerticalPanel.VerticalScroll.Minimum);
+                        this.verticalScrollBar.Value = this.verticalScrollBar.Minimum;
                     }
-                    else if (val > IA.GLControl1_VerticalPanel.VerticalScroll.Maximum)
+                    else if (val > this.verticalScrollBar.Maximum)
                     {
-                        IA.GLControl1_VerticalPanel.AutoScrollPosition = new Point(0, IA.GLControl1_VerticalPanel.VerticalScroll.Maximum);
+                        this.verticalScrollBar.Value = this.verticalScrollBar.Maximum;
                     }
                     else
                     {
-                        IA.GLControl1_VerticalPanel.AutoScrollPosition = new Point(0, val);
+                        this.verticalScrollBar.Value = val;
                     }
                 }
                 //Horizontal
-                if (IA.GLControl1_TraserPanel.Visible == true)
+                if (this.horizontalScrollBar.Visible == true)
                 {
-                    int val = IA.GLControl1_HorizontalPanel.HorizontalScroll.Value + X;// * IA.GLControl1_HorizontalPanel.HorizontalScroll.SmallChange;
+                    int val = this.horizontalScrollBar.Value + X;// * IA.GLControl1_HorizontalPanel.HorizontalScroll.SmallChange;
                     oldX = e.X;
-                    if (val < IA.GLControl1_HorizontalPanel.HorizontalScroll.Minimum)
+                    if (val < this.horizontalScrollBar.Minimum)
                     {
-                        IA.GLControl1_HorizontalPanel.AutoScrollPosition = new Point(IA.GLControl1_HorizontalPanel.HorizontalScroll.Minimum, 0);
+                        this.horizontalScrollBar.Value = this.horizontalScrollBar.Minimum;
                     }
-                    else if (val > IA.GLControl1_HorizontalPanel.HorizontalScroll.Maximum)
+                    else if (val > this.horizontalScrollBar.Maximum)
                     {
-                        IA.GLControl1_HorizontalPanel.AutoScrollPosition = new Point(IA.GLControl1_HorizontalPanel.HorizontalScroll.Maximum, 0);
+                        this.horizontalScrollBar.Value = this.horizontalScrollBar.Maximum;
                     }
                     else
                     {
-                        IA.GLControl1_HorizontalPanel.AutoScrollPosition = new Point(val, 0);
+                        this.horizontalScrollBar.Value = val;
                     }
                 }
 
-                if (fi.Yposition != IA.GLControl1_VerticalPanel.VerticalScroll.Value / fi.zoom |
-                    fi.Xposition != IA.GLControl1_HorizontalPanel.HorizontalScroll.Value / fi.zoom)
+                if (fi.Yposition != (double)this.verticalScrollBar.Value / fi.zoom |
+                    fi.Xposition != (double)this.horizontalScrollBar.Value / fi.zoom)
                 {
-                    fi.Yposition = IA.GLControl1_VerticalPanel.VerticalScroll.Value / fi.zoom;
-                    fi.Xposition = IA.GLControl1_HorizontalPanel.HorizontalScroll.Value / fi.zoom;
+                    fi.Yposition = (double)this.verticalScrollBar.Value / fi.zoom;
+                    fi.Xposition = (double)this.horizontalScrollBar.Value / fi.zoom;
                     IA.ReloadImages(false);
                 }
                 changeXY = true;

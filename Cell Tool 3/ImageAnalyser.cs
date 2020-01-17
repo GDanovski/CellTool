@@ -49,9 +49,9 @@ namespace Cell_Tool_3
         public RoiManager RoiMan;
         public ImageDrawer IDrawer = new ImageDrawer();
         public GLControl GLControl1 = new GLControl();
-        public Panel GLControl1_VerticalPanel = new Panel();
-        public Panel GLControl1_HorizontalPanel = new Panel();
-        public Panel GLControl1_TraserPanel = new Panel();
+       // public Panel GLControl1_VerticalPanel = new Panel();
+        //public Panel GLControl1_HorizontalPanel = new Panel();
+       // public Panel GLControl1_TraserPanel = new Panel();
 
         public ToolStripComboBox zoomValue = null;
               
@@ -379,8 +379,8 @@ namespace Cell_Tool_3
                 Tracking.panel.Visible = false;
                 UnDoBtn.Enabled = false;
                 ReDoBtn.Enabled = false;
-                GLControl1_VerticalPanel.Visible = false;
-                GLControl1_TraserPanel.Visible = false;
+                IDrawer.verticalScrollBar.Visible = false;
+                IDrawer.horizontalScrollBar.Visible = false;
                 TabPages.PropertiesBody.ResumeLayout();
                 TabPages.propertiesPanel.ResumeLayout();
                 
