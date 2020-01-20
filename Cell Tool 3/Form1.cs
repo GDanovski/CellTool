@@ -427,7 +427,7 @@ namespace Cell_Tool_3
                         SecurityControl.ApplySettingsFromImport(str);
 
                     LoadAccountSettings();
-                    Interface.IA.ReloadImages();
+                    Interface.IA.ReloadImages(false);
 
                     vals = null;
                 }

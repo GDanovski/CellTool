@@ -276,7 +276,7 @@ namespace Cell_Tool_3
                 IA.MarkAsNotSaved();
                 #endregion apply to history
                 
-                IA.ReloadImages();
+                IA.ReloadImages(true,fi.cValue,1);
             }
             else if (e.Button == MouseButtons.Right & btn.Text == "")
             {
@@ -344,7 +344,7 @@ namespace Cell_Tool_3
 
                     fi.RefSpotColor[fi.cValue]= colorDialog1.Color;
                     fi.SpotColor[fi.cValue] = colorDialog1.Color;
-                    IA.ReloadImages();
+                    IA.ReloadImages(true, fi.cValue, 1);
                 }
             }
         }
@@ -394,7 +394,7 @@ namespace Cell_Tool_3
             IA.MarkAsNotSaved();
             #endregion apply to history
 
-            IA.ReloadImages();
+            IA.ReloadImages(true,fi.cValue,1);
         }
         private void sensitivity_valueChange(int val)
         {
@@ -427,7 +427,7 @@ namespace Cell_Tool_3
             #endregion apply to history
             fi.spotSensitivity[fi.cValue] = val;
 
-            IA.ReloadImages();
+            IA.ReloadImages(true,fi.cValue,1);
         }
         private void thresh_valueChange(int val)
         {
@@ -460,7 +460,7 @@ namespace Cell_Tool_3
             #endregion apply to history
             fi.SpotThresh[fi.cValue] = val;
 
-            IA.ReloadImages();
+            IA.ReloadImages(true,fi.cValue,1);
         }
         private void TType_IndexChange(object sender, EventArgs e)
         {
@@ -499,7 +499,7 @@ namespace Cell_Tool_3
 
             fi.SpotThresh[fi.cValue] = 0;
             fi.typeSpotThresh[fi.cValue] = cb.SelectedIndex;
-            IA.ReloadImages();
+            IA.ReloadImages(true,fi.cValue,1);
         }
         private void selectT_IndexChange(object sender,EventArgs e)
         {
@@ -537,7 +537,7 @@ namespace Cell_Tool_3
             #endregion apply to history
 
             fi.SelectedSpotThresh[fi.cValue] = cb.SelectedIndex;
-            IA.ReloadImages();
+            IA.ReloadImages(true,fi.cValue,1);
         }
         #endregion Events
 

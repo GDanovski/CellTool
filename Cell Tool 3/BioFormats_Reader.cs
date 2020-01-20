@@ -346,7 +346,7 @@ namespace Cell_Tool_3
                     try
                     {
                         IA.BandC.RefreshAllLUTs(fi);
-                        IA.ReloadImages();
+                        IA.ReloadImages(true);
                     }
                     catch { }
                 }
@@ -363,7 +363,7 @@ namespace Cell_Tool_3
                     IA.TabPages.myFileDecoder.CalculateAllRois(fi);
                     IA.BandC.RefreshAllLUTs(fi);
                     fi.autoDetectBandC = false;
-                    IA.ReloadImages();
+                    IA.ReloadImages(true);
                     bool check = true;
                     foreach (TabPage tp1 in Collection)
                     {
@@ -407,7 +407,7 @@ namespace Cell_Tool_3
                 if (loaded == true)
                 {
                     IA.BandC.RefreshAllLUTs(fi);
-                    IA.ReloadImages();
+                    IA.ReloadImages(true);
                 }
             }
             catch { }

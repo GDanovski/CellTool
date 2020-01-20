@@ -99,7 +99,7 @@ namespace Cell_Tool_3
             {
                 TifFileInfo fi = IA.TabPages.TabCollections[IA.TabPages.SelectedIndex].tifFI;
                 fi.thresholdsCBoxIndex[fi.cValue] = cb.SelectedIndex;
-                IA.ReloadImages();
+                IA.ReloadImages(true,fi.cValue,1);
             });
 
             CheckBox checkB = sumHistogramsCheckBox;
@@ -117,7 +117,7 @@ namespace Cell_Tool_3
                 fi.sumHistogramChecked[fi.cValue] = checkB.Checked;
                 if (((CheckBox)o).Focused == true)
                 {
-                    IA.ReloadImages();
+                    IA.ReloadImages(false);
                 }
             });
             {
@@ -149,7 +149,7 @@ namespace Cell_Tool_3
                     }
                     else
                     {
-                        
+                        int C = fi.cValue;
                         //background worker
                         var bgw = new BackgroundWorker();
                         bgw.WorkerReportsProgress = true;
@@ -170,7 +170,7 @@ namespace Cell_Tool_3
                             fi.available = true;
                             IA.FileBrowser.StatusLabel.Text = "Ready";
                             IA.MarkAsNotSaved();
-                            IA.ReloadImages();
+                            IA.ReloadImages(true,C,1);
                         });
                         //Apply status
                         IA.FileBrowser.StatusLabel.Text = "Segmentation...";
@@ -296,7 +296,7 @@ namespace Cell_Tool_3
                     #endregion apply to history
                 }
                 vals[index + 1] = val;
-                IA.ReloadImages();
+                IA.ReloadImages(true,fi.cValue,1);
             }
         }
         private void ColorBtn_Click(object sender, MouseEventArgs e)
@@ -335,7 +335,7 @@ namespace Cell_Tool_3
                 IA.MarkAsNotSaved();
                 #endregion apply to history
 
-                IA.ReloadImages();
+                IA.ReloadImages(true,fi.cValue,1);
             }
             else if (e.Button == MouseButtons.Right & btn.Text == "")
             {
@@ -389,7 +389,7 @@ namespace Cell_Tool_3
                     #endregion apply to history
                     fi.RefThresholdColors[fi.cValue][(int)btn.Tag] = colorDialog1.Color;
                     fi.thresholdColors[fi.cValue][(int)btn.Tag] = colorDialog1.Color;
-                    IA.ReloadImages();
+                    IA.ReloadImages(true,fi.cValue,1);
                 }
             }
         }

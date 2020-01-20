@@ -324,14 +324,14 @@ namespace Cell_Tool_3
                 foreach (Color col in RefColors)
                     if (colorDialog1.Color == col)
                     {
-                        IA.ReloadImages();
+                        IA.ReloadImages(false);
                         return;
                     }
 
                 RefColors.Add(colorDialog1.Color);
                 createImagesFortTV(colorDialog1.Color);
 
-                IA.ReloadImages();
+                IA.ReloadImages(false);
             }
         }
         private void Node_DoubleClick(object sender, TreeNodeMouseClickEventArgs e)
@@ -429,7 +429,7 @@ namespace Cell_Tool_3
                         + roi.getID.ToString() + ",0," + roi.ChartUseIndex[0].ToString() + ")");
                 }
 
-                IA.ReloadImages();
+                IA.ReloadImages(false);
 
                 suppressCheck = false;
             }

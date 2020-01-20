@@ -483,7 +483,7 @@ namespace Cell_Tool_3
                             roi_new(val, fi);
                     }
                 }
-                IA.ReloadImages();
+                IA.ReloadImages(false);
             }
         }
         public void LoadRoiSet_DragDrop(string dir)
@@ -506,7 +506,7 @@ namespace Cell_Tool_3
                 }
             }
 
-            IA.ReloadImages();
+            IA.ReloadImages(false);
 
         }
         public void roi_new(string val, TifFileInfo fi)
@@ -866,7 +866,7 @@ namespace Cell_Tool_3
                 {
                     current = null;
                     SelectedROIsList.Clear();
-                    IA.ReloadImages();
+                    IA.ReloadImages(false);
                     return;
                 }
 
@@ -904,7 +904,7 @@ namespace Cell_Tool_3
                     SelectedROIsList.Clear();
                     current = node;
                     SelectedROIsList.Add(node);
-                    IA.ReloadImages();
+                    IA.ReloadImages(false);
                 }
 
                 if (roiTV.Nodes.Count == 0)
@@ -959,7 +959,7 @@ namespace Cell_Tool_3
             SelectedROIsList.Clear();
             FillRoiManagerList(fi);
             //Redraw
-            IA.ReloadImages();
+            IA.ReloadImages(false);
         }
         private void FillRoisFromInfoFile(TifFileInfo fi, int frame)
         {
@@ -1326,7 +1326,7 @@ namespace Cell_Tool_3
             if (fi.sizeT > 1)
                 IA.TabPages.tTrackBar.Refresh(fi.frame + 1, 1, fi.sizeT);
 
-            IA.ReloadImages();
+            IA.ReloadImages(true);
         }
         private void BiggestMI_Click(object sender, EventArgs e)
         {
@@ -1352,7 +1352,7 @@ namespace Cell_Tool_3
 
             if (fi.sizeT > 1)
                 IA.TabPages.tTrackBar.Refresh(fi.frame + 1, 1, fi.sizeT);
-            IA.ReloadImages();
+            IA.ReloadImages(true);
         }
         private void BiggestWMI_Click(object sender, EventArgs e)
         {
@@ -1381,12 +1381,12 @@ namespace Cell_Tool_3
             if (fi.sizeT > 1)
                 IA.TabPages.tTrackBar.Refresh(fi.frame + 1, 1, fi.sizeT);
 
-            IA.ReloadImages();
+            IA.ReloadImages(true);
         }
         private void ShowLabelsMI_Click(object sender, EventArgs e)
         {
             showLabels = !showLabels;
-            IA.ReloadImages();
+            IA.ReloadImages(false);
         }
         public void CopyRois(object sender, EventArgs e)
         {
@@ -1529,7 +1529,7 @@ namespace Cell_Tool_3
             CopyMode = false;
             CutMode = false;
             //refresh
-            IA.ReloadImages();
+            IA.ReloadImages(false);
         }
         private void PrepareTrackingRoiForPaste(TifFileInfo fi, ROI roi)
         {
@@ -1607,7 +1607,7 @@ namespace Cell_Tool_3
 
             }
 
-            IA.ReloadImages();
+            IA.ReloadImages(false);
             roiTV.ResumeLayout();
         }
         private void ROI_CheckAll(object sender, EventArgs e)
@@ -1639,7 +1639,7 @@ namespace Cell_Tool_3
                 }
             }
 
-            IA.ReloadImages();
+            IA.ReloadImages(false);
             roiTV.ResumeLayout();
         }
 
@@ -1740,7 +1740,7 @@ namespace Cell_Tool_3
             #endregion History
             //reload to screen
             RoiMeasure.Measure(current, fi, fi.cValue, IA);
-            IA.ReloadImages();
+            IA.ReloadImages(false);
         }
         public void selectAllRois(KeyEventArgs e)
         {
@@ -1757,7 +1757,7 @@ namespace Cell_Tool_3
 
             e.SuppressKeyPress = true;
             e.Handled = true;
-            IA.ReloadImages();
+            IA.ReloadImages(false);
 
         }
         private void selectedRoiChanged(ROI roi)
@@ -1826,7 +1826,7 @@ namespace Cell_Tool_3
         private void roiTV_selectedNodeChange(object sender, EventArgs e)
         {
             selectedRoiChanged((ROI)roiTV.SelectedNode);
-            IA.ReloadImages();
+            IA.ReloadImages(false);
         }
         public void DeleteBtn_Click(object sender, EventArgs e)
         {
@@ -1862,11 +1862,11 @@ namespace Cell_Tool_3
             IA.RoiMan.SelectedROIsList.Clear();
             current = null;
             //reload to screen
-            IA.ReloadImages();
+            IA.ReloadImages(false);
         }
         private void roiTV_CheckNode(object sender, EventArgs e)
         {
-            IA.ReloadImages();
+            IA.ReloadImages(false);
         }
         private void OptionsPanel_Add()
         {
@@ -1993,7 +1993,7 @@ namespace Cell_Tool_3
                 addToHistoryNewInfo(roi_getStat(current, fi, "Location"), fi);
 
             RoiMeasure.Measure(current, fi, fi.cValue, IA);
-            IA.ReloadImages();
+            IA.ReloadImages(false);
         }
         private void y_tb_textChanged(object sender, ChangeValueEventArgs e)
         {
@@ -2030,7 +2030,7 @@ namespace Cell_Tool_3
 
             RoiMeasure.Measure(current, fi, fi.cValue, IA);
 
-            IA.ReloadImages();
+            IA.ReloadImages(false);
         }
         private void w_tb_textChanged(object sender, ChangeValueEventArgs e)
         {
@@ -2085,7 +2085,7 @@ namespace Cell_Tool_3
             #endregion History
 
             RoiMeasure.Measure(current, fi, fi.cValue, IA);
-            IA.ReloadImages();
+            IA.ReloadImages(false);
         }
         private void h_tb_textChanged(object sender, ChangeValueEventArgs e)
         {
@@ -2142,7 +2142,7 @@ namespace Cell_Tool_3
             #endregion History
 
             RoiMeasure.Measure(current, fi, fi.cValue, IA);
-            IA.ReloadImages();
+            IA.ReloadImages(false);
         }
         private void fromT_tb_textChanged(object sender, ChangeValueEventArgs e)
         {
@@ -2171,7 +2171,7 @@ namespace Cell_Tool_3
             if (fi.roiList[fi.cValue] != null && fi.roiList[fi.cValue].IndexOf(current) > -1)
                 addToHistoryNewInfo(roi_getStat(current, fi, "fromT"), fi);
             #endregion History
-            IA.ReloadImages();
+            IA.ReloadImages(false);
         }
         private void ToT_tb_textChanged(object sender, ChangeValueEventArgs e)
         {
@@ -2204,7 +2204,7 @@ namespace Cell_Tool_3
                 addToHistoryNewInfo(roi_getStat(current, fi, "toT"), fi);
             #endregion History
 
-            IA.ReloadImages();
+            IA.ReloadImages(false);
         }
         private void fromZ_tb_textChanged(object sender, ChangeValueEventArgs e)
         {
@@ -2237,7 +2237,7 @@ namespace Cell_Tool_3
                 addToHistoryNewInfo(roi_getStat(current, fi, "fromZ"), fi);
             #endregion History
 
-            IA.ReloadImages();
+            IA.ReloadImages(false);
         }
         private void ToZ_tb_textChanged(object sender, ChangeValueEventArgs e)
         {
@@ -2270,7 +2270,7 @@ namespace Cell_Tool_3
                 addToHistoryNewInfo(roi_getStat(current, fi, "toZ"), fi);
             #endregion History
 
-            IA.ReloadImages();
+            IA.ReloadImages(false);
         }
         private void n_tb_textChanged(object sender, ChangeValueEventArgs e)
         {
@@ -2305,7 +2305,7 @@ namespace Cell_Tool_3
 
                 RoiMeasure.Measure(current, fi, fi.cValue, IA);
             }
-            IA.ReloadImages();
+            IA.ReloadImages(false);
         }
         private void d_tb_textChanged(object sender, ChangeValueEventArgs e)
         {
@@ -2335,7 +2335,7 @@ namespace Cell_Tool_3
             #endregion History
 
             RoiMeasure.Measure(current, fi, fi.cValue, IA);
-            IA.ReloadImages();
+            IA.ReloadImages(false);
         }
         private void clear_ROI_selection()
         {
@@ -3061,7 +3061,7 @@ namespace Cell_Tool_3
 
                 MoveCurrentRoi = false;
                 GlControl_MouseMoveChangeCursor(sender, e);
-                IA.ReloadImages();
+                IA.ReloadImages(false);
                 return true;
             }
             else
@@ -3595,7 +3595,7 @@ namespace Cell_Tool_3
 
                 activResizeCurrent = false;
                 ResizeCurrentPoint = Point.Empty;
-                IA.ReloadImages();
+                IA.ReloadImages(false);
                 return true;
             }
             else
@@ -4429,7 +4429,7 @@ namespace Cell_Tool_3
             #endregion History
             //reload the image
             IA.MarkAsNotSaved();
-            IA.ReloadImages();
+            IA.ReloadImages(false);
         }
         private Point[] StaticToTrackingRoi(Point[] points, int factorW, int factorH, ROI secROI)
         {

@@ -130,7 +130,7 @@ namespace Cell_Tool_3
             //ReloadImage
             IA.UpdateUndoBtns();
             IA.MarkAsNotSaved();
-            IA.ReloadImages();
+            IA.ReloadImages(false);
         }
         private void MinSizeTB_ValueChanged(object sender, ChangeValueEventArgs e)
         {
@@ -154,7 +154,7 @@ namespace Cell_Tool_3
             //ReloadImage
             IA.UpdateUndoBtns();
             IA.MarkAsNotSaved();
-            IA.ReloadImages();
+            IA.ReloadImages(false);
         }
         private void SpeedTB_ValueChanged(object sender, ChangeValueEventArgs e)
         {
@@ -178,7 +178,7 @@ namespace Cell_Tool_3
             //ReloadImage
             IA.UpdateUndoBtns();
             IA.MarkAsNotSaved();
-            IA.ReloadImages();
+            IA.ReloadImages(false);
         }
         private CTTextBox CTTextBox_Add(int X, int Y, Panel p, string title, string tag)
         {
@@ -293,7 +293,7 @@ namespace Cell_Tool_3
                 if (a.ProgressPercentage == 0)
                 {
                     //reload images to screen
-                    IA.ReloadImages();
+                    IA.ReloadImages(false);
                     IA.MarkAsNotSaved();
                 }
 
@@ -363,7 +363,7 @@ namespace Cell_Tool_3
                 if (a.ProgressPercentage == 0)
                 {
                     //reload images to screen
-                    IA.ReloadImages();
+                    IA.ReloadImages(false);
                     IA.MarkAsNotSaved();
                 }
 

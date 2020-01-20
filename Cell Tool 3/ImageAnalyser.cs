@@ -718,7 +718,7 @@ namespace Cell_Tool_3
                 TabPages.tTrackBar.TrackBar1.Value = fi.frame + 1;
             }
 
-            ReloadImages();
+            ReloadImages(true);
         }
         private void ChangeZ(string Val)
         {
@@ -739,7 +739,7 @@ namespace Cell_Tool_3
                 TabPages.zTrackBar.TextBox1.Text = (fi.zValue + 1).ToString();
                 TabPages.zTrackBar.TrackBar1.Value = fi.zValue + 1;
             }
-            ReloadImages();
+            ReloadImages(true);
             
         }
         private void ChangeC(string Val)
@@ -762,7 +762,7 @@ namespace Cell_Tool_3
             //UnDoBtn.Enabled = true;
             //CheckSizeHistory(fi);
 
-            ReloadImages();
+            ReloadImages(true,fi.cValue,-1);
         }
         private void ChangeLUT(string val)
         {
@@ -816,7 +816,7 @@ namespace Cell_Tool_3
                 fi.tpTaskbar.ColorBtnList[fi.tpTaskbar.ColorBtnList.Count - 1].Focus();
             }
 
-            ReloadImages();
+            ReloadImages(true,chanel,-1);
             MarkAsNotSaved();
         }
         private void enableColorChanel(string val)
@@ -858,7 +858,7 @@ namespace Cell_Tool_3
             
             UnDoBtn.Enabled = true;
             CheckSizeHistory(fi);
-            ReloadImages();
+            ReloadImages(true,chanel,-1);
             MarkAsNotSaved();
         }
         private void enableMethodView(string val)
@@ -900,7 +900,7 @@ namespace Cell_Tool_3
 
             UnDoBtn.Enabled = true;
             CheckSizeHistory(fi);
-            ReloadImages();
+            ReloadImages(true,-1,chanel);
             MarkAsNotSaved();
         }
         private void segmentation_ChangeMethod(string val)
@@ -928,7 +928,7 @@ namespace Cell_Tool_3
 
             UnDoBtn.Enabled = true;
             CheckSizeHistory(fi);
-            ReloadImages();
+            ReloadImages(true,chanel,1);
             MarkAsNotSaved();
         }
 
@@ -964,7 +964,7 @@ namespace Cell_Tool_3
 
             UnDoBtn.Enabled = true;
             CheckSizeHistory(fi);
-            ReloadImages();
+            ReloadImages(false);
             MarkAsNotSaved();
         }
         private void segmentation_SetThreshOld(string val)
@@ -996,7 +996,7 @@ namespace Cell_Tool_3
 
             UnDoBtn.Enabled = true;
             CheckSizeHistory(fi);
-            ReloadImages();
+            ReloadImages(true,chanel,1);
             MarkAsNotSaved();
         }
         private void segmentation_SetSpotDetector(string val)
@@ -1054,7 +1054,7 @@ namespace Cell_Tool_3
 
             UnDoBtn.Enabled = true;
             CheckSizeHistory(fi);
-            ReloadImages();
+            ReloadImages(true,cVal,1);
             MarkAsNotSaved();
         }
         private void segmentation_SetColor(string val)
@@ -1088,7 +1088,7 @@ namespace Cell_Tool_3
 
             UnDoBtn.Enabled = true;
             CheckSizeHistory(fi);
-            ReloadImages();
+            ReloadImages(true,chanel,1);
             MarkAsNotSaved();
         }
         private void ChangeBandC(string val)
@@ -1097,7 +1097,7 @@ namespace Cell_Tool_3
             if (val == "auto")
             {
                 fi.autoDetectBandC = true;
-                ReloadImages();
+                ReloadImages(true);
                 //MarkAsNotSaved();
             }
             else
@@ -1113,7 +1113,7 @@ namespace Cell_Tool_3
 
                 BandC.adjustBrightness(min, max, fi, chanel);
 
-                ReloadImages();
+                ReloadImages(true,chanel,-1);
                // MarkAsNotSaved();
             }
         }
@@ -1168,7 +1168,7 @@ namespace Cell_Tool_3
 
             if (IsFrameAvaliable(fi) == false) return;
             
-            ReloadImages();
+            ReloadImages(false);
         }
         private void roi_delete(string val)
         {
@@ -1198,7 +1198,7 @@ namespace Cell_Tool_3
 
                             if (IsFrameAvaliable(fi) == false) return;
 
-                            ReloadImages();
+                            ReloadImages(false);
                             return;
                         }
                 chanel++;
@@ -1238,7 +1238,7 @@ namespace Cell_Tool_3
 
                             if (IsFrameAvaliable(fi) == false) return;
 
-                            ReloadImages();
+                            ReloadImages(false);
                             return;
                         }
         }
@@ -1302,7 +1302,7 @@ namespace Cell_Tool_3
 
                             if (IsFrameAvaliable(fi) == false) return;
 
-                            ReloadImages();
+                            ReloadImages(false);
                             return;
                         }
         }
@@ -1335,7 +1335,7 @@ namespace Cell_Tool_3
             }
 
             CheckSizeHistory(fi);
-            ReloadImages();
+            ReloadImages(false);
         }
         private void ChangeChart_yAxisType(string val)
         {
@@ -1366,7 +1366,7 @@ namespace Cell_Tool_3
             }
             
             CheckSizeHistory(fi);
-            ReloadImages();
+            ReloadImages(false);
         }
 
         private void Chart_SetSeriesColor(string val)
@@ -1410,7 +1410,7 @@ namespace Cell_Tool_3
                     + roi.getID.ToString() + "," + ind.ToString() + "," + ColorTranslator.ToHtml(roi.colors[ind]) + ")");
 
             }
-            ReloadImages();
+            ReloadImages(false);
         }
 
         private void Chart_SetSeriesChecked(string val)
@@ -1454,7 +1454,7 @@ namespace Cell_Tool_3
                      + roi.getID.ToString() + "," + ind.ToString() + "," + roi.ChartUseIndex[ind].ToString() + ")");
 
             }
-            ReloadImages();
+            ReloadImages(false);
         }
         //Add events here
 
