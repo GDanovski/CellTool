@@ -743,7 +743,7 @@ namespace Cell_Tool_3
 
             OptionForm.Hide();
             LoadFunctions();
-            IA.ReloadImages();
+            IA.ReloadImages(false);
         }
         public void LoadFunctions()
         {
@@ -798,7 +798,7 @@ namespace Cell_Tool_3
             //ReloadImage
             IA.UpdateUndoBtns();
             IA.MarkAsNotSaved();
-            IA.ReloadImages();
+            IA.ReloadImages(false);
         }
         private void yAxisTB_ChangeIndex(object sender, EventArgs e)
         {
@@ -827,7 +827,7 @@ namespace Cell_Tool_3
             //ReloadImage
             IA.UpdateUndoBtns();
             IA.MarkAsNotSaved();
-            IA.ReloadImages();
+            IA.ReloadImages(false);
         }
         public void LoadFI(TifFileInfo fi)
         {

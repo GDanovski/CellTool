@@ -754,7 +754,7 @@ namespace Cell_Tool_3
             else
                 fi.tpTaskbar.MethodsBtnList[ind].ImageIndex = 0;
 
-            CTInterface.IA.ReloadImages();
+            CTInterface.IA.ReloadImages(true);
         }
         private void SetThresholdBtn_Click(object sender, EventArgs e)
         {

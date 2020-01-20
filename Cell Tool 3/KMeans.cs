@@ -57,7 +57,7 @@ namespace Cell_Tool_3
 
             if (NumberOfColors < 2)
             {
-                IA.ReloadImages();
+                IA.ReloadImages(true,fi.cValue,1);
                 return;
             }
 
@@ -121,6 +121,10 @@ namespace Cell_Tool_3
             int count = 0;
             var bgw = new BackgroundWorker();
             bgw.WorkerReportsProgress = true;
+            //Calculate active frame
+            FrameCalculator FC = new FrameCalculator();
+            int C = fi.cValue;
+            int frame = FC.FrameC(fi, C);
             //Add event for projection here
             bgw.DoWork += new DoWorkEventHandler(delegate (Object o, DoWorkEventArgs a)
             {
@@ -129,9 +133,7 @@ namespace Cell_Tool_3
                 {
                     fi.image8bitFilter = fi.image8bit;
                 }
-                //Calculate active frame
-                FrameCalculator FC = new FrameCalculator();
-                int frame = FC.FrameC(fi, fi.cValue);
+                
                 //find active image data
                 byte[][] image = fi.image8bitFilter[frame];
                 //find first centroids
@@ -166,7 +168,7 @@ namespace Cell_Tool_3
                     fi.available = true;
                     IA.FileBrowser.StatusLabel.Text = "Ready";
                     ClearData();
-                    IA.ReloadImages();
+                    IA.ReloadImages(true,C,1);
                 }
                 else
                 {
@@ -184,6 +186,10 @@ namespace Cell_Tool_3
             int count = 0;
             var bgw = new BackgroundWorker();
             bgw.WorkerReportsProgress = true;
+            //Calculate active frame
+            FrameCalculator FC = new FrameCalculator();
+            int C = fi.cValue;
+            int frame = FC.FrameC(fi, C);
             //Add event for projection here
             bgw.DoWork += new DoWorkEventHandler(delegate (Object o, DoWorkEventArgs a)
             {
@@ -191,10 +197,7 @@ namespace Cell_Tool_3
                 if (fi.image16bitFilter == null)
                 {
                     fi.image16bitFilter = fi.image16bit;
-                }
-                //Calculate active frame
-                FrameCalculator FC = new FrameCalculator();
-                int frame = FC.FrameC(fi, fi.cValue);
+                }                
                 //find active image data
                 ushort[][] image = fi.image16bitFilter[frame];
                 //find first centroids
@@ -232,14 +235,12 @@ namespace Cell_Tool_3
                     fi.available = true;
                     IA.FileBrowser.StatusLabel.Text = "Ready";
                     ClearData();
-                    IA.ReloadImages();
+                    IA.ReloadImages(true, C, 1);
                 }
                 else
                 {
                     IA.FileBrowser.StatusLabel.Text = "K-means: " + count.ToString() + " iterations...";
-                }
-
-               
+                }                               
             });
             //Start background worker
             IA.FileBrowser.StatusLabel.Text = "K-means: Building Histogram...";

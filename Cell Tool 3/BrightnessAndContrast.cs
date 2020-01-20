@@ -478,6 +478,7 @@ namespace Cell_Tool_3
             //Chart1.Capture = false;
             //System.Windows.Forms.Cursor.Clip = new Rectangle(0, 0, 0, 0);
             calculateHistogramArray(fi, true);
+            
             if (applyToAll.Checked == true & autoDetect.Checked == false)
             {
                 int curC = fi.cValue;
@@ -488,9 +489,11 @@ namespace Cell_Tool_3
                 }
                 fi.cValue = curC;
                 calculateHistogramArray(fi, true);
+                
+                IA.ReloadImages(true);
             }
-          
-            IA.ReloadImages();
+            else
+                IA.ReloadImages(true,fi.cValue,-1);
         }
         private void Chart1_MouseMoveImageReload()
         {
@@ -507,13 +510,15 @@ namespace Cell_Tool_3
                 }
                 fi.cValue = curC;
                 calculateHistogramArray(fi, true);
+
+                IA.ReloadImages(true);
             }
+            else
+                IA.ReloadImages(true,fi.cValue,-1);
 
             Chart1.DrawToScreen(fi);
             Chart1.Update();
-            Chart1.PerformLayout();
-
-            IA.ReloadImages();
+            Chart1.PerformLayout();            
         }
         private void Chart1_MouseMove(object sender, MouseEventArgs e)
         {
@@ -620,7 +625,7 @@ namespace Cell_Tool_3
                 fi.cValue = curC;
                 calculateHistogramArray(fi, true);
             }
-            IA.ReloadImages();
+            IA.ReloadImages(true);
             //IA.MarkAsNotSaved();
         }
         private void applyToAll_Checked(object sender, EventArgs e)
@@ -649,7 +654,7 @@ namespace Cell_Tool_3
                 fi.cValue = curC;
                 calculateHistogramArray(fi, true);
             }
-            IA.ReloadImages();
+            IA.ReloadImages(true);
             //IA.MarkAsNotSaved();
         }
         public void PrepareArray(TifFileInfo fi)

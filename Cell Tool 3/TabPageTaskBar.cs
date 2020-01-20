@@ -271,6 +271,8 @@ namespace Cell_Tool_3
                             }
                         }
                     }
+
+                    IA.ReloadImages(false);
                 }
                 else
                 {
@@ -301,9 +303,14 @@ namespace Cell_Tool_3
                             }
                         }
                     }
+                    int C = ColorBtnList.IndexOf(ctr);
+
+                    if (C < fi.sizeC)
+                        IA.ReloadImages(true, C, -1);
+                    else
+                        IA.ReloadImages(true);
                 }
 
-                IA.ReloadImages();
             }
             else if (e.Button == MouseButtons.Right)
             {
@@ -617,13 +624,12 @@ namespace Cell_Tool_3
             else if (((Button)sender) == Btn3D)
             {
                 fi.is3D = true;
-                IA.IDrawer.imageDrawer_3D.initProgram(IA.GLControl1,fi);        
+                IA.IDrawer.imageDrawer_3D.initProgram(IA.GLControl1,fi);     
                 
             }
 
-            IA.ReloadImages();
-            IA.ReloadImages();
-
+            IA.ReloadImages(true);
+            IA.ReloadImages(false);
         }
         private void DimmentionsControl_MouseOver(object sender, EventArgs e)
         {
@@ -702,6 +708,7 @@ namespace Cell_Tool_3
                             }
                         }
                     }
+                    IA.ReloadImages(false);
                 }
                 else
                 {
@@ -731,8 +738,13 @@ namespace Cell_Tool_3
                             }
                         }
                     }
+
+                    if (MethodsBtnList.IndexOf(ctr) < 2)
+                        IA.ReloadImages(true, -1, MethodsBtnList.IndexOf(ctr));
+                    else
+                        IA.ReloadImages(false);
                 }
-                IA.ReloadImages();
+                
             }
         }
     }

@@ -556,7 +556,7 @@ namespace Cell_Tool_3
                 bgw.ProgressChanged += new ProgressChangedEventHandler(delegate (Object o, ProgressChangedEventArgs a)
                 {
                     
-                    IA.ReloadImages();
+                    IA.ReloadImages(true);
                     fi.available = true;
                     IA.FileBrowser.StatusLabel.Text = "Ready";
                     

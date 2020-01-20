@@ -264,7 +264,7 @@ namespace Cell_Tool_3
                         }
                         catch { MessageBox.Show("Error with reporting back!"); }
                        
-                        IA.ReloadImages();
+                        IA.ReloadImages(true);
                     });
                     
                     var c = Activator.CreateInstance(type);

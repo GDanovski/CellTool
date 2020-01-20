@@ -149,7 +149,7 @@ namespace Cell_Tool_3
                         IA.FileBrowser.Refresh_AfterSave();
                         fi.available = true;
                         IA.FileBrowser.StatusLabel.Text = "Ready";
-                        IA.ReloadImages();
+                        IA.ReloadImages(false);
                         return;
                     }
 
@@ -353,7 +353,7 @@ namespace Cell_Tool_3
                     IA.FileBrowser.Refresh_AfterSave();
                     fi.available = true;
                     IA.FileBrowser.StatusLabel.Text = "Ready";
-                    IA.ReloadImages();
+                    IA.ReloadImages(false);
                 }
                 //else
                 {
