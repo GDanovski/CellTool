@@ -179,9 +179,9 @@ namespace Cell_Tool_3
             }
             catch { }
         }
-        public void DrawToScreen(bool toRecalculateImages = true)
+        public void DrawToScreen(bool toRecalculateImages = true, int recalcChannel = -1, int recalcMethod = -1)
         {
-            GLDrawing_Start(IA.GLControl1, toRecalculateImages);
+            GLDrawing_Start(IA.GLControl1, toRecalculateImages, recalcChannel,recalcMethod);
         }
         #region GLControl_Events
         public void GLControl_Load(object sender, EventArgs e)
@@ -225,9 +225,9 @@ namespace Cell_Tool_3
         {
             //Global variables
             GLControl GLControl1 = sender as GLControl;
-            GLDrawing_Start(GLControl1);
+            GLDrawing_Start(GLControl1,false);
         }
-        private void GLDrawing_Start(GLControl GLControl1,bool toRecalculateImages = true)
+        private void GLDrawing_Start(GLControl GLControl1,bool toRecalculateImages = true, int recalcChannel = -1, int recalcMethod = -1)
         {
             //try
             {
@@ -321,7 +321,8 @@ namespace Cell_Tool_3
                 if (this.verticalScrollBar.Maximum > 5)
                 {
                     this.verticalScrollBar.Visible = true;
-                    this.verticalScrollBar.Value =  (int)(fi.Yposition * fi.zoom);
+                    this.verticalScrollBar.Value = this.verticalScrollBar.Maximum>(int)(fi.Yposition * fi.zoom)? 
+                        (int)(fi.Yposition * fi.zoom): this.verticalScrollBar.Maximum;
                 }
                 else
                 {
@@ -338,7 +339,8 @@ namespace Cell_Tool_3
                 if (this.horizontalScrollBar.Maximum > 5)
                 {                   
                     this.horizontalScrollBar.Visible = true;
-                    this.horizontalScrollBar.Value = (int)(fi.Xposition * fi.zoom);
+                    this.horizontalScrollBar.Value = this.horizontalScrollBar.Maximum > (int)(fi.Xposition * fi.zoom) ?
+                        (int)(fi.Xposition * fi.zoom) : this.horizontalScrollBar.Maximum;
                 }
                 else
                 {
@@ -361,7 +363,7 @@ namespace Cell_Tool_3
                 GL.ShadeModel(ShadingModel.Flat);
 
                 List<Button> MethodsBtnList = fi.tpTaskbar.MethodsBtnList;
-
+                
                 if (toRecalculateImages)
                 {
                     bool toDrawRawImage = MethodsBtnList[0].ImageIndex == 0;
@@ -373,6 +375,12 @@ namespace Cell_Tool_3
                         if ((index < fi.sizeC && toDrawRawImage) || (index >= fi.sizeC && toDrawFilteredImage))
                         {
                             int C = fi.sizeC > index ? index : index - fi.sizeC;
+                            
+                            if (!(colors[C] || composite)) continue;//exit if channel and composite images are disabled
+                            if (recalcChannel != -1 && recalcChannel != C) continue;//exit if the channel is disabled
+                            if (recalcMethod == 0 && index >= fi.sizeC) continue;//exit if the method 1 is disabled
+                            if (recalcMethod == 1 && index < fi.sizeC) continue;//exit if the method 2 is disabled
+
                             //create image texture
                             if (fi.sizeC > index)
                             {

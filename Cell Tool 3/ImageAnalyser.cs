@@ -357,7 +357,7 @@ namespace Cell_Tool_3
             TabPages.tTrackBar.TextBox1.Enabled = val;
             TabPages.zTrackBar.TextBox1.Enabled = val;
         }
-        public void ReloadImages(bool toRecalculateImages = true)
+        public void ReloadImages(bool toRecalculateImages = true, int recalcChannel = -1, int recalcMethod = -1)
         { 
             TabPages.PropertiesBody.SuspendLayout();
             TabPages.propertiesPanel.SuspendLayout();
@@ -457,7 +457,7 @@ namespace Cell_Tool_3
                 //Image Drawer
                 try
                 {
-                   IDrawer.DrawToScreen(toRecalculateImages);
+                   IDrawer.DrawToScreen(toRecalculateImages,recalcChannel,  recalcMethod);
                 }
                 catch { }
                 //Prop Panel settings
