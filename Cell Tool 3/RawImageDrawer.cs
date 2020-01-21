@@ -138,9 +138,9 @@ namespace Cell_Tool_3
                 return;
             }
             if (fi == null) { return; }
-            if (fi.Xposition != (double)this.horizontalScrollBar.Value / fi.zoom)
+            if (fi.Xposition != this.horizontalScrollBar.Value / fi.zoom)
             {
-                fi.Xposition = (double)this.horizontalScrollBar.Value / fi.zoom;
+                fi.Xposition = this.horizontalScrollBar.Value / fi.zoom;
                 IA.ReloadImages(false);
             }
         }
@@ -157,9 +157,9 @@ namespace Cell_Tool_3
                 return;
             }
             if (fi == null) { return; }
-            if (fi.Yposition != (double)this.verticalScrollBar.Value / fi.zoom)
+            if (fi.Yposition != this.verticalScrollBar.Value / fi.zoom)
             {
-                fi.Yposition = (double)this.verticalScrollBar.Value / fi.zoom;
+                fi.Yposition = this.verticalScrollBar.Value / fi.zoom;
                 IA.ReloadImages(false);
             }
         }
@@ -300,6 +300,8 @@ namespace Cell_Tool_3
 
                 //Set viewpoint
                 GL.Viewport(0, 0, GLControl1.Width, GLControl1.Height);
+                TranslationAndScale(fi, fieldRect);
+                /*
                 //scale the image
                 if (oldScale != fi.zoom)
                 {
@@ -307,22 +309,31 @@ namespace Cell_Tool_3
                     oldScale = fi.zoom;
                     if (factor != 1)
                     {
-                        GL.Scale(factor, factor, 1);
+                        GL.Scale(factor, factor, 1);                        
                     }
                 }
                 //Translation
                 changeXY = false;
 
+                this.verticalScrollBar.Value = 0;
                 this.verticalScrollBar.Maximum = 
                     ((int)(fieldRect.Height * fi.zoom) - this.verticalScrollBar.Height+30>this.verticalScrollBar.Minimum)? 
                     (int)(fieldRect.Height * fi.zoom) - this.verticalScrollBar.Height +30:
-                    (int)this.verticalScrollBar.Minimum +1;
+                    (int)1;
 
-                if (this.verticalScrollBar.Maximum > 5)
+                if (this.verticalScrollBar.Maximum > 1)
                 {
                     this.verticalScrollBar.Visible = true;
-                    this.verticalScrollBar.Value = this.verticalScrollBar.Maximum>(int)(fi.Yposition * fi.zoom)? 
-                        (int)(fi.Yposition * fi.zoom): this.verticalScrollBar.Maximum;
+                    // this.verticalScrollBar.Value = this.verticalScrollBar.Maximum>(int)(fi.Yposition * fi.zoom)? 
+                    //(int)(fi.Yposition * fi.zoom): this.verticalScrollBar.Maximum;
+                    int curYVal = (int)(fi.Yposition * fi.zoom);
+                    if (this.verticalScrollBar.Maximum >= curYVal)
+                        this.verticalScrollBar.Value = curYVal;
+                    else
+                    {
+                        this.verticalScrollBar.Value = this.verticalScrollBar.Maximum;
+                        fi.Yposition = this.verticalScrollBar.Maximum/fi.zoom;
+                    }
                 }
                 else
                 {
@@ -331,16 +342,25 @@ namespace Cell_Tool_3
                     fi.Yposition = 0;
                 }
 
+                this.horizontalScrollBar.Value = 0;
                 this.horizontalScrollBar.Maximum = 
                     ((int)(fieldRect.Width * fi.zoom) - this.horizontalScrollBar.Width+30>this.horizontalScrollBar.Minimum)?
                     (int)(fieldRect.Width * fi.zoom) - this.horizontalScrollBar.Width+30:
-                    (int)this.horizontalScrollBar.Minimum+1;
+                    (int)1;
 
-                if (this.horizontalScrollBar.Maximum > 5)
+                if (this.horizontalScrollBar.Maximum > 1)
                 {                   
                     this.horizontalScrollBar.Visible = true;
-                    this.horizontalScrollBar.Value = this.horizontalScrollBar.Maximum > (int)(fi.Xposition * fi.zoom) ?
-                        (int)(fi.Xposition * fi.zoom) : this.horizontalScrollBar.Maximum;
+                    // this.horizontalScrollBar.Value = this.horizontalScrollBar.Maximum > (int)(fi.Xposition * fi.zoom) ?
+                    //(int)(fi.Xposition * fi.zoom) : this.horizontalScrollBar.Maximum;
+                    int curXVal = (int)(fi.Xposition * fi.zoom);
+                    if(this.horizontalScrollBar.Maximum>=curXVal)
+                        this.horizontalScrollBar.Value = curXVal;
+                    else
+                    {
+                        this.horizontalScrollBar.Value = this.horizontalScrollBar.Maximum;
+                        fi.Xposition = this.horizontalScrollBar.Maximum/ fi.zoom;
+                    }
                 }
                 else
                 {
@@ -354,7 +374,7 @@ namespace Cell_Tool_3
                 GL.Translate(valX, valY, 0);
 
                 changeXY = true;
-
+                */
                 //make colors transparent
                 GL.BlendFunc(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.One);
                 SelectedImage_DrawBorder(fi);
@@ -370,7 +390,7 @@ namespace Cell_Tool_3
                     bool toDrawFilteredImage = MethodsBtnList[1].ImageIndex == 0;
                     //prepare the image list
                     this.imagesTextures.PrepareImageList(fi.sizeC * 2);
-                    
+                                                            
                     for (int index = 0; index < fi.sizeC * 2; index++)
                         if ((index < fi.sizeC && toDrawRawImage) || (index >= fi.sizeC && toDrawFilteredImage))
                         {
@@ -422,6 +442,85 @@ namespace Cell_Tool_3
             }
             //catch { }
 
+        }
+        private void TranslationAndScale(TifFileInfo fi, Rectangle fieldRect)
+        {            
+            //scale the image
+            if (oldScale != fi.zoom)
+            {
+                double factor = fi.zoom / oldScale;
+                oldScale = fi.zoom;
+                if (factor != 1)
+                {
+                    GL.Scale(factor, factor, 1);
+                    fi.Xposition = 0;
+                    fi.Yposition = 0;
+                    //verticalScrollBar.Value = (int)(verticalScrollBar.Value * factor);
+                    //verticalScrollBar.Value = (int)(verticalScrollBar.Value * factor);
+                }                
+            }
+            //Translation
+            changeXY = false;
+            //Vertical scroll
+            int vertMax = (int)(fieldRect.Height * fi.zoom) - IA.GLControl1.Height + 20;
+            if (vertMax > 0)
+            {
+                if (verticalScrollBar.Value > vertMax)
+                    this.verticalScrollBar.Value = 0;
+
+                this.verticalScrollBar.Maximum = vertMax;
+
+                int curYVal = (int)(fi.Yposition * fi.zoom);
+
+                if (this.verticalScrollBar.Maximum >= curYVal)
+                    this.verticalScrollBar.Value = curYVal;
+                else
+                {
+                    this.verticalScrollBar.Value = this.verticalScrollBar.Maximum;
+                    fi.Yposition = this.verticalScrollBar.Maximum / fi.zoom;
+                }
+
+                this.verticalScrollBar.Visible = true;
+            }
+            else
+            {
+                fi.Yposition = 0;
+                this.verticalScrollBar.Visible = false;
+            }                
+
+            //horizontal scroll
+            int horMax = (int)(fieldRect.Width * fi.zoom) - IA.GLControl1.Width + 20;
+            if (horMax > 0)
+            {
+                if (horizontalScrollBar.Value > horMax)
+                    this.horizontalScrollBar.Value = 0;
+
+                this.horizontalScrollBar.Maximum = horMax;
+
+                int curXVal = (int)(fi.Xposition * fi.zoom);
+
+                if (this.horizontalScrollBar.Maximum >= curXVal)
+                    this.horizontalScrollBar.Value = curXVal;
+                else
+                {
+                    this.horizontalScrollBar.Value = this.horizontalScrollBar.Maximum;
+                    fi.Xposition = this.horizontalScrollBar.Maximum / fi.zoom;
+                }
+
+                this.horizontalScrollBar.Visible = true;
+            }
+            else
+            {
+                fi.Xposition = 0;
+                this.horizontalScrollBar.Visible = false;
+            }
+
+            valX = -fi.Xposition;
+            valY = -fi.Yposition;
+
+            GL.Translate(valX, valY, 0);
+
+            changeXY = true;
         }
         private void DrawLine()
         {
@@ -1079,7 +1178,7 @@ namespace Cell_Tool_3
 
                     if (fi.Xposition != this.horizontalScrollBar.Value / fi.zoom)
                     {
-                        fi.Xposition = (double)this.horizontalScrollBar.Value / fi.zoom;
+                        fi.Xposition = this.horizontalScrollBar.Value / fi.zoom;
                         IA.ReloadImages(false);
                     }
 
@@ -1128,7 +1227,7 @@ namespace Cell_Tool_3
 
                     if (fi.Yposition != this.verticalScrollBar.Value / fi.zoom)
                     {
-                        fi.Yposition = (double)this.verticalScrollBar.Value / fi.zoom;
+                        fi.Yposition = this.verticalScrollBar.Value / fi.zoom;
                         IA.ReloadImages(false);
                     }
 
@@ -1323,11 +1422,11 @@ namespace Cell_Tool_3
                     }
                 }
 
-                if (fi.Yposition != (double)this.verticalScrollBar.Value / fi.zoom |
-                    fi.Xposition != (double)this.horizontalScrollBar.Value / fi.zoom)
+                if (fi.Yposition != this.verticalScrollBar.Value / fi.zoom |
+                    fi.Xposition != this.horizontalScrollBar.Value / fi.zoom)
                 {
-                    fi.Yposition = (double)this.verticalScrollBar.Value / fi.zoom;
-                    fi.Xposition = (double)this.horizontalScrollBar.Value / fi.zoom;
+                    fi.Yposition = this.verticalScrollBar.Value / fi.zoom;
+                    fi.Xposition = this.horizontalScrollBar.Value / fi.zoom;
                     IA.ReloadImages(false);
                 }
                 changeXY = true;

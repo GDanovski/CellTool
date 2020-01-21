@@ -122,7 +122,10 @@ namespace Cell_Tool_3
             byte G = col.G;
             byte B = col.B;
             if (fi.image16bit == null) return;
-            ushort[][] image = (fi.image16bitFilter != null)?fi.image16bitFilter[FC.FrameC(fi, C)]: fi.image16bit[FC.FrameC(fi, C)];
+
+            if (fi.image16bitFilter == null) fi.image16bitFilter = fi.image16bit;
+            ushort[][] image = fi.image16bitFilter[FC.FrameC(fi, C)];
+
             if (image == null) return;
             imageData.GetImage(fi.sizeX, fi.sizeY);
 
@@ -220,7 +223,9 @@ namespace Cell_Tool_3
             byte G = col.G;
             byte B = col.B;
             if (fi.image8bit == null) return;
-            byte[][] image = (fi.image8bitFilter != null) ? fi.image8bitFilter[FC.FrameC(fi, C)] : fi.image8bit[FC.FrameC(fi, C)];
+
+            if (fi.image8bitFilter == null) fi.image8bitFilter = fi.image8bit;
+            byte[][] image = fi.image8bitFilter[FC.FrameC(fi, C)];
             if (image == null) return;
             imageData.GetImage(fi.sizeX, fi.sizeY);
 
