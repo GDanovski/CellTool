@@ -2522,7 +2522,7 @@ namespace Cell_Tool_3
             Point p = new Point(X, Y);
 
             for (int i = 0; i < fi.sizeC; i++)
-            {
+            {                
                 if (IA.IDrawer.coRect != null && IA.IDrawer.coRect[0] != null &&
                     (IA.IDrawer.coRect[0][i].Contains(p) == true &
                     fi.tpTaskbar.MethodsBtnList[0].ImageIndex == 0) |
