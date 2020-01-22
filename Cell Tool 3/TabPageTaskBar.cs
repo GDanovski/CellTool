@@ -208,7 +208,7 @@ namespace Cell_Tool_3
             MethodsPanel.Width = 100;
             TopBar.Controls.Add(MethodsPanel);
             MethodsPanel.BringToFront();
-
+            
             Refresh();
 
             VisualizeColorBtns();

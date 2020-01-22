@@ -76,14 +76,14 @@ namespace Cell_Tool_3
            //new scrollBars
            verticalScrollBar = new VScrollBar()
             {
-                Dock = DockStyle.Right,
+                Dock = DockStyle.None,
                 Width = 17,
                 Visible = false,
                 Value = 0,
                 Minimum = 0,
                 Maximum = 0
             };
-
+            
             tpContr.ImageMainPanel.Controls.Add(verticalScrollBar);
             horizontalScrollBar = new HScrollBar()
             {
@@ -300,7 +300,7 @@ namespace Cell_Tool_3
 
                 //Set viewpoint
                 GL.Viewport(0, 0, GLControl1.Width, GLControl1.Height);
-                TranslationAndScale(fi, fieldRect);
+                TranslationAndScale(fi, fieldRect, GLControl1);
                 /*
                 //scale the image
                 if (oldScale != fi.zoom)
@@ -443,8 +443,12 @@ namespace Cell_Tool_3
             //catch { }
 
         }
-        private void TranslationAndScale(TifFileInfo fi, Rectangle fieldRect)
-        {            
+        private void TranslationAndScale(TifFileInfo fi, Rectangle fieldRect, GLControl glcontrol1)
+        {
+            int vertValue = (int)(fi.Yposition * fi.zoom);
+            int vertMax = (int)(fieldRect.Height * fi.zoom) - IA.GLControl1.Height+10;
+            int horValue = (int)(fi.Xposition * fi.zoom);
+            int horMax = (int)(fieldRect.Width * fi.zoom) - IA.GLControl1.Width+10;
             //scale the image
             if (oldScale != fi.zoom)
             {
@@ -452,75 +456,89 @@ namespace Cell_Tool_3
                 oldScale = fi.zoom;
                 if (factor != 1)
                 {
-                    GL.Scale(factor, factor, 1);
-                    fi.Xposition = 0;
-                    fi.Yposition = 0;
-                    //verticalScrollBar.Value = (int)(verticalScrollBar.Value * factor);
-                    //verticalScrollBar.Value = (int)(verticalScrollBar.Value * factor);
-                }                
+                   GL.Scale(factor, factor, 1);
+                    /*
+                    if (vertMax < glcontrol1.Height + 10 || horMax < glcontrol1.Width + 10)
+                    {
+                        fi.Yposition = 0;
+                        fi.Xposition = 0;
+                    }*/
+                    if (vertMax < glcontrol1.Height + 10) fi.Yposition = 0;
+                    if (horMax < glcontrol1.Width + 10) fi.Xposition = 0;
+                }                   
             }
-            //Translation
             changeXY = false;
-            //Vertical scroll
-            int vertMax = (int)(fieldRect.Height * fi.zoom) - IA.GLControl1.Height + 20;
-            if (vertMax > 0)
+
+            //Y position             
+             if (vertValue <= vertMax)
             {
-                if (verticalScrollBar.Value > vertMax)
-                    this.verticalScrollBar.Value = 0;
-
-                this.verticalScrollBar.Maximum = vertMax;
-
-                int curYVal = (int)(fi.Yposition * fi.zoom);
-
-                if (this.verticalScrollBar.Maximum >= curYVal)
-                    this.verticalScrollBar.Value = curYVal;
+                if (verticalScrollBar.Maximum >= vertValue)
+                {
+                    verticalScrollBar.Value = vertValue;
+                    verticalScrollBar.Maximum = vertMax;
+                }
+                else if(verticalScrollBar.Value <= vertMax)
+                {
+                    verticalScrollBar.Maximum = vertMax;
+                    verticalScrollBar.Value = vertValue;
+                }
                 else
                 {
-                    this.verticalScrollBar.Value = this.verticalScrollBar.Maximum;
-                    fi.Yposition = this.verticalScrollBar.Maximum / fi.zoom;
+                    verticalScrollBar.Value = 0;
+                    verticalScrollBar.Maximum = vertMax;
+                    verticalScrollBar.Value = vertValue;
                 }
 
-                this.verticalScrollBar.Visible = true;
+                if (verticalScrollBar.Location.X != glcontrol1.Width - verticalScrollBar.Width)
+                    verticalScrollBar.Location = new Point(glcontrol1.Width - verticalScrollBar.Width, glcontrol1.Location.Y);
+                if (verticalScrollBar.Height != glcontrol1.Height)
+                    verticalScrollBar.Height = glcontrol1.Height;
+                verticalScrollBar.BringToFront();
+
+                verticalScrollBar.Visible = true;
             }
             else
             {
                 fi.Yposition = 0;
-                this.verticalScrollBar.Visible = false;
-            }                
-
-            //horizontal scroll
-            int horMax = (int)(fieldRect.Width * fi.zoom) - IA.GLControl1.Width + 20;
-            if (horMax > 0)
+                verticalScrollBar.Value = 0;
+                verticalScrollBar.Maximum = 1;
+                verticalScrollBar.Visible = false;
+            }
+            //X position
+            if (horValue <= horMax)
             {
-                if (horizontalScrollBar.Value > horMax)
-                    this.horizontalScrollBar.Value = 0;
-
-                this.horizontalScrollBar.Maximum = horMax;
-
-                int curXVal = (int)(fi.Xposition * fi.zoom);
-
-                if (this.horizontalScrollBar.Maximum >= curXVal)
-                    this.horizontalScrollBar.Value = curXVal;
+                if (horizontalScrollBar.Maximum >= horValue)
+                {
+                    horizontalScrollBar.Value = horValue;
+                    horizontalScrollBar.Maximum = horMax;
+                }
+                else if (horizontalScrollBar.Value <= horMax)
+                {
+                    horizontalScrollBar.Maximum = horMax;
+                    horizontalScrollBar.Value = horValue;
+                }
                 else
                 {
-                    this.horizontalScrollBar.Value = this.horizontalScrollBar.Maximum;
-                    fi.Xposition = this.horizontalScrollBar.Maximum / fi.zoom;
+                    horizontalScrollBar.Value = 0;
+                    horizontalScrollBar.Maximum = horMax;
+                    horizontalScrollBar.Value = horValue;
                 }
 
-                this.horizontalScrollBar.Visible = true;
+                horizontalScrollBar.Visible = true;
             }
             else
             {
                 fi.Xposition = 0;
-                this.horizontalScrollBar.Visible = false;
+                horizontalScrollBar.Value = 0;
+                horizontalScrollBar.Maximum = 1;
+                horizontalScrollBar.Visible = false;
             }
 
             valX = -fi.Xposition;
             valY = -fi.Yposition;
 
             GL.Translate(valX, valY, 0);
-
-            changeXY = true;
+            changeXY = true;            
         }
         private void DrawLine()
         {
