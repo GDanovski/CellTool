@@ -1486,6 +1486,10 @@ namespace Cell_Tool_3
 
                         PrepareTrackingRoiForPaste(fi, roi);
                     }
+
+                    if (roi.ToT > fi.sizeT) roi.ToT = fi.sizeT;
+                    if (roi.ToZ > fi.sizeZ) roi.ToZ = fi.sizeZ;
+
                     fi.roiList[fi.cValue].Add(roi);
                     roi.getID = fi.ROICounter;
                     fi.ROICounter++;

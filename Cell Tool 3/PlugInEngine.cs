@@ -262,7 +262,7 @@ namespace Cell_Tool_3
                                  
                             }
                         }
-                        catch { MessageBox.Show("Error with reporting back!"); }
+                        catch (Exception b){ MessageBox.Show("Error with reporting back!\n" + b.Message); }
                        
                         IA.ReloadImages(true);
                     });
@@ -273,7 +273,7 @@ namespace Cell_Tool_3
                     {
                         type.InvokeMember("Input", BindingFlags.InvokeMethod, null, c, new object[] { fi, e });
                     }
-                    catch { MessageBox.Show("Input void is not avaliable!"); }
+                    catch (Exception b) { MessageBox.Show("Input void is not avaliable!\n" + b.Message); }
                     break;
                 }
                 catch { }
