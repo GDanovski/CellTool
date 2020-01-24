@@ -301,80 +301,7 @@ namespace Cell_Tool_3
                 //Set viewpoint
                 GL.Viewport(0, 0, GLControl1.Width, GLControl1.Height);
                 TranslationAndScale(fi, fieldRect, GLControl1);
-                /*
-                //scale the image
-                if (oldScale != fi.zoom)
-                {
-                    double factor = fi.zoom / oldScale;
-                    oldScale = fi.zoom;
-                    if (factor != 1)
-                    {
-                        GL.Scale(factor, factor, 1);                        
-                    }
-                }
-                //Translation
-                changeXY = false;
-
-                this.verticalScrollBar.Value = 0;
-                this.verticalScrollBar.Maximum = 
-                    ((int)(fieldRect.Height * fi.zoom) - this.verticalScrollBar.Height+30>this.verticalScrollBar.Minimum)? 
-                    (int)(fieldRect.Height * fi.zoom) - this.verticalScrollBar.Height +30:
-                    (int)1;
-
-                if (this.verticalScrollBar.Maximum > 1)
-                {
-                    this.verticalScrollBar.Visible = true;
-                    // this.verticalScrollBar.Value = this.verticalScrollBar.Maximum>(int)(fi.Yposition * fi.zoom)? 
-                    //(int)(fi.Yposition * fi.zoom): this.verticalScrollBar.Maximum;
-                    int curYVal = (int)(fi.Yposition * fi.zoom);
-                    if (this.verticalScrollBar.Maximum >= curYVal)
-                        this.verticalScrollBar.Value = curYVal;
-                    else
-                    {
-                        this.verticalScrollBar.Value = this.verticalScrollBar.Maximum;
-                        fi.Yposition = this.verticalScrollBar.Maximum/fi.zoom;
-                    }
-                }
-                else
-                {
-                    this.verticalScrollBar.Visible = false;
-                    this.verticalScrollBar.Value = 0;
-                    fi.Yposition = 0;
-                }
-
-                this.horizontalScrollBar.Value = 0;
-                this.horizontalScrollBar.Maximum = 
-                    ((int)(fieldRect.Width * fi.zoom) - this.horizontalScrollBar.Width+30>this.horizontalScrollBar.Minimum)?
-                    (int)(fieldRect.Width * fi.zoom) - this.horizontalScrollBar.Width+30:
-                    (int)1;
-
-                if (this.horizontalScrollBar.Maximum > 1)
-                {                   
-                    this.horizontalScrollBar.Visible = true;
-                    // this.horizontalScrollBar.Value = this.horizontalScrollBar.Maximum > (int)(fi.Xposition * fi.zoom) ?
-                    //(int)(fi.Xposition * fi.zoom) : this.horizontalScrollBar.Maximum;
-                    int curXVal = (int)(fi.Xposition * fi.zoom);
-                    if(this.horizontalScrollBar.Maximum>=curXVal)
-                        this.horizontalScrollBar.Value = curXVal;
-                    else
-                    {
-                        this.horizontalScrollBar.Value = this.horizontalScrollBar.Maximum;
-                        fi.Xposition = this.horizontalScrollBar.Maximum/ fi.zoom;
-                    }
-                }
-                else
-                {
-                    this.horizontalScrollBar.Visible = false;
-                    this.horizontalScrollBar.Value = 0;
-                    fi.Xposition = 0;
-                }
                 
-                valX = -fi.Xposition;
-                valY = -fi.Yposition;
-                GL.Translate(valX, valY, 0);
-
-                changeXY = true;
-                */
                 //make colors transparent
                 GL.BlendFunc(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.One);
                 SelectedImage_DrawBorder(fi);
@@ -457,12 +384,7 @@ namespace Cell_Tool_3
                 if (factor != 1)
                 {
                    GL.Scale(factor, factor, 1);
-                    /*
-                    if (vertMax < glcontrol1.Height + 10 || horMax < glcontrol1.Width + 10)
-                    {
-                        fi.Yposition = 0;
-                        fi.Xposition = 0;
-                    }*/
+                   
                     if (vertMax < glcontrol1.Height + 10) fi.Yposition = 0;
                     if (horMax < glcontrol1.Width + 10) fi.Xposition = 0;
                 }                   
