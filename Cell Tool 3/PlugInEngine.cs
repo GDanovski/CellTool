@@ -262,9 +262,9 @@ namespace Cell_Tool_3
                                  
                             }
                         }
-                        catch { MessageBox.Show("Error with reporting back!"); }
+                        catch (Exception b){ MessageBox.Show("Error with reporting back!\n" + b.Message); }
                        
-                        IA.ReloadImages();
+                        IA.ReloadImages(true);
                     });
                     
                     var c = Activator.CreateInstance(type);
@@ -273,7 +273,7 @@ namespace Cell_Tool_3
                     {
                         type.InvokeMember("Input", BindingFlags.InvokeMethod, null, c, new object[] { fi, e });
                     }
-                    catch { MessageBox.Show("Input void is not avaliable!"); }
+                    catch (Exception b) { MessageBox.Show("Input void is not avaliable!\n" + b.Message); }
                     break;
                 }
                 catch { }
@@ -353,6 +353,7 @@ namespace Cell_Tool_3
             #region Segmentation variables
             fi.histogramArray = null;
             fi.adjustedLUT = null;
+            fi.newAdjustedLUT = null;
             fi.MaxBrightness = null;
             fi.MinBrightness = null;
             fi.SegmentationCBoxIndex = new int[fi.sizeC];

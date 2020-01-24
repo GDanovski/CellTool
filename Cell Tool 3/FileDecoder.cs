@@ -1584,7 +1584,8 @@ namespace Cell_Tool_3
                         fi.openedImages = fi.sizeC * fi.sizeZ;
                         try
                         {
-                            IA1.ReloadImages();
+                            IA1.BandC.RefreshAllLUTs(fi);
+                            IA1.ReloadImages(true);
                         }
                         catch { }
 
@@ -1596,7 +1597,7 @@ namespace Cell_Tool_3
                         {
                             fi.available = true;
                             fi.tpTaskbar.MethodsBtnList[1].ImageIndex = 0;
-                            IA1.ReloadImages();
+                            IA1.ReloadImages(true);
                         }
 
                         fi.openedImages = fi.imageCount;
@@ -1604,8 +1605,9 @@ namespace Cell_Tool_3
                         fi.loaded = true;
 
                         CalculateAllRois(fi);
-
-                        IA1.ReloadImages();
+                        IA1.BandC.RefreshAllLUTs(fi);
+                        fi.autoDetectBandC = false;
+                        IA1.ReloadImages(true);
                         bool check = true;
                         foreach (TabPage tp1 in Collection)
                         {
@@ -1656,7 +1658,8 @@ namespace Cell_Tool_3
                 {
                     if (loaded == true)
                     {
-                        IA1.ReloadImages();
+                        IA1.BandC.RefreshAllLUTs(fi);
+                        IA1.ReloadImages(true);
                     }
                 }
                 catch { }
@@ -1847,7 +1850,8 @@ namespace Cell_Tool_3
                     fi.openedImages = fi.sizeC * fi.sizeZ;
                     try
                     {
-                        IA1.ReloadImages();
+                        IA1.BandC.RefreshAllLUTs(fi);
+                        IA1.ReloadImages(true);
                     }
                     catch { }
                     
@@ -1882,7 +1886,9 @@ namespace Cell_Tool_3
                     fi.loaded = true;
 
                     CalculateAllRois(fi);
-                    IA1.ReloadImages();
+                    IA1.BandC.RefreshAllLUTs(fi);
+                    fi.autoDetectBandC = false;
+                    IA1.ReloadImages(true);
                     bool check = true;
                     foreach (TabPage tp1 in Collection)
                     {
@@ -1941,7 +1947,8 @@ namespace Cell_Tool_3
             {
                 if (loaded == true)
                 {
-                    IA1.ReloadImages();
+                    IA1.BandC.RefreshAllLUTs(fi);
+                    IA1.ReloadImages(true);
                 }
             }
             catch { }

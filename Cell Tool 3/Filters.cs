@@ -176,7 +176,7 @@ namespace Cell_Tool_3
                 if (a.ProgressPercentage == 0)
                 {
                     //reload images to screen
-                    IA.ReloadImages();
+                    IA.ReloadImages(true,C,1);
                     IA.MarkAsNotSaved();
                     IA.FileBrowser.StatusLabel.Text = "Ready";
                 }
@@ -374,7 +374,7 @@ namespace Cell_Tool_3
                     addToHistoryNewInfo(fi.cValue, fi);
 
                     IA.MarkAsNotSaved();
-                    IA.ReloadImages();
+                    IA.ReloadImages(true,fi.cValue,1);
                 });
             }
             {
@@ -887,7 +887,7 @@ namespace Cell_Tool_3
                         ConvolutionToString(C, string.Join("zz", kernelStrings)));
                     addToHistoryNewInfo(C, fi);
                     //reload images to screen
-                    IA.ReloadImages();
+                    IA.ReloadImages(true,C,1);
                     IA.MarkAsNotSaved();
                     IA.FileBrowser.StatusLabel.Text = "Ready";
                 }
@@ -955,7 +955,7 @@ namespace Cell_Tool_3
                     //reload images to screen
                     IA.MarkAsNotSaved();
                 }
-                IA.ReloadImages();
+                IA.ReloadImages(true,C,1);
                 fi.available = true;
                 IA.FileBrowser.StatusLabel.Text = "Ready";
             });
@@ -1099,7 +1099,7 @@ namespace Cell_Tool_3
                     //reload images to screen
                     IA.MarkAsNotSaved();
                 }
-                IA.ReloadImages();
+                IA.ReloadImages(true,C,1);
                 fi.available = true;
                 IA.FileBrowser.StatusLabel.Text = "Ready";
             });
@@ -1270,7 +1270,7 @@ namespace Cell_Tool_3
                     //reload images to screen
                     IA.MarkAsNotSaved();
                 }
-                IA.ReloadImages();
+                IA.ReloadImages(true,C,1);
                 fi.available = true;
                 IA.FileBrowser.StatusLabel.Text = "Ready";
             });
@@ -1331,7 +1331,7 @@ namespace Cell_Tool_3
                     //reload images to screen
                     IA.MarkAsNotSaved();
                 }
-                IA.ReloadImages();
+                IA.ReloadImages(true,C,1);
                 fi.available = true;
                 IA.FileBrowser.StatusLabel.Text = "Ready";
             });
@@ -1393,7 +1393,7 @@ namespace Cell_Tool_3
                     //reload images to screen
                     IA.MarkAsNotSaved();
                 }
-                IA.ReloadImages();
+                IA.ReloadImages(true,C,1);
                 fi.available = true;
                 IA.FileBrowser.StatusLabel.Text = "Ready";
             });
@@ -1455,7 +1455,7 @@ namespace Cell_Tool_3
                     //reload images to screen
                     IA.MarkAsNotSaved();
                 }
-                IA.ReloadImages();
+                IA.ReloadImages(true,C,1);
                 fi.available = true;
                 IA.FileBrowser.StatusLabel.Text = "Ready";
             });
@@ -1514,7 +1514,7 @@ namespace Cell_Tool_3
                     //reload images to screen
                     IA.MarkAsNotSaved();
                 }
-                IA.ReloadImages();
+                IA.ReloadImages(true,C,1);
                 fi.available = true;
                 IA.FileBrowser.StatusLabel.Text = "Ready";
             });

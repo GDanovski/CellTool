@@ -62,7 +62,7 @@ namespace Cell_Tool_3
             
             try
             {
-                FirstReader.setId(path);
+                FirstReader.setId(OSStringConverter.StringToDir(path));
             }
             catch
             {
@@ -217,7 +217,7 @@ namespace Cell_Tool_3
                 if (isLibTifCompatible(path) && !isRGB)
                 {
                     int[] dimOrder = GetFrameIndexes(reader, fi);
-                    Tiff image = Tiff.Open(path, "r");
+                    Tiff image = Tiff.Open(OSStringConverter.StringToDir(path), "r");
                     //prepare array and read file
                     int midFrame = fi.sizeC * fi.sizeZ;
                     switch (fi.bitsPerPixel)
@@ -345,8 +345,7 @@ namespace Cell_Tool_3
                     fi.openedImages = fi.sizeC * fi.sizeZ;
                     try
                     {
-                        IA.BandC.RefreshAllLUTs(fi);
-                        IA.ReloadImages(true);
+                        IA.ReloadImages();
                     }
                     catch { }
                 }
@@ -361,9 +360,8 @@ namespace Cell_Tool_3
                     fi.loaded = true;
 
                     IA.TabPages.myFileDecoder.CalculateAllRois(fi);
-                    IA.BandC.RefreshAllLUTs(fi);
-                    fi.autoDetectBandC = false;
-                    IA.ReloadImages(true);
+
+                    IA.ReloadImages();
                     bool check = true;
                     foreach (TabPage tp1 in Collection)
                     {
@@ -406,8 +404,7 @@ namespace Cell_Tool_3
             {
                 if (loaded == true)
                 {
-                    IA.BandC.RefreshAllLUTs(fi);
-                    IA.ReloadImages(true);
+                    IA.ReloadImages();
                 }
             }
             catch { }
@@ -444,7 +441,7 @@ namespace Cell_Tool_3
         {
             if (!dir.EndsWith(".tif")) return false;
 
-            using (Tiff tif = Tiff.Open(dir, "r"))
+            using (Tiff tif = Tiff.Open(OSStringConverter.StringToDir(dir), "r"))
             {
                 if (tif == null)
                 {
@@ -472,7 +469,7 @@ namespace Cell_Tool_3
         private static string getLibTifFileDescription(string dir)
         {
             string des = "";
-            using (Tiff tif = Tiff.Open(dir, "r"))
+            using (Tiff tif = Tiff.Open(OSStringConverter.StringToDir(dir), "r"))
             {
                 if (tif == null)
                     return "";
@@ -825,7 +822,7 @@ namespace Cell_Tool_3
                     }
                 });
 
-                OptionForm.ShowDialog();
+                OptionForm.Show();
                 OptionForm.Dispose();
             }
             return res;

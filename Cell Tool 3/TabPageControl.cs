@@ -52,7 +52,7 @@ namespace Cell_Tool_3
         private Color TaskBtnClickColor1;
         //panels
         private Panel Body = new Panel();
-         public Panel OpenPanel = new Panel();
+        public Panel OpenPanel = new Panel();
         public Panel TitlePanel = new Panel();
         public Panel ImageMainPanel = new Panel();
         public Panel ResultsExtractorMainPanel = new Panel();
@@ -79,7 +79,7 @@ namespace Cell_Tool_3
         public void Initialize(Form MainForm, int ActiveAccountIndex1, Panel MainPanel1, Color BackGroundColor, Color BackGround2Color, Color ShriftColor, Color TitlePanelColor, Color TaskBtnColor, Color TaskBtnClickColor)
         {
             this.MainForm = MainForm;
-            
+
             Body.SuspendLayout();
             OpenPanel.SuspendLayout();
             TitlePanel.SuspendLayout();
@@ -208,7 +208,7 @@ namespace Cell_Tool_3
                     settings.Save();
                 });
             }
-            
+
             //Add verticalTitle panel
             Panel verticalTitle = new Panel();
             verticalTitle.Dock = DockStyle.Left;
@@ -246,7 +246,7 @@ namespace Cell_Tool_3
             PropertiesBody.Dock = DockStyle.Fill;
             propertiesPanel.Controls.Add(PropertiesBody);
             PropertiesBody.BringToFront();
-            
+
 
             //Frames and Z track bars
             {
@@ -264,7 +264,7 @@ namespace Cell_Tool_3
                 tb.Panel.BringToFront();
                 tb.Value.Changed += new ChangedValueEventHandler(delegate (Object o, ChangeValueEventArgs a)
                 {
-                  IA.Input.ChangeValueFunction("ChangeT(" + (int.Parse(a.Value) - 1).ToString() + ")");
+                    IA.Input.ChangeValueFunction("ChangeT(" + (int.Parse(a.Value) - 1).ToString() + ")");
                 });
 
                 Button btn = tPlayStop;
@@ -274,9 +274,9 @@ namespace Cell_Tool_3
                 btn.Image = Properties.Resources.Play;
                 btn.Width = 20;
                 btn.Height = 20;
-                btn.Location = new Point(tb.TrackBar1.Location.X -20, tb.Name.Location.Y - 3);
-               tb.Panel.Controls.Add(btn);
-               btn.BringToFront();
+                btn.Location = new Point(tb.TrackBar1.Location.X - 20, tb.Name.Location.Y - 3);
+                tb.Panel.Controls.Add(btn);
+                btn.BringToFront();
 
             }
             {
@@ -309,13 +309,13 @@ namespace Cell_Tool_3
                 btn.BringToFront();
             }
             //shrinck image panel
-           
+
             ImageMainPanel.BringToFront();
 
             ResultsExtractorMainPanel.Visible = false;
             //ImageMainPanel.Visible = false;
             propertiesPanel.Visible = false;
-            
+
             Body.ResumeLayout(false);
             OpenPanel.ResumeLayout(false);
             TitlePanel.ResumeLayout(false);
@@ -353,7 +353,7 @@ namespace Cell_Tool_3
                     IA.BandC.Chart1.CA.DrawToScreen(fi);
                     IA.BandC.Chart1.CA.Update();
                     IA.BandC.Chart1.CA.PerformLayout();
-                    IA.ReloadImages();
+                    IA.ReloadImages(false);
                 }
                 else if (fi.selectedPictureBoxColumn == 1 & fi.cValue < fi.sizeC
         & fi.tpTaskbar.ColorBtnList[fi.cValue].ImageIndex == 0
@@ -366,7 +366,7 @@ namespace Cell_Tool_3
                     IA.Segmentation.Chart1.DrawToScreen(fi);
                     IA.Segmentation.Chart1.Update();
                     IA.Segmentation.Chart1.PerformLayout();
-                    IA.ReloadImages();
+                    IA.ReloadImages(false);
                 }
             }
         }
@@ -399,7 +399,7 @@ namespace Cell_Tool_3
                 }
                 IA.BandC.panel.Resize += new EventHandler(BandC_heightChange);
                 //Metadata
-                IA.Meta.Initialize(propertiesPanel, PropertiesBody,IA);
+                IA.Meta.Initialize(propertiesPanel, PropertiesBody, IA);
                 IA.Meta.BackColor(BackGround2Color1);
                 IA.Meta.ForeColor(ShriftColor1);
                 IA.Meta.TitleColor(TitlePanelColor1);
@@ -421,7 +421,7 @@ namespace Cell_Tool_3
                 IA.Segmentation.LibPanel.Height = 200;
                 IA.Segmentation.LibPanel.Resize += new EventHandler(SegmentationLibPanel_heightChange);
                 //Segmentation Data
-                IA.Segmentation.DataPanel.Height = 150;                
+                IA.Segmentation.DataPanel.Height = 150;
                 IA.Segmentation.DataPanel.Resize += new EventHandler(SegmentationDataPanel_heightChange);
                 //Segmentation Histogram
                 try
@@ -447,7 +447,7 @@ namespace Cell_Tool_3
                 IA.Tracking.panel.Height = 80;
                 IA.Tracking.panel.Resize += new EventHandler(TrackingPanel_heightChange);
                 //Roi manager
-                IA.RoiMan = new RoiManager(propertiesPanel, PropertiesBody,IA);
+                IA.RoiMan = new RoiManager(propertiesPanel, PropertiesBody, IA);
                 IA.RoiMan.BackColor(BackGround2Color1);
                 IA.RoiMan.ForeColor(ShriftColor1);
                 IA.RoiMan.TitleColor(TitlePanelColor1);
@@ -467,7 +467,7 @@ namespace Cell_Tool_3
                 IA.chart.Properties.BackColor(BackGround2Color1);
                 IA.chart.Properties.ForeColor(ShriftColor1);
                 IA.chart.Properties.TitleColor(TitlePanelColor1);
-                
+
                 IA.chart.Properties.panel.Resize += chart_Properties_heightChange;
 
                 IA.chart.Series = new CTChart_Series(propertiesPanel, PropertiesBody, IA);
@@ -628,9 +628,9 @@ namespace Cell_Tool_3
                 IA.settings.MetaVis[FileBrowser.ActiveAccountIndex] = "y";
                 IA.settings.Meta[FileBrowser.ActiveAccountIndex] = IA.Meta.panel.Height.ToString();
             }
-             IA.settings.Save();
+            IA.settings.Save();
         }
-        private void BandC_heightChange(object sender,EventArgs e)
+        private void BandC_heightChange(object sender, EventArgs e)
         {
             if (IA.BandC.panel.Height <= 26)
             {
@@ -663,7 +663,8 @@ namespace Cell_Tool_3
                     }
                 }
             }
-            else {
+            else
+            {
 
                 if (propertiesPanel.Width >= 25)
                 {
@@ -710,17 +711,17 @@ namespace Cell_Tool_3
         {
             if (propertiesPanel_Resize == true)
             {
-                propertiesPanel.Width = Body.Width - ResizePanel.Location.X ;
+                propertiesPanel.Width = Body.Width - ResizePanel.Location.X;
 
                 if (propertiesPanel.Width < 100)
                 {
-                   propertiesPanel.Width = 100 ;
+                    propertiesPanel.Width = 100;
                 }
                 else if (propertiesPanel.Width > Body.Width - 100)
                 {
-                    propertiesPanel.Width =  Body.Width - 100;
+                    propertiesPanel.Width = Body.Width - 100;
                 }
-                
+
                 Properties.Settings settings = Properties.Settings.Default;
                 settings.PropertiesPanelWidth[ActiveAccountIndex] = Convert.ToString(propertiesPanel.Width);
                 settings.Save();
@@ -748,10 +749,10 @@ namespace Cell_Tool_3
         private void ScrollBackBtn_MouseDown(object sender, EventArgs e)
         {
             t = new Timer();
-            t.Tick += new EventHandler(delegate(object o, EventArgs a)
+            t.Tick += new EventHandler(delegate (object o, EventArgs a)
             {
                 ScrollBackBtn_Click(sender, e);
-                
+
                 if (ScrollBackBtn.Visible == false)
                     ScrollBtn_MouseUp(sender, e);
             });
@@ -782,7 +783,7 @@ namespace Cell_Tool_3
             int Last = 0;
             int maxW = TitlePanel.Width - 56;
             int widthToCurControl = 0;
-            
+
             for (int i = Collections.Count - 1; i >= 0; i--)
             {
                 if (Collections[i][0].Visible == false)
@@ -808,16 +809,16 @@ namespace Cell_Tool_3
                 }
             }
 
-       }
+        }
         private void check_For_Scroll()
         {
-            if(Collections.Count < 0)
+            if (Collections.Count < 0)
             {
                 ScrollForwBtn.Visible = false;
                 ScrollBackBtn.Visible = false;
             }
 
-            if(Collections[0][0].Visible == false)
+            if (Collections[0][0].Visible == false)
             {
                 ScrollBackBtn.Visible = true;
             }
@@ -857,7 +858,7 @@ namespace Cell_Tool_3
             */
             OpenPanel.Location = new Point(0, TitlePanel.Height + 2);
             OpenPanel.Width = Body.Width;
-            OpenPanel.Height = Body.Height - TitlePanel.Height-2;
+            OpenPanel.Height = Body.Height - TitlePanel.Height - 2;
         }
         public void OpenEmptyResultsExtractor(object sender, EventArgs e)
         {
@@ -865,7 +866,7 @@ namespace Cell_Tool_3
             TifFileInfo fi = null;
             try
             {
-                if(SelectedIndex>=0 && SelectedIndex < TabCollections.Count)
+                if (SelectedIndex >= 0 && SelectedIndex < TabCollections.Count)
                     fi = TabCollections[SelectedIndex].tifFI;
             }
             catch { }
@@ -874,15 +875,15 @@ namespace Cell_Tool_3
             {
                 dir = fi.Dir.Substring(0, fi.Dir.LastIndexOf("\\")) + dir;
             }
-            
-            FileBrowser.Openlabel.Tag = null;            
+
+            FileBrowser.Openlabel.Tag = null;
             FileBrowser.Openlabel.Text = "'" + dir;
             FileBrowser.Openlabel.Text = "";
             FileBrowser.Openlabel.Tag = null;
         }
-        public void ExportResultsExtractorData(object sender,EventArgs e)
+        public void ExportResultsExtractorData(object sender, EventArgs e)
         {
-            if(TabCollections[SelectedIndex].ResultsExtractor == null) return;
+            if (TabCollections[SelectedIndex].ResultsExtractor == null) return;
 
             ResultsExtractor.FileSaver.Export(
                 (ResultsExtractor.MyForm)TabCollections[SelectedIndex].ResultsExtractor.myPanel);
@@ -890,19 +891,19 @@ namespace Cell_Tool_3
         public void Openlabel_textChanged(object sender, EventArgs e)
         {
             string str = (sender as Label).Text;
-            if(str == "") { return; }
-            if (myFileDecoder.decodeFileType(str.Substring(1,str.Length - 2)) == -1)
+            if (str == "") { return; }
+            if (myFileDecoder.decodeFileType(str.Substring(1, str.Length - 2)) == -1)
             {
                 MessageBox.Show("Unsuported file type!");
                 return;
             }
-            
+
             TreeNode node = (sender as Label).Tag as TreeNode;
             //restore label
             (sender as Label).Tag = null;
             (sender as Label).Text = "";
             //open
-            foreach (string name in str.Substring(1,str.Length - 1).Split(new[] { ",'" }, StringSplitOptions.None))
+            foreach (string name in str.Substring(1, str.Length - 1).Split(new[] { ",'" }, StringSplitOptions.None))
             {
                 string strS = name.Substring(0, name.Length - 1);
                 if (node == null)
@@ -920,7 +921,7 @@ namespace Cell_Tool_3
         {
             foreach (TabPage fi in TabCollections)
             {
-                if(fi.tifFI!=null && fi.tifFI.Dir == Dir)
+                if (fi.tifFI != null && fi.tifFI.Dir == Dir)
                 {
                     return false;
                 }
@@ -943,7 +944,7 @@ namespace Cell_Tool_3
                 Body.ResumeLayout(true);
                 return;
             }
-            else if(FileTypeIndex == 2) //.PlugIn.dll
+            else if (FileTypeIndex == 2) //.PlugIn.dll
             {
                 IA.PlugIns.InstallPlugIn(dir);
                 Body.ResumeLayout(true);
@@ -970,13 +971,13 @@ namespace Cell_Tool_3
 
             //read image
             Panel CorePanel = myFileDecoder.OpenFile(TabCollections, dir, FileTypeIndex, IA);
-            
+
             if (CorePanel == null)
             {
                 ResultsExtractorMainPanel.Visible = showResultsExtractorMainPanel;
                 ImageMainPanel.Visible = showImageMainPanel;
                 Body.ResumeLayout(true);
-                
+
                 MessageBox.Show("Unsuported file type!");
                 return;
             }
@@ -984,7 +985,7 @@ namespace Cell_Tool_3
             ImageMainPanel.BackColor = BackGround2Color1;
             // add CorePanel
             CorePanel.Dock = DockStyle.Fill;
-            
+
             List<Control> smallCollection = new List<Control>();
             dir = (string)CorePanel.Tag;
             CorePanel.Tag = null;
@@ -1023,7 +1024,7 @@ namespace Cell_Tool_3
             TitlePanel.Controls.Add(xBtn);
             xBtn.BringToFront();
             xBtn.Click += new EventHandler(DeleteTabbtn_Click);
-                         
+
             Collections.Add(smallCollection);
 
             inactivate_Tabs();
@@ -1034,7 +1035,7 @@ namespace Cell_Tool_3
 
             Body.ResumeLayout(true);
         }
-        private void openResultsExtractor(string dir,int FileTypeIndex, TreeNode node)
+        private void openResultsExtractor(string dir, int FileTypeIndex, TreeNode node)
         {
             ResultsExtractorMainPanel.Visible = true;
             ImageMainPanel.Visible = false;
@@ -1043,9 +1044,9 @@ namespace Cell_Tool_3
 
             myFileDecoder.OpenFile(TabCollections, dir, FileTypeIndex, IA);
             ImageMainPanel.BackColor = BackGround2Color1;
-            
+
             List<Control> smallCollection = new List<Control>();
-            
+
             Button NameBtn = new Button();
             NameBtn.Tag = node;
             NameBtn.Text = FileNameFromDir(dir);
@@ -1105,7 +1106,6 @@ namespace Cell_Tool_3
             int maxW = TitlePanel.Width - 56;
             int widthToCurControl = 0;
             bool count = false;
-         
             for (int i = Collections.Count - 1; i >= 0; i--)
             {
                 if (i == 0)
@@ -1119,7 +1119,7 @@ namespace Cell_Tool_3
                     count = true;
                 }
 
-                if (count == true 
+                if (count == true
                     & maxW > widthToCurControl + Collections[i][0].Width)
                 {
                     widthToCurControl += Collections[i][0].Width;
@@ -1130,7 +1130,7 @@ namespace Cell_Tool_3
                     refreshTabsOrder(i + 1);
                     break;
                 }
-                
+
             }
 
         }
@@ -1138,13 +1138,13 @@ namespace Cell_Tool_3
         {
             if (Collections.Count < 1)
             {
-                IA.ReloadImages();
+                IA.ReloadImages(true);
                 ImageMainPanel.Visible = false;
                 ResultsExtractorMainPanel.Visible = false;
                 return;
             }
             int X = 0;
-            for ( int i = 0; i < Collections.Count; i++)
+            for (int i = 0; i < Collections.Count; i++)
             {
                 if (i >= begin & X + Collections[i][0].Width < TitlePanel.Width - 56)
                 {
@@ -1164,7 +1164,7 @@ namespace Cell_Tool_3
         }
         public void inactivate_Tabs()
         {
-            foreach(List<Control> l in Collections)
+            foreach (List<Control> l in Collections)
             {
                 if (l[0].BackColor != BackGroundColor1)
                 {
@@ -1172,7 +1172,7 @@ namespace Cell_Tool_3
                     l[1].BackColor = BackGroundColor1;
                     TabCollections[Collections.IndexOf(l)].Visible(false);
 
-                    if (TabCollections[Collections.IndexOf(l)].tifFI != null) 
+                    if (TabCollections[Collections.IndexOf(l)].tifFI != null)
                         TabCollections[Collections.IndexOf(l)].tifFI.selected = false;
                 }
             }
@@ -1188,35 +1188,35 @@ namespace Cell_Tool_3
                     if (CheckIsItSaved(i) == false) { return; }
                     if (Collections[i][1].BackColor == TitlePanelColor1)
                     {
-                        
-                         if(Collections.Count > i + 1)
+
+                        if (Collections.Count > i + 1)
                         {
                             selectTab_event(i + 1);
                         }
-                        else if(i - 1 >= 0)
+                        else if (i - 1 >= 0)
                         {
                             selectTab_event(i - 1);
                         }
-                         else if(Collections.Count == 1)
+                        else if (Collections.Count == 1)
                         {
                             tTrackBar.Panel.Visible = false;
                             zTrackBar.Panel.Visible = false;
                         }
                     }
-                    
+
                     {
                         Collections[i][1].Dispose();
                         Collections[i][0].Dispose();
                     }
                     Collections.RemoveAt(i);
-                   
-                     startAt = startAt - 1;
-                     if (startAt < 0) { startAt = 0; }
-                     refreshTabsOrder(startAt);
+
+                    startAt = startAt - 1;
+                    if (startAt < 0) { startAt = 0; }
+                    refreshTabsOrder(startAt);
                     //Delete tab page
                     TabCollections[i].Delete();
                     TabCollections.RemoveAt(i);
-                    if(TabCollections.Count < 1) { IA.GLControl1.Visible = false; }
+                    if (TabCollections.Count < 1) { IA.GLControl1.Visible = false; }
                     if (i < SelectedIndex & SelectedIndex > 0) { SelectedIndex--; }
                     break;
                 }
@@ -1226,7 +1226,7 @@ namespace Cell_Tool_3
         {
             int i = SelectedIndex;
             if (CheckIsItSaved(i) == false) { return; }
-            if(Collections.Count <= 0) { return; }
+            if (Collections.Count <= 0) { return; }
             if (Collections[i][1].BackColor == TitlePanelColor1)
             {
 
@@ -1254,7 +1254,7 @@ namespace Cell_Tool_3
             if (TabCollections.Count < 1) { IA.GLControl1.Visible = false; }
             if (i < SelectedIndex & SelectedIndex > 0) { SelectedIndex--; }
         }
-        public void SaveFile(object sender,EventArgs e)
+        public void SaveFile(object sender, EventArgs e)
         {
             if (Collections.Count <= 0) { return; }
             if (CheckForWorkInProgress()) { return; }
@@ -1266,7 +1266,7 @@ namespace Cell_Tool_3
         {
             if (Collections.Count <= 0) { return; }
             if (CheckForWorkInProgress()) { return; }
-            var res = MessageBox.Show("Do you want to save ALL opened images?"                   
+            var res = MessageBox.Show("Do you want to save ALL opened images?"
                    , "Save All", MessageBoxButtons.YesNo);
             if (res == System.Windows.Forms.DialogResult.Yes)
             {
@@ -1290,7 +1290,7 @@ namespace Cell_Tool_3
             // " files (*" + formatMiniStr + ")|*" + formatMiniStr;
             string formatStr = "";
 
-            if (TabCollections[SelectedIndex].tifFI!=null)
+            if (TabCollections[SelectedIndex].tifFI != null)
                 formatStr = "TIF files (*.tif)|*.tif";
             else if (TabCollections[SelectedIndex].ResultsExtractor != null)
                 formatStr = "CTData files(*.CTData)| *.CTData";
@@ -1344,12 +1344,12 @@ namespace Cell_Tool_3
                     }
                     catch { }
                 }
-                else if(TabCollections[SelectedIndex].ResultsExtractor != null)
+                else if (TabCollections[SelectedIndex].ResultsExtractor != null)
                 {
                     string dir = saveFileDialog1.FileName;
                     int end = dir.LastIndexOf(".");
                     dir = dir.Substring(0, end) + ".CTData";
-                    
+
                     TabCollections[SelectedIndex].dir = dir;
 
                     SaveItem(SelectedIndex, true);
@@ -1418,7 +1418,7 @@ namespace Cell_Tool_3
                 }
             }
 
-            TabCollections[i].Save(IA);           
+            TabCollections[i].Save(IA);
         }
         /// <summary>
         /// Return true if there is work in progress
@@ -1426,18 +1426,19 @@ namespace Cell_Tool_3
         /// <returns></returns>
         private bool CheckForWorkInProgress()
         {
-            if(FileBrowser.StatusLabel.Text != "Ready")
+            if (FileBrowser.StatusLabel.Text != "Ready")
             {
                 MessageBox.Show("The program is busy.\nTry again later. ");
                 return true;
             }
             return false;
         }
+
         private bool CheckIsItSaved(int i)
         {
             if (TabCollections[i].Saved == true) { return true; }
-            if (TabCollections[i].tifFI!= null && TabCollections[i].tifFI.available == false) { return false; }
-            var res = MessageBox.Show("Do you want to save changes to " + Collections[i][0].Text + " ?","Save File", MessageBoxButtons.YesNoCancel);
+            if (TabCollections[i].tifFI != null && TabCollections[i].tifFI.available == false) { return false; }
+            var res = MessageBox.Show("Do you want to save changes to " + Collections[i][0].Text + " ?", "Save File", MessageBoxButtons.YesNoCancel);
             if (res == System.Windows.Forms.DialogResult.Yes)
             {
                 TreeNode node = Collections[i][0].Tag as TreeNode;
@@ -1471,7 +1472,7 @@ namespace Cell_Tool_3
             refreshTabsOrder(startAt);
             if (TabCollections.Count < 1) { IA.GLControl1.Visible = false; }
         }
-       public void SelectTabBtn_Click(object sender, EventArgs e)
+        public void SelectTabBtn_Click(object sender, EventArgs e)
         {
             Button btn = sender as Button;
             for (int i = 0; i < Collections.Count; i++)
@@ -1484,7 +1485,7 @@ namespace Cell_Tool_3
                         Collections[i][1].BackColor = BackGroundColor1;
                         TabCollections[i].Visible(false);
 
-                        if(TabCollections[i].tifFI!=null)
+                        if (TabCollections[i].tifFI != null)
                             TabCollections[i].tifFI.selected = false;
                     }
                 }
@@ -1511,8 +1512,11 @@ namespace Cell_Tool_3
         {
             Body.SuspendLayout();
             ResultsExtractorMainPanel.Controls.Clear();
-           
-            if (Collections.Count > index) {
+            //Clear the 3D viewer
+            IA.IDrawer.imageDrawer_3D.ClearProgram(IA.GLControl1);
+
+            if (Collections.Count > index)
+            {
                 Collections[index][0].BackColor = TitlePanelColor1;
                 Collections[index][1].BackColor = TitlePanelColor1;
                 TabCollections[index].Visible(true);
@@ -1522,7 +1526,6 @@ namespace Cell_Tool_3
                 {
                     TabCollections[index].tifFI.selected = true;
                     TabCollections[index].tifFI.tpTaskbar.TopBar.BackColor = BackGroundColor1;
-
 
                     if (TabCollections[index].tifFI.sizeZ > 1)
                     {
@@ -1556,7 +1559,14 @@ namespace Cell_Tool_3
                     ImageMainPanel.Visible = true;
                     ResultsExtractorMainPanel.Visible = false;
 
-                    IA.ReloadImages();
+                    //start 3D viewer if 3D is enabled
+                    if (IA.IDrawer.imageDrawer_3D.isImage3D(TabCollections[index].tifFI))
+                    {
+                        IA.IDrawer.imageDrawer_3D.initProgram(IA.GLControl1, TabCollections[index].tifFI);
+                        IA.ReloadImages(true);//for some reason we need to call this twice
+                    }
+
+                    IA.ReloadImages(true);
                     try
                     {
                         IA.GLControl1.Focus();
@@ -1592,7 +1602,7 @@ namespace Cell_Tool_3
                     l[0].Width = TextRenderer.MeasureText(l[0].Text, l[0].Font).Width + 20;
                     if (l[0].Width > 250) l[0].Width = 250;
                     //change the directory of file in file info class
-                    if(TabCollections[i].tifFI!=null)
+                    if (TabCollections[i].tifFI != null)
                         TabCollections[i].tifFI.Dir = n.Tag.ToString();
                     else
                         TabCollections[i].dir = n.Tag.ToString();
@@ -1600,7 +1610,7 @@ namespace Cell_Tool_3
             }
             refreshTabsOrder(startAt);
         }
-     
+
         public void NameBtn_MouseDown(object sender, MouseEventArgs e)
         {
             Button btn = sender as Button;
@@ -1614,7 +1624,7 @@ namespace Cell_Tool_3
         }
         public void NameBtn_MouseUp(object sender, MouseEventArgs e)
         {
-             MoveTabIndex = -1;
+            MoveTabIndex = -1;
         }
         public void NameBtn_MouseMove(object sender, MouseEventArgs e)
         {
@@ -1625,14 +1635,14 @@ namespace Cell_Tool_3
             int NewTabIndex = -1;
             for (int i = 0; i < Collections.Count; i++)
             {
-                if (Collections[i][0].Bounds.Contains(p) 
-                    & btn != Collections[i][0] 
+                if (Collections[i][0].Bounds.Contains(p)
+                    & btn != Collections[i][0]
                     & Collections[i][0].Visible == true)
                 {
                     NewTabIndex = i;
                 }
             }
-            
+
             if (NewTabIndex != MoveTabIndex & NewTabIndex != -1 & MoveTabIndex != -1)
             {
                 List<Control> l = Collections[MoveTabIndex];
@@ -1645,8 +1655,8 @@ namespace Cell_Tool_3
                 MoveTabIndex = NewTabIndex;
                 refreshTabsOrder(startAt);
             }
-           
+
         }
-      
+
     }
 }

@@ -271,106 +271,142 @@ namespace Cell_Tool_3
         }       
         private void LoadAccountSettings()
         {
-            //Configurate all account specific setiings here
+            try
+            {
+                //Configurate all account specific setiings here
 
-            //Delete opened images and configurate properties
-            if (Interface.FileBrowser.ActiveAccountIndex != SecurityControl.AccIndex)
-            {
-                if (Interface.TabPages.Collections.Count > 0)
-                    for (int i = Interface.TabPages.Collections.Count - 1; i >= 0; i--)
-                        Interface.TabPages.TabCollections[i].Saved = true;
-                    
-                Interface.CloseAllToolStripMenuItem.PerformClick();
-                Interface.IA.BandC.panel.Visible = false;
-            }
-            //data source panel
-            Interface.FileBrowser.DataSourcesPanelWidth = int.Parse(SecurityControl.settings.DataSourcesPanelValues[SecurityControl.AccIndex]);
-            Interface.FileBrowser.ActiveAccountIndex = SecurityControl.AccIndex;
-            if (SecurityControl.settings.DataSourcesPanelVisible[SecurityControl.AccIndex] == "y")
-            {
-                Interface.FileBrowser.DataSourcesPanel.Width = int.Parse(SecurityControl.settings.DataSourcesPanelValues[SecurityControl.AccIndex]);
-            }
-            else
-            {
-                Interface.FileBrowser.DataSourcesPanel.Width = 15;
-            }
-            //TreeView
-            Interface.FileBrowser.TreeViewExp.Height = int.Parse(SecurityControl.settings.TreeViewSize[SecurityControl.AccIndex]);
-            Interface.FileBrowser.TreeViewExp_load(SecurityControl.settings.TreeViewContent[SecurityControl.AccIndex]);
-            //vbox and treeview settings
-            Interface.FileBrowser.Vbox.Nodes.Clear();
-            Interface.FileBrowser.Vbox_TreenodesList.Clear();
-            //add all
-            TreeNode n = new TreeNode();
-            n.Text = "All";
-            n.Tag = "All";
-            n.ImageIndex = 0;
-            n.SelectedImageIndex = 0;
-            n.Checked = false;
-            Interface.FileBrowser.Vbox.Nodes.Add(n);
-
-            TreeNode n1 = new TreeNode();
-            n1.Text = "All";
-            n1.Tag = "All";
-            n1.Checked = true;
-            Interface.FileBrowser.Vbox_TreenodesList.Add(n1);
-
-            if (SecurityControl.settings.VBoxVisible[SecurityControl.AccIndex] == "n")
-            {
-                if (SecurityControl.settings.TreeViewVisible[SecurityControl.AccIndex] == "n")
+                //Delete opened images and configurate properties
+                if (Interface.FileBrowser.ActiveAccountIndex != SecurityControl.AccIndex)
                 {
+                    if (Interface.TabPages.Collections.Count > 0)
+                        for (int i = Interface.TabPages.Collections.Count - 1; i >= 0; i--)
+                            Interface.TabPages.TabCollections[i].Saved = true;
+
+                    Interface.CloseAllToolStripMenuItem.PerformClick();
+                    Interface.IA.BandC.panel.Visible = false;
+                }
+                //data source panel
+                Interface.FileBrowser.DataSourcesPanelWidth = int.Parse(SecurityControl.settings.DataSourcesPanelValues[SecurityControl.AccIndex]);
+                Interface.FileBrowser.ActiveAccountIndex = SecurityControl.AccIndex;
+                if (SecurityControl.settings.DataSourcesPanelVisible[SecurityControl.AccIndex] == "y")
+                {
+                    Interface.FileBrowser.DataSourcesPanel.Width = int.Parse(SecurityControl.settings.DataSourcesPanelValues[SecurityControl.AccIndex]);
+                }
+                else
+                {
+                    Interface.FileBrowser.DataSourcesPanel.Width = 15;
+                }
+                //TreeView
+                Interface.FileBrowser.TreeViewExp.Height = int.Parse(SecurityControl.settings.TreeViewSize[SecurityControl.AccIndex]);
+                Interface.FileBrowser.TreeViewExp_load(SecurityControl.settings.TreeViewContent[SecurityControl.AccIndex]);
+                //vbox and treeview settings
+                Interface.FileBrowser.Vbox.Nodes.Clear();
+                Interface.FileBrowser.Vbox_TreenodesList.Clear();
+                //add all
+                TreeNode n = new TreeNode();
+                n.Text = "All";
+                n.Tag = "All";
+                n.ImageIndex = 0;
+                n.SelectedImageIndex = 0;
+                n.Checked = false;
+                Interface.FileBrowser.Vbox.Nodes.Add(n);
+
+                TreeNode n1 = new TreeNode();
+                n1.Text = "All";
+                n1.Tag = "All";
+                n1.Checked = true;
+                Interface.FileBrowser.Vbox_TreenodesList.Add(n1);
+
+                if (SecurityControl.settings.VBoxVisible[SecurityControl.AccIndex] == "n")
+                {
+                    if (SecurityControl.settings.TreeViewVisible[SecurityControl.AccIndex] == "n")
+                    {
+                        Interface.FileBrowser.VBoxTitlePanel.Dock = DockStyle.Top;
+                        Interface.FileBrowser.TreeViewExp.Dock = DockStyle.Top;
+                        Interface.FileBrowser.TreeViewExp.Visible = false;
+                    }
+                    else
+                    {
+                        Interface.FileBrowser.VBoxTitlePanel.Dock = DockStyle.Bottom;
+                        Interface.FileBrowser.TreeViewExp.Dock = DockStyle.Fill;
+                        Interface.FileBrowser.TreeViewExp.Visible = true;
+                    }
+                    Interface.FileBrowser.Vbox.Visible = false;
+                }
+                else
+                {
+                    if (SecurityControl.settings.TreeViewVisible[SecurityControl.AccIndex] == "n")
+                    {
+                        Interface.FileBrowser.TreeViewExp.Visible = false;
+                    }
+                    else
+                    {
+                        Interface.FileBrowser.TreeViewExp.Visible = true;
+                    }
                     Interface.FileBrowser.VBoxTitlePanel.Dock = DockStyle.Top;
                     Interface.FileBrowser.TreeViewExp.Dock = DockStyle.Top;
-                    Interface.FileBrowser.TreeViewExp.Visible = false;
+                    Interface.FileBrowser.Vbox.Visible = true;
+                }
+                //Properties panel
+                Interface.TabPages.ActiveAccountIndex = SecurityControl.AccIndex;
+                if (SecurityControl.settings.PropertiesPanelVisible[SecurityControl.AccIndex] == "n")
+                {
+                    Interface.TabPages.propertiesPanel.Width = 15;
                 }
                 else
                 {
-                    Interface.FileBrowser.VBoxTitlePanel.Dock = DockStyle.Bottom;
-                    Interface.FileBrowser.TreeViewExp.Dock = DockStyle.Fill;
-                    Interface.FileBrowser.TreeViewExp.Visible = true;
+                    Interface.TabPages.propertiesPanel.Width = int.Parse(SecurityControl.settings.PropertiesPanelWidth[SecurityControl.AccIndex]);
                 }
-                Interface.FileBrowser.Vbox.Visible = false;
-            }
-            else
-            {
-                if (SecurityControl.settings.TreeViewVisible[SecurityControl.AccIndex] == "n")
-                {
-                    Interface.FileBrowser.TreeViewExp.Visible = false;
-                }
-                else
-                {
-                    Interface.FileBrowser.TreeViewExp.Visible = true;
-                }
-                Interface.FileBrowser.VBoxTitlePanel.Dock = DockStyle.Top;
-                Interface.FileBrowser.TreeViewExp.Dock = DockStyle.Top;
-                Interface.FileBrowser.Vbox.Visible = true;
-            }
-            //Properties panel
-            Interface.TabPages.ActiveAccountIndex = SecurityControl.AccIndex;
-            if (SecurityControl.settings.PropertiesPanelVisible[SecurityControl.AccIndex] == "n")
-            {
-                Interface.TabPages.propertiesPanel.Width = 15;
-            }
-            else
-            {
-                Interface.TabPages.propertiesPanel.Width = int.Parse(SecurityControl.settings.PropertiesPanelWidth[SecurityControl.AccIndex]);
-            }
-            //Brightness and Contrast
-            Interface.IA.BandC.panel.Height = int.Parse(SecurityControl.settings.BandC[SecurityControl.AccIndex]);
-            //Meta
-            Interface.IA.Meta.panel.Height = int.Parse(SecurityControl.settings.Meta[SecurityControl.AccIndex]);
+                //Brightness and Contrast
+                Interface.IA.BandC.panel.Height = int.Parse(SecurityControl.settings.BandC[SecurityControl.AccIndex]);
+                //Meta
+                Interface.IA.Meta.panel.Height = int.Parse(SecurityControl.settings.Meta[SecurityControl.AccIndex]);
 
-            //Chart
-            Interface.IA.chart.Properties.LoadFunctions();
-            //Properties
-            Interface.IA.Segmentation.AutoSetUp.ApplyToNewCheckB.Checked = bool.Parse(SecurityControl.settings.AutoProtocolSettings[SecurityControl.AccIndex]);
-            Interface.IA.Segmentation.AutoSetUp.LoadSettings();
-            //HotKeys
-            Interface.HotKays.LoadAccountSettings();
-            Interface.SmartButtons.LoadAccSettings();
-            //Account Export/Import
-            Interface.ExportAccToolStripMenuItem.Click += ExportSettings_Click;
-            Interface.ImportAccToolStripMenuItem.Click += ImportSettings_Click;
+                //Chart
+                try
+                {
+                    Interface.IA.chart.Properties.LoadFunctions();
+                }
+                catch (Exception e)
+                {
+                    MessageBox.Show(e.Message);
+                }
+                //Properties
+                Interface.IA.Segmentation.AutoSetUp.ApplyToNewCheckB.Checked = bool.Parse(SecurityControl.settings.AutoProtocolSettings[SecurityControl.AccIndex]);
+                try
+                {
+                    Interface.IA.Segmentation.AutoSetUp.LoadSettings();
+                }
+                catch (Exception e)
+                {
+                    MessageBox.Show(e.Message);
+                }
+                //HotKeys
+                try
+                {
+                    Interface.HotKays.LoadAccountSettings();
+                }
+                catch (Exception e)
+                {
+                    MessageBox.Show(e.Message);
+                }
+
+                try
+                {
+                    Interface.SmartButtons.LoadAccSettings();
+                }
+                catch (Exception e)
+                {
+                    MessageBox.Show(e.Message);
+                }
+                //Account Export/Import
+                Interface.ExportAccToolStripMenuItem.Click += ExportSettings_Click;
+                Interface.ImportAccToolStripMenuItem.Click += ImportSettings_Click;
+            }
+            catch(Exception e)
+            {
+                MessageBox.Show(e.Message);
+            }
         }
         public void ExportSettings_Click(object sender, EventArgs e)
         {
@@ -427,7 +463,7 @@ namespace Cell_Tool_3
                         SecurityControl.ApplySettingsFromImport(str);
 
                     LoadAccountSettings();
-                    Interface.IA.ReloadImages();
+                    Interface.IA.ReloadImages(false);
 
                     vals = null;
                 }

@@ -130,7 +130,7 @@ namespace Cell_Tool_3
             //ReloadImage
             IA.UpdateUndoBtns();
             IA.MarkAsNotSaved();
-            IA.ReloadImages();
+            IA.ReloadImages(false);
         }
         private void MinSizeTB_ValueChanged(object sender, ChangeValueEventArgs e)
         {
@@ -154,7 +154,7 @@ namespace Cell_Tool_3
             //ReloadImage
             IA.UpdateUndoBtns();
             IA.MarkAsNotSaved();
-            IA.ReloadImages();
+            IA.ReloadImages(false);
         }
         private void SpeedTB_ValueChanged(object sender, ChangeValueEventArgs e)
         {
@@ -178,7 +178,7 @@ namespace Cell_Tool_3
             //ReloadImage
             IA.UpdateUndoBtns();
             IA.MarkAsNotSaved();
-            IA.ReloadImages();
+            IA.ReloadImages(false);
         }
         private CTTextBox CTTextBox_Add(int X, int Y, Panel p, string title, string tag)
         {
@@ -293,7 +293,7 @@ namespace Cell_Tool_3
                 if (a.ProgressPercentage == 0)
                 {
                     //reload images to screen
-                    IA.ReloadImages();
+                    IA.ReloadImages(false);
                     IA.MarkAsNotSaved();
                 }
 
@@ -363,7 +363,7 @@ namespace Cell_Tool_3
                 if (a.ProgressPercentage == 0)
                 {
                     //reload images to screen
-                    IA.ReloadImages();
+                    IA.ReloadImages(false);
                     IA.MarkAsNotSaved();
                 }
 
@@ -883,7 +883,7 @@ namespace Cell_Tool_3
                                 if (val > SpotDiapason[0] & val < SpotDiapason[1])
                                     col = fi.SpotColor[C];
                                 else
-                                    col = Color.FromArgb((int)(fi.adjustedLUT[C][val] * 255), LutCol.R, LutCol.G, LutCol.B);
+                                    col = Color.FromArgb((int)(fi.newAdjustedLUT[C][val]), LutCol.R, LutCol.G, LutCol.B);
                                 break;
                             default:
                                 if (val > SpotDiapason[0] & val < SpotDiapason[1])
@@ -900,13 +900,13 @@ namespace Cell_Tool_3
                                     col = fi.thresholdColors[C][fi.thresholds[C]];
 
                                 if (col == Color.Transparent)
-                                    col = Color.FromArgb((int)(fi.adjustedLUT[C][val] * 255), LutCol.R, LutCol.G, LutCol.B);
+                                    col = Color.FromArgb((int)(fi.newAdjustedLUT[C][val]), LutCol.R, LutCol.G, LutCol.B);
 
                                 break;
                         }
                     }
                     else
-                        col = Color.FromArgb((int)(fi.adjustedLUT[C][val] * 255), LutCol.R, LutCol.G, LutCol.B);
+                        col = Color.FromArgb((int)(fi.newAdjustedLUT[C][val]), LutCol.R, LutCol.G, LutCol.B);
                     #endregion Colors
                     if (col == MainColor)
                         shablon[y, x] = true;
@@ -935,7 +935,7 @@ namespace Cell_Tool_3
                                 if (val > SpotDiapason[0] & val < SpotDiapason[1])
                                     col = fi.SpotColor[C];
                                 else
-                                    col = Color.FromArgb((int)(fi.adjustedLUT[C][val] * 255), LutCol.R, LutCol.G, LutCol.B);
+                                    col = Color.FromArgb((int)(fi.newAdjustedLUT[C][val]), LutCol.R, LutCol.G, LutCol.B);
                                 break;
                             default:
                                 if (val > SpotDiapason[0] & val < SpotDiapason[1])
@@ -952,13 +952,13 @@ namespace Cell_Tool_3
                                     col = fi.thresholdColors[C][fi.thresholds[C]];
 
                                 if (col == Color.Transparent)
-                                    col = Color.FromArgb((int)(fi.adjustedLUT[C][val] * 255), LutCol.R, LutCol.G, LutCol.B);
+                                    col = Color.FromArgb((int)(fi.newAdjustedLUT[C][val]), LutCol.R, LutCol.G, LutCol.B);
 
                                 break;
                         }
                     }
                     else
-                        col = Color.FromArgb((int)(fi.adjustedLUT[C][val] * 255), LutCol.R, LutCol.G, LutCol.B);
+                        col = Color.FromArgb((int)(fi.newAdjustedLUT[C][val]), LutCol.R, LutCol.G, LutCol.B);
                     #endregion Colors
                     if (col == MainColor)
                         shablon[y, x] = true;
@@ -981,7 +981,7 @@ namespace Cell_Tool_3
                         if (val > SpotDiapason[0] & val < SpotDiapason[1])
                             col = fi.SpotColor[C];
                         else
-                            col = Color.FromArgb((int)(fi.adjustedLUT[C][val] * 255), LutCol.R, LutCol.G, LutCol.B);
+                            col = Color.FromArgb((int)(fi.newAdjustedLUT[C][val]), LutCol.R, LutCol.G, LutCol.B);
                         break;
                     default:
                         if (val > SpotDiapason[0] & val < SpotDiapason[1])
@@ -998,13 +998,13 @@ namespace Cell_Tool_3
                             col = fi.thresholdColors[C][fi.thresholds[C]];
 
                         if (col == Color.Transparent)
-                            col = Color.FromArgb((int)(fi.adjustedLUT[C][val] * 255), LutCol.R, LutCol.G, LutCol.B);
+                            col = Color.FromArgb((int)(fi.newAdjustedLUT[C][val]), LutCol.R, LutCol.G, LutCol.B);
 
                         break;
                 }
             }
             else
-                col = Color.FromArgb((int)(fi.adjustedLUT[C][val] * 255), LutCol.R, LutCol.G, LutCol.B);
+            col = Color.FromArgb((int)(fi.newAdjustedLUT[C][val]), LutCol.R, LutCol.G, LutCol.B);
             #endregion Colors
             this.MainColor = col;
             return col;
