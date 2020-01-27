@@ -149,20 +149,21 @@ namespace Cell_Tool_3
 
             DeveloperToolStripMenuItem.DropDownItems.Add(new ToolStripSeparator());
 
-           // AddResultsExtractor();
-
-            // string path = Application.StartupPath + "\\PlugIns";
-            string path = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\CellToolPlugIns";
-
-
+            // AddResultsExtractor();
+            LoadPlugInFromFolder(Application.StartupPath + "\\PlugIns");
+            DeveloperToolStripMenuItem.DropDownItems.Add(new ToolStripSeparator());
+            LoadPlugInFromFolder(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + "\\CellToolPlugIns"); 
+        }
+        private void LoadPlugInFromFolder(string path)
+        {
             if (!Directory.Exists(path))
                 Directory.CreateDirectory(path);
-
+            
             DirectoryInfo directoryInfo = new DirectoryInfo(path);
 
             foreach (var file in directoryInfo.GetFiles())
             {
-                if (file.Name.EndsWith(".CTPlugIn.dll") && 
+                if (file.Name.EndsWith(".CTPlugIn.dll") &&
                     !file.Name.EndsWith("Results_Extractor.CTPlugIn.dll"))
                 {
                     string namePlugIn = file.Name.Replace(".CTPlugIn.dll", "").Replace("_", " ");
@@ -172,7 +173,7 @@ namespace Cell_Tool_3
                     plugInTS.Tag = dirPlugIn;
                     plugInTS.Click += PlugInToolStripMenuItem_Click;
 
-                    DeveloperToolStripMenuItem.DropDownItems.Add(plugInTS);
+                    DeveloperToolStripMenuItem.DropDownItems.Add(plugInTS);                   
                 }
             }
         }
