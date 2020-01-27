@@ -398,8 +398,8 @@ namespace Cell_Tool_3
             if (fi != null)
             {
                 //3D buttons set up
-                fi.tpTaskbar.Btn2D.Visible = false;
-                fi.tpTaskbar.Btn3D.Visible = false;
+               fi.tpTaskbar.Btn2D.Visible = false;
+               fi.tpTaskbar.Btn3D.Visible = false;
                 /*
                 if(fi.sizeZ == 1 && fi.tpTaskbar.Btn2D.Visible == true)
                 {
