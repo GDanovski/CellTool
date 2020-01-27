@@ -2197,6 +2197,7 @@ namespace Cell_Tool_3
                     IA.MarkAsNotSaved();
                     ClearRois(fi);
                     RemeasureRois(fi);
+                    IA.BandC.RefreshAllLUTs(fi);
                     IA.ReloadImages(true);
                 }
                 fi.available = true;

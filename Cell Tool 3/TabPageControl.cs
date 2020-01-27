@@ -1106,7 +1106,6 @@ namespace Cell_Tool_3
             int maxW = TitlePanel.Width - 56;
             int widthToCurControl = 0;
             bool count = false;
-
             for (int i = Collections.Count - 1; i >= 0; i--)
             {
                 if (i == 0)
