@@ -172,10 +172,25 @@ namespace Cell_Tool_3
                     plugInTS.Text = namePlugIn;
                     plugInTS.Tag = dirPlugIn;
                     plugInTS.Click += PlugInToolStripMenuItem_Click;
-
-                    DeveloperToolStripMenuItem.DropDownItems.Add(plugInTS);                   
+                    try
+                    {
+                        if(CheckForKey(namePlugIn))
+                            DeveloperToolStripMenuItem.DropDownItems.Add(plugInTS);
+                    }
+                    catch(Exception e)
+                    {
+                        MessageBox.Show(e.Message);
+                    }
                 }
             }
+        }
+        private bool CheckForKey(string name)
+        {
+            foreach (var item in DeveloperToolStripMenuItem.DropDownItems)
+                if (item is ToolStripMenuItem && ((ToolStripMenuItem)item).Text == name)
+                    return false;
+
+            return true;
         }
         private void AddResultsExtractor()
         {

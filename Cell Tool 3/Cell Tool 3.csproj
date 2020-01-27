@@ -33,7 +33,7 @@
     <SuiteName>CellTool</SuiteName>
     <AutorunEnabled>true</AutorunEnabled>
     <ApplicationRevision>0</ApplicationRevision>
-    <ApplicationVersion>1.5.2.0</ApplicationVersion>
+    <ApplicationVersion>1.5.3.0</ApplicationVersion>
     <UseApplicationTrust>true</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
     <PublishWizardCompleted>true</PublishWizardCompleted>
@@ -79,7 +79,7 @@
     <TargetZone>Internet</TargetZone>
   </PropertyGroup>
   <PropertyGroup>
-    <GenerateManifests>false</GenerateManifests>
+    <GenerateManifests>true</GenerateManifests>
   </PropertyGroup>
   <PropertyGroup>
     <ManifestCertificateThumbprint>E56FE0A3026BF34E9E82225C7B7DD88AD0065755</ManifestCertificateThumbprint>
@@ -88,7 +88,7 @@
     <ManifestKeyFile>Cell Tool 3_1_TemporaryKey.pfx</ManifestKeyFile>
   </PropertyGroup>
   <PropertyGroup>
-    <SignManifests>false</SignManifests>
+    <SignManifests>true</SignManifests>
   </PropertyGroup>
   <PropertyGroup>
     <SignAssembly>false</SignAssembly>
