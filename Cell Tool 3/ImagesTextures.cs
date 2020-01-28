@@ -113,7 +113,7 @@ namespace Cell_Tool_3
             int Choise = fi.thresholds[C];
             if (fi.SegmentationCBoxIndex[C] == 0) Choise = 0;
             Color lastCol = fi.thresholdColors[C][fi.thresholds[C]];
-            float[] LUT = fi.adjustedLUT[C];
+            byte[] LUT = fi.newAdjustedLUT[C];
 
             FrameCalculator FC = new FrameCalculator();
             //image array
@@ -145,9 +145,9 @@ namespace Cell_Tool_3
                                 if (val > SpotDiapason[0] & val < SpotDiapason[1])
                                     col = fi.SpotColor[C];
                                 else if (LUT.Length > val)
-                                    col = Color.FromArgb((byte)(LUT[val] * 255f), R, G, B);
+                                    col = Color.FromArgb(LUT[val], R, G, B);
                                 else
-                                    col = Color.FromArgb((byte)(LUT[LUT.Length - 1] * 255f), R, G, B);
+                                    col = Color.FromArgb(LUT[LUT.Length - 1], R, G, B);
 
                                 break;
                             default:
@@ -180,9 +180,9 @@ namespace Cell_Tool_3
                                 if (col == Color.Transparent)
                                 {
                                     if (LUT.Length > val)
-                                        col = Color.FromArgb((byte)(LUT[val] * 255f), R, G, B);
+                                        col = Color.FromArgb(LUT[val], R, G, B);
                                     else
-                                        col = Color.FromArgb((byte)(LUT[LUT.Length - 1] * 255f), R, G, B);
+                                        col = Color.FromArgb(LUT[LUT.Length - 1], R, G, B);
                                 }
                                 break;
                         }
@@ -190,9 +190,9 @@ namespace Cell_Tool_3
                     else
                     {
                         if (LUT.Length > val)
-                            col = Color.FromArgb((byte)(LUT[val] * 255f), R, G, B);
+                            col = Color.FromArgb(LUT[val], R, G, B);
                         else
-                            col = Color.FromArgb((byte)(LUT[LUT.Length - 1] * 255f), R, G, B);
+                            col = Color.FromArgb(LUT[LUT.Length - 1], R, G, B);
                     }
                     #endregion Colors
 
@@ -214,7 +214,7 @@ namespace Cell_Tool_3
             int Choise = fi.thresholds[C];
             if (fi.SegmentationCBoxIndex[C] == 0) Choise = 0;
             Color lastCol = fi.thresholdColors[C][fi.thresholds[C]];
-            float[] LUT = fi.adjustedLUT[C];
+            byte[] LUT = fi.newAdjustedLUT[C];
 
             FrameCalculator FC = new FrameCalculator();
             //image array
@@ -245,9 +245,9 @@ namespace Cell_Tool_3
                                 if (val > SpotDiapason[0] & val < SpotDiapason[1])
                                     col = fi.SpotColor[C];
                                 else if (LUT.Length > val)
-                                    col = Color.FromArgb((byte)(LUT[val] * 255f), R, G, B);
+                                    col = Color.FromArgb(LUT[val], R, G, B);
                                 else
-                                    col = Color.FromArgb((byte)(LUT[LUT.Length - 1] * 255f), R, G, B);
+                                    col = Color.FromArgb(LUT[LUT.Length - 1], R, G, B);
 
                                 break;
                             default:
@@ -280,9 +280,9 @@ namespace Cell_Tool_3
                                 if (col == Color.Transparent)
                                 {
                                     if (LUT.Length > val)
-                                        col = Color.FromArgb((byte)(LUT[val] * 255f), R, G, B);
+                                        col = Color.FromArgb(LUT[val], R, G, B);
                                     else
-                                        col = Color.FromArgb((byte)(LUT[LUT.Length - 1] * 255f), R, G, B);
+                                        col = Color.FromArgb(LUT[LUT.Length - 1], R, G, B);
                                 }
                                 break;
                         }
@@ -290,9 +290,9 @@ namespace Cell_Tool_3
                     else
                     {
                         if (LUT.Length > val)
-                            col = Color.FromArgb((byte)(LUT[val] * 255f), R, G, B);
+                            col = Color.FromArgb(LUT[val], R, G, B);
                         else
-                            col = Color.FromArgb((byte)(LUT[LUT.Length - 1] * 255f), R, G, B);
+                            col = Color.FromArgb(LUT[LUT.Length - 1], R, G, B);
                     }
                     #endregion Colors
 
