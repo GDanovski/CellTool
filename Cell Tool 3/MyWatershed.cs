@@ -202,7 +202,7 @@ namespace Cell_Tool_3
                         IA.Segmentation.MyFilters.addToHistoryNewInfo(C, fi);
 
                         IA.MarkAsNotSaved();
-                        IA.ReloadImages();
+                        IA.ReloadImages(true, C, 1);
                     }
                     fi.available = true;
                     IA.FileBrowser.StatusLabel.Text = "Ready";

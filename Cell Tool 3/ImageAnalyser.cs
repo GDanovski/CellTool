@@ -49,9 +49,6 @@ namespace Cell_Tool_3
         public RoiManager RoiMan;
         public ImageDrawer IDrawer = new ImageDrawer();
         public GLControl GLControl1 = new GLControl();
-        public Panel GLControl1_VerticalPanel = new Panel();
-        public Panel GLControl1_HorizontalPanel = new Panel();
-        public Panel GLControl1_TraserPanel = new Panel();
 
         public ToolStripComboBox zoomValue = null;
               
@@ -76,8 +73,8 @@ namespace Cell_Tool_3
             {
                 fi.zoom = zoom;
                 //reload image
-                ReloadImages();
-               //MarkAsNotSaved();
+                ReloadImages(false);
+                //MarkAsNotSaved();
             }
         }
         private void zoomValue_Set(double val)
@@ -357,7 +354,7 @@ namespace Cell_Tool_3
             TabPages.tTrackBar.TextBox1.Enabled = val;
             TabPages.zTrackBar.TextBox1.Enabled = val;
         }
-        public void ReloadImages()
+        public void ReloadImages(bool toRecalculateImages = true, int recalcChannel = -1, int recalcMethod = -1)
         { 
             TabPages.PropertiesBody.SuspendLayout();
             TabPages.propertiesPanel.SuspendLayout();
@@ -379,8 +376,8 @@ namespace Cell_Tool_3
                 Tracking.panel.Visible = false;
                 UnDoBtn.Enabled = false;
                 ReDoBtn.Enabled = false;
-                GLControl1_VerticalPanel.Visible = false;
-                GLControl1_TraserPanel.Visible = false;
+                IDrawer.verticalScrollBar.Visible = false;
+                IDrawer.horizontalScrollBar.Visible = false;
                 TabPages.PropertiesBody.ResumeLayout();
                 TabPages.propertiesPanel.ResumeLayout();
                 
@@ -407,6 +404,35 @@ namespace Cell_Tool_3
 
             if (fi != null)
             {
+                //3D buttons set up
+                fi.tpTaskbar.Btn2D.Visible = false;
+                fi.tpTaskbar.Btn3D.Visible = false;
+                /*
+                if(fi.sizeZ == 1 && fi.tpTaskbar.Btn2D.Visible == true)
+                {
+                    fi.tpTaskbar.Btn2D.Visible = false;
+                    fi.tpTaskbar.Btn3D.Visible = false;
+                }
+                else if(fi.sizeZ != 1 && fi.tpTaskbar.Btn2D.Visible == false)
+                {
+                    fi.tpTaskbar.Btn2D.Visible = true;
+                    fi.tpTaskbar.Btn3D.Visible = true;
+                }*/
+
+                if (IDrawer.imageDrawer_3D.isImage3D(fi))
+                {
+                    fi.tpTaskbar.Btn2D.Enabled = true;
+                    fi.tpTaskbar.Btn3D.BackColor = FileBrowser.TaskBtnClickColor1;
+                    fi.tpTaskbar.Btn3D.Enabled = false;
+                    fi.tpTaskbar.Btn2D.BackColor = FileBrowser.BackGroundColor1;
+                }
+                else if (fi.sizeZ > 1)
+                {
+                    fi.tpTaskbar.Btn2D.Enabled = false;
+                    fi.tpTaskbar.Btn2D.BackColor = FileBrowser.TaskBtnClickColor1;
+                    fi.tpTaskbar.Btn3D.Enabled = true;
+                    fi.tpTaskbar.Btn3D.BackColor = FileBrowser.BackGroundColor1;
+                }
                 try
                 {
                     
@@ -483,7 +509,7 @@ namespace Cell_Tool_3
                 //Image Drawer
                 try
                 {
-                   IDrawer.DrawToScreen();
+                    IDrawer.DrawToScreen(toRecalculateImages, recalcChannel, recalcMethod);
                 }
                 catch { }
                 //Prop Panel settings
@@ -745,7 +771,7 @@ namespace Cell_Tool_3
                 TabPages.tTrackBar.TrackBar1.Value = fi.frame + 1;
             }
 
-            ReloadImages();
+            ReloadImages(true);
         }
         private void ChangeZ(string Val)
         {
@@ -766,8 +792,8 @@ namespace Cell_Tool_3
                 TabPages.zTrackBar.TextBox1.Text = (fi.zValue + 1).ToString();
                 TabPages.zTrackBar.TrackBar1.Value = fi.zValue + 1;
             }
-            ReloadImages();
-            
+            ReloadImages(true);
+
         }
         private void ChangeC(string Val)
         {
@@ -789,7 +815,7 @@ namespace Cell_Tool_3
             //UnDoBtn.Enabled = true;
             //CheckSizeHistory(fi);
 
-            ReloadImages();
+            ReloadImages(true, fi.cValue, -1);
         }
         private void ChangeLUT(string val)
         {
@@ -843,7 +869,7 @@ namespace Cell_Tool_3
                 fi.tpTaskbar.ColorBtnList[fi.tpTaskbar.ColorBtnList.Count - 1].Focus();
             }
 
-            ReloadImages();
+            ReloadImages(true, chanel, -1);
             MarkAsNotSaved();
         }
         private void enableColorChanel(string val)
@@ -885,7 +911,7 @@ namespace Cell_Tool_3
             
             UnDoBtn.Enabled = true;
             CheckSizeHistory(fi);
-            ReloadImages();
+            ReloadImages(true, chanel, -1);
             MarkAsNotSaved();
         }
         private void enableMethodView(string val)
@@ -927,7 +953,7 @@ namespace Cell_Tool_3
 
             UnDoBtn.Enabled = true;
             CheckSizeHistory(fi);
-            ReloadImages();
+            ReloadImages(true, -1, chanel);
             MarkAsNotSaved();
         }
         private void segmentation_ChangeMethod(string val)
@@ -955,7 +981,7 @@ namespace Cell_Tool_3
 
             UnDoBtn.Enabled = true;
             CheckSizeHistory(fi);
-            ReloadImages();
+            ReloadImages(true, chanel, 1);
             MarkAsNotSaved();
         }
 
@@ -991,7 +1017,7 @@ namespace Cell_Tool_3
 
             UnDoBtn.Enabled = true;
             CheckSizeHistory(fi);
-            ReloadImages();
+            ReloadImages(false);
             MarkAsNotSaved();
         }
         private void segmentation_SetThreshOld(string val)
@@ -1023,7 +1049,7 @@ namespace Cell_Tool_3
 
             UnDoBtn.Enabled = true;
             CheckSizeHistory(fi);
-            ReloadImages();
+            ReloadImages(true, chanel, 1);
             MarkAsNotSaved();
         }
         private void segmentation_SetSpotDetector(string val)
@@ -1081,7 +1107,7 @@ namespace Cell_Tool_3
 
             UnDoBtn.Enabled = true;
             CheckSizeHistory(fi);
-            ReloadImages();
+            ReloadImages(true, cVal, 1);
             MarkAsNotSaved();
         }
         private void segmentation_SetColor(string val)
@@ -1115,7 +1141,7 @@ namespace Cell_Tool_3
 
             UnDoBtn.Enabled = true;
             CheckSizeHistory(fi);
-            ReloadImages();
+            ReloadImages(true, chanel, 1);
             MarkAsNotSaved();
         }
         private void ChangeBandC(string val)
@@ -1124,7 +1150,7 @@ namespace Cell_Tool_3
             if (val == "auto")
             {
                 fi.autoDetectBandC = true;
-                ReloadImages();
+                ReloadImages(true);
                 //MarkAsNotSaved();
             }
             else
@@ -1140,8 +1166,8 @@ namespace Cell_Tool_3
 
                 BandC.adjustBrightness(min, max, fi, chanel);
 
-                ReloadImages();
-               // MarkAsNotSaved();
+                ReloadImages(true, chanel, -1);
+                // MarkAsNotSaved();
             }
         }
        public bool IsFrameAvaliable(TifFileInfo fi)
@@ -1194,8 +1220,8 @@ namespace Cell_Tool_3
             GLControl1.Focus();
 
             if (IsFrameAvaliable(fi) == false) return;
-            
-            ReloadImages();
+
+            ReloadImages(false);
         }
         private void roi_delete(string val)
         {
@@ -1225,7 +1251,7 @@ namespace Cell_Tool_3
 
                             if (IsFrameAvaliable(fi) == false) return;
 
-                            ReloadImages();
+                            ReloadImages(false);
                             return;
                         }
                 chanel++;
@@ -1265,7 +1291,7 @@ namespace Cell_Tool_3
 
                             if (IsFrameAvaliable(fi) == false) return;
 
-                            ReloadImages();
+                            ReloadImages(false);
                             return;
                         }
         }
@@ -1329,7 +1355,7 @@ namespace Cell_Tool_3
 
                             if (IsFrameAvaliable(fi) == false) return;
 
-                            ReloadImages();
+                            ReloadImages(false);
                             return;
                         }
         }
@@ -1362,7 +1388,7 @@ namespace Cell_Tool_3
             }
 
             CheckSizeHistory(fi);
-            ReloadImages();
+            ReloadImages(false);
         }
         private void ChangeChart_yAxisType(string val)
         {
@@ -1393,7 +1419,7 @@ namespace Cell_Tool_3
             }
             
             CheckSizeHistory(fi);
-            ReloadImages();
+            ReloadImages(false);
         }
 
         private void Chart_SetSeriesColor(string val)
@@ -1437,7 +1463,7 @@ namespace Cell_Tool_3
                     + roi.getID.ToString() + "," + ind.ToString() + "," + ColorTranslator.ToHtml(roi.colors[ind]) + ")");
 
             }
-            ReloadImages();
+            ReloadImages(false);
         }
 
         private void Chart_SetSeriesChecked(string val)
@@ -1481,7 +1507,7 @@ namespace Cell_Tool_3
                      + roi.getID.ToString() + "," + ind.ToString() + "," + roi.ChartUseIndex[ind].ToString() + ")");
 
             }
-            ReloadImages();
+            ReloadImages(false);
         }
         //Add events here
 

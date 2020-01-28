@@ -542,8 +542,8 @@ namespace Cell_Tool_3
             
             fi.frame = fi.frame + 1;
             IA.TabPages.tTrackBar.Refresh(fi.frame + 1, 1, fi.sizeT);
-            IA.ReloadImages();
-                        
+            IA.ReloadImages(true);
+
         }
         public void TimeTrackBar_Backward()
         {
@@ -559,8 +559,8 @@ namespace Cell_Tool_3
 
             fi.frame = fi.frame - 1;
             IA.TabPages.tTrackBar.Refresh(fi.frame + 1, 1, fi.sizeT);
-            
-            IA.ReloadImages();
+
+            IA.ReloadImages(true);
         }
         public void zTrackBar_Forward()
         {
@@ -576,7 +576,7 @@ namespace Cell_Tool_3
 
             fi.zValue = fi.zValue + 1;
             IA.TabPages.zTrackBar.Refresh(fi.zValue + 1, 1, fi.sizeZ);
-            IA.ReloadImages();
+            IA.ReloadImages(true);
         }
         public void zTrackBar_Backward()
         {
@@ -592,7 +592,7 @@ namespace Cell_Tool_3
 
             fi.zValue = fi.zValue - 1;
             IA.TabPages.zTrackBar.Refresh(fi.zValue + 1, 1, fi.sizeZ);
-            IA.ReloadImages();
+            IA.ReloadImages(true);
         }
        
         private void Menu(Panel MainPanel)
@@ -1349,7 +1349,7 @@ namespace Cell_Tool_3
                 IA.RoiMan.RoiShape = 4;
 
             IA.RoiMan.current = null;
-            IA.ReloadImages();
+            IA.ReloadImages(false);
         }
         
         private void tracking_Static_Btn_click(object sender, EventArgs e)
@@ -1378,7 +1378,7 @@ namespace Cell_Tool_3
                 StaticBtn.Image = Properties.Resources.Static_ROI;
             }
             IA.RoiMan.current = null;
-            IA.ReloadImages();
+            IA.ReloadImages(false);
         }
         private Bitmap DrawClicetBorder(Bitmap source)
         {
@@ -1409,7 +1409,7 @@ namespace Cell_Tool_3
             }
 
             IA.RoiMan.current = null;
-            IA.ReloadImages();
+            IA.ReloadImages(false);
         }
         private void StatusPanel()
         {

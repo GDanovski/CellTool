@@ -32,8 +32,8 @@
     <PublisherName>Georgi Danovski</PublisherName>
     <SuiteName>CellTool</SuiteName>
     <AutorunEnabled>true</AutorunEnabled>
-    <ApplicationRevision>10</ApplicationRevision>
-    <ApplicationVersion>1.4.0.10</ApplicationVersion>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>1.5.3.0</ApplicationVersion>
     <UseApplicationTrust>true</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
     <PublishWizardCompleted>true</PublishWizardCompleted>
@@ -123,6 +123,9 @@
     <Reference Include="CellToolDK, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\..\CellTool-master\References\CellToolDK.dll</HintPath>
+    </Reference>
+    <Reference Include="Cloo.clSharp, Version=0.9.2.7, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Cloo.clSharp.0.9.2.7\lib\net20\Cloo.clSharp.dll</HintPath>
     </Reference>
     <Reference Include="IKVM.AWT.WinForms">
       <HintPath>..\..\..\CellTool-master\References\IKVM.AWT.WinForms.dll</HintPath>
@@ -261,8 +264,12 @@
     <Compile Include="FrameCalculator.cs" />
     <Compile Include="FRAPA_Model.cs" />
     <Compile Include="FRAPA_ReactionDiffusion.cs" />
+    <Compile Include="GPU_Processing.cs" />
     <Compile Include="Helpers\Settings.cs" />
+    <Compile Include="Image3DProjection.cs" />
     <Compile Include="ImageAnalyser.cs" />
+    <Compile Include="ImageDrawer_3D.cs" />
+    <Compile Include="ImagesTextures.cs" />
     <Compile Include="Interface.cs" />
     <Compile Include="KMeans.cs" />
     <Compile Include="MetadataProp.cs" />
@@ -448,6 +455,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="MacroComands.txt" />
+    <Content Include="PlugIns\MultiCrop.CTPlugIn.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <None Include="Resources\MathNET_NumericsLicense.txt" />
     <None Include="Resources\AccordLicence.txt" />
     <None Include="Resources\G_R_done_1_ALL_rights_reserved1.png" />

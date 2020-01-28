@@ -353,7 +353,7 @@ namespace Cell_Tool_3
                     IA.BandC.Chart1.CA.DrawToScreen(fi);
                     IA.BandC.Chart1.CA.Update();
                     IA.BandC.Chart1.CA.PerformLayout();
-                    IA.ReloadImages();
+                    IA.ReloadImages(false);
                 }
                 else if (fi.selectedPictureBoxColumn == 1 & fi.cValue < fi.sizeC
         & fi.tpTaskbar.ColorBtnList[fi.cValue].ImageIndex == 0
@@ -366,7 +366,7 @@ namespace Cell_Tool_3
                     IA.Segmentation.Chart1.DrawToScreen(fi);
                     IA.Segmentation.Chart1.Update();
                     IA.Segmentation.Chart1.PerformLayout();
-                    IA.ReloadImages();
+                    IA.ReloadImages(false);
                 }
             }
         }
@@ -1144,7 +1144,7 @@ namespace Cell_Tool_3
         {
             if (Collections.Count < 1)
             {
-                IA.ReloadImages();
+                IA.ReloadImages(true);
                 ImageMainPanel.Visible = false;
                 ResultsExtractorMainPanel.Visible = false;
                 return;
@@ -1520,6 +1520,8 @@ namespace Cell_Tool_3
         {
             Body.SuspendLayout();
             ResultsExtractorMainPanel.Controls.Clear();
+            //Clear the 3D viewer
+            IA.IDrawer.imageDrawer_3D.ClearProgram(IA.GLControl1);
 
             if (Collections.Count > index)
             {
@@ -1565,7 +1567,14 @@ namespace Cell_Tool_3
                     ImageMainPanel.Visible = true;
                     ResultsExtractorMainPanel.Visible = false;
 
-                    IA.ReloadImages();
+                    //start 3D viewer if 3D is enabled
+                    if (IA.IDrawer.imageDrawer_3D.isImage3D(TabCollections[index].tifFI))
+                    {
+                        IA.IDrawer.imageDrawer_3D.initProgram(IA.GLControl1, TabCollections[index].tifFI);
+                        IA.ReloadImages(true);//for some reason we need to call this twice
+                    }
+
+                    IA.ReloadImages(true);
                     try
                     {
                         IA.GLControl1.Focus();

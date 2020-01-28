@@ -1020,7 +1020,8 @@ namespace Cell_Tool_3
                     fi.openedImages = fi.sizeC * fi.sizeZ;
                     try
                     {
-                        IA.ReloadImages();
+                        IA.BandC.RefreshAllLUTs(fi);
+                        IA.ReloadImages(true);
                     }
                     catch { }
                 }
@@ -1037,7 +1038,9 @@ namespace Cell_Tool_3
 
                     IA.TabPages.myFileDecoder.CalculateAllRois(fi);
 
-                    IA.ReloadImages();
+                    IA.BandC.RefreshAllLUTs(fi);
+                    fi.autoDetectBandC = false;
+                    IA.ReloadImages(true);
                     bool check = true;
                     foreach (TabPage tp1 in Collection)
                     {
@@ -1080,7 +1083,7 @@ namespace Cell_Tool_3
             {
                 if (loaded == true)
                 {
-                    IA.ReloadImages();
+                    IA.ReloadImages(true);
                 }
             }
             catch { }

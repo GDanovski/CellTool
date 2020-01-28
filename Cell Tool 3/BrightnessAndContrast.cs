@@ -473,9 +473,9 @@ namespace Cell_Tool_3
             TifFileInfo fi = IA.TabPages.TabCollections[IA.TabPages.SelectedIndex].tifFI;
             moveMax = false;
             moveMin = false;
-           
-            applyToHistory(fi.cValue, 
-                fi.MinBrightness[fi.cValue], 
+
+            applyToHistory(fi.cValue,
+                fi.MinBrightness[fi.cValue],
                 fi.MaxBrightness[fi.cValue]);
 
             Chart1.Cursor = Cursors.Default;
@@ -492,9 +492,11 @@ namespace Cell_Tool_3
                 }
                 fi.cValue = curC;
                 calculateHistogramArray(fi, true);
+
+                IA.ReloadImages(true);
             }
-          
-            IA.ReloadImages();
+            else
+                IA.ReloadImages(true, fi.cValue, -1);
         }
         private void Chart1_MouseMoveImageReload()
         {
@@ -511,13 +513,14 @@ namespace Cell_Tool_3
                 }
                 fi.cValue = curC;
                 calculateHistogramArray(fi, true);
-            }
+                IA.ReloadImages(true);
+            }        
+            else
+                IA.ReloadImages(true,fi.cValue,-1);
 
             Chart1.DrawToScreen(fi);
             Chart1.Update();
             Chart1.PerformLayout();
-
-            IA.ReloadImages();
         }
         private void Chart1_MouseMove(object sender, MouseEventArgs e)
         {
@@ -624,7 +627,7 @@ namespace Cell_Tool_3
                 fi.cValue = curC;
                 calculateHistogramArray(fi, true);
             }
-            IA.ReloadImages();
+            IA.ReloadImages(true);
             //IA.MarkAsNotSaved();
         }
         private void applyToAll_Checked(object sender, EventArgs e)
@@ -653,7 +656,7 @@ namespace Cell_Tool_3
                 fi.cValue = curC;
                 calculateHistogramArray(fi, true);
             }
-            IA.ReloadImages();
+            IA.ReloadImages(true);
             //IA.MarkAsNotSaved();
         }
         public void PrepareArray(TifFileInfo fi)
@@ -661,12 +664,14 @@ namespace Cell_Tool_3
             //prepare int array
             fi.histogramArray = new int[fi.sizeC][];
             fi.adjustedLUT = new float[fi.sizeC][];
+            fi.newAdjustedLUT = new byte[fi.sizeC][];
             switch (fi.bitsPerPixel)
             {
                 case 8:
                     for (int i = 0; i < fi.sizeC; i++) {
                         fi.histogramArray[i] = new int[byte.MaxValue + 1];
                         fi.adjustedLUT[i] = new float[byte.MaxValue  + 1];
+                        fi.newAdjustedLUT[i] = new byte[byte.MaxValue + 1];
                     }
                    
                     break;
@@ -675,6 +680,7 @@ namespace Cell_Tool_3
                     {
                         fi.histogramArray[i] = new int[ushort.MaxValue + 1];
                         fi.adjustedLUT[i] = new float[ushort.MaxValue + 1];
+                        fi.newAdjustedLUT[i] = new byte[ushort.MaxValue + 1];
                     }
                    
                     break;
@@ -871,6 +877,13 @@ namespace Cell_Tool_3
             lastMin = min;
             adjustLUT(fi, chanel);
         }
+        public void RefreshAllLUTs(TifFileInfo fi)
+        {
+            PrepareArray(fi);
+
+            for (int i = 0; i < fi.sizeC; i++)
+                adjustLUT(fi, i);
+        }
         private void adjustLUT(TifFileInfo fi, int chanel)
         {
             try {
@@ -880,6 +893,7 @@ namespace Cell_Tool_3
                 for (int i = 0; i <= fi.MinBrightness[chanel]; i++)
                 {
                     fi.adjustedLUT[chanel][i] = val;
+                    fi.newAdjustedLUT[chanel][i] = 0;
                 }
                 //LUT
                 float step = 0f;
@@ -898,12 +912,14 @@ namespace Cell_Tool_3
                 {
                     fi.adjustedLUT[chanel][i] = val;
                     if (fi.adjustedLUT[chanel][i] > 1f) fi.adjustedLUT[chanel][i] = 1f;
+                    fi.newAdjustedLUT[chanel][i] = (byte)(fi.adjustedLUT[chanel][i] * 255f);
                 }
                 //Higher then Maxbrightness
                 val = 1f;
                 for (int i = fi.MaxBrightness[chanel]+1; i < fi.adjustedLUT[chanel].Length; i++)
                 {
                     fi.adjustedLUT[chanel][i] = val;
+                    fi.newAdjustedLUT[chanel][i] = 255;
                 }
             }
             catch { }

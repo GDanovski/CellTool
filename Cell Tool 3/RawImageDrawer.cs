@@ -1,17 +1,14 @@
 ﻿/*
  CellTool - software for bio-image analysis
  Copyright (C) 2018  Georgi Danovski
-
  This program is free software: you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
  the Free Software Foundation, either version 3 of the License, or
  (at your option) any later version.
-
  This program is distributed in the hope that it will be useful,
  but WITHOUT ANY WARRANTY; without even the implied warranty of
  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  GNU General Public License for more details.
-
  You should have received a copy of the GNU General Public License
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
@@ -32,10 +29,14 @@ namespace Cell_Tool_3
 {
     class ImageDrawer
     {
-
         public ImageAnalyser IA = null;
         public Panel corePanel = new Panel();
         public ContentPipe ImageTexture = new ContentPipe();
+        private ImagesTextures imagesTextures = new ImagesTextures();
+        public ImageDrawer_3D imageDrawer_3D = new ImageDrawer_3D();
+
+        public VScrollBar verticalScrollBar;
+        public HScrollBar horizontalScrollBar;
 
         #region Position on screen
         public Rectangle[][] coRect;
@@ -69,59 +70,61 @@ namespace Cell_Tool_3
             tpContr.ImageMainPanel.SuspendLayout();
 
             tpContr.ImageMainPanel.Controls.Add(GLControl1);
-            //ScrollBars
-            Panel VertPanel = IA.GLControl1_VerticalPanel;
-            VertPanel.Dock = DockStyle.Right;
-            VertPanel.Width = 17;
-            VertPanel.AutoScroll = true;
-            Panel p1 = new Panel();
-            p1.Location = new Point(0, 0);
-            p1.Width = 1;
-            p1.Height = 1000;
-            VertPanel.Tag = p1;
-            VertPanel.Controls.Add(p1);
-            VertPanel.BringToFront();
-            tpContr.ImageMainPanel.Controls.Add(VertPanel);
-            //tracer
-            Panel trPanel = IA.GLControl1_TraserPanel;
-            trPanel.Dock = DockStyle.Bottom;
-            trPanel.Height = 18;
-            tpContr.ImageMainPanel.Controls.Add(trPanel);
-            trPanel.BringToFront();
-            Panel p3 = new Panel();
-            p3.Width = 17;
-            p3.Dock = DockStyle.Right;
-            p3.BackColor = Color.White;
-            trPanel.Controls.Add(p3);
-            trPanel.Tag = p3;
-            //
-            Panel HorPanel = IA.GLControl1_HorizontalPanel;
-            HorPanel.Dock = DockStyle.Bottom;
-            HorPanel.Height = 18;
-            HorPanel.AutoScroll = true;
-            Panel p2 = new Panel();
-            p2.Location = new Point(0, 0);
-            p2.Width = 2000;
-            p2.Height = 1;
-            HorPanel.Tag = p2;
-            HorPanel.Controls.Add(p2);
-            HorPanel.BringToFront();
-            trPanel.Controls.Add(HorPanel);
-            p3.SendToBack();
-            trPanel.Visible = false;
-            VertPanel.Visible = false;
+            //new scrollBars
+            verticalScrollBar = new VScrollBar()
+            {
+                Dock = DockStyle.None,
+                Width = 17,
+                Visible = false,
+                Value = 0,
+                Minimum = 0,
+                Maximum = 0
+            };
 
-            VertPanel.Scroll += VerticalScroll_ValueChanged;
-            HorPanel.Scroll += HorizontalScroll_ValueChanged;
+            tpContr.ImageMainPanel.Controls.Add(verticalScrollBar);
+            horizontalScrollBar = new HScrollBar()
+            {
+                Dock = DockStyle.Fill,
+                Visible = false,
+                Value = 0,
+                Minimum = 0,
+                Maximum = 0
+            };
+
+            Panel bottomScrollPanel = new Panel()
+            {
+                Dock = DockStyle.Bottom,
+                Visible = true,
+                Height = 17
+            };
+
+            Panel rightSpacePanel = new Panel()
+            {
+                Dock = DockStyle.Right,
+                Visible = false,
+                Width = verticalScrollBar.Width,
+                BackColor = Color.White
+            };
+            horizontalScrollBar.VisibleChanged += new EventHandler(delegate (object sender, EventArgs a)
+            {
+                rightSpacePanel.Visible = horizontalScrollBar.Visible;
+            });
+
+            bottomScrollPanel.Controls.Add(horizontalScrollBar);
+            bottomScrollPanel.Controls.Add(rightSpacePanel);
+            tpContr.ImageMainPanel.Controls.Add(bottomScrollPanel);
+
+            verticalScrollBar.Scroll += VerticalScroll_ValueChanged;
+            horizontalScrollBar.Scroll += HorizontalScroll_ValueChanged;
             //Top Bar
             corePanel.Dock = DockStyle.Top;
             tpContr.ImageMainPanel.Controls.Add(corePanel);
+
             tpContr.ImageMainPanel.ResumeLayout(true);
         }
         private void HorizontalScroll_ValueChanged(object sender, EventArgs e)
         {
             if (changeXY == false) { return; }
-            Panel p1 = (Panel)sender;
             TifFileInfo fi;
             try
             {
@@ -132,16 +135,15 @@ namespace Cell_Tool_3
                 return;
             }
             if (fi == null) { return; }
-            if (fi.Xposition != p1.HorizontalScroll.Value / fi.zoom)
+            if (fi.Xposition != this.horizontalScrollBar.Value / fi.zoom)
             {
-                fi.Xposition = p1.HorizontalScroll.Value / fi.zoom;
-                IA.ReloadImages();
+                fi.Xposition = this.horizontalScrollBar.Value / fi.zoom;
+                IA.ReloadImages(false);
             }
         }
         private void VerticalScroll_ValueChanged(object sender, EventArgs e)
         {
             if (changeXY == false) { return; }
-            Panel p1 = (Panel)sender;
             TifFileInfo fi;
             try
             {
@@ -152,10 +154,10 @@ namespace Cell_Tool_3
                 return;
             }
             if (fi == null) { return; }
-            if (fi.Yposition != p1.VerticalScroll.Value / fi.zoom)
+            if (fi.Yposition != this.verticalScrollBar.Value / fi.zoom)
             {
-                fi.Yposition = p1.VerticalScroll.Value / fi.zoom;
-                IA.ReloadImages();
+                fi.Yposition = this.verticalScrollBar.Value / fi.zoom;
+                IA.ReloadImages(false);
             }
         }
         public void ClearImage()
@@ -174,9 +176,9 @@ namespace Cell_Tool_3
             }
             catch { }
         }
-        public void DrawToScreen()
+        public void DrawToScreen(bool toRecalculateImages = true, int recalcChannel = -1, int recalcMethod = -1)
         {
-            GLDrawing_Start(IA.GLControl1);
+            GLDrawing_Start(IA.GLControl1, toRecalculateImages, recalcChannel, recalcMethod);
         }
         #region GLControl_Events
         public void GLControl_Load(object sender, EventArgs e)
@@ -220,11 +222,11 @@ namespace Cell_Tool_3
         {
             //Global variables
             GLControl GLControl1 = sender as GLControl;
-            GLDrawing_Start(GLControl1);
+            GLDrawing_Start(GLControl1, false);
         }
-        private void GLDrawing_Start(GLControl GLControl1)
+        private void GLDrawing_Start(GLControl GLControl1, bool toRecalculateImages = true, int recalcChannel = -1, int recalcMethod = -1)
         {
-            try
+            //try
             {
                 TifFileInfo fi;
                 try
@@ -239,23 +241,48 @@ namespace Cell_Tool_3
                 {
                     return;
                 }
-                
+
                 if (GLControl1.Visible == false) { GLControl1.Visible = true; }
-                
+
                 Rectangle fieldRect = coRect_Calculate(GLControl1);
 
                 //Calculate B&C
                 CalculateImages(fi);
 
                 fi.tpTaskbar.TopBar.SendToBack();
-                //Start Drawing
 
+                //Start Drawing
                 //Activate Control
                 GLControl1.MakeCurrent();
                 GL.Disable(EnableCap.Texture2D);
                 //Load background
                 GL.ClearColor(IA.FileBrowser.BackGround2Color1);
                 GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
+
+                //if the 3D is enabled - send to imageDrawer_3D
+                if (imageDrawer_3D.isImage3D(fi))
+                {
+                    //Set viewpoint
+                    GL.Viewport(0, 0, GLControl1.Width, GLControl1.Height);
+                    //scale the image
+                    if (oldScale != fi.zoom)
+                    {
+                        double factor = fi.zoom / oldScale;
+                        oldScale = fi.zoom;
+                        if (factor != 1)
+                        {
+                            GL.Scale(factor, factor, 1);
+                        }
+                    }
+
+                    imageDrawer_3D.Calculate3Dfi(fi);
+                    imageDrawer_3D.StartDrawing(GLControl1, fi);
+
+                    return;
+                }
+
+                //GL.UseProgram(0); // Remove the shader program from the 3D view
+
                 //Prepare MatrixMode
                 GL.MatrixMode(MatrixMode.Projection);
                 GL.LoadIdentity();
@@ -270,58 +297,7 @@ namespace Cell_Tool_3
 
                 //Set viewpoint
                 GL.Viewport(0, 0, GLControl1.Width, GLControl1.Height);
-                //scale the image
-                if (oldScale != fi.zoom)
-                {
-                    double factor = fi.zoom / oldScale;
-                    oldScale = fi.zoom;
-                    if (factor != 1)
-                    {
-                        GL.Scale(factor, factor, 1);
-                    }
-                }
-                //Translation
-                changeXY = false;
-
-                ((Panel)IA.GLControl1_VerticalPanel.Tag).Height = (int)(fieldRect.Height * fi.zoom);
-
-                if (((Panel)IA.GLControl1_VerticalPanel.Tag).Height > IA.GLControl1_VerticalPanel.Height)
-                {
-                    IA.GLControl1_VerticalPanel.Visible = true;
-                    IA.GLControl1_VerticalPanel.AutoScrollPosition = new Point(0, (int)(fi.Yposition * fi.zoom));
-                    ((Panel)IA.GLControl1_TraserPanel.Tag).Visible = true;
-                }
-                else
-                {
-                    IA.GLControl1_VerticalPanel.AutoScrollPosition = new Point(0, 0);
-                    fi.Yposition = 0;
-                    IA.GLControl1_VerticalPanel.Visible = false;
-                    ((Panel)IA.GLControl1_TraserPanel.Tag).Visible = false;
-                }
-
-            ((Panel)IA.GLControl1_HorizontalPanel.Tag).Width = (int)(fieldRect.Width * fi.zoom);
-
-                if (((Panel)IA.GLControl1_HorizontalPanel.Tag).Width > IA.GLControl1_HorizontalPanel.Width)
-                {
-                    IA.GLControl1_TraserPanel.Visible = true;
-
-                    IA.GLControl1_HorizontalPanel.AutoScrollPosition = new Point((int)(fi.Xposition * fi.zoom), 0);
-                }
-                else
-                {
-                    IA.GLControl1_HorizontalPanel.AutoScrollPosition = new Point(0, 0);
-                    fi.Xposition = 0;
-                    IA.GLControl1_TraserPanel.Visible = false;
-                }
-
-            ((Panel)IA.GLControl1_TraserPanel).BringToFront();
-                ((Panel)IA.GLControl1_VerticalPanel).BringToFront();
-
-                valX = -fi.Xposition;
-                valY = -fi.Yposition;
-                GL.Translate(valX, valY, 0);
-
-                changeXY = true;
+                TranslationAndScale(fi, fieldRect, GLControl1);
 
                 //make colors transparent
                 GL.BlendFunc(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.One);
@@ -332,11 +308,46 @@ namespace Cell_Tool_3
 
                 List<Button> MethodsBtnList = fi.tpTaskbar.MethodsBtnList;
 
+                if (toRecalculateImages)
+                {
+                    bool toDrawRawImage = MethodsBtnList[0].ImageIndex == 0;
+                    bool toDrawFilteredImage = MethodsBtnList[1].ImageIndex == 0;
+                    //prepare the image list
+                    this.imagesTextures.PrepareImageList(fi.sizeC * 2);
+
+                    for (int index = 0; index < fi.sizeC * 2; index++)
+                        if ((index < fi.sizeC && toDrawRawImage) || (index >= fi.sizeC && toDrawFilteredImage))
+                        {
+                            int C = fi.sizeC > index ? index : index - fi.sizeC;
+
+                            if (!(colors[C] || composite)) continue;//exit if channel and composite images are disabled
+                            if (recalcChannel != -1 && recalcChannel != C) continue;//exit if the channel is disabled
+                            if (recalcMethod == 0 && index >= fi.sizeC) continue;//exit if the method 1 is disabled
+                            if (recalcMethod == 1 && index < fi.sizeC) continue;//exit if the method 2 is disabled
+
+                            //create image texture
+                            if (fi.sizeC > index)
+                            {
+                                this.imagesTextures.GenerateImageData(fi, index, C);
+                            }
+                            else
+                            {
+                                int[] SpotDiapason = IA.Segmentation.SpotDet.CalculateBorders(fi, C);
+                                this.imagesTextures.GenerateFilteredImageData(fi, index, C, SpotDiapason);
+                            }
+                            //Load the images textures
+                            this.imagesTextures.LoadTextures(fi, index);
+                        }
+                }
+                //draw the images
+                GL.Enable(EnableCap.Texture2D);
                 if (MethodsBtnList[0].ImageIndex == 0)
                     DrawRawImages(fi);
 
                 if (MethodsBtnList[1].ImageIndex == 0)
                     DrawFilteredImages(fi);
+
+                GL.Disable(EnableCap.Texture2D);
 
                 GL.Disable(EnableCap.Blend);
 
@@ -351,9 +362,102 @@ namespace Cell_Tool_3
                 drawRoi(fi);
                 if (IA.RoiMan.current != null) drawCurrentRoi(fi);
 
-                GLControl1.SwapBuffers();                
+                GLControl1.SwapBuffers();
             }
-            catch { }
+            //catch { }
+
+        }
+        private void TranslationAndScale(TifFileInfo fi, Rectangle fieldRect, GLControl glcontrol1)
+        {
+            int vertValue = (int)(fi.Yposition * fi.zoom);
+            int vertMax = (int)(fieldRect.Height * fi.zoom) - IA.GLControl1.Height + 10;
+            int horValue = (int)(fi.Xposition * fi.zoom);
+            int horMax = (int)(fieldRect.Width * fi.zoom) - IA.GLControl1.Width + 10;
+            //scale the image
+            if (oldScale != fi.zoom)
+            {
+                double factor = fi.zoom / oldScale;
+                oldScale = fi.zoom;
+                if (factor != 1)
+                {
+                    GL.Scale(factor, factor, 1);
+
+                    if (vertMax < glcontrol1.Height + 10) fi.Yposition = 0;
+                    if (horMax < glcontrol1.Width + 10) fi.Xposition = 0;
+                }
+            }
+            changeXY = false;
+
+            //Y position             
+            if (vertValue <= vertMax)
+            {
+                if (verticalScrollBar.Maximum >= vertValue)
+                {
+                    verticalScrollBar.Value = vertValue;
+                    verticalScrollBar.Maximum = vertMax;
+                }
+                else if (verticalScrollBar.Value <= vertMax)
+                {
+                    verticalScrollBar.Maximum = vertMax;
+                    verticalScrollBar.Value = vertValue;
+                }
+                else
+                {
+                    verticalScrollBar.Value = 0;
+                    verticalScrollBar.Maximum = vertMax;
+                    verticalScrollBar.Value = vertValue;
+                }
+
+                if (verticalScrollBar.Location.X != glcontrol1.Width - verticalScrollBar.Width)
+                    verticalScrollBar.Location = new Point(glcontrol1.Width - verticalScrollBar.Width, glcontrol1.Location.Y);
+                if (verticalScrollBar.Height != glcontrol1.Height)
+                    verticalScrollBar.Height = glcontrol1.Height;
+                verticalScrollBar.BringToFront();
+
+                verticalScrollBar.Visible = true;
+            }
+            else
+            {
+                fi.Yposition = 0;
+                verticalScrollBar.Value = 0;
+                verticalScrollBar.Maximum = 1;
+                verticalScrollBar.Visible = false;
+            }
+            //X position
+            if (horValue <= horMax)
+            {
+                if (horizontalScrollBar.Maximum >= horValue)
+                {
+                    horizontalScrollBar.Value = horValue;
+                    horizontalScrollBar.Maximum = horMax;
+                }
+                else if (horizontalScrollBar.Value <= horMax)
+                {
+                    horizontalScrollBar.Maximum = horMax;
+                    horizontalScrollBar.Value = horValue;
+                }
+                else
+                {
+                    horizontalScrollBar.Value = 0;
+                    horizontalScrollBar.Maximum = horMax;
+                    horizontalScrollBar.Value = horValue;
+                }
+
+                horizontalScrollBar.Visible = true;
+            }
+            else
+            {
+                fi.Xposition = 0;
+                horizontalScrollBar.Value = 0;
+                horizontalScrollBar.Maximum = 1;
+                horizontalScrollBar.Visible = false;
+            }
+
+            valX = -fi.Xposition;
+            valY = -fi.Yposition;
+
+            GL.Translate(valX, valY, 0);
+            changeXY = true;
         }
         private void DrawLine()
         {
@@ -374,11 +478,11 @@ namespace Cell_Tool_3
             GL.VertexPointer(2, VertexPointerType.Float, 0, para_vertex);
             GL.ColorPointer(3, ColorPointerType.Float, 0, para_color);
             GL.DrawArrays(PrimitiveType.TriangleStrip, 0, 6);
-            
+
             GL.DisableClientState(ArrayCap.VertexArray);
         }
         #endregion
-        
+
         private void DrawBackgrounds_Global(TifFileInfo fi)
         {
             //singlechanels or composite
@@ -423,7 +527,7 @@ namespace Cell_Tool_3
             GL.Vertex2(W, Y);
 
             GL.End();
- 
+
         }
         private void RawImage_DrawBackColor(Rectangle rect)
         {
@@ -466,7 +570,7 @@ namespace Cell_Tool_3
             h += y;
 
             GL.Begin(PrimitiveType.LineLoop);
-            GL.Color3( 0f, 0f, 0f);
+            GL.Color3(0f, 0f, 0f);
 
             GL.Vertex2(x, y);
             GL.Vertex2(w, y);
@@ -475,496 +579,36 @@ namespace Cell_Tool_3
 
             GL.End();
         }
-        private void Draw16BitImage(TifFileInfo fi, int C, int rectC, int[] arrayW, int[] arrayH)
+        private void DrawImage(TifFileInfo fi, int C, int rectC)
         {
             try
             {
-                FrameCalculator FC = new FrameCalculator();
-                //image array
-                ushort[][] image = fi.image16bit[FC.FrameC(fi, C)];
-                float[] LUT = fi.adjustedLUT[C];
-                //Prepare RGB
-                float R = (float)(fi.LutList[C].R / 255f);
-                float G = (float)(fi.LutList[C].G / 255f);
-                float B = (float)(fi.LutList[C].B / 255f);
-                //start drawing
-
-
-                float oldI = 0f;
-                float oldJ = 0f;
-
-                //Coordinates
-                Rectangle rect = coRect[0][rectC];
-
-                float X = (float)rect.X;
-                float Y = (float)rect.Y;
-                float W = X + 1f;
-                float H = X + 1f;
-                int index = 0;
-
-                for (float i = 1f; i <= fi.sizeY; i++)
-                {
-                    if (arrayH == null)
-                    {
-                        Y = (float)rect.Y + oldI;
-                        H = (float)rect.Y + i;
-                    }
-                    else
-                    {
-                        Y = (float)arrayH[(int)oldI];
-                        H = (float)arrayH[(int)i];
-                    }
-                    GL.Begin(PrimitiveType.TriangleStrip);
-
-                    X = (float)arrayW[(int)oldJ];
-                    GL.Vertex2(X, Y);
-                    GL.Vertex2(X, H);
-
-                    for (float j = 1f; j <= fi.sizeX; j++)
-                    {
-                        W = (float)arrayW[(int)j];
-
-                        index = image[(int)oldI][(int)oldJ];
-                        if (LUT.Length > index)
-                            GL.Color4(R, G, B, LUT[index]);
-                        else
-                            GL.Color4(R, G, B, LUT[LUT.Length - 1]);
-
-                        GL.Vertex2(W, Y);
-                        GL.Vertex2(W, H);
-
-                        oldJ = j;
-                    }
-                    oldJ = 0f;
-                    oldI = i;
-
-                    GL.End();
-                }
-                //end drawing
-
+                Rectangle rect = new Rectangle(
+                    coRect[0][rectC].X,
+                    coRect[0][rectC].Y,
+                    coRect[0][rectC].X + fi.sizeX,
+                    coRect[0][rectC].Y + fi.sizeY);
+                imagesTextures.DrawTexture(C, rect);
             }
             catch { }
         }
-        private void Draw8BitImage(TifFileInfo fi, int C, int rectC, int[] arrayW, int[] arrayH)
+        private void DrawFilteredImage(TifFileInfo fi, int C, int rectC)
         {
             try
             {
-                FrameCalculator FC = new FrameCalculator();
-                //image array
-                byte[][] image = fi.image8bit[FC.FrameC(fi, C)];
-                float[] LUT = fi.adjustedLUT[C];
-                //Prepare RGB
-                float R = (float)(fi.LutList[C].R / 255f);
-                float G = (float)(fi.LutList[C].G / 255f);
-                float B = (float)(fi.LutList[C].B / 255f);
-                //start drawing
-
-                float oldI = 0f;
-                float oldJ = 0f;
-
-                //Coordinates
-                Rectangle rect = coRect[0][rectC];
-
-                float X = (float)rect.X;
-                float Y = (float)rect.Y;
-                float W = X + 1f;
-                float H = X + 1f;
-                int index = 0;
-
-                for (float i = 1f; i <= fi.sizeY; i++)
-                {
-                    if (arrayH == null)
-                    {
-                        Y = (float)rect.Y + oldI;
-                        H = (float)rect.Y + i;
-                    }
-                    else
-                    {
-                        Y = (float)arrayH[(int)oldI];
-                        H = (float)arrayH[(int)i];
-                    }
-
-                    GL.Begin(PrimitiveType.TriangleStrip);
-
-                    X = (float)arrayW[(int)oldJ];
-                    GL.Vertex2(X, Y);
-                    GL.Vertex2(X, H);
-
-                    for (float j = 1f; j <= fi.sizeX; j++)
-                    {
-                        W = (float)arrayW[(int)j];
-
-                        index = image[(int)oldI][(int)oldJ];
-                        if (LUT.Length > index)
-                            GL.Color4(R, G, B, LUT[index]);
-                        else
-                            GL.Color4(R, G, B, LUT[LUT.Length - 1]);
-
-                        GL.Vertex2(W, Y);
-                        GL.Vertex2(W, H);
-
-                        oldJ = j;
-                    }
-                    oldJ = 0f;
-                    oldI = i;
-
-                    GL.End();
-                }
-                //end drawing
-
-            }
-            catch { }
-        }
-        private void Draw16BitFilteredImage(TifFileInfo fi, int C, int rectC, int[] arrayW, int[] arrayH)
-        {
-            try
-            {
-                if (fi.image16bitFilter == null) { fi.image16bitFilter = fi.image16bit; }
-                FrameCalculator FC = new FrameCalculator();
-                //image array
-                ushort[][] image = fi.image16bitFilter[FC.FrameC(fi, C)];
-                float[] LUT = fi.adjustedLUT[C];
-                //calculate spot detector diapasone
-                int[] SpotDiapason = IA.Segmentation.SpotDet.CalculateBorders(fi, C);
-                //Prepare RGB
-                float R = (float)(fi.LutList[C].R / 255f);
-                float G = (float)(fi.LutList[C].G / 255f);
-                float B = (float)(fi.LutList[C].B / 255f);
-                //start drawing
-
-                float oldI = 0f;
-                float oldJ = 0f;
-
-                //Coordinates
-                Rectangle rect = coRect[1][rectC];
-
-                float X = (float)rect.X;
-                float Y = (float)rect.Y;
-                float W = X + 1f;
-                float H = X + 1f;
-                int val = 0;
-
-                Color lastCol = fi.thresholdColors[C][fi.thresholds[C]];
-                int Choise = fi.thresholds[C];
-                if (fi.SegmentationCBoxIndex[C] == 0) Choise = 0;
-
-                for (float i = 1f; i <= fi.sizeY; i++)
-                {
-                    if (arrayH == null)
-                    {
-                        Y = (float)rect.Y + oldI;
-                        H = (float)rect.Y + i;
-                    }
-                    else
-                    {
-                        Y = (float)arrayH[(int)oldI];
-                        H = (float)arrayH[(int)i];
-                    }
-                    GL.Begin(PrimitiveType.TriangleStrip);
-
-                    X = (float)arrayW[(int)oldJ];
-                    GL.Vertex2(X, Y);
-                    GL.Vertex2(X, H);
-
-                    for (float j = 1f; j <= fi.sizeX; j++)
-                    {
-                        W = (float)arrayW[(int)j];
-                        val = (int)image[(int)oldI][(int)oldJ];
-                        #region Colors
-                        if (fi.SegmentationCBoxIndex[C] != 0 | fi.SelectedSpotThresh[C] != 0)
-                        {
-                            Color col;
-
-                            switch (Choise)
-                            {
-                                case 0:
-                                    if (val > SpotDiapason[0] & val < SpotDiapason[1])
-                                    {
-                                        col = fi.SpotColor[C];
-                                        GL.Color4(col);
-                                    }
-                                    else if(LUT.Length > val)
-                                        GL.Color4(R, G, B, LUT[val]);
-                                    else
-                                        GL.Color4(R, G, B, LUT[LUT.Length-1]);
-
-                                    break;
-                                default:
-                                    if (val > SpotDiapason[0] & val < SpotDiapason[1])
-                                    {
-                                        col = fi.SpotColor[C];
-                                    }
-                                    else if (val < fi.thresholdValues[C][1])
-                                    {
-                                        col = fi.thresholdColors[C][0];
-                                    }
-                                    else if (val < fi.thresholdValues[C][2])
-                                    {
-                                        col = fi.thresholdColors[C][1];
-                                    }
-                                    else if (val < fi.thresholdValues[C][3])
-                                    {
-                                        col = fi.thresholdColors[C][2];
-                                    }
-                                    else if (val < fi.thresholdValues[C][4])
-                                    {
-                                        col = fi.thresholdColors[C][3];
-                                    }
-                                    else
-                                    {
-                                        col = lastCol;
-                                    }
-
-                                    if (col == Color.Transparent)
-                                    {
-                                        //GL.Color4(R, G, B, LUT[image[(int)oldI][(int)oldJ]]);
-                                        if (LUT.Length > val)
-                                            GL.Color4(R, G, B, LUT[val]);
-                                        else
-                                            GL.Color4(R, G, B, LUT[LUT.Length - 1]);
-                                    }
-                                    else
-                                    {
-                                        //col = Color.FromArgb(255, col.R, col.G, col.B);
-                                        GL.Color4(col);
-                                    }
-                                    break;
-
-                            }
-                        }
-                        else
-                        {
-                            //GL.Color4(R, G, B, LUT[image[(int)oldI][(int)oldJ]]);
-                            if (LUT.Length > val)
-                                GL.Color4(R, G, B, LUT[val]);
-                            else
-                                GL.Color4(R, G, B, LUT[LUT.Length - 1]);
-                        }
-                        #endregion Colors
-
-                        GL.Vertex2(W, Y);
-                        GL.Vertex2(W, H);
-
-                        oldJ = j;
-                    }
-                    oldJ = 0f;
-                    oldI = i;
-
-                    GL.End();
-                }
-                //end drawing
-
-            }
-            catch { }
-        }
-        private void Draw8BitFilteredImage(TifFileInfo fi, int C, int rectC, int[] arrayW, int[] arrayH)
-        {
-            try
-            {
-                if (fi.image8bitFilter == null) { fi.image8bitFilter = fi.image8bit; }
-
-                FrameCalculator FC = new FrameCalculator();
-                //image array
-                byte[][] image = fi.image8bitFilter[FC.FrameC(fi, C)];
-                float[] LUT = fi.adjustedLUT[C];
-                //calculate spot detector diapasone
-                int[] SpotDiapason = IA.Segmentation.SpotDet.CalculateBorders(fi, C);
-
-                //Prepare RGB
-                float R = (float)(fi.LutList[C].R / 255f);
-                float G = (float)(fi.LutList[C].G / 255f);
-                float B = (float)(fi.LutList[C].B / 255f);
-                //start drawing
-
-                float oldI = 0f;
-                float oldJ = 0f;
-
-                //Coordinates
-                Rectangle rect = coRect[1][rectC];
-
-                float X = (float)rect.X;
-                float Y = (float)rect.Y;
-                float W = X + 1f;
-                float H = X + 1f;
-                int val = 0;
-
-               Color lastCol = fi.thresholdColors[C][fi.thresholds[C]];
-
-                int Choise = fi.thresholds[C];
-                if (fi.SegmentationCBoxIndex[C] == 0) Choise = 0;
-
-                for (float i = 1f; i <= fi.sizeY; i++)
-                {
-                    if (arrayH == null)
-                    {
-                        Y = (float)rect.Y + oldI;
-                        H = (float)rect.Y + i;
-                    }
-                    else
-                    {
-                        Y = (float)arrayH[(int)oldI];
-                        H = (float)arrayH[(int)i];
-                    }
-
-                    GL.Begin(PrimitiveType.TriangleStrip);
-
-                    X = (float)arrayW[(int)oldJ];
-                    GL.Vertex2(X, Y);
-                    GL.Vertex2(X, H);
-
-                    for (float j = 1f; j <= fi.sizeX; j++)
-                    {
-                        W = (float)arrayW[(int)j];
-                        val = (int)image[(int)oldI][(int)oldJ];
-                        #region Colors
-                        if (fi.SegmentationCBoxIndex[C] != 0 | fi.SelectedSpotThresh[C] != 0)
-                        {
-                            Color col;
-                            switch (Choise)
-                            {
-                                case 0:
-                                    if (val > SpotDiapason[0] & val < SpotDiapason[1])
-                                    {
-                                        col = fi.SpotColor[C];
-                                        GL.Color4(col);
-                                    }
-                                    else if(LUT.Length > val)
-                                        GL.Color4(R, G, B, LUT[val]);
-                                    else
-                                        GL.Color4(R, G, B, LUT[LUT.Length - 1]);
-
-                                    break;
-                                default:
-
-                                    if (val > SpotDiapason[0] & val < SpotDiapason[1])
-                                    {
-                                        col = fi.SpotColor[C];
-                                    }
-                                    else if (val < fi.thresholdValues[C][1])
-                                    {
-                                        col = fi.thresholdColors[C][0];
-                                    }
-                                    else if (val < fi.thresholdValues[C][2])
-                                    {
-                                        col = fi.thresholdColors[C][1];
-                                    }
-                                    else if (val < fi.thresholdValues[C][3])
-                                    {
-                                        col = fi.thresholdColors[C][2];
-                                    }
-                                    else if (val < fi.thresholdValues[C][4])
-                                    {
-                                        col = fi.thresholdColors[C][3];
-                                    }
-                                    else
-                                    {
-                                        col = lastCol;
-                                    }
-
-                                    if (col == Color.Transparent)
-                                    {
-                                        if (LUT.Length > val)
-                                            GL.Color4(R, G, B, LUT[val]);
-                                        else
-                                            GL.Color4(R, G, B, LUT[LUT.Length - 1]);
-                                    }
-                                    else
-                                    {
-                                        GL.Color4(col);
-                                    }
-                                    break;
-
-                            }
-                        }
-                        else
-                        {
-                            if (LUT.Length > val)
-                                GL.Color4(R, G, B, LUT[val]);
-                            else
-                                GL.Color4(R, G, B, LUT[LUT.Length - 1]);
-                        }
-                        #endregion Colors
-
-                        GL.Vertex2(W, Y);
-                        GL.Vertex2(W, H);
-
-                        oldJ = j;
-                    }
-                    oldJ = 0f;
-                    oldI = i;
-
-                    GL.End();
-                }
-                //end drawing
-
+                Rectangle rect = new Rectangle(
+                    coRect[1][rectC].X,
+                    coRect[1][rectC].Y,
+                    coRect[1][rectC].X + fi.sizeX,
+                    coRect[1][rectC].Y + fi.sizeY);
+                imagesTextures.DrawTexture(fi.sizeC + C, rect);
             }
             catch { }
         }
         private void DrawFilteredImages(TifFileInfo fi)
         {
             //singlechanels or composite
-            int[] arrayW = new int[fi.sizeX + 1];
-            int col = coRect[1].Length - 1;
-            for (int i = 0; i < col; i++)
-            {
-                if (colors[i] == true)
-                {
-                    col = i;
-                    break;
-                }
-            }
 
-            int X = coRect[1][col].X;
-            for (int i = 0; i < arrayW.Length; i++, X++)
-            {
-                arrayW[i] = X;
-            }
-
-            for (int C = 0; C < fi.sizeC; C++)
-            {
-                if (colors[C] == true)
-                {
-                    switch (fi.bitsPerPixel)
-                    {
-                        case 8:
-                            Draw8BitFilteredImage(fi, C, C, arrayW, null);
-                            break;
-                        case 16:
-                            Draw16BitFilteredImage(fi, C, C, arrayW, null);
-                            break;
-                    }
-                }
-            }
-
-            if (composite == true)
-            {
-                int[] arrayH = new int[fi.sizeY + 1];
-                int Y = coRect[1][fi.sizeC].Y;
-                for (int i = 0; i < arrayH.Length; i++, Y++)
-                {
-                    arrayH[i] = Y;
-                }
-
-                for (int C1 = 0; C1 < fi.sizeC; C1++)
-                {
-                    switch (fi.bitsPerPixel)
-                    {
-                        case 8:
-                            Draw8BitFilteredImage(fi, C1, fi.sizeC, arrayW, null);
-                            break;
-                        case 16:
-                            Draw16BitFilteredImage(fi, C1, fi.sizeC, arrayW, null);
-                            break;
-                    }
-                }
-                arrayH = null;
-            }
-            arrayW = null;
-        }
-        private void DrawRawImages(TifFileInfo fi)
-        {
-            //singlechanels or composite
-            int[] arrayW = new int[fi.sizeX + 1];
             int col = coRect[0].Length - 1;
             for (int i = 0; i < col; i++)
             {
@@ -974,13 +618,6 @@ namespace Cell_Tool_3
                     break;
                 }
             }
-
-            int X = coRect[0][col].X;
-            for (int i = 0; i < arrayW.Length; i++, X++)
-            {
-                arrayW[i] = X;
-            }
-
             for (int C = 0; C < fi.sizeC; C++)
             {
                 if (colors[C] == true)
@@ -988,40 +625,74 @@ namespace Cell_Tool_3
                     switch (fi.bitsPerPixel)
                     {
                         case 8:
-                            Draw8BitImage(fi, C, C, arrayW, null);
+                            DrawFilteredImage(fi, C, C);
                             break;
                         case 16:
-                            Draw16BitImage(fi, C, C, arrayW, null);
+                            DrawFilteredImage(fi, C, C);
                             break;
                     }
                 }
             }
             if (composite == true)
             {
-                int[] arrayH = new int[fi.sizeY + 1];
-                int Y = coRect[0][fi.sizeC].Y;
-                for (int i = 0; i < arrayH.Length; i++, Y++)
-                {
-                    arrayH[i] = Y;
-                }
-
                 for (int C1 = 0; C1 < fi.sizeC; C1++)
                 {
                     switch (fi.bitsPerPixel)
                     {
                         case 8:
-                            Draw8BitImage(fi, C1, fi.sizeC, arrayW, arrayH);
+                            DrawFilteredImage(fi, C1, fi.sizeC);
                             break;
                         case 16:
-                            Draw16BitImage(fi, C1, fi.sizeC, arrayW, arrayH);
+                            DrawFilteredImage(fi, C1, fi.sizeC);
                             break;
                     }
                 }
-                arrayH = null;
             }
-            arrayW = null;
         }
+        private void DrawRawImages(TifFileInfo fi)
+        {
+            //singlechanels or composite
 
+            int col = coRect[0].Length - 1;
+            for (int i = 0; i < col; i++)
+            {
+                if (colors[i] == true)
+                {
+                    col = i;
+                    break;
+                }
+            }
+            for (int C = 0; C < fi.sizeC; C++)
+            {
+                if (colors[C] == true)
+                {
+                    switch (fi.bitsPerPixel)
+                    {
+                        case 8:
+                            DrawImage(fi, C, C);
+                            break;
+                        case 16:
+                            DrawImage(fi, C, C);
+                            break;
+                    }
+                }
+            }
+            if (composite == true)
+            {
+                for (int C1 = 0; C1 < fi.sizeC; C1++)
+                {
+                    switch (fi.bitsPerPixel)
+                    {
+                        case 8:
+                            DrawImage(fi, C1, fi.sizeC);
+                            break;
+                        case 16:
+                            DrawImage(fi, C1, fi.sizeC);
+                            break;
+                    }
+                }
+            }
+        }
         public Rectangle coRect_Calculate(GLControl GLControl1)
         {
             TifFileInfo fi = IA.TabPages.TabCollections[IA.TabPages.SelectedIndex].tifFI;
@@ -1170,10 +841,10 @@ namespace Cell_Tool_3
                     //position
                     Rectangle newRect =
                         new Rectangle((int)sizeW, (int)sizeH,
-                        (int)(fi.sizeY*1.5), (int)(fi.sizeY));
+                        (int)(fi.sizeY * 1.5), (int)(fi.sizeY));
                     coRect[2][i] = newRect;
                     //size
-                    sizeH += (int) (fi.sizeY + interval);
+                    sizeH += (int)(fi.sizeY + interval);
                     // if (biggestW < fi.sizeX) { biggestW = fi.sizeX; }
                     if (biggestW < newRect.Width) { biggestW = newRect.Width; }
                 }
@@ -1187,11 +858,9 @@ namespace Cell_Tool_3
             #endregion Chart - index 1
             //Calculate Field
             Rectangle result = new Rectangle(0, 0, (int)sizeW, (int)biggestH);
-            
+
             return result;
-
         }
-
         public void CalculateImages(TifFileInfo fi)
         {
             if (IA.BandC.autoDetect.Checked == true | fi.adjustedLUT == null)
@@ -1206,7 +875,6 @@ namespace Cell_Tool_3
             }
             IA.BandC.calculateHistogramArray(fi, true);
         }
-
         public void ShowXYVal(object sender, MouseEventArgs e)
         {
             TifFileInfo fi;
@@ -1215,6 +883,9 @@ namespace Cell_Tool_3
                 fi = IA.TabPages.TabCollections[IA.TabPages.SelectedIndex].tifFI;
 
                 if (fi == null) { return; }
+                //if the 3D is enabled - send to imageDrawer_3D
+                if (imageDrawer_3D.isImage3D(fi)) return;
+
                 double zoom = fi.zoom;
                 double X1 = e.X / zoom - valX;
                 double Y1 = e.Y / zoom - valY;
@@ -1319,8 +990,6 @@ namespace Cell_Tool_3
                 return;
             }
         }
-
-
         private void GLControl1_MouseClick(object sender, MouseEventArgs e)
         {
             GLControl GLControl1 = sender as GLControl;
@@ -1338,6 +1007,13 @@ namespace Cell_Tool_3
                 }
                 catch { return; }
                 if (fi == null) { return; }
+
+                //if the 3D is enabled - send to imageDrawer_3D
+                if (imageDrawer_3D.isImage3D(fi))
+                {
+                    imageDrawer_3D.GLControl1_MouseClick(GLControl1, fi, e);
+                    return;
+                }
 
                 double zoom = fi.zoom;
                 double X1 = e.X / zoom - valX;
@@ -1357,7 +1033,7 @@ namespace Cell_Tool_3
                         {
                             if (coRect[i][j].Contains(p) == true)
                             {
-                                if(fi.cValue != j)
+                                if (fi.cValue != j)
                                     IA.RoiMan.current = null;
 
                                 if (fi.selectedPictureBoxColumn != i |
@@ -1366,7 +1042,7 @@ namespace Cell_Tool_3
                                     fi.selectedPictureBoxColumn = i;
                                     fi.cValue = j;
                                     //Reload
-                                    IA.ReloadImages();
+                                    IA.ReloadImages(false);
                                     return;
                                 }
                                 else
@@ -1379,7 +1055,7 @@ namespace Cell_Tool_3
                 }
             }
         }
-       
+
         private void GLControl1_MouseWheel(object sender, MouseEventArgs e)
         {
             if (IA.RoiMan.DrawNewRoiMode == true) return;
@@ -1399,7 +1075,7 @@ namespace Cell_Tool_3
             }
             else if (Control.ModifierKeys == Keys.Shift)
             {
-                if (IA.GLControl1_TraserPanel.Visible == true)
+                if (this.horizontalScrollBar.Visible == true)
                 {
                     TifFileInfo fi;
                     try
@@ -1415,34 +1091,32 @@ namespace Cell_Tool_3
                     int val = 0;
                     if (e.Delta > 0)
                     {
-                        val = IA.GLControl1_HorizontalPanel.HorizontalScroll.Value
-                            + IA.GLControl1_HorizontalPanel.HorizontalScroll.LargeChange;
+                        val = this.horizontalScrollBar.Value
+                            + this.horizontalScrollBar.LargeChange;
                     }
                     else if (e.Delta < 0)
                     {
-                        val = IA.GLControl1_HorizontalPanel.HorizontalScroll.Value
-                            - IA.GLControl1_HorizontalPanel.HorizontalScroll.LargeChange;
+                        val = this.horizontalScrollBar.Value
+                            - this.horizontalScrollBar.LargeChange;
                     }
 
-                    if (val < IA.GLControl1_HorizontalPanel.HorizontalScroll.Minimum)
+                    if (val < this.horizontalScrollBar.Minimum)
                     {
-                        IA.GLControl1_HorizontalPanel.AutoScrollPosition =
-                            new Point(IA.GLControl1_HorizontalPanel.HorizontalScroll.Minimum, 0);
+                        this.horizontalScrollBar.Value = this.horizontalScrollBar.Minimum;
                     }
-                    else if (val > IA.GLControl1_HorizontalPanel.HorizontalScroll.Maximum)
+                    else if (val > this.horizontalScrollBar.Maximum)
                     {
-                        IA.GLControl1_HorizontalPanel.AutoScrollPosition =
-                            new Point(IA.GLControl1_HorizontalPanel.HorizontalScroll.Maximum, 0);
+                        this.horizontalScrollBar.Value = this.horizontalScrollBar.Maximum;
                     }
                     else
                     {
-                        IA.GLControl1_HorizontalPanel.AutoScrollPosition = new Point(val, 0);
+                        this.horizontalScrollBar.Value = val;
                     }
 
-                    if (fi.Xposition != IA.GLControl1_HorizontalPanel.HorizontalScroll.Value / fi.zoom)
+                    if (fi.Xposition != this.horizontalScrollBar.Value / fi.zoom)
                     {
-                        fi.Xposition = IA.GLControl1_HorizontalPanel.HorizontalScroll.Value / fi.zoom;
-                        IA.ReloadImages();
+                        fi.Xposition = this.horizontalScrollBar.Value / fi.zoom;
+                        IA.ReloadImages(false);
                     }
 
                     changeXY = true;
@@ -1450,7 +1124,7 @@ namespace Cell_Tool_3
             }
             else
             {
-                if (IA.GLControl1_VerticalPanel.Visible == true)
+                if (this.verticalScrollBar.Visible == true)
                 {
                     TifFileInfo fi;
                     try
@@ -1466,34 +1140,32 @@ namespace Cell_Tool_3
                     int val = 0;
                     if (e.Delta < 0)
                     {
-                        val = IA.GLControl1_VerticalPanel.VerticalScroll.Value
-                            + IA.GLControl1_VerticalPanel.VerticalScroll.LargeChange;
+                        val = this.verticalScrollBar.Value
+                            + this.verticalScrollBar.LargeChange;
                     }
                     else if (e.Delta > 0)
                     {
-                        val = IA.GLControl1_VerticalPanel.VerticalScroll.Value
-                            - IA.GLControl1_VerticalPanel.VerticalScroll.LargeChange;
+                        val = this.verticalScrollBar.Value
+                            - this.verticalScrollBar.LargeChange;
                     }
 
-                    if (val < IA.GLControl1_VerticalPanel.VerticalScroll.Minimum)
+                    if (val < this.verticalScrollBar.Minimum)
                     {
-                        IA.GLControl1_VerticalPanel.AutoScrollPosition =
-                            new Point(0, IA.GLControl1_VerticalPanel.VerticalScroll.Minimum);
+                        this.verticalScrollBar.Value = this.verticalScrollBar.Minimum;
                     }
-                    else if (val > IA.GLControl1_VerticalPanel.VerticalScroll.Maximum)
+                    else if (val > this.verticalScrollBar.Maximum)
                     {
-                        IA.GLControl1_VerticalPanel.AutoScrollPosition =
-                            new Point(0, IA.GLControl1_VerticalPanel.VerticalScroll.Maximum);
+                        this.verticalScrollBar.Value = this.verticalScrollBar.Maximum;
                     }
                     else
                     {
-                        IA.GLControl1_VerticalPanel.AutoScrollPosition = new Point(0, val);
+                        this.verticalScrollBar.Value = val;
                     }
 
-                    if (fi.Yposition != IA.GLControl1_VerticalPanel.VerticalScroll.Value / fi.zoom)
+                    if (fi.Yposition != this.verticalScrollBar.Value / fi.zoom)
                     {
-                        fi.Yposition = IA.GLControl1_VerticalPanel.VerticalScroll.Value / fi.zoom;
-                        IA.ReloadImages();
+                        fi.Yposition = this.verticalScrollBar.Value / fi.zoom;
+                        IA.ReloadImages(false);
                     }
 
                     changeXY = true;
@@ -1548,7 +1220,8 @@ namespace Cell_Tool_3
                     TabPages.propertiesPanel.Width = 15;
                     TabPages.hidePropAndBrows = true;
                 }
-                else {
+                else
+                {
                     //data source panel
                     FileBrowser.DataSourcesPanelWidth = int.Parse(settings.DataSourcesPanelValues[AccInd]);
 
@@ -1583,34 +1256,42 @@ namespace Cell_Tool_3
         private int oldY = 0;
         private void GLControl1_MouseDown(object sender, MouseEventArgs e)
         {
+            TifFileInfo fi;
+            try
+            {
+                fi = IA.TabPages.TabCollections[IA.TabPages.SelectedIndex].tifFI;
+            }
+            catch
+            {
+                return;
+            }
+            if (fi == null) { return; }
+
+            //if the 3D is enabled - send to imageDrawer_3D
+            if (imageDrawer_3D.isImage3D(fi))
+            {
+                imageDrawer_3D.GLControl1_MouseDown((GLControl)sender, fi, e);
+                return;
+            }
+
             if ((e.Button == MouseButtons.Right & Control.ModifierKeys == Keys.Control)
                 | e.Button == MouseButtons.Middle)
             {
-                TifFileInfo fi;
-                try
-                {
-                    fi = IA.TabPages.TabCollections[IA.TabPages.SelectedIndex].tifFI;
-                }
-                catch
-                {
-                    return;
-                }
-                if (fi == null) { return; }
 
                 fieldMove = true;
                 oldX = e.X;
                 oldY = e.Y;
 
-                if (IA.GLControl1_TraserPanel.Visible == true &
-                    IA.GLControl1_VerticalPanel.Visible == true)
+                if (this.horizontalScrollBar.Visible == true &
+                   this.verticalScrollBar.Visible == true)
                 {
                     ((GLControl)sender).Cursor = Cursors.SizeAll;
                 }
-                else if (IA.GLControl1_TraserPanel.Visible == true)
+                else if (this.horizontalScrollBar.Visible == true)
                 {
                     ((GLControl)sender).Cursor = Cursors.SizeWE;
                 }
-                else if (IA.GLControl1_VerticalPanel.Visible == true)
+                else if (this.verticalScrollBar.Visible == true)
                 {
                     ((GLControl)sender).Cursor = Cursors.SizeNS;
                 }
@@ -1618,65 +1299,72 @@ namespace Cell_Tool_3
         }
         private void GLControl1_MouseMove(object sender, MouseEventArgs e)
         {
+            TifFileInfo fi;
+            try
+            {
+                fi = IA.TabPages.TabCollections[IA.TabPages.SelectedIndex].tifFI;
+            }
+            catch
+            {
+                return;
+            }
+            if (fi == null) { return; }
+
+            //if the 3D is enabled - send to imageDrawer_3D
+            if (imageDrawer_3D.isImage3D(fi))
+            {
+                imageDrawer_3D.GLControl1_MouseMove((GLControl)sender, fi, e);
+                return;
+            }
+
             if (fieldMove == true & (Control.ModifierKeys == Keys.Control | e.Button == MouseButtons.Middle))
             {
-                TifFileInfo fi;
-                try
-                {
-                    fi = IA.TabPages.TabCollections[IA.TabPages.SelectedIndex].tifFI;
-                }
-                catch
-                {
-                    return;
-                }
-                if (fi == null) { return; }
-
                 int X = oldX - e.X;
                 int Y = oldY - e.Y;
                 changeXY = false;
                 //vertical
-                if (IA.GLControl1_VerticalPanel.Visible == true)
+                if (this.verticalScrollBar.Visible == true)
                 {
-                    int val = IA.GLControl1_VerticalPanel.VerticalScroll.Value + Y;// * IA.GLControl1_VerticalPanel.VerticalScroll.SmallChange;
+                    int val = this.verticalScrollBar.Value + Y;// * IA.GLControl1_VerticalPanel.VerticalScroll.SmallChange;
                     oldY = e.Y;
-                    if (val < IA.GLControl1_VerticalPanel.VerticalScroll.Minimum)
+                    if (val < this.verticalScrollBar.Minimum)
                     {
-                        IA.GLControl1_VerticalPanel.AutoScrollPosition = new Point(0, IA.GLControl1_VerticalPanel.VerticalScroll.Minimum);
+                        this.verticalScrollBar.Value = this.verticalScrollBar.Minimum;
                     }
-                    else if (val > IA.GLControl1_VerticalPanel.VerticalScroll.Maximum)
+                    else if (val > this.verticalScrollBar.Maximum)
                     {
-                        IA.GLControl1_VerticalPanel.AutoScrollPosition = new Point(0, IA.GLControl1_VerticalPanel.VerticalScroll.Maximum);
+                        this.verticalScrollBar.Value = this.verticalScrollBar.Maximum;
                     }
                     else
                     {
-                        IA.GLControl1_VerticalPanel.AutoScrollPosition = new Point(0, val);
+                        this.verticalScrollBar.Value = val;
                     }
                 }
                 //Horizontal
-                if (IA.GLControl1_TraserPanel.Visible == true)
+                if (this.horizontalScrollBar.Visible == true)
                 {
-                    int val = IA.GLControl1_HorizontalPanel.HorizontalScroll.Value + X;// * IA.GLControl1_HorizontalPanel.HorizontalScroll.SmallChange;
+                    int val = this.horizontalScrollBar.Value + X;// * IA.GLControl1_HorizontalPanel.HorizontalScroll.SmallChange;
                     oldX = e.X;
-                    if (val < IA.GLControl1_HorizontalPanel.HorizontalScroll.Minimum)
+                    if (val < this.horizontalScrollBar.Minimum)
                     {
-                        IA.GLControl1_HorizontalPanel.AutoScrollPosition = new Point(IA.GLControl1_HorizontalPanel.HorizontalScroll.Minimum, 0);
+                        this.horizontalScrollBar.Value = this.horizontalScrollBar.Minimum;
                     }
-                    else if (val > IA.GLControl1_HorizontalPanel.HorizontalScroll.Maximum)
+                    else if (val > this.horizontalScrollBar.Maximum)
                     {
-                        IA.GLControl1_HorizontalPanel.AutoScrollPosition = new Point(IA.GLControl1_HorizontalPanel.HorizontalScroll.Maximum, 0);
+                        this.horizontalScrollBar.Value = this.horizontalScrollBar.Maximum;
                     }
                     else
                     {
-                        IA.GLControl1_HorizontalPanel.AutoScrollPosition = new Point(val, 0);
+                        this.horizontalScrollBar.Value = val;
                     }
                 }
 
-                if (fi.Yposition != IA.GLControl1_VerticalPanel.VerticalScroll.Value / fi.zoom |
-                    fi.Xposition != IA.GLControl1_HorizontalPanel.HorizontalScroll.Value / fi.zoom)
+                if (fi.Yposition != this.verticalScrollBar.Value / fi.zoom |
+                    fi.Xposition != this.horizontalScrollBar.Value / fi.zoom)
                 {
-                    fi.Yposition = IA.GLControl1_VerticalPanel.VerticalScroll.Value / fi.zoom;
-                    fi.Xposition = IA.GLControl1_HorizontalPanel.HorizontalScroll.Value / fi.zoom;
-                    IA.ReloadImages();
+                    fi.Yposition = this.verticalScrollBar.Value / fi.zoom;
+                    fi.Xposition = this.horizontalScrollBar.Value / fi.zoom;
+                    IA.ReloadImages(false);
                 }
                 changeXY = true;
             }
@@ -1688,6 +1376,23 @@ namespace Cell_Tool_3
         }
         private void GLControl1_MouseUp(object sender, MouseEventArgs e)
         {
+            TifFileInfo fi;
+            try
+            {
+                fi = IA.TabPages.TabCollections[IA.TabPages.SelectedIndex].tifFI;
+            }
+            catch
+            {
+                return;
+            }
+            if (fi == null) { return; }
+            //if the 3D is enabled - send to imageDrawer_3D
+            if (imageDrawer_3D.isImage3D(fi))
+            {
+                imageDrawer_3D.GLControl1_MouseUp((GLControl)sender, fi, e);
+                return;
+            }
+
             if (fieldMove == true)
             {
                 fieldMove = false;
@@ -1700,8 +1405,8 @@ namespace Cell_Tool_3
         #endregion MouseMoveField event
 
         #region Draw ROI
-       const float DEG2RAD = (float)(3.14159 / 180.0);
-       private void drawEllipse(float x, float y, float xradius, float yradius)
+        const float DEG2RAD = (float)(3.14159 / 180.0);
+        private void drawEllipse(float x, float y, float xradius, float yradius)
         {
             xradius /= 2;
             yradius /= 2;
@@ -1718,7 +1423,7 @@ namespace Cell_Tool_3
                 float degInRad = i * DEG2RAD;
                 double newX = x + Math.Cos(degInRad) * xradius;
                 double newY = y + Math.Sin(degInRad) * yradius;
-                GL.Vertex2(newX,newY);
+                GL.Vertex2(newX, newY);
             }
 
             GL.End();
@@ -1726,7 +1431,7 @@ namespace Cell_Tool_3
         private void drawEllipse(float x, float y, float xradius, float yradius, Rectangle Rect)
         {
             //Check is it outside
-            if(!(x < Rect.X+0.5 | x + xradius > Rect.Width + 0.5 |
+            if (!(x < Rect.X + 0.5 | x + xradius > Rect.Width + 0.5 |
                 y < Rect.Y + 0.5 | y + yradius > Rect.Height + 0.5))
             {
                 drawEllipse(x, y, xradius, yradius);
@@ -1776,11 +1481,11 @@ namespace Cell_Tool_3
             w += x;
             h += y;
 
-            if (x <= RectF.X+0.5f) x = RectF.X  + 0.5f;
+            if (x <= RectF.X + 0.5f) x = RectF.X + 0.5f;
 
-            if (y <= RectF.Y +0.5f) y = RectF.Y + 0.5f;
+            if (y <= RectF.Y + 0.5f) y = RectF.Y + 0.5f;
 
-            if (w > RectF.Width )
+            if (w > RectF.Width)
                 w = RectF.Width;
 
             if (h > RectF.Height)
@@ -1807,7 +1512,7 @@ namespace Cell_Tool_3
 
             GL.End();
         }
-        private void drawRectangle(float x, float y, float w, float h,Rectangle Rect)
+        private void drawRectangle(float x, float y, float w, float h, Rectangle Rect)
         {
             RectangleF RectF = new RectangleF(
                (float)Rect.X,
@@ -1818,7 +1523,7 @@ namespace Cell_Tool_3
             if (!(x < RectF.X + 0.5f |
                 y < RectF.Y + 0.5f |
                 w + x > RectF.Width |
-                h + y > RectF.Height ))
+                h + y > RectF.Height))
             {
                 drawRectangle(x, y, w, h);
                 return;
@@ -1830,14 +1535,14 @@ namespace Cell_Tool_3
             {
                 return;
             }
-            
+
             w += x;
             h += y;
 
             float[] Xarr = new float[] { x, w, w, x };
             float[] Yarr = new float[] { y, y, h, h };
             PolygonalFieldCut(Xarr, Yarr, Rect);
-            
+
         }
         private void drawRectangle(float x, float y, float w, float h)
         {
@@ -1858,9 +1563,9 @@ namespace Cell_Tool_3
         {
             GL.Begin(PrimitiveType.LineLoop);
             GL.Color4(1f, 1f, 0f, 1f);
-            
-            for(int i = 0; i< x.Length; i++)
-               GL.Vertex2(x[i], y[i]);
+
+            for (int i = 0; i < x.Length; i++)
+                GL.Vertex2(x[i], y[i]);
 
             GL.End();
         }
@@ -1870,10 +1575,10 @@ namespace Cell_Tool_3
             GL.Color4(1f, 1f, 0f, 1f);
             for (int i = 0; i < x.Length; i++)
                 GL.Vertex2(x[i], y[i]);
-            
+
             GL.End();
         }
-        
+
         private List<PointF> DrawLine(PointF p1, PointF p2)
         {
             //Bresenham's line algorithm
@@ -1895,7 +1600,7 @@ namespace Cell_Tool_3
                     for (float Y = p2.Y; Y <= p1.Y; Y++)
                         pxlList.Add(new PointF(p1.X, Y));
                 }
-                
+
             }
             else if (deltaY == 0)
             {
@@ -2007,14 +1712,14 @@ namespace Cell_Tool_3
                 }
                 //calculate new values
                 deltaX = x1 - x0;
-                deltaY  = y1 - y0;
+                deltaY = y1 - y0;
                 deltaErr = Math.Abs(deltaY / deltaX);
 
                 //Assume deltax != 0 (line is not vertical),
                 //note that this division needs to be done in a way that preserves the fractional part
                 float y = y0;
                 double error1 = -1;
-                for (float x = x0; x< x1; x++)
+                for (float x = x0; x < x1; x++)
                 {
                     switch (case1)
                     {
@@ -2023,7 +1728,7 @@ namespace Cell_Tool_3
                             pxlList.Add(new PointF(x, y));
                             break;
                         case 1:
-                            pxlList.Add(new PointF(y,x));
+                            pxlList.Add(new PointF(y, x));
                             break;
                         case 2:
                             pxlList.Add(new PointF(-y, x));
@@ -2046,7 +1751,7 @@ namespace Cell_Tool_3
                     }
 
                     error1 += deltaErr;
-                    if(error1 >= 0.0)
+                    if (error1 >= 0.0)
                     {
                         y++;
                         error1 -= 1.0;
@@ -2058,7 +1763,7 @@ namespace Cell_Tool_3
         }
         private bool RectFContains(PointF p, RectangleF rectF)
         {
-            if (p.X < rectF.X | p.X > rectF.Width | 
+            if (p.X < rectF.X | p.X > rectF.Width |
                 p.Y < rectF.Y | p.Y > rectF.Height)
                 return false;
             else
@@ -2082,14 +1787,14 @@ namespace Cell_Tool_3
                 (float)Rect.Y,
                 (float)(Rect.Width + Rect.X),
                 (float)(Rect.Height + Rect.Y));
-           
+
             List<PointF> resP = new List<PointF>();
             List<PointF> potP;
 
-            PointF p0 = new PointF(X[X.Length-1],Y[Y.Length-1]);
+            PointF p0 = new PointF(X[X.Length - 1], Y[Y.Length - 1]);
             PointF p1;
             bool drawn = false;
-            
+
             bool visible;
             bool contain;//bool that shows is the point in rectF
             PointF prevP;//the one before the last selected
@@ -2106,11 +1811,11 @@ namespace Cell_Tool_3
                 else
                     p1 = new PointF(X[0], Y[0]);
                 //check is border visible
-                if(RectFContains(p0, RectF))
+                if (RectFContains(p0, RectF))
                 {
                     resP.Add(p0);
                     visible = true;
-                } 
+                }
                 else
                 {
                     drawn = true;
@@ -2160,171 +1865,9 @@ namespace Cell_Tool_3
             {
                 drawPolygon(X, Y);
             }
-            
+
         }
-        /*
-        private List<PointF> PolygonalAngleInPolygonal(PointF[] points, RectangleF RectF)
-        {
-            
-            List<PointF> input = new List<PointF>();
-            List<PointF> output = new List<PointF>();
-            //reorder input
-            if (RectFContains(points[0], RectF) == false)
-            {
-                int l = points.Length - 1;
-                //find last visible
-                while (l > 0 & RectFContains(points[l], RectF) == false)
-                {
-                    l--;
-                }
-                //fill the beginning
-                for (int i = l + 1; i < points.Length; i++)
-                {
-                    input.Add(points[i]);
-                }
-                //fill the end
-                for (int i = 0; i <= l; i++)
-                {
-                    input.Add(points[i]);
-                }
-            }
-            else input = points.ToList();
-
-            //calculate output
-            PointF oldP = input[input.Count - 1];
-            PointF curP;
-            for (int i = 0; i< input.Count; i++)
-            {
-                curP = input[i];
-                if (RectFContains(curP, RectF) == false)
-                {
-                    List<PointF> temp = new List<PointF>();
-                    //first visible point
-                    temp.Add(oldP);
-                    //invisible points
-                    while (RectFContains(curP, RectF) == false &
-                        i < input.Count-1)
-                    {
-                        temp.Add(curP);
-                        i++;
-                        curP = input[i];
-                    }
-                    //last visible point
-                    temp.Add(curP);
-                    //Check is any corner of the Rect in the polygon
-                    Point[] tempArr = new Point[temp.Count];
-                    for (int j = 0; j < temp.Count; j++)
-                    {
-                        tempArr[j].X = (int)temp[j].X;
-                        tempArr[j].Y = (int)temp[j].Y;
-                    }
-                    //Find wich corner is inside
-                    PointF corner = PointF.Empty;
-                    if (IA.RoiMan.IsPointInPolygon(
-                        new Point((int)RectF.X, (int)RectF.Y),
-                        tempArr)) corner = new Point((int)RectF.X, (int)RectF.Y);
-                    else if (IA.RoiMan.IsPointInPolygon(
-                       new Point((int)RectF.X, (int)RectF.Height),
-                       tempArr)) corner = new Point((int)RectF.X, (int)RectF.Height);
-                    else if (IA.RoiMan.IsPointInPolygon(
-                       new Point((int)RectF.Width, (int)RectF.Height),
-                       tempArr)) corner = new Point((int)RectF.Width, (int)RectF.Height);
-                    else if (IA.RoiMan.IsPointInPolygon(
-                       new Point((int)RectF.Width, (int)RectF.Y),
-                       tempArr)) corner = new Point((int)RectF.Width, (int)RectF.Y);
-                    
-                    //corner
-                    if (corner.IsEmpty == false)
-                    {
-                        output.Add(temp[1]);
-                        output.Add(new PointF(corner.X + 0.5f, corner.Y + 0.5f));
-                        //lastinvisible
-                        output.Add(temp[temp.Count - 2]);
-                        //last visible
-                        output.Add(curP);
-                    }
-                    else
-                    {
-                        foreach (PointF p in temp)
-                            output.Add(p);
-                    }
-                }
-                else output.Add(curP);
-
-                oldP = curP;
-            }
-
-            return output;
-        }
-        private void PolygonalFieldCut(float[]X,float[]Y, Rectangle Rect)
-        {
-            //Create actual points rectangleF
-            RectangleF RectF = new RectangleF(
-                (float)Rect.X + 0.5f,
-                (float)Rect.Y + 0.5f,
-                (float)(Rect.Width + Rect.X + 0.5f),
-                (float)(Rect.Height + Rect.Y + 0.5f));
-            //create Points[]
-            PointF[] points = new PointF[X.Length];
-            for (int i = 0; i < X.Length; i++)
-            {
-                points[i].X = X[i];
-                points[i].Y = Y[i];
-            }
-            //eliminate hidden and add rect corners
-            points = PolygonalAngleInPolygonal(points, RectF).ToArray();
-
-            List<PointF> resP = new List<PointF>();
-            List<PointF> potP;
-
-
-            PointF p0 = points[points.Length - 1];
-            PointF p1;
-            bool visible = true;
-            for (int i = 0; i < points.Length; i++)
-            {
-                //set cur point
-                p1 = points[i];
-                //check is border visible
-                visible = false;
-
-                //calculate potPoint
-                potP = DrawLine(p0, p1);//Calculates all potential points
-                bool contain;//bool that shows is the point in rectF
-                PointF prevP = p1;//the one before the last selected
-                foreach (PointF p in potP)
-                {
-                    //check is point visible
-                    contain = RectFContains(p, RectF);
-
-                    if (contain != visible)
-                    {
-                        visible = !visible;
-                        if(contain == true)
-                            resP.Add(p);
-                        else if(prevP.IsEmpty == false)
-                            resP.Add(prevP);
-                    }
-                    //set prev point
-                    prevP = p;
-                }
-                //set old point
-                p0 = p1;
-            }
-            //MessageBox.Show(resP.Count.ToString() + "\n" +                X.Length.ToString());
-            //prepare results
-            float[] newX = new float[resP.Count];
-            float[] newY = new float[newX.Length];
-            for(int i = 0; i< resP.Count; i++)
-            {
-                newX[i] = resP[i].X;
-                newY[i] = resP[i].Y;
-            }
-            drawPolygon(newX, newY);
-           
-        }
-        */
-        private void drawCurrentStackRoi(ROI roi, int frame, int addX, int addY,Rectangle rect)
+        private void drawCurrentStackRoi(ROI roi, int frame, int addX, int addY, Rectangle rect)
         {
             if (roi.Stack < 1) return;
 
@@ -2352,9 +1895,9 @@ namespace Cell_Tool_3
 
                 float[] x = new float[2];
                 float[] y = new float[2];
-               
+
                 //top
-                x[0] = X + (W/2);
+                x[0] = X + (W / 2);
                 y[0] = Y;
                 x[1] = x[0];
                 y[1] = p.Y + addY + 0.5f;
@@ -2368,8 +1911,8 @@ namespace Cell_Tool_3
 
                 PolygonalFieldCut(x, y, rect);
                 //left
-                x[0] = X ;
-                y[0] = Y + (H/2);
+                x[0] = X;
+                y[0] = Y + (H / 2);
                 x[1] = p.X + addX + 0.5f;
                 y[1] = y[0];
 
@@ -2387,7 +1930,7 @@ namespace Cell_Tool_3
             {
                 if (IA.RoiMan.DrawNewRoiMode == true && roi == IA.RoiMan.current) return;
                 float[] x, y;
-                for (int i = 0, D = roi.D; i < roi.Stack; i++, D+=roi.D)
+                for (int i = 0, D = roi.D; i < roi.Stack; i++, D += roi.D)
                 {
                     List<Point> res = RoiMeasure.Polygon_Layers(frame, D, roi, rect);
 
@@ -2402,7 +1945,7 @@ namespace Cell_Tool_3
                     }
 
                     PolygonalFieldCut(x, y, rect);
-                }                
+                }
             }
         }
         private void drawCurrentRoi(TifFileInfo fi)
@@ -2414,12 +1957,12 @@ namespace Cell_Tool_3
             Rectangle rect = coRect[0][fi.cValue];
             int addX = rect.X;
             int addY = rect.Y;
-            
+
             FrameCalculator FC = new FrameCalculator();
             int frame = FC.Frame(fi);
 
             if (fi.frame + 1 < roi.FromT | fi.frame + 1 > roi.ToT) return;
-            if (fi.zValue + 1 < roi.FromZ | fi.zValue +1 > roi.ToZ) return;
+            if (fi.zValue + 1 < roi.FromZ | fi.zValue + 1 > roi.ToZ) return;
             if (roi.Checked == false) return;
 
             if (roi.Shape == 0)
@@ -2430,7 +1973,7 @@ namespace Cell_Tool_3
             else if (roi.Shape == 1)
             {
                 Point p = roi.GetLocation(frame)[0];
-                drawEllipse(p.X + addX + 0.5f, p.Y + addY + 0.5f, roi.Width, roi.Height, rect);                
+                drawEllipse(p.X + addX + 0.5f, p.Y + addY + 0.5f, roi.Width, roi.Height, rect);
             }
             else if (roi.Shape == 2)
             {
@@ -2477,14 +2020,14 @@ namespace Cell_Tool_3
                 Point[] points = roi.GetLocation(frame);
                 float[] x = new float[points.Length];
                 float[] y = new float[points.Length];
-                for(int i = 0; i< points.Length; i++)
+                for (int i = 0; i < points.Length; i++)
                 {
                     Point p = points[i];
                     x[i] = p.X + addX + 0.5f;
                     y[i] = p.Y + addY + 0.5f;
                 }
-                
-                if(IA.RoiMan.DrawNewRoiMode == true)
+
+                if (IA.RoiMan.DrawNewRoiMode == true)
                 {
                     drawUnfinishedPolygon(x, y);
                 }
@@ -2495,16 +2038,16 @@ namespace Cell_Tool_3
                 }
             }
             //draw stack roi
-            drawCurrentStackRoi(roi,frame,addX,addY,rect);
+            drawCurrentStackRoi(roi, frame, addX, addY, rect);
             //draw number
-            if(IA.RoiMan.roiTV.Nodes.IndexOf(roi) > -1)
-                DrawStringToGL(fi, (IA.RoiMan.roiTV.Nodes.IndexOf(roi)+1).ToString(), 
+            if (IA.RoiMan.roiTV.Nodes.IndexOf(roi) > -1)
+                DrawStringToGL(fi, (IA.RoiMan.roiTV.Nodes.IndexOf(roi) + 1).ToString(),
                     roi, frame, rect);
             //draw resize rectangles
             if (IA.RoiMan.DrawNewRoiMode == false)
             {
                 IA.RoiMan.PrepareResizeSpotsRectangle(fi, frame);
-                
+
                 if (IA.RoiMan.ResizeSpotsRectangles != null)
                 {
                     for (int i = 0; i < IA.RoiMan.ResizeSpotsRectangles.Length; i++)
@@ -2535,7 +2078,7 @@ namespace Cell_Tool_3
                     int addY = rect.Y;
 
                     FrameCalculator FC = new FrameCalculator();
-                    int frame = FC.FrameC(fi,col);
+                    int frame = FC.FrameC(fi, col);
 
                     if (fi.frame + 1 < roi.FromT | fi.frame + 1 > roi.ToT) continue;
                     if (fi.zValue + 1 < roi.FromZ | fi.zValue + 1 > roi.ToZ) continue;
@@ -2582,14 +2125,14 @@ namespace Cell_Tool_3
                     }
                     //draw stack roi
                     drawCurrentStackRoi(roi, frame, addX, addY, rect);
-                    DrawStringToGL(fi, (roiList.IndexOf(roi) + 1).ToString(),roi, frame, rect);
+                    DrawStringToGL(fi, (roiList.IndexOf(roi) + 1).ToString(), roi, frame, rect);
                 }
             }
         }
         public void tryDrawingWithoutReload()
         {
             if (IA.RoiMan.current == null) return;
-            
+
             GLControl GLControl1 = IA.GLControl1;
             TifFileInfo fi;
             try
@@ -2597,7 +2140,7 @@ namespace Cell_Tool_3
                 fi = IA.TabPages.TabCollections[IA.TabPages.SelectedIndex].tifFI;
             }
             catch { return; }
-            if (fi == null)return;
+            if (fi == null) return;
 
             //Activate Control
             GLControl1.MakeCurrent();
@@ -2614,25 +2157,38 @@ namespace Cell_Tool_3
 
             GLControl1.SwapBuffers();
         }
-        private int id;
-        public void BindTexture(TifFileInfo fi)
-        {
-            id = ImageTexture.GenerateActiveImageTexture(fi);
-        }
+
         private void DrawTexture(TifFileInfo fi)
         {
             GLControl GLControl1 = IA.GLControl1;
-            
-            GL.Enable(EnableCap.Texture2D);
-            GL.BindTexture(TextureTarget.Texture2D, id);
 
             Rectangle rectOld = coRect[0][fi.cValue];
             Rectangle rect = new Rectangle(rectOld.X, rectOld.Y,
                 rectOld.X + rectOld.Width, rectOld.Y + rectOld.Height);
-           
-            GL.Begin(BeginMode.Quads);
 
-            GL.Color3(fi.LutList[fi.cValue]);
+            //start drawing
+            GL.Begin(PrimitiveType.Quads);
+
+            GL.Color4(0f, 0f, 0f, 1f);
+
+            GL.Vertex2(rect.X, rect.Y);
+            GL.Vertex2(rect.X, rect.Height);
+            GL.Vertex2(rect.Width, rect.Height);
+            GL.Vertex2(rect.Width, rect.Y);
+
+            GL.End();
+
+            GL.Enable(EnableCap.Texture2D);
+            GL.BindTexture(TextureTarget.Texture2D, IA.IDrawer.imagesTextures.GetID(fi.cValue));
+
+            GL.BlendFunc(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.One);
+            GL.Enable(EnableCap.Blend);
+            GL.ShadeModel(ShadingModel.Flat);
+
+            GL.Begin(PrimitiveType.Quads);
+
+            //GL.Color3(fi.LutList[fi.cValue]);
+            GL.Color3(Color.White);
 
             GL.TexCoord2(0, 0);
             GL.Vertex2(rect.X, rect.Y);
@@ -2647,12 +2203,12 @@ namespace Cell_Tool_3
             GL.Vertex2(rect.Width, rect.Y);
 
             GL.End();
-            
+
             GL.Disable(EnableCap.Texture2D);
 
-            
+            GL.Disable(EnableCap.Blend);
         }
-        public void DrawStringToGL(TifFileInfo fi,string str, ROI roi, int imageN, Rectangle Borders)
+        public void DrawStringToGL(TifFileInfo fi, string str, ROI roi, int imageN, Rectangle Borders)
         {
             if (IA.RoiMan.showLabels == false) return;
 
@@ -2660,9 +2216,9 @@ namespace Cell_Tool_3
             float W = 13f / (float)fi.zoom;
             float H = 15f / (float)fi.zoom;
             float lineSpace = 7 / (float)fi.zoom;
-            
+
             PointF midP = roi.GetMidPoint(imageN);
-            float X = Borders.X + midP.X - (lineSpace * (symb/2)) - 3/(float)fi.zoom;
+            float X = Borders.X + midP.X - (lineSpace * (symb / 2)) - 3 / (float)fi.zoom;
             float Y = Borders.Y + midP.Y - (H / 2);
 
             GLControl GLControl1 = IA.GLControl1;
@@ -2671,9 +2227,9 @@ namespace Cell_Tool_3
             GL.Enable(EnableCap.Texture2D);
 
             RectangleF rect = new RectangleF(X, Y,
-               X+W, Y+H);
+               X + W, Y + H);
 
-            RectangleF BordersF = 
+            RectangleF BordersF =
                 new RectangleF(Borders.X, Borders.Y, Borders.Width, Borders.Height);
 
             foreach (char val in str)
@@ -2684,7 +2240,7 @@ namespace Cell_Tool_3
                     int code = ImageTexture.NumberID[int.Parse(val.ToString())];
 
                     GL.BindTexture(TextureTarget.Texture2D, code);
-                    
+
                     GL.Begin(PrimitiveType.Quads);
 
                     GL.Color3(Color.Transparent);
@@ -2705,12 +2261,12 @@ namespace Cell_Tool_3
                 }
 
                 rect.X += lineSpace;
-                rect.Width = rect.X + W; 
+                rect.Width = rect.X + W;
             }
             GL.Disable(EnableCap.Texture2D);
             GL.Disable(EnableCap.Blend);
         }
-        
+
         #endregion Draw ROI
     }
     class ContentPipe
@@ -2734,22 +2290,20 @@ namespace Cell_Tool_3
         {
             Font font = new Font("Times New Roman", 9, FontStyle.Bold);
 
-            Bitmap bmp = new Bitmap(TextRenderer.MeasureText(str,font).Width,
+            Bitmap bmp = new Bitmap(TextRenderer.MeasureText(str, font).Width,
                 TextRenderer.MeasureText(str, font).Height,
                 System.Drawing.Imaging.PixelFormat.Format32bppArgb);
 
-            Rectangle rect = new Rectangle(0, 0, 
+            Rectangle rect = new Rectangle(0, 0,
                 TextRenderer.MeasureText(str, font).Width,
                 TextRenderer.MeasureText(str, font).Height);
 
-            //MessageBox.Show(rect.Width.ToString() + "\n" +                rect.Height.ToString());
             using (Graphics g = Graphics.FromImage(bmp))
             {
                 g.FillRectangle(Brushes.Transparent, rect);
                 g.DrawString(str, font, Brushes.Yellow, rect);
                 g.Flush();
             }
-
             return bmp;
         }
         private void LoadNumberTexture(Bitmap bmp, int i)
@@ -2767,53 +2321,35 @@ namespace Cell_Tool_3
                 System.Drawing.Imaging.PixelFormat.Format32bppRgb);
 
             //Tell gl to write the data from are bitmap image/data to the bound texture
-
             GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgba, texture_source.Width, texture_source.Height, 0, OpenTK.Graphics.OpenGL.PixelFormat.Bgra, PixelType.UnsignedByte, bitmap_data.Scan0);
 
             //Release from memory
             texture_source.UnlockBits(bitmap_data);
             //SetUp parametars
-           /*
-            //No anti-aliasing!
-            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapS, (int)TextureWrapMode.ClampToBorder);
-            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapT, (int)TextureWrapMode.ClampToBorder);
-            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)All.Nearest);
-            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)All.Nearest);
-            */
             GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapS, (int)TextureWrapMode.ClampToEdge);
             GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapT, (int)TextureWrapMode.ClampToEdge);
             GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)All.Linear);
             GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)All.Linear);
         }
-        #endregion Number Textures
-        //Generate empty texture
-        private int id;
+        #endregion Number Textures                
+        //Generate empty texture           
         private int ChartID;
-        
         public void ReserveTextureID()
         {
-            id = GL.GenTexture();
             ChartID = GL.GenTexture();
         }
-       public int LoadTexture(Bitmap bmp, bool NoAntiAliasing = false)
+        public int LoadTexture(Bitmap bmp, bool NoAntiAliasing = false)
         {
             //Load texture from file
             Bitmap texture_source = bmp;
 
             //Link empty texture to texture2d
-            if (NoAntiAliasing)
-            {
-                GL.BindTexture(TextureTarget.Texture2D, id);
-            }
-            else
-            {
-                GL.BindTexture(TextureTarget.Texture2D, ChartID);
-            }
+            GL.BindTexture(TextureTarget.Texture2D, ChartID);
 
             //Lock pixel data to memory and prepare for pass through
             BitmapData bitmap_data = texture_source.LockBits(
-                new Rectangle(0, 0, texture_source.Width, 
-                texture_source.Height), ImageLockMode.ReadOnly, 
+                new Rectangle(0, 0, texture_source.Width,
+                texture_source.Height), ImageLockMode.ReadOnly,
                 System.Drawing.Imaging.PixelFormat.Format32bppRgb);
 
             //Tell gl to write the data from are bitmap image/data to the bound texture
@@ -2827,7 +2363,7 @@ namespace Cell_Tool_3
                 GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapT, (int)TextureWrapMode.ClampToEdge);
                 GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)All.Nearest);
                 GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)All.Nearest);
-                return id;
+
             }
             else
             {
@@ -2837,123 +2373,9 @@ namespace Cell_Tool_3
                 GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapT, (int)TextureWrapMode.ClampToEdge);
                 GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)All.Linear);
                 GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)All.Linear);
-                return ChartID;
-            }
-           
-        }
-        public int GenerateActiveImageTexture(TifFileInfo fi)
-        {
-            Bitmap bmp = null;
-            switch (fi.bitsPerPixel)
-            {
-                case 8:
-                    bmp = Raw8ToBmp(fi);
-                    break;
-                case 16:
-                    bmp = Raw16ToBmp(fi);
-                    break;
-            }
-            id = LoadTexture(bmp,true);
-            return id;
-        }
-        public void TextureFromBackBuffer(int Width, int Height)
-        {
-            GL.ReadBuffer(ReadBufferMode.Front);
-            GL.BindTexture(TextureTarget.Texture2D, id);
-            GL.CopyTexSubImage2D(TextureTarget.Texture2D, 0, 0, 0, 0, 0, Width, Height);
-            //SetUp parametars
-            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapS, (int)TextureWrapMode.Repeat);
-            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapT, (int)TextureWrapMode.Repeat);
-            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter, (int)All.Nearest);
-            GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter, (int)All.Nearest);
 
-        }
-        private Bitmap Raw8ToBmp(TifFileInfo fi)
-        {
-            FrameCalculator FC = new FrameCalculator();
-            //image array
-            byte[][] image = fi.image8bit[FC.Frame(fi)];
-            //new bitmap
-            Bitmap bmp = new Bitmap(image[0].Length, image.Length, 
-                System.Drawing.Imaging.PixelFormat.Format32bppArgb);
-            // Lock the bitmap's bits.
-            Rectangle rect = new Rectangle(0, 0, bmp.Width, bmp.Height);
-            BitmapData bmpData = bmp.LockBits(rect, ImageLockMode.ReadWrite, bmp.PixelFormat);
-            // Get the address of the first line.
-            IntPtr ptr = bmpData.Scan0;
-            //store rgb values
-            int bytes = Math.Abs(bmpData.Stride) * bmp.Height;
-            byte[] rgbValues = new byte[bytes];
-            // Copy the RGB values into the array
-            System.Runtime.InteropServices.Marshal.Copy(ptr, rgbValues, 0, bytes);
-            //take LUT info
-
-            int position = 0;
-            foreach (byte[] row in image)
-            {
-                foreach (byte val in row)
-                {
-                    byte val1 = (byte)(fi.adjustedLUT[fi.cValue][val] * 255);
-                    rgbValues[position] = val1;
-                    position++;
-                    rgbValues[position] = val1;
-                    position++;
-                    rgbValues[position] = val1;
-                    position++;
-                    rgbValues[position] = 255;
-                    position++;
-                }
             }
-
-            // Copy the RGB values back to the bitmap
-            System.Runtime.InteropServices.Marshal.Copy(rgbValues, 0, ptr, bytes);
-            // Unlock the bits.
-            bmp.UnlockBits(bmpData);
-            //return results
-            return bmp;
-        }
-        private Bitmap Raw16ToBmp(TifFileInfo fi)
-        {
-            FrameCalculator FC = new FrameCalculator();
-            //image array
-            ushort[][] image = fi.image16bit[FC.Frame(fi)];
-            //new bitmap
-            Bitmap bmp = new Bitmap(image[0].Length, image.Length,
-                System.Drawing.Imaging.PixelFormat.Format32bppArgb);
-            // Lock the bitmap's bits.
-            Rectangle rect = new Rectangle(0, 0, bmp.Width, bmp.Height);
-            BitmapData bmpData = bmp.LockBits(rect, ImageLockMode.ReadWrite, bmp.PixelFormat);
-            // Get the address of the first line.
-            IntPtr ptr = bmpData.Scan0;
-            //store rgb values
-            int bytes = Math.Abs(bmpData.Stride) * bmp.Height;
-            byte[] rgbValues = new byte[bytes];
-            // Copy the RGB values into the array
-            System.Runtime.InteropServices.Marshal.Copy(ptr, rgbValues, 0, bytes);
-            //take LUT info
-
-            int position = 0;
-            foreach (ushort[] row in image)
-            {
-                foreach (ushort val in row)
-                {
-                    byte val1 = (byte)(fi.adjustedLUT[fi.cValue][val] * 255);
-                    rgbValues[position] = val1;
-                    position++;
-                    rgbValues[position] = val1;
-                    position++;
-                    rgbValues[position] = val1;
-                    position++;
-                    rgbValues[position] = 255;
-                    position++;
-                }
-            }
-            // Copy the RGB values back to the bitmap
-            System.Runtime.InteropServices.Marshal.Copy(rgbValues, 0, ptr, bytes);
-            // Unlock the bits.
-            bmp.UnlockBits(bmpData);
-            //return results
-            return bmp;
+            return ChartID;
         }
     }
 }

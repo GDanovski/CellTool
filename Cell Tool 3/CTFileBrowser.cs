@@ -1027,7 +1027,7 @@ namespace Cell_Tool_3
                     //Open file
                     if (MoveNode.ImageIndex == 0)
                     {
-                        if (MessageBox.Show("Do you want to open all tif images from " + MoveNode.Text + " ?",
+                        if (MessageBox.Show("Do you want to open all files from " + MoveNode.Text + " ?",
                                "", MessageBoxButtons.YesNo) == System.Windows.Forms.DialogResult.Yes)
                         {
                             TreeViewExp_OpenSearched_Event(MoveNode);
@@ -3467,7 +3467,7 @@ namespace Cell_Tool_3
         }
         private void TreeViewExp_OpenChecked(object sender, EventArgs e)
         {
-            if (MessageBox.Show("Do you want to open all checked tif images from the Data sources?",
+            if (MessageBox.Show("Do you want to open all checked files from the Data sources?",
                               "", MessageBoxButtons.YesNo) == System.Windows.Forms.DialogResult.No)
             {
                 return;
@@ -3508,7 +3508,7 @@ namespace Cell_Tool_3
         }
         private void TreeViewExp_OpenSearched(object sender, EventArgs e)
         {
-            if (MessageBox.Show("Do you want to open all searched tif images from the Data sources?",
+            if (MessageBox.Show("Do you want to open all searched files from the Data sources?",
                               "", MessageBoxButtons.YesNo) == System.Windows.Forms.DialogResult.No)
             {
                 return;
@@ -3581,7 +3581,7 @@ namespace Cell_Tool_3
         }
         private void OpenVboxItem_Searched(object sender, EventArgs e)
         {
-            if (MessageBox.Show("Do you want to open all searched tif images from the Virtual box?",
+            if (MessageBox.Show("Do you want to open all searched files from the Virtual box?",
                               "", MessageBoxButtons.YesNo) == System.Windows.Forms.DialogResult.No)
             {
                 return;
@@ -3601,7 +3601,7 @@ namespace Cell_Tool_3
         }
         private void OpenVboxItem_Checked(object sender, EventArgs e)
         {
-            if (MessageBox.Show("Do you want to open all checked tif images from the Virtual box?",
+            if (MessageBox.Show("Do you want to open all checked files from the Virtual box?",
                               "", MessageBoxButtons.YesNo) == System.Windows.Forms.DialogResult.No)
             {
                 return;

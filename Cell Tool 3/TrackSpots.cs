@@ -1,17 +1,14 @@
 ﻿/*
  CellTool - software for bio-image analysis
  Copyright (C) 2018  Georgi Danovski
-
  This program is free software: you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
  the Free Software Foundation, either version 3 of the License, or
  (at your option) any later version.
-
  This program is distributed in the hope that it will be useful,
  but WITHOUT ANY WARRANTY; without even the implied warranty of
  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  GNU General Public License for more details.
-
  You should have received a copy of the GNU General Public License
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
@@ -126,14 +123,14 @@ namespace Cell_Tool_3
             IA.delHist = true;
             IA.UnDoBtn.Enabled = true;
             IA.DeleteFromHistory();
-          
+
             AddParametarsToHistory(fi);
             fi.tracking_MaxSize[fi.cValue] = int.Parse(e.Value);
             AddParametarsToHistory(fi);
             //ReloadImage
             IA.UpdateUndoBtns();
             IA.MarkAsNotSaved();
-            IA.ReloadImages();
+            IA.ReloadImages(false);
         }
         private void MinSizeTB_ValueChanged(object sender, ChangeValueEventArgs e)
         {
@@ -157,7 +154,7 @@ namespace Cell_Tool_3
             //ReloadImage
             IA.UpdateUndoBtns();
             IA.MarkAsNotSaved();
-            IA.ReloadImages();
+            IA.ReloadImages(false);
         }
         private void SpeedTB_ValueChanged(object sender, ChangeValueEventArgs e)
         {
@@ -181,7 +178,7 @@ namespace Cell_Tool_3
             //ReloadImage
             IA.UpdateUndoBtns();
             IA.MarkAsNotSaved();
-            IA.ReloadImages();
+            IA.ReloadImages(false);
         }
         private CTTextBox CTTextBox_Add(int X, int Y, Panel p, string title, string tag)
         {
@@ -264,7 +261,7 @@ namespace Cell_Tool_3
             bgw.WorkerReportsProgress = true;
 
             fi.available = false;
-            
+
             bgw.DoWork += new DoWorkEventHandler(delegate (Object o, DoWorkEventArgs a)
             {
                 try
@@ -275,7 +272,7 @@ namespace Cell_Tool_3
                         TrackRectAndOvalObject(fi, fi.cValue, p);
                         //t.Wait();
                     }
-                    else if(IA.RoiMan.RoiShape == 5)
+                    else if (IA.RoiMan.RoiShape == 5)
                     {
                         TrackPolygonalObject(fi, fi.cValue, p);
                     }
@@ -296,7 +293,7 @@ namespace Cell_Tool_3
                 if (a.ProgressPercentage == 0)
                 {
                     //reload images to screen
-                    IA.ReloadImages();
+                    IA.ReloadImages(false);
                     IA.MarkAsNotSaved();
                 }
 
@@ -324,7 +321,7 @@ namespace Cell_Tool_3
             //Check is filter image open
             if (fi.tpTaskbar.MethodsBtnList[1].ImageIndex == 1) return;
             if (fi.selectedPictureBoxColumn != 1) return;
-            
+
             //calculate the point
             Point p = IsPointInImage(fi, e);
 
@@ -340,7 +337,7 @@ namespace Cell_Tool_3
             bgw.WorkerReportsProgress = true;
 
             fi.available = false;
-            
+
             bgw.DoWork += new DoWorkEventHandler(delegate (Object o, DoWorkEventArgs a)
             {
                 try
@@ -366,7 +363,7 @@ namespace Cell_Tool_3
                 if (a.ProgressPercentage == 0)
                 {
                     //reload images to screen
-                    IA.ReloadImages();
+                    IA.ReloadImages(false);
                     IA.MarkAsNotSaved();
                 }
 
@@ -427,25 +424,18 @@ namespace Cell_Tool_3
                 /*
                 Matrix[0].X = -1;
                 Matrix[0].Y = -1;
-
                 Matrix[1].X = 0;
                 Matrix[1].Y = -1;
-
                 Matrix[2].X = 1;
                 Matrix[2].Y = -1;
-
                 Matrix[3].X = 1;
                 Matrix[3].Y = 0;
-
                 Matrix[4].X = 1;
                 Matrix[4].Y = 1;
-
                 Matrix[5].X = 0;
                 Matrix[5].Y = 1;
-
                 Matrix[6].X = -1;
                 Matrix[6].Y = 1;
-
                 Matrix[7].X = -1;
                 Matrix[7].Y = 0;
                 */
@@ -805,7 +795,7 @@ namespace Cell_Tool_3
                 return Rectangle.Empty;
             }
         }
-        
+
         private void GrowingSeed(Point p1, Size size, List<int>[] PxlList, Point[] Matrix, long MaxSize)
         {
             int iter = 0;
@@ -847,8 +837,8 @@ namespace Cell_Tool_3
         private Point PxlList_MidPoint(List<int>[] PxlList)
         {
             Point MidPoint = new Point();
-            MidPoint.X = (int)PxlList[0].Average()+1;
-            MidPoint.Y = (int)PxlList[1].Average()+1;
+            MidPoint.X = (int)PxlList[0].Average() + 1;
+            MidPoint.Y = (int)PxlList[1].Average() + 1;
             return MidPoint;
         }
         private Size PxlList_RxAndRy(List<int>[] PxlList, Point MidPoint)
@@ -860,7 +850,7 @@ namespace Cell_Tool_3
             int H = MidPoint.Y - PxlList[1].Min();
             int H1 = PxlList[1].Max() - MidPoint.Y;
             if (H1 > H) H = H1;
-            
+
             Size size = new Size(W + W, H + H);
 
             return size;
@@ -886,7 +876,7 @@ namespace Cell_Tool_3
                                 if (val > SpotDiapason[0] & val < SpotDiapason[1])
                                     col = fi.SpotColor[C];
                                 else
-                                    col = Color.FromArgb((int)(fi.adjustedLUT[C][val] * 255), LutCol.R, LutCol.G, LutCol.B);
+                                    col = Color.FromArgb((int)(fi.newAdjustedLUT[C][val]), LutCol.R, LutCol.G, LutCol.B);
                                 break;
                             default:
                                 if (val > SpotDiapason[0] & val < SpotDiapason[1])
@@ -903,13 +893,13 @@ namespace Cell_Tool_3
                                     col = fi.thresholdColors[C][fi.thresholds[C]];
 
                                 if (col == Color.Transparent)
-                                    col = Color.FromArgb((int)(fi.adjustedLUT[C][val] * 255), LutCol.R, LutCol.G, LutCol.B);
+                                    col = Color.FromArgb((int)(fi.newAdjustedLUT[C][val]), LutCol.R, LutCol.G, LutCol.B);
 
                                 break;
                         }
                     }
                     else
-                        col = Color.FromArgb((int)(fi.adjustedLUT[C][val] * 255), LutCol.R, LutCol.G, LutCol.B);
+                        col = Color.FromArgb((int)(fi.newAdjustedLUT[C][val]), LutCol.R, LutCol.G, LutCol.B);
                     #endregion Colors
                     if (col == MainColor)
                         shablon[y, x] = true;
@@ -938,7 +928,7 @@ namespace Cell_Tool_3
                                 if (val > SpotDiapason[0] & val < SpotDiapason[1])
                                     col = fi.SpotColor[C];
                                 else
-                                    col = Color.FromArgb((int)(fi.adjustedLUT[C][val] * 255), LutCol.R, LutCol.G, LutCol.B);
+                                    col = Color.FromArgb((int)(fi.newAdjustedLUT[C][val]), LutCol.R, LutCol.G, LutCol.B);
                                 break;
                             default:
                                 if (val > SpotDiapason[0] & val < SpotDiapason[1])
@@ -955,13 +945,13 @@ namespace Cell_Tool_3
                                     col = fi.thresholdColors[C][fi.thresholds[C]];
 
                                 if (col == Color.Transparent)
-                                    col = Color.FromArgb((int)(fi.adjustedLUT[C][val] * 255), LutCol.R, LutCol.G, LutCol.B);
+                                    col = Color.FromArgb((int)(fi.newAdjustedLUT[C][val]), LutCol.R, LutCol.G, LutCol.B);
 
                                 break;
                         }
                     }
                     else
-                        col = Color.FromArgb((int)(fi.adjustedLUT[C][val] * 255), LutCol.R, LutCol.G, LutCol.B);
+                        col = Color.FromArgb((int)(fi.newAdjustedLUT[C][val]), LutCol.R, LutCol.G, LutCol.B);
                     #endregion Colors
                     if (col == MainColor)
                         shablon[y, x] = true;
@@ -984,7 +974,7 @@ namespace Cell_Tool_3
                         if (val > SpotDiapason[0] & val < SpotDiapason[1])
                             col = fi.SpotColor[C];
                         else
-                            col = Color.FromArgb((int)(fi.adjustedLUT[C][val] * 255), LutCol.R, LutCol.G, LutCol.B);
+                            col = Color.FromArgb((int)(fi.newAdjustedLUT[C][val]), LutCol.R, LutCol.G, LutCol.B);
                         break;
                     default:
                         if (val > SpotDiapason[0] & val < SpotDiapason[1])
@@ -1001,13 +991,13 @@ namespace Cell_Tool_3
                             col = fi.thresholdColors[C][fi.thresholds[C]];
 
                         if (col == Color.Transparent)
-                            col = Color.FromArgb((int)(fi.adjustedLUT[C][val] * 255), LutCol.R, LutCol.G, LutCol.B);
+                            col = Color.FromArgb((int)(fi.newAdjustedLUT[C][val]), LutCol.R, LutCol.G, LutCol.B);
 
                         break;
                 }
             }
             else
-                col = Color.FromArgb((int)(fi.adjustedLUT[C][val] * 255), LutCol.R, LutCol.G, LutCol.B);
+                col = Color.FromArgb((int)(fi.newAdjustedLUT[C][val]), LutCol.R, LutCol.G, LutCol.B);
             #endregion Colors
             this.MainColor = col;
             return col;
@@ -1023,7 +1013,7 @@ namespace Cell_Tool_3
                 res[i].X = source[i].X;
                 res[i].Y = source[i].Y;
             }
-            return res; 
+            return res;
         }
         private void TrackPolygonalExactObject(TifFileInfo fi, int C, Point p)
         {
@@ -1032,17 +1022,17 @@ namespace Cell_Tool_3
             int imageN = FC.FrameC(fi, C);
             //prepare bool shablon of the frame
             shablon = new bool[fi.sizeY, fi.sizeX];
-            
+
             //calculate image
             Point[] temp;
             Point[] lastTemp;
             Point[][] resList;
-            
+
             if (IA.RoiMan.RoiType == 0)
                 resList = new Point[1][];
             else
                 resList = new Point[fi.imageCount][];
-            
+
             if (fi.bitsPerPixel == 8)
             {
                 byte[][] image = fi.image8bitFilter[imageN];
@@ -1075,7 +1065,7 @@ namespace Cell_Tool_3
                     for (int frame = imageN + fi.sizeC; frame < fi.imageCount; frame += fi.sizeC)
                     {
                         image = fi.image8bitFilter[frame];
-                        temp = ((List<Point>)BordersOfObjectExactPolygon(fi, C, imageN, image, LastP, this.MainColor,true)).ToArray();
+                        temp = ((List<Point>)BordersOfObjectExactPolygon(fi, C, imageN, image, LastP, this.MainColor, true)).ToArray();
                         //check for other clusters
                         MidP = PolygonMP(temp, fi.tracking_MaxSize[fi.cValue], fi.tracking_MinSize[fi.cValue],
                             fi.tracking_Speed[fi.cValue], LastP);
@@ -1090,11 +1080,11 @@ namespace Cell_Tool_3
                                 if (p1 == Point.Empty) break;
                                 temp = ((List<Point>)BordersOfObjectExactPolygon(fi, C, imageN, image, p1, this.MainColor, false, true)).ToArray();
                                 MidP = PolygonMP(temp, fi.tracking_MaxSize[fi.cValue], fi.tracking_MinSize[fi.cValue],
-                                    fi.tracking_Speed[fi.cValue],LastP);
+                                    fi.tracking_Speed[fi.cValue], LastP);
                             }
                         }
                         //result
-                        
+
                         if (temp.Length <= 2 || MidP == Point.Empty)
                         {
                             resList[frame] = DuplicateArray(lastTemp);
@@ -1321,7 +1311,7 @@ namespace Cell_Tool_3
                     MessageBox.Show("Object size is out of range!");
                     return;
                 }
-                
+
                 if (IA.RoiMan.RoiType == 0)
                     resList[0] = ConvexHull.MakeConvexHull(temp).ToArray();
                 else
@@ -1369,7 +1359,7 @@ namespace Cell_Tool_3
             //prepare location list
 
             current.SetLocationAll(resList);
-            
+
             IA.RoiMan.current = current;
             //Clear selected roi list
             IA.RoiMan.SelectedROIsList.Clear();
@@ -1393,8 +1383,8 @@ namespace Cell_Tool_3
 
             if (p == Point.Empty) return new List<Point>();
 
-            List<Point> PxlList =  wand.autoOutline(p.X, p.Y, shablon);
-            
+            List<Point> PxlList = wand.autoOutline(p.X, p.Y, shablon);
+
             return PxlList;
         }
         private object BordersOfObjectPolygon(TifFileInfo fi, int C, int imageN, byte[][] image, Point p, Point[] Matrix, Color Main, bool FindClosestPoint = false, bool scipShablon = false)
@@ -1415,7 +1405,7 @@ namespace Cell_Tool_3
             if (FindClosestPoint == true) p = findClosestPoint(p, fi, C);
 
             if (p == Point.Empty) return new List<Point>();
-           
+
             //create list with pixels
             List<int>[] PxlList = new List<int>[2];
             PxlList[0] = new List<int>();//X
@@ -1426,7 +1416,7 @@ namespace Cell_Tool_3
             PxlList[1].Add(p.Y);
             //Extend
             GrowingSeed(p, new Size(fi.sizeX, fi.sizeY), PxlList, Matrix, fi.tracking_MaxSize[C]);
-            
+
             if (PxlList[0].Count >= fi.tracking_MaxSize[C] |
                 PxlList[0].Count <= fi.tracking_MinSize[C])
             {
@@ -1434,11 +1424,11 @@ namespace Cell_Tool_3
             }
             //Calculate result
             List<Point> newPxlList = new List<Point>();
-            for(int i = 0; i < PxlList[0].Count; i++)
+            for (int i = 0; i < PxlList[0].Count; i++)
             {
                 newPxlList.Add(new Point(PxlList[0][i], PxlList[1][i]));
             }
-            
+
             return newPxlList;
         }
         private object BordersOfObjectExactPolygon(TifFileInfo fi, int C, int imageN, ushort[][] image, Point p, Color Main, bool FindClosestPoint = false, bool scipShablon = false)
@@ -1508,14 +1498,14 @@ namespace Cell_Tool_3
 
             return newPxlList;
         }
-        private Point PolygonMP(Point[] PxlList, int MaxSize, int MinSize, int TrackingSpeed=0, Point LastP = new Point())
+        private Point PolygonMP(Point[] PxlList, int MaxSize, int MinSize, int TrackingSpeed = 0, Point LastP = new Point())
         {
             if (PxlList.Length == 0) return Point.Empty;
 
             int Polygoncorners = PxlList.Count();
             double avrX = 0;
             double avrY = 0;
-            
+
             foreach (Point p in PxlList)
             {
                 avrX += p.X;
@@ -1523,10 +1513,10 @@ namespace Cell_Tool_3
             }
             //count polygon
             double count = PolygonArea(PxlList);
-           
+
             //results
             if (count <= MinSize | count >= MaxSize) return Point.Empty;
-            
+
             avrX /= Polygoncorners;
             avrY /= Polygoncorners;
 
@@ -1554,8 +1544,8 @@ namespace Cell_Tool_3
             Point last = first;
 
             double area = 0;
-            
-            foreach(Point p in polygon)
+
+            foreach (Point p in polygon)
             {
                 Point next = p;
                 area += next.X * last.Y - last.X * next.Y;
@@ -1607,12 +1597,12 @@ namespace Cell_Tool_3
                 if (pNew.X >= 0 && pNew.Y >= 0
                     && pNew.X < size.Width && pNew.Y < size.Height &&
                     shablon[pNew.Y, pNew.X] == true)
-                    {
-                        //apply to shablon
-                        shablon[pNew.Y, pNew.X] = false;
-                        //Extend
-                        CurPxlList.Add(pNew);
-                    }
+                {
+                    //apply to shablon
+                    shablon[pNew.Y, pNew.X] = false;
+                    //Extend
+                    CurPxlList.Add(pNew);
+                }
             }
         }
         #endregion Magic Wand

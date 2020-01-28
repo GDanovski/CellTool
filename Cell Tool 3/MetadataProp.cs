@@ -277,7 +277,7 @@ namespace Cell_Tool_3
             TifFileInfo fi = IA.TabPages.TabCollections[IA.TabPages.SelectedIndex].tifFI;
             fi.TimeSteps = l;
 
-            IA.ReloadImages();
+            IA.ReloadImages(true);
             IA.MarkAsNotSaved();
 
             if(fi.imageCount != fi.sizeT * fi.sizeC * fi.sizeZ)
@@ -755,7 +755,7 @@ namespace Cell_Tool_3
                         {
                             int val1 = Convert.ToInt32(tag.Value.Text);
                             fi.Micropoint = val1;
-                            IA.ReloadImages();
+                            IA.ReloadImages(true);
                             IA.MarkAsNotSaved();
                         }
                         catch
@@ -783,7 +783,7 @@ namespace Cell_Tool_3
                         {
                             double val1 = Convert.ToDouble(tag.Value.Text);
                             fi.umZ = val1;
-                            IA.ReloadImages();
+                            IA.ReloadImages(true);
                             IA.MarkAsNotSaved();
                         }
                         catch
@@ -810,7 +810,7 @@ namespace Cell_Tool_3
                         try {
                             double val1 = Convert.ToDouble(tag.Value.Text);
                             fi.umXY = val1;
-                            IA.ReloadImages();
+                            IA.ReloadImages(true);
                             IA.MarkAsNotSaved();
                         }
                         catch
@@ -912,7 +912,7 @@ namespace Cell_Tool_3
                             fi.cValue = curC;
                             IA.BandC.calculateHistogramArray(fi, true);
                             //Reload image
-                            IA.ReloadImages();
+                            IA.ReloadImages(true);
                             IA.MarkAsNotSaved();
                         }
                         catch
@@ -976,7 +976,7 @@ namespace Cell_Tool_3
                                             if (fi.sizeT < r.FromT) r.FromT = fi.sizeT;
                                         }
 
-                            IA.ReloadImages();
+                            IA.ReloadImages(true);
                             IA.MarkAsNotSaved();
                         }
                         catch
@@ -1041,7 +1041,7 @@ namespace Cell_Tool_3
                                             if (fi.sizeZ < r.FromZ) r.FromZ = fi.sizeZ;
                                         }
 
-                            IA.ReloadImages();
+                            IA.ReloadImages(true);
                             IA.MarkAsNotSaved();
                         }
                         catch
