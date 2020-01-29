@@ -95,9 +95,9 @@ namespace Cell_Tool_3
             BitmapData bitmap_data = texture_source.LockBits(
                 new Rectangle(0, 0, texture_source.Width,
                 texture_source.Height), ImageLockMode.ReadOnly,
-                System.Drawing.Imaging.PixelFormat.Format32bppRgb);
+                System.Drawing.Imaging.PixelFormat.Format32bppArgb);
             //Tell gl to write the data from are bitmap image/data to the bound texture
-            GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgba, texture_source.Width, texture_source.Height, 0, OpenTK.Graphics.OpenGL.PixelFormat.Bgra, PixelType.UnsignedByte, bitmap_data.Scan0);
+            GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgba, texture_source.Width, texture_source.Height, 0, OpenTK.Graphics.OpenGL.PixelFormat.Rgba, PixelType.UnsignedByte, bitmap_data.Scan0);
             //Release from memory
             texture_source.UnlockBits(bitmap_data);
             //SetUp parametars
@@ -196,14 +196,10 @@ namespace Cell_Tool_3
                     }
                     #endregion Colors
 
-                    rgbValues[position] = col.B;
-                    position++;
-                    rgbValues[position] = col.G;
-                    position++;
-                    rgbValues[position] = col.R;
-                    position++;
-                    rgbValues[position] = col.A;
-                    position++;
+                    rgbValues[position++] = col.R;
+                    rgbValues[position++] = col.G;
+                    rgbValues[position++] = col.B;
+                    rgbValues[position++] = col.A;
                 }
             }
             imageData.SetBuffer(rgbValues);
@@ -296,14 +292,10 @@ namespace Cell_Tool_3
                     }
                     #endregion Colors
 
-                    rgbValues[position] = col.B;
-                    position++;
-                    rgbValues[position] = col.G;
-                    position++;
-                    rgbValues[position] = col.R;
-                    position++;
-                    rgbValues[position] = col.A;
-                    position++;
+                    rgbValues[position++] = col.R;
+                    rgbValues[position++] = col.G;
+                    rgbValues[position++] = col.B;
+                    rgbValues[position++] = col.A;
                 }
             }
             imageData.SetBuffer(rgbValues);
@@ -327,14 +319,10 @@ namespace Cell_Tool_3
                 {
                     byte val1 = (byte)(fi.newAdjustedLUT[C][val]);
 
-                    rgbValues[position] = col.B;
-                    position++;
-                    rgbValues[position] = col.G;
-                    position++;
-                    rgbValues[position] = col.R;
-                    position++;
-                    rgbValues[position] = val1;
-                    position++;
+                    rgbValues[position++] = col.R;
+                    rgbValues[position++] = col.G;
+                    rgbValues[position++] = col.B;
+                    rgbValues[position++] = val1;
                 }
             }
             imageData.SetBuffer(rgbValues);
@@ -360,14 +348,10 @@ namespace Cell_Tool_3
                 {
                     byte val1 = (byte)(fi.newAdjustedLUT[C][val]);
 
-                    rgbValues[position] = col.B;
-                    position++;
-                    rgbValues[position] = col.G;
-                    position++;
-                    rgbValues[position] = col.R;
-                    position++;
-                    rgbValues[position] = val1;
-                    position++;
+                    rgbValues[position++] = col.R;
+                    rgbValues[position++] = col.G;
+                    rgbValues[position++] = col.B;
+                    rgbValues[position++] = val1;
                 }
             }
             imageData.SetBuffer(rgbValues);
@@ -423,7 +407,7 @@ namespace Cell_Tool_3
             public Bitmap GetImage(int X, int Y)
             {
                 if (this.Bmp == null || this.Bmp.Width != X || this.Bmp.Height != Y)
-                    this.Bmp = new Bitmap(X, Y, System.Drawing.Imaging.PixelFormat.Format32bppRgb);
+                    this.Bmp = new Bitmap(X, Y, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
                 return this.Bmp;
             }
             public int GetID
