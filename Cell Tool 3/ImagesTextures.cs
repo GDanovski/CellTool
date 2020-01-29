@@ -9,7 +9,7 @@ using OpenTK.Graphics.OpenGL;
 
 namespace Cell_Tool_3
 {
-    class ImagesTextures:IDisposable
+    class ImagesTextures : IDisposable
     {
         private List<ImageData> Images;
         public int GetID(int index)
@@ -48,20 +48,20 @@ namespace Cell_Tool_3
         }
         public void GenerateFilteredImageData(TifFileInfo fi, int index, int C, int[] SpotDiapason)
         {
-           
+
             switch (fi.bitsPerPixel)
             {
                 case 8:
-                    Raw8FilteredToBmp(fi, this.Images[index], C,SpotDiapason);
+                    Raw8FilteredToBmp(fi, this.Images[index], C, SpotDiapason);
                     break;
                 case 16:
-                    Raw16FilteredToBmp(fi, this.Images[index], C,SpotDiapason);
+                    Raw16FilteredToBmp(fi, this.Images[index], C, SpotDiapason);
                     break;
             }
         }
         public void LoadTextures(TifFileInfo fi, int index)
         {
-           LoadImageTexture(Images[index].GetImage(fi.sizeX, fi.sizeY), Images[index].GetID);
+            LoadImageTexture(Images[index].GetImage(fi.sizeX, fi.sizeY), Images[index].GetID);
         }
         public void DrawTexture(int index, Rectangle rect)
         {
@@ -95,9 +95,9 @@ namespace Cell_Tool_3
             BitmapData bitmap_data = texture_source.LockBits(
                 new Rectangle(0, 0, texture_source.Width,
                 texture_source.Height), ImageLockMode.ReadOnly,
-                System.Drawing.Imaging.PixelFormat.Format32bppRgb);
+                System.Drawing.Imaging.PixelFormat.Format32bppArgb);
             //Tell gl to write the data from are bitmap image/data to the bound texture
-            GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgba, texture_source.Width, texture_source.Height, 0, OpenTK.Graphics.OpenGL.PixelFormat.Bgra, PixelType.UnsignedByte, bitmap_data.Scan0);
+            GL.TexImage2D(TextureTarget.Texture2D, 0, PixelInternalFormat.Rgba, texture_source.Width, texture_source.Height, 0, OpenTK.Graphics.OpenGL.PixelFormat.Rgba, PixelType.UnsignedByte, bitmap_data.Scan0);
             //Release from memory
             texture_source.UnlockBits(bitmap_data);
             //SetUp parametars
@@ -145,107 +145,7 @@ namespace Cell_Tool_3
                                 if (val > SpotDiapason[0] & val < SpotDiapason[1])
                                     col = fi.SpotColor[C];
                                 else if (LUT.Length > val)
-                                    col = Color.FromArgb(LUT[val] ,R, G, B);
-                                else
-                                    col = Color.FromArgb(LUT[LUT.Length - 1],R, G, B );
-
-                                break;
-                            default:
-
-                                if (val > SpotDiapason[0] & val < SpotDiapason[1])
-                                {
-                                    col = fi.SpotColor[C];
-                                }
-                                else if (val < fi.thresholdValues[C][1])
-                                {
-                                    col = fi.thresholdColors[C][0];
-                                }
-                                else if (val < fi.thresholdValues[C][2])
-                                {
-                                    col = fi.thresholdColors[C][1];
-                                }
-                                else if (val < fi.thresholdValues[C][3])
-                                {
-                                    col = fi.thresholdColors[C][2];
-                                }
-                                else if (val < fi.thresholdValues[C][4])
-                                {
-                                    col = fi.thresholdColors[C][3];
-                                }
-                                else
-                                {
-                                    col = lastCol;
-                                }
-
-                                if (col == Color.Transparent)
-                                {
-                                    if (LUT.Length > val)
-                                        col = Color.FromArgb(LUT[val] , R, G, B);
-                                    else
-                                        col = Color.FromArgb(LUT[LUT.Length - 1] , R, G, B);
-                                }
-                                break;
-                        }
-                    }
-                    else
-                    {
-                        if (LUT.Length > val)
-                            col = Color.FromArgb(LUT[val], R, G, B);
-                        else
-                            col = Color.FromArgb(LUT[LUT.Length - 1], R, G, B);
-                    }
-                    #endregion Colors
-
-                    rgbValues[position] = col.B;
-                    position++;
-                    rgbValues[position] = col.G;
-                    position++;
-                    rgbValues[position] = col.R;
-                    position++;
-                    rgbValues[position] = col.A;
-                    position++;
-                }
-            }
-            imageData.SetBuffer(rgbValues);
-        }
-        
-        private void Raw8FilteredToBmp(TifFileInfo fi, ImageData imageData, int C, int[] SpotDiapason)
-        {
-            int Choise = fi.thresholds[C];
-            if (fi.SegmentationCBoxIndex[C] == 0) Choise = 0;
-            Color lastCol = fi.thresholdColors[C][fi.thresholds[C]];
-            byte[] LUT = fi.newAdjustedLUT[C];
-
-            FrameCalculator FC = new FrameCalculator();
-            //image array
-            Color col = Color.FromArgb(fi.LutList[C].A,fi.LutList[C].R, fi.LutList[C].G, fi.LutList[C].B );
-            byte R = col.R;
-            byte G = col.G;
-            byte B = col.B;
-            if (fi.image8bit == null) return;
-
-            if (fi.image8bitFilter == null) fi.image8bitFilter = fi.image8bit;
-            byte[][] image = fi.image8bitFilter[FC.FrameC(fi, C)];
-            if (image == null) return;
-            imageData.GetImage(fi.sizeX, fi.sizeY);
-
-            byte[] rgbValues = imageData.GetBuffer();
-            //take LUT info
-            int position = 0;
-            foreach (byte[] row in image)
-            {
-                foreach (byte val in row)
-                {
-                    #region Colors
-                    if (fi.SegmentationCBoxIndex[C] != 0 | fi.SelectedSpotThresh[C] != 0)
-                    {
-                        switch (Choise)
-                        {
-                            case 0:
-                                if (val > SpotDiapason[0] & val < SpotDiapason[1])
-                                    col = fi.SpotColor[C];
-                                else if (LUT.Length > val)
-                                    col = Color.FromArgb(LUT[val] , R, G, B);
+                                    col = Color.FromArgb(LUT[val], R, G, B);
                                 else
                                     col = Color.FromArgb(LUT[LUT.Length - 1], R, G, B);
 
@@ -280,9 +180,9 @@ namespace Cell_Tool_3
                                 if (col == Color.Transparent)
                                 {
                                     if (LUT.Length > val)
-                                        col = Color.FromArgb(LUT[val] , R, G, B);
+                                        col = Color.FromArgb(LUT[val], R, G, B);
                                     else
-                                        col = Color.FromArgb(LUT[LUT.Length - 1] , R, G, B);
+                                        col = Color.FromArgb(LUT[LUT.Length - 1], R, G, B);
                                 }
                                 break;
                         }
@@ -290,31 +190,123 @@ namespace Cell_Tool_3
                     else
                     {
                         if (LUT.Length > val)
-                            col = Color.FromArgb(LUT[val] , R, G, B);
+                            col = Color.FromArgb(LUT[val], R, G, B);
                         else
                             col = Color.FromArgb(LUT[LUT.Length - 1], R, G, B);
                     }
                     #endregion Colors
 
-                    rgbValues[position] = col.B;
-                    position++;
-                    rgbValues[position] = col.G;
-                    position++;
-                    rgbValues[position] = col.R;
-                    position++;
-                    rgbValues[position] = col.A;
-                    position++;
+                    rgbValues[position++] = col.R;
+                    rgbValues[position++] = col.G;
+                    rgbValues[position++] = col.B;
+                    rgbValues[position++] = col.A;
                 }
             }
             imageData.SetBuffer(rgbValues);
         }
-        private void Raw16ToBmp(TifFileInfo fi,ImageData imageData, int C)
+
+        private void Raw8FilteredToBmp(TifFileInfo fi, ImageData imageData, int C, int[] SpotDiapason)
+        {
+            int Choise = fi.thresholds[C];
+            if (fi.SegmentationCBoxIndex[C] == 0) Choise = 0;
+            Color lastCol = fi.thresholdColors[C][fi.thresholds[C]];
+            byte[] LUT = fi.newAdjustedLUT[C];
+
+            FrameCalculator FC = new FrameCalculator();
+            //image array
+            Color col = Color.FromArgb(fi.LutList[C].A, fi.LutList[C].R, fi.LutList[C].G, fi.LutList[C].B);
+            byte R = col.R;
+            byte G = col.G;
+            byte B = col.B;
+            if (fi.image8bit == null) return;
+
+            if (fi.image8bitFilter == null) fi.image8bitFilter = fi.image8bit;
+            byte[][] image = fi.image8bitFilter[FC.FrameC(fi, C)];
+            if (image == null) return;
+            imageData.GetImage(fi.sizeX, fi.sizeY);
+
+            byte[] rgbValues = imageData.GetBuffer();
+            //take LUT info
+            int position = 0;
+            foreach (byte[] row in image)
+            {
+                foreach (byte val in row)
+                {
+                    #region Colors
+                    if (fi.SegmentationCBoxIndex[C] != 0 | fi.SelectedSpotThresh[C] != 0)
+                    {
+                        switch (Choise)
+                        {
+                            case 0:
+                                if (val > SpotDiapason[0] & val < SpotDiapason[1])
+                                    col = fi.SpotColor[C];
+                                else if (LUT.Length > val)
+                                    col = Color.FromArgb(LUT[val], R, G, B);
+                                else
+                                    col = Color.FromArgb(LUT[LUT.Length - 1], R, G, B);
+
+                                break;
+                            default:
+
+                                if (val > SpotDiapason[0] & val < SpotDiapason[1])
+                                {
+                                    col = fi.SpotColor[C];
+                                }
+                                else if (val < fi.thresholdValues[C][1])
+                                {
+                                    col = fi.thresholdColors[C][0];
+                                }
+                                else if (val < fi.thresholdValues[C][2])
+                                {
+                                    col = fi.thresholdColors[C][1];
+                                }
+                                else if (val < fi.thresholdValues[C][3])
+                                {
+                                    col = fi.thresholdColors[C][2];
+                                }
+                                else if (val < fi.thresholdValues[C][4])
+                                {
+                                    col = fi.thresholdColors[C][3];
+                                }
+                                else
+                                {
+                                    col = lastCol;
+                                }
+
+                                if (col == Color.Transparent)
+                                {
+                                    if (LUT.Length > val)
+                                        col = Color.FromArgb(LUT[val], R, G, B);
+                                    else
+                                        col = Color.FromArgb(LUT[LUT.Length - 1], R, G, B);
+                                }
+                                break;
+                        }
+                    }
+                    else
+                    {
+                        if (LUT.Length > val)
+                            col = Color.FromArgb(LUT[val], R, G, B);
+                        else
+                            col = Color.FromArgb(LUT[LUT.Length - 1], R, G, B);
+                    }
+                    #endregion Colors
+
+                    rgbValues[position++] = col.R;
+                    rgbValues[position++] = col.G;
+                    rgbValues[position++] = col.B;
+                    rgbValues[position++] = col.A;
+                }
+            }
+            imageData.SetBuffer(rgbValues);
+        }
+        private void Raw16ToBmp(TifFileInfo fi, ImageData imageData, int C)
         {
             FrameCalculator FC = new FrameCalculator();
             //image array
             Color col = fi.LutList[C];
             if (fi.image16bit == null) return;
-            ushort[][] image = fi.image16bit[FC.FrameC(fi,C)];
+            ushort[][] image = fi.image16bit[FC.FrameC(fi, C)];
             if (image == null) return;
             imageData.GetImage(fi.sizeX, fi.sizeY);
 
@@ -327,14 +319,10 @@ namespace Cell_Tool_3
                 {
                     byte val1 = (byte)(fi.newAdjustedLUT[C][val]);
 
-                    rgbValues[position] = col.B;
-                    position++;
-                    rgbValues[position] = col.G;
-                    position++;
-                    rgbValues[position] = col.R;
-                    position++;
-                    rgbValues[position] = val1;
-                    position++;
+                    rgbValues[position++] = col.R;
+                    rgbValues[position++] = col.G;
+                    rgbValues[position++] = col.B;
+                    rgbValues[position++] = val1;
                 }
             }
             imageData.SetBuffer(rgbValues);
@@ -360,17 +348,13 @@ namespace Cell_Tool_3
                 {
                     byte val1 = (byte)(fi.newAdjustedLUT[C][val]);
 
-                    rgbValues[position] = col.B;
-                    position++;
-                    rgbValues[position] = col.G;
-                    position++;
-                    rgbValues[position] = col.R;
-                    position++;
-                    rgbValues[position] = val1;
-                    position++;
+                    rgbValues[position++] = col.R;
+                    rgbValues[position++] = col.G;
+                    rgbValues[position++] = col.B;
+                    rgbValues[position++] = val1;
                 }
             }
-            imageData.SetBuffer(rgbValues);            
+            imageData.SetBuffer(rgbValues);
         }
         class ImageData : IDisposable
         {
@@ -389,7 +373,7 @@ namespace Cell_Tool_3
             public void ClearImage()
             {
                 this.Buffer = null;
-                if(this.Bmp!=null) this.Bmp.Dispose();
+                if (this.Bmp != null) this.Bmp.Dispose();
                 this.Bmp = null;
                 this.bmpData = null;
             }
@@ -397,7 +381,7 @@ namespace Cell_Tool_3
             {
                 this.ID = GL.GenTexture();
             }
-           
+
             public byte[] GetBuffer()
             {
                 // Lock the bitmap's bits.
@@ -408,7 +392,7 @@ namespace Cell_Tool_3
                 //store rgb values
                 int bytes = Math.Abs(bmpData.Stride) * this.Bmp.Height;
 
-                if (this.Buffer==null || this.Buffer.Length != bytes) this.Buffer = new byte[bytes];
+                if (this.Buffer == null || this.Buffer.Length != bytes) this.Buffer = new byte[bytes];
 
                 return this.Buffer;
             }
@@ -423,7 +407,7 @@ namespace Cell_Tool_3
             public Bitmap GetImage(int X, int Y)
             {
                 if (this.Bmp == null || this.Bmp.Width != X || this.Bmp.Height != Y)
-                    this.Bmp = new Bitmap(X, Y, System.Drawing.Imaging.PixelFormat.Format32bppRgb);
+                    this.Bmp = new Bitmap(X, Y, System.Drawing.Imaging.PixelFormat.Format32bppArgb);
                 return this.Bmp;
             }
             public int GetID
