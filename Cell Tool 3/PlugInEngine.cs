@@ -177,9 +177,25 @@ namespace Cell_Tool_3
                     plugInTS.Tag = dirPlugIn;
                     plugInTS.Click += PlugInToolStripMenuItem_Click;
 
-                    DeveloperToolStripMenuItem.DropDownItems.Add(plugInTS);
+                    try
+                    {
+                        if (CheckForKey(namePlugIn))
+                            DeveloperToolStripMenuItem.DropDownItems.Add(plugInTS);
+                    }
+                    catch (Exception e)
+                    {
+                        MessageBox.Show(e.Message);
+                    }
                 }
             }
+        }
+        private bool CheckForKey(string name)
+        {
+            foreach (var item in DeveloperToolStripMenuItem.DropDownItems)
+                if (item is ToolStripMenuItem && ((ToolStripMenuItem)item).Text == name)
+                    return false;
+
+            return true;
         }
         private void AddResultsExtractor()
         {
@@ -267,9 +283,9 @@ namespace Cell_Tool_3
                                  
                             }
                         }
-                        catch { MessageBox.Show("Error with reporting back!"); }
-                       
-                        IA.ReloadImages();
+                        catch (Exception b) { MessageBox.Show("Error with reporting back!\n" + b.Message); }
+
+                        IA.ReloadImages(true);
                     });
                     
                     var c = Activator.CreateInstance(type);
@@ -278,7 +294,7 @@ namespace Cell_Tool_3
                     {
                         type.InvokeMember("Input", BindingFlags.InvokeMethod, null, c, new object[] { fi, e });
                     }
-                    catch { MessageBox.Show("Input void is not avaliable!"); }
+                    catch (Exception b) { MessageBox.Show("Input void is not avaliable!\n" + b.Message); }
                     break;
                 }
                 catch { }
@@ -358,6 +374,7 @@ namespace Cell_Tool_3
             #region Segmentation variables
             fi.histogramArray = null;
             fi.adjustedLUT = null;
+            fi.newAdjustedLUT = null;
             fi.MaxBrightness = null;
             fi.MinBrightness = null;
             fi.SegmentationCBoxIndex = new int[fi.sizeC];

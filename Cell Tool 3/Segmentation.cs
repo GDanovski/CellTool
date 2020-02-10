@@ -458,7 +458,7 @@ namespace Cell_Tool_3
                 if (a.ProgressPercentage == 0)
                 {
                     //reload images to screen
-                    IA.ReloadImages();
+                    IA.ReloadImages(true, -1, 1);
                     IA.MarkAsNotSaved();
                     IA.FileBrowser.StatusLabel.Text = "Ready";
                 }
@@ -651,7 +651,7 @@ namespace Cell_Tool_3
             }
             if (((ComboBox)sender).Focused == true)
             {
-               IA.ReloadImages();
+                IA.ReloadImages(true, fi.cValue, 1);
             }
         }
         #endregion Segmentation

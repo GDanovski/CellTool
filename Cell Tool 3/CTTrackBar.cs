@@ -166,9 +166,17 @@ namespace Cell_Tool_3
             TrackBar1.Value = value;
             TextBox1.Text = value.ToString();
 
-
             if (focused == true) TrackBar1.Focus();
+            UpdateInterface();
+        }
+        private void UpdateInterface()
+        {
+            TrackBar1.Invalidate();
+            TrackBar1.Update();
             TrackBar1.Refresh();
+
+            TextBox1.Invalidate();
+            TextBox1.Update();
             TextBox1.Refresh();
         }
         private void TrackBar1_ChangeValue(object sender, EventArgs e)
@@ -180,6 +188,7 @@ namespace Cell_Tool_3
 
             if(ApplyBtn.Visible == true) { ApplyBtn.Visible = false; }
             if (CancelBtn.Visible == true) { CancelBtn.Visible = false; }
+            UpdateInterface();
         }
         private void TextBox1_TextChanged(object sender, EventArgs e)
         {
@@ -195,6 +204,7 @@ namespace Cell_Tool_3
                 if (ApplyBtn.Visible == true) { ApplyBtn.Visible = false; }
                 if (CancelBtn.Visible == true) { CancelBtn.Visible = false; }
             }
+            UpdateInterface();
         }
         private void acceptBtn_MouseEnter(object sender, EventArgs e)
         {
@@ -216,12 +226,14 @@ namespace Cell_Tool_3
             TextBox1.Text = TrackBar1.Value.ToString();
             if (ApplyBtn.Visible == true) { ApplyBtn.Visible = false; }
             if (CancelBtn.Visible == true) { CancelBtn.Visible = false; }
+            UpdateInterface();
         }
         private void CancelBtn_Click(object sender, EventArgs e)
         {
             TextBox1.Text = TrackBar1.Value.ToString();
             if (ApplyBtn.Visible == true) { ApplyBtn.Visible = false; }
             if (CancelBtn.Visible == true) { CancelBtn.Visible = false; }
+            UpdateInterface();
         }
         private void textBox1_KeyPress(object sender, KeyEventArgs e)
         {
@@ -230,6 +242,7 @@ namespace Cell_Tool_3
                 ApplyFromTextBox1();
                 e.Handled = true;
                 e.SuppressKeyPress = true;
+                UpdateInterface();
             }
            
         }
@@ -259,6 +272,7 @@ namespace Cell_Tool_3
 
             if (ApplyBtn.Visible == true) { ApplyBtn.Visible = false; }
             if (CancelBtn.Visible == true) { CancelBtn.Visible = false; }
+            UpdateInterface();
         }
         private void Control_MouseOver(object sender, EventArgs e)
         {

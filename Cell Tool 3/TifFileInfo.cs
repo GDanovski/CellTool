@@ -33,6 +33,7 @@ namespace Cell_Tool_3
         public double zoom = 1;
         public double Xposition = 0;
         public double Yposition = 0;
+        public bool is3D = false;
         //Chart
         public int xAxisTB = 0;
         public int yAxisTB = 1;
@@ -74,7 +75,7 @@ namespace Cell_Tool_3
         public Color[][] thresholdColors;
         public Color[][] RefThresholdColors;
         //BandC
-        public bool autoDetectBandC = false;
+        public bool autoDetectBandC = true;
         public bool applyToAllBandC = false;
         //
         public int selectedPictureBoxColumn = 0;
@@ -131,6 +132,7 @@ namespace Cell_Tool_3
         public int[] MinBrightness = null;
         public int[] MaxBrightness = null;
         public float[][] adjustedLUT = null;
+        public byte[][] newAdjustedLUT = null;
 
         public void Delete()
         {
@@ -142,6 +144,7 @@ namespace Cell_Tool_3
             MinBrightness = null;
             MaxBrightness = null;
             adjustedLUT = null;
+            newAdjustedLUT = null;
             if (roiList != null)
                 foreach (var rL in roiList)
                     if (rL != null)
