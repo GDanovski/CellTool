@@ -224,9 +224,10 @@ namespace Cell_Tool_3
             GLControl GLControl1 = sender as GLControl;
             GLDrawing_Start(GLControl1, false);
         }
+       
         private void GLDrawing_Start(GLControl GLControl1, bool toRecalculateImages = true, int recalcChannel = -1, int recalcMethod = -1)
         {
-            //try
+            try
             {
                 TifFileInfo fi;
                 try
@@ -291,6 +292,7 @@ namespace Cell_Tool_3
 
                 GL.MatrixMode(MatrixMode.Modelview);
                 //GL.LoadIdentity();
+                GLControl1.SuspendLayout();
                 GL.Translate(-valX, -valY, 0);
                 valX = 0;
                 valY = 0;
@@ -361,10 +363,12 @@ namespace Cell_Tool_3
                 //draw rois
                 drawRoi(fi);
                 if (IA.RoiMan.current != null) drawCurrentRoi(fi);
-
+                GLControl1.ResumeLayout(true);
                 GLControl1.SwapBuffers();
             }
-            //catch { }
+            catch { 
+            //GLControl1.ResumeLayout(true); 
+                }
 
         }
         private void TranslationAndScale(TifFileInfo fi, Rectangle fieldRect, GLControl glcontrol1)
@@ -1007,6 +1011,8 @@ namespace Cell_Tool_3
                 }
                 catch { return; }
                 if (fi == null) { return; }
+
+                if (IA.RoiMan.DrawNewRoiMode || IA.RoiMan.MoveCurrentRoi || IA.RoiMan.activResizeCurrent) return;
 
                 //if the 3D is enabled - send to imageDrawer_3D
                 if (imageDrawer_3D.isImage3D(fi))
@@ -2134,6 +2140,9 @@ namespace Cell_Tool_3
             if (IA.RoiMan.current == null) return;
 
             GLControl GLControl1 = IA.GLControl1;
+            GLDrawing_Start(GLControl1, false);
+            return;
+            /*
             TifFileInfo fi;
             try
             {
@@ -2155,7 +2164,7 @@ namespace Cell_Tool_3
 
             IA.RoiMan.fillTextBox(fi);
 
-            GLControl1.SwapBuffers();
+            GLControl1.SwapBuffers();*/
         }
 
         private void DrawTexture(TifFileInfo fi)
