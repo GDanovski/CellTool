@@ -33,7 +33,7 @@
     <SuiteName>CellTool</SuiteName>
     <AutorunEnabled>true</AutorunEnabled>
     <ApplicationRevision>0</ApplicationRevision>
-    <ApplicationVersion>1.5.5.0</ApplicationVersion>
+    <ApplicationVersion>1.5.6.0</ApplicationVersion>
     <UseApplicationTrust>true</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
     <PublishWizardCompleted>true</PublishWizardCompleted>
@@ -85,13 +85,16 @@
     <GenerateManifests>false</GenerateManifests>
   </PropertyGroup>
   <PropertyGroup>
-    <ManifestCertificateThumbprint>E56FE0A3026BF34E9E82225C7B7DD88AD0065755</ManifestCertificateThumbprint>
+    <ManifestCertificateThumbprint>7AA747611F68EF8AC2DAE69B73F9B10D4851CD84</ManifestCertificateThumbprint>
   </PropertyGroup>
   <PropertyGroup>
-    <ManifestKeyFile>Cell Tool 3_1_TemporaryKey.pfx</ManifestKeyFile>
+    <ManifestKeyFile>IMBMyCodeSigningCertificates.p12</ManifestKeyFile>
   </PropertyGroup>
   <PropertyGroup>
-    <SignManifests>false</SignManifests>
+    <SignManifests>true</SignManifests>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>false</SignAssembly>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="Accord, Version=3.8.2.0, Culture=neutral, PublicKeyToken=fa1a88e29555ccf7, processorArchitecture=MSIL">
@@ -320,6 +323,7 @@
     <None Include="app.manifest" />
     <None Include="Cell Tool 3_1_TemporaryKey.pfx" />
     <None Include="Cell Tool 3_TemporaryKey.pfx" />
+    <None Include="IMBMyCodeSigningCertificates.p12" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
