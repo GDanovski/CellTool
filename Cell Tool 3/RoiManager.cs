@@ -3303,7 +3303,7 @@ namespace Cell_Tool_3
 
         #region Roi resize events
         int PointIndex = 0;
-        bool activResizeCurrent = false;
+        public bool activResizeCurrent = false;
         Point ResizeCurrentPoint = Point.Empty;
         private bool ResizeCurrent_mouseDown(TifFileInfo fi, Point p, PointF pF, int frame)
         {

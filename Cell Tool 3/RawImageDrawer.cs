@@ -1010,7 +1010,7 @@ namespace Cell_Tool_3
                 }
                 catch { return; }
                 if (fi == null) { return; }
-
+                if (IA.RoiMan.DrawNewRoiMode || IA.RoiMan.MoveCurrentRoi || IA.RoiMan.activResizeCurrent) return;
                 //if the 3D is enabled - send to imageDrawer_3D
                 if (imageDrawer_3D.isImage3D(fi))
                 {
@@ -2137,6 +2137,8 @@ namespace Cell_Tool_3
             if (IA.RoiMan.current == null) return;
 
             GLControl GLControl1 = IA.GLControl1;
+            GLDrawing_Start(GLControl1, false);
+            /*
             TifFileInfo fi;
             try
             {
@@ -2158,7 +2160,7 @@ namespace Cell_Tool_3
 
             IA.RoiMan.fillTextBox(fi);
 
-            GLControl1.SwapBuffers();
+            GLControl1.SwapBuffers();*/
         }
        
         private void DrawTexture(TifFileInfo fi)
