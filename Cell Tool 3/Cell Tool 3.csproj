@@ -85,10 +85,10 @@
     <GenerateManifests>false</GenerateManifests>
   </PropertyGroup>
   <PropertyGroup>
-    <ManifestCertificateThumbprint>7AA747611F68EF8AC2DAE69B73F9B10D4851CD84</ManifestCertificateThumbprint>
+    <ManifestCertificateThumbprint>F35AADFA45ECAB5F3FF8EA84CC24DACE960287B8</ManifestCertificateThumbprint>
   </PropertyGroup>
   <PropertyGroup>
-    <ManifestKeyFile>IMBMyCodeSigningCertificates.p12</ManifestKeyFile>
+    <ManifestKeyFile>IMBMyCodeSigningCertificates2.p12</ManifestKeyFile>
   </PropertyGroup>
   <PropertyGroup>
     <SignManifests>false</SignManifests>
@@ -323,7 +323,7 @@
     <None Include="app.manifest" />
     <None Include="Cell Tool 3_1_TemporaryKey.pfx" />
     <None Include="Cell Tool 3_TemporaryKey.pfx" />
-    <None Include="IMBMyCodeSigningCertificates.p12" />
+    <None Include="IMBMyCodeSigningCertificates2.p12" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
