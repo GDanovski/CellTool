@@ -32,8 +32,8 @@
     <PublisherName>Georgi Danovski</PublisherName>
     <SuiteName>CellTool</SuiteName>
     <AutorunEnabled>true</AutorunEnabled>
-    <ApplicationRevision>1</ApplicationRevision>
-    <ApplicationVersion>1.5.6.1</ApplicationVersion>
+    <ApplicationRevision>2</ApplicationRevision>
+    <ApplicationVersion>1.5.6.2</ApplicationVersion>
     <UseApplicationTrust>true</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
     <PublishWizardCompleted>true</PublishWizardCompleted>
@@ -122,18 +122,18 @@
       <HintPath>C:\bioformats\ikvm-7.2.4630.5\bin\5.9.2\bioformats_package_5.9.2.dll</HintPath>
     </Reference>
     <Reference Include="BitMiracle.LibTiff.NET">
-      <HintPath>..\..\Cell Tool\Cell Tool\bin\Debug\BitMiracle.LibTiff.NET.dll</HintPath>
+      <HintPath>..\References\BitMiracle.LibTiff.NET.dll</HintPath>
     </Reference>
     <Reference Include="CellToolDK, Version=1.0.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\CellToolDK\CellToolDK\bin\Release\CellToolDK.dll</HintPath>
+      <HintPath>..\References\CellToolDK.dll</HintPath>
     </Reference>
     <Reference Include="Cloo.clSharp, Version=0.9.2.7, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\Cloo.clSharp.0.9.2.7\lib\net20\Cloo.clSharp.dll</HintPath>
     </Reference>
     <Reference Include="IKVM.OpenJDK.Charsets, Version=7.2.4630.5, Culture=neutral, PublicKeyToken=13235d27fcbfff58, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\CellTool3 additional info\References\IKVM.OpenJDK.Charsets.dll</HintPath>
+      <HintPath>..\References\IKVM.OpenJDK.Charsets.dll</HintPath>
     </Reference>
     <Reference Include="IKVM.OpenJDK.Core">
       <HintPath>..\..\..\Downloads\Programs\Jar to dll\ikvm-7.2.4630.5\bin\IKVM.OpenJDK.Core.dll</HintPath>
@@ -147,17 +147,17 @@
     </Reference>
     <Reference Include="Microsoft.Solver.Foundation, Version=3.0.2.10889, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.0\Microsoft.Solver.Foundation.dll</HintPath>
+      <HintPath>..\References\Microsoft.Solver.Foundation.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.VisualBasic" />
     <Reference Include="NCalc">
-      <HintPath>..\..\..\Downloads\Library\NCalc.dll</HintPath>
+      <HintPath>..\References\NCalc.dll</HintPath>
     </Reference>
     <Reference Include="OpenTK">
-      <HintPath>..\..\..\Downloads\Library\opentk-2014-07-23\Binaries\OpenTK\Release\OpenTK.dll</HintPath>
+      <HintPath>..\References\OpenTK.dll</HintPath>
     </Reference>
     <Reference Include="OpenTK.GLControl">
-      <HintPath>..\..\..\Downloads\Library\opentk-2014-07-23\Binaries\OpenTK\Release\OpenTK.GLControl.dll</HintPath>
+      <HintPath>..\References\OpenTK.GLControl.dll</HintPath>
     </Reference>
     <Reference Include="System" />
     <Reference Include="System.Core" />
