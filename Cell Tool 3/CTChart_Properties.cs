@@ -85,7 +85,7 @@ namespace Cell_Tool_3
 
             BuildOptions();
         }
-        private void BuildOptions()
+        public virtual void BuildOptions()
         {
             Label xAxisLabel = new Label();
             xAxisLabel.Text = "X axis:";
@@ -519,7 +519,7 @@ namespace Cell_Tool_3
                     {
                         return functions[i];
                     }
-            
+
             return input;
         }
         public int GetFunctionIndex(string input)
@@ -528,7 +528,7 @@ namespace Cell_Tool_3
                 return -1;
 
             input = CheckForFunct(input);
-            
+
             if (!functions.Contains(input))
             {
                 List<string> lStr = functions.ToList();
@@ -564,8 +564,8 @@ namespace Cell_Tool_3
 
                 LoadFunctions();
             }
-            
-            return functions.ToList().IndexOf(input)+5;
+
+            return functions.ToList().IndexOf(input) + 5;
         }
         private void DeleteBtn_Click(object sender, EventArgs e)
         {
@@ -606,7 +606,7 @@ namespace Cell_Tool_3
                 return;
             }
 
-            if (nameCBox.SelectedIndex<=functions.Length)
+            if (nameCBox.SelectedIndex <= functions.Length)
                 functions[nameCBox.SelectedIndex] = nameCBox.Text + "=" + fTBox.Text + ";";
         }
         private void EditBtn_Click(object sender, EventArgs e)
@@ -697,7 +697,7 @@ namespace Cell_Tool_3
         }
         private void nameCBox_IndexChanged(object sender, EventArgs e)
         {
-            if (functions.Length > nameCBox.SelectedIndex && 
+            if (functions.Length > nameCBox.SelectedIndex &&
                 functions[nameCBox.SelectedIndex].IndexOf("=") > -1)
                 fTBox.Text = functions[nameCBox.SelectedIndex].Split(new string[] { "=" }, StringSplitOptions.None)[1].Replace(";", "");
             else
@@ -711,11 +711,11 @@ namespace Cell_Tool_3
 
             nameCBox.Items.Clear();
             foreach (string str in functions)
-                if(functions[0].IndexOf("=") > -1)
-            {
-                string str1 = str.Substring(0, str.IndexOf("="));
-                nameCBox.Items.Add(str1);
-            }
+                if (functions[0].IndexOf("=") > -1)
+                {
+                    string str1 = str.Substring(0, str.IndexOf("="));
+                    nameCBox.Items.Add(str1);
+                }
 
             int ind = 0;
 
@@ -728,7 +728,7 @@ namespace Cell_Tool_3
             }
             else
                 fTBox.Text = "";
-            
+
             OptionForm.ShowDialog();
         }
         private void optionForm_Hide()
@@ -773,7 +773,7 @@ namespace Cell_Tool_3
         }
         #endregion Function Editor
         private void xAxisTB_ChangeIndex(object sender, EventArgs e)
-        {           
+        {
             if (xAxisTB.Focused == false) return;
             //find selected image
             TifFileInfo fi = null;
@@ -791,7 +791,7 @@ namespace Cell_Tool_3
             IA.UnDoBtn.Enabled = true;
             IA.DeleteFromHistory();
             AddXAxisTBToHistory(fi);
-            
+
             fi.xAxisTB = xAxisTB.SelectedIndex;
 
             AddXAxisTBToHistory(fi);
@@ -804,7 +804,7 @@ namespace Cell_Tool_3
         {
             if (yAxisTB.Focused == false) return;
             //find selected image
-            TifFileInfo fi = null; 
+            TifFileInfo fi = null;
             try
             {
                 fi = IA.TabPages.TabCollections[IA.TabPages.SelectedIndex].tifFI;
@@ -847,7 +847,7 @@ namespace Cell_Tool_3
                 yAxisTB.Text = yAxisTB.Items[fi.yAxisTB].ToString();
             }
 
-            
+
         }
         public void AddXAxisTBToHistory(TifFileInfo fi)
         {

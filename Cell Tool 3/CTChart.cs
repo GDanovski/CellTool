@@ -29,13 +29,13 @@ namespace Cell_Tool_3
 {
     class CTChart
     {
-        private ImageAnalyser IA;
+        public ImageAnalyser IA;
         public CTChart_Properties Properties;
         public CTChart_Series Series;
 
-        private List<double[]> data = new List<double[]>();
-        private List<Color> SeriesColors = new List<Color>();
-        private double[] XaxisData = null;
+        protected List<double[]> data = new List<double[]>();
+        protected List<Color> SeriesColors = new List<Color>();
+        public double[] XaxisData = null;
         public CTChart(ImageAnalyser IA)
         {
             this.IA = IA;
@@ -402,7 +402,7 @@ namespace Cell_Tool_3
                 }
         }
 
-        private void Render(Rectangle OldRect, TifFileInfo fi)
+        public virtual void Render(Rectangle OldRect, TifFileInfo fi)
         {
 
             double MaxY = 0;
@@ -528,7 +528,8 @@ namespace Cell_Tool_3
 
         }
 
-        private void BitmapFromString(TifFileInfo fi, string str, PointF p, bool title = false)
+        public void BitmapFromString(TifFileInfo fi, string str, PointF p, bool title = false,
+            Brush labelBG = null, Brush labelCol = null)
         {
             Font font = new Font("Times New Roman", 9, FontStyle.Regular);
             if (title) font = new Font("Times New Roman", 9, FontStyle.Bold);
@@ -544,8 +545,18 @@ namespace Cell_Tool_3
             //MessageBox.Show(rect.Width.ToString() + "\n" +                rect.Height.ToString());
             using (Graphics g = Graphics.FromImage(bmp))
             {
-                g.FillRectangle(Brushes.White, rect);
-                g.DrawString(str, font, Brushes.Black, rect);
+                if (labelBG != null && labelCol != null)
+                {
+                    //For 3D
+                    g.FillRectangle(labelBG, rect);
+                    g.DrawString(str, font, labelCol, rect);
+                }
+                else
+                {
+                    //For 2D
+                    g.FillRectangle(Brushes.White, rect);
+                    g.DrawString(str, font, Brushes.Black, rect);
+                }
                 g.Flush();
             }
 
@@ -707,7 +718,7 @@ namespace Cell_Tool_3
                         }
                         else
                         {
-                            boolStart =1+ stack * 4;
+                            boolStart = 1 + stack * 4;
 
                             if (roi.ChartUseIndex[boolStart] == true)
                             {
@@ -739,7 +750,7 @@ namespace Cell_Tool_3
 
                             position += 16;
                         }
-                        
+
                         if (fi.yAxisTB == 1)
                             for (int i = 0; i < mainRoi.Length; i++)
                                 if (mainRoi[i] != 0) mainRoi[i] /= factor;

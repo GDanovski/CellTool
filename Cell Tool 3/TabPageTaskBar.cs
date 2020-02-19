@@ -28,14 +28,14 @@ using OpenTK;
 
 namespace Cell_Tool_3
 {
-    
+
     public class PanelUnscrollable : Panel
     {
         public ToolStripComboBox zoomValue;
         public bool scrolling = false;
-       public void AddEvents()
+        public void AddEvents()
         {
-            
+
             for (int i = 0; i < Controls.Count; i++)
             {
                 Controls[i].MouseDown += Item_MouseDown;
@@ -43,7 +43,7 @@ namespace Cell_Tool_3
                 Controls[i].MouseMove += Item_MouseMove;
                 Controls[i].MouseHover += Item_MouseHover;
             }
-       }
+        }
         void Item_MouseHover(object sender, EventArgs e)
         {
             if (base.Focused == false)
@@ -53,18 +53,18 @@ namespace Cell_Tool_3
         }
         void Item_MouseDown(object sender, MouseEventArgs e)
         {
-            
+
             if (e.Button == MouseButtons.Middle)
             {
                 GLControl pb = (GLControl)sender;
                 int xTrans = e.X + pb.Location.X;
                 int yTrans = e.Y + pb.Location.Y;
                 MouseEventArgs eTrans = new MouseEventArgs(
-                    e.Button, e.Clicks, xTrans,yTrans, e.Delta);
+                    e.Button, e.Clicks, xTrans, yTrans, e.Delta);
                 base.OnMouseDown(eTrans);
                 scrolling = true;
             }
-       }
+        }
         void Item_MouseUp(object sender, MouseEventArgs e)
         {
             if (e.Button == MouseButtons.Middle)
@@ -73,7 +73,7 @@ namespace Cell_Tool_3
                 int xTrans = e.X + pb.Location.X;
                 int yTrans = e.Y + pb.Location.Y;
                 MouseEventArgs eTrans = new MouseEventArgs(
-                    e.Button, e.Clicks, xTrans,yTrans, e.Delta);
+                    e.Button, e.Clicks, xTrans, yTrans, e.Delta);
                 base.OnMouseUp(eTrans);
                 scrolling = false;
             }
@@ -83,12 +83,12 @@ namespace Cell_Tool_3
             GLControl pb = (GLControl)sender;
             if (e.Button == MouseButtons.Middle & scrolling == true)
             {
-                
+
                 int xTrans = e.X + pb.Location.X;
                 int yTrans = e.Y + pb.Location.Y;
                 MouseEventArgs eTrans = new MouseEventArgs(
                     e.Button, e.Clicks, xTrans, yTrans, e.Delta);
-               
+
                 base.OnMouseMove(eTrans);
             }
             else
@@ -110,16 +110,16 @@ namespace Cell_Tool_3
                     zoomValue.SelectedIndex += 1;
                 }
             }
-            else if(ModifierKeys == Keys.Shift & base.HorizontalScroll.Visible == true & base.HorizontalScroll.Enabled == true)
+            else if (ModifierKeys == Keys.Shift & base.HorizontalScroll.Visible == true & base.HorizontalScroll.Enabled == true)
             {
                 //base.OnMouseWheel(e);
-                if (e.Delta > 0 & base.HorizontalScroll.Maximum >= base.HorizontalScroll.Value + base.HorizontalScroll.SmallChange*2 )
+                if (e.Delta > 0 & base.HorizontalScroll.Maximum >= base.HorizontalScroll.Value + base.HorizontalScroll.SmallChange * 2)
                 {
-                    base.HorizontalScroll.Value += base.HorizontalScroll.SmallChange*2; 
+                    base.HorizontalScroll.Value += base.HorizontalScroll.SmallChange * 2;
                 }
-                else if (e.Delta < 0 & base.HorizontalScroll.Minimum <= base.HorizontalScroll.Value - base.HorizontalScroll.SmallChange*2 )
+                else if (e.Delta < 0 & base.HorizontalScroll.Minimum <= base.HorizontalScroll.Value - base.HorizontalScroll.SmallChange * 2)
                 {
-                    base.HorizontalScroll.Value -= base.HorizontalScroll.SmallChange*2;
+                    base.HorizontalScroll.Value -= base.HorizontalScroll.SmallChange * 2;
                 }
             }
             else
@@ -208,7 +208,7 @@ namespace Cell_Tool_3
             MethodsPanel.Width = 100;
             TopBar.Controls.Add(MethodsPanel);
             MethodsPanel.BringToFront();
-            
+
             Refresh();
 
             VisualizeColorBtns();
@@ -399,7 +399,7 @@ namespace Cell_Tool_3
             };
 
             w += Btn2D.Width;
-            
+
             Btn2D.Location = new Point(w, 5);
             w += Btn2D.Width;
             MethodsPanel.Controls.Add(Btn2D);
@@ -578,7 +578,7 @@ namespace Cell_Tool_3
             #region 2Dand3D
             {
                 Button btn = new Button();
-               
+
                 btn.FlatAppearance.BorderSize = 0;
                 btn.FlatStyle = FlatStyle.Flat;
                 btn.BackColor = IA.FileBrowser.BackGroundColor1;
@@ -608,7 +608,7 @@ namespace Cell_Tool_3
                 Btn3D = btn;
                 btn.Enabled = false;
                 btn.MouseHover += DimmentionsControl_MouseOver;
-                 btn.MouseDown += DimmentionsControl_MouseClick;
+                btn.MouseDown += DimmentionsControl_MouseClick;
             }
             #endregion 2Dand3D
         }
@@ -619,13 +619,12 @@ namespace Cell_Tool_3
             if (((Button)sender) == Btn2D)
             {
                 fi.is3D = false;
-                IA.IDrawer.imageDrawer_3D.ClearProgram(IA.GLControl1);                
             }
             else if (((Button)sender) == Btn3D)
             {
                 fi.is3D = true;
-                IA.IDrawer.imageDrawer_3D.initProgram(IA.GLControl1,fi);     
-                
+                IA.IDrawer.imageDrawer_3D.initProgram(IA.GLControl1, fi);
+
             }
 
             IA.ReloadImages(true);
@@ -635,7 +634,7 @@ namespace Cell_Tool_3
         {
             Button ctr = (Button)sender;
             string txt = ctr.Tag.ToString();
-            
+
             TurnOnToolTip.SetToolTip(ctr, txt);
         }
         private void MethodControl_MouseOver(object sender, EventArgs e)
@@ -744,7 +743,7 @@ namespace Cell_Tool_3
                     else
                         IA.ReloadImages(false);
                 }
-                
+
             }
         }
     }

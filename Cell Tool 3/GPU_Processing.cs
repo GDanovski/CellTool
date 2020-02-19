@@ -13,14 +13,16 @@ namespace Cell_Tool_3
         ComputeKernel Rotate_Kernel;
         ComputeBuffer<ushort> InputImageBuffer_C0, InputImageBuffer_C1, InputImageBuffer_segmented;
         ComputeBuffer<ushort> OutputImageBuffer;
+        ComputeBuffer<int> maxValueBuffer;
         GCHandle arrCHandle;
 
         public ushort[] result;
+        public int[] maxValueArray;
         ushort[] image1d_C0, image1d_C1, image1d_segmented;
 
         public GPU_Processing(ushort[] image1d_C0, ushort[] image1d_C1, ushort[] image1d_segmented)
         {
-           
+
             this.image1d_C0 = image1d_C0;
             this.image1d_C1 = image1d_C1;
             this.image1d_segmented = image1d_segmented;
@@ -42,6 +44,11 @@ namespace Cell_Tool_3
             // load chosen kernel from program
             Rotate_Kernel = program.CreateKernel("RotateImage");
 
+            CreateInputBuffers();
+        }
+
+        public void CreateInputBuffers()
+        {
             InputImageBuffer_C0 = new ComputeBuffer<ushort>(context,
             ComputeMemoryFlags.ReadOnly | ComputeMemoryFlags.CopyHostPointer, image1d_C0);
 
@@ -66,7 +73,8 @@ namespace Cell_Tool_3
                                         double rotation00, double rotation01,
                                         double rotation10, double rotation11,
                                         double rotation20, double rotation21,
-                                        int sizeX, int sizeY, int sizeZ, int maxSize)  {
+                                        int sizeX, int sizeY, int sizeZ, int maxSize,
+                                        global int* maxValueIndex)  {
                     
                     int xy = get_global_id(0);
                     int x = xy % sizeX;
@@ -90,27 +98,42 @@ namespace Cell_Tool_3
                                             ((int)(p0 * rotation01 + p1 * rotation11 + p2 * rotation21 + halfMax)) + 
                                              (int)(p0 * rotation00 + p1 * rotation10 + p2 * rotation20 + halfMax);
 
-                        if (image1d[NewImgIndex] > sheared1d[OriginalIndex]) sheared1d[OriginalIndex] = image1d[NewImgIndex];
+                        if (image1d[NewImgIndex] > sheared1d[OriginalIndex]) {
+
+                            // Update the max value for this index, since we found a stronger one
+                            sheared1d[OriginalIndex] = image1d[NewImgIndex];
+                            
+                            // Save the coordinates of the max value for later use in ray tracing
+                            maxValueIndex[OriginalIndex] = NewImgIndex; 
+                        }
                     }             
                 }
         ";
+            }
         }
-    }       
         public void RotateImage(double[,] rotation,
             int sizeX, int sizeY, int sizeZ, int maxSize, int numRectangle, int channel)
         {
             result = new ushort[maxSize * maxSize];
+            maxValueArray = new int[maxSize * maxSize];
 
             if (numRectangle == 0)
             {
-                if (channel == 0)   Rotate_Kernel.SetMemoryArgument(0, InputImageBuffer_C0);
-                else                Rotate_Kernel.SetMemoryArgument(0, InputImageBuffer_C1);
-            } else {
+                if (channel == 0) Rotate_Kernel.SetMemoryArgument(0, InputImageBuffer_C0);
+                else Rotate_Kernel.SetMemoryArgument(0, InputImageBuffer_C1);
+            }
+            else
+            {
                 Rotate_Kernel.SetMemoryArgument(0, InputImageBuffer_segmented);
             }
             // TODO - why is result.Length not enough for the size? 
             OutputImageBuffer = new ComputeBuffer<ushort>(context,
-                ComputeMemoryFlags.ReadWrite | ComputeMemoryFlags.AllocateHostPointer, 16 * 1024 * 1024);
+                ComputeMemoryFlags.ReadWrite | ComputeMemoryFlags.AllocateHostPointer,
+                Math.Max((maxSize * maxSize), (1024 * 1024)));
+
+            maxValueBuffer = new ComputeBuffer<int>(context,
+                ComputeMemoryFlags.ReadWrite | ComputeMemoryFlags.AllocateHostPointer,
+                Math.Max((maxSize * maxSize), (1024 * 1024)));
 
             Rotate_Kernel.SetMemoryArgument(1, OutputImageBuffer);// set the integer array
             Rotate_Kernel.SetValueArgument(2, rotation[0, 0]); // set the array size
@@ -124,22 +147,32 @@ namespace Cell_Tool_3
             Rotate_Kernel.SetValueArgument(9, sizeY); // set the array size
             Rotate_Kernel.SetValueArgument(10, sizeZ); // set the array size
             Rotate_Kernel.SetValueArgument(11, maxSize); // set the array size
+            Rotate_Kernel.SetMemoryArgument(12, maxValueBuffer);// set the integer array
 
             Rotate_queue.Execute(Rotate_Kernel, null, new long[] { sizeX * sizeY }, null, null);        // execute kernel
             Rotate_queue.Finish();
-      
+
             arrCHandle = GCHandle.Alloc(result, GCHandleType.Pinned);
-           
+
             Rotate_queue.Read<ushort>(OutputImageBuffer, true, 0, result.Length, arrCHandle.AddrOfPinnedObject(), null);
-            
+            arrCHandle.Free();
+
+            arrCHandle = GCHandle.Alloc(maxValueArray, GCHandleType.Pinned);
+            Rotate_queue.Read<int>(maxValueBuffer, true, 0, maxValueArray.Length, arrCHandle.AddrOfPinnedObject(), null);
+
             arrCHandle.Free();
             OutputImageBuffer.Dispose();
+            maxValueBuffer.Dispose();
 
         }
         public void Cleanup()
-        {      
-            InputImageBuffer_C0.Dispose();
-            InputImageBuffer_C1.Dispose();
+        {
+            if (InputImageBuffer_C0 != null)
+                InputImageBuffer_C0.Dispose();
+
+            if (InputImageBuffer_C1 != null)
+                InputImageBuffer_C1.Dispose();
+
             Rotate_Kernel.Dispose();
             program.Dispose();
             Rotate_queue.Dispose();

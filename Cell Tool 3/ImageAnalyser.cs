@@ -49,13 +49,13 @@ namespace Cell_Tool_3
         public RoiManager RoiMan;
         public ImageDrawer IDrawer = new ImageDrawer();
         public GLControl GLControl1 = new GLControl();
-       // public Panel GLControl1_VerticalPanel = new Panel();
+        // public Panel GLControl1_VerticalPanel = new Panel();
         //public Panel GLControl1_HorizontalPanel = new Panel();
-       // public Panel GLControl1_TraserPanel = new Panel();
+        // public Panel GLControl1_TraserPanel = new Panel();
 
         public ToolStripComboBox zoomValue = null;
-              
-        public void zoomValue_Change(object sender,EventArgs e)
+
+        public void zoomValue_Change(object sender, EventArgs e)
         {
             /*ZoomValue.Items.AddRange(new string[]
                        {"6,25 %","12,5 %","25 %","50 %",
@@ -68,7 +68,7 @@ namespace Cell_Tool_3
             }
             catch { return; }
             //Calculate zoom
-            if(fi == null) { return; }
+            if (fi == null) { return; }
             if (RoiMan.DrawNewRoiMode == true) return;
 
             double zoom = Convert.ToDouble(zoomValue.Text.Substring(0, zoomValue.Text.Length - 2)) / 100;
@@ -77,7 +77,7 @@ namespace Cell_Tool_3
                 fi.zoom = zoom;
                 //reload image
                 ReloadImages(false);
-               //MarkAsNotSaved();
+                //MarkAsNotSaved();
             }
         }
         private void zoomValue_Set(double val)
@@ -97,13 +97,13 @@ namespace Cell_Tool_3
             zoomValue.SelectedIndexChanged += new EventHandler(zoomValue_Change);
             IDrawer.Initialize(GLControl1);
 
-            SpotDetectorEnabled=System.IO.File.Exists(Application.StartupPath + "/PlugIns/SpotDetector.txt");
+            SpotDetectorEnabled = System.IO.File.Exists(Application.StartupPath + "/PlugIns/SpotDetector.txt");
             DeleteEmptyEnabled = !System.IO.File.Exists(Application.StartupPath + "/PlugIns/DeleteEmptyResults.txt");
         }
-        
+
         private void Input_TextChange(object sender, ChangeValueEventArgs e)
         {
-            if (e.Value == "") return; 
+            if (e.Value == "") return;
             if (e.Value == oldComand) return;
 
             oldComand = e.Value;
@@ -165,7 +165,7 @@ namespace Cell_Tool_3
             TifFileInfo fi = TabPages.TabCollections[TabPages.SelectedIndex].tifFI;
             CheckSizeHistory(fi);
         }
-      
+
         public void undo_Click(object sender, EventArgs e)
         {
             TifFileInfo fi = TabPages.TabCollections[TabPages.SelectedIndex].tifFI;
@@ -189,7 +189,7 @@ namespace Cell_Tool_3
                 undo = true;
                 redo = false;
             }
-           
+
             StartFromHistory(fi.HistoryPlace);
         }
         public void redo_Click(object sender, EventArgs e)
@@ -204,7 +204,7 @@ namespace Cell_Tool_3
 
             if (fi.HistoryPlace == -1)
             { fi.HistoryPlace = fi.History.Count - 2; }
-            
+
             if (redo == true)
             {
                 fi.HistoryPlace += 2;
@@ -226,7 +226,7 @@ namespace Cell_Tool_3
                 fi.redo = false;
             }
         }
-     
+
         private void StartFromHistory(int ind)
         {
             delHist = false;
@@ -240,7 +240,7 @@ namespace Cell_Tool_3
             { ReDoBtn.Enabled = false; }
             else { ReDoBtn.Enabled = true; }
         }
-        
+
         public void CheckSizeHistory(TifFileInfo fi)
         {
             while (fi.History.Count > 4000)
@@ -248,7 +248,7 @@ namespace Cell_Tool_3
                 fi.History.RemoveAt(0);
                 fi.History.RemoveAt(0);
             }
-            
+
         }
         public void MarkAsNotSaved()
         {
@@ -283,7 +283,7 @@ namespace Cell_Tool_3
             if (fi == null) { return; }
 
             fi.History.Add(str);
-            
+
             UpdateUndoBtns();
             MarkAsNotSaved();
             CheckSizeHistory(fi);
@@ -298,7 +298,7 @@ namespace Cell_Tool_3
         {
             for (int i = 0; i < TabPages.Collections.Count; i++)
             {
-                if(TabPages.Collections[i][0].Tag as string == Val)
+                if (TabPages.Collections[i][0].Tag as string == Val)
                 {
                     TabPages.inactivate_Tabs();
                     TabPages.selectTab_event(i);
@@ -319,7 +319,7 @@ namespace Cell_Tool_3
                     {
                         ReDoBtn.Enabled = true;
                     }
-                    
+
                 }
             }
         }
@@ -338,7 +338,7 @@ namespace Cell_Tool_3
                 {
                     UnDoBtn.Enabled = false;
                 }
-               
+
                 if (TabPages.TabCollections[i].tifFI.HistoryPlace == -1)
                 {
                     ReDoBtn.Enabled = false;
@@ -347,9 +347,9 @@ namespace Cell_Tool_3
                 {
                     ReDoBtn.Enabled = true;
                 }
-                
+
             }
-        } 
+        }
         public void EnabletrackBars(bool val)
         {
             TabPages.tTrackBar.TrackBar1.Enabled = val;
@@ -358,7 +358,7 @@ namespace Cell_Tool_3
             TabPages.zTrackBar.TextBox1.Enabled = val;
         }
         public void ReloadImages(bool toRecalculateImages = true, int recalcChannel = -1, int recalcMethod = -1)
-        { 
+        {
             TabPages.PropertiesBody.SuspendLayout();
             TabPages.propertiesPanel.SuspendLayout();
 
@@ -370,7 +370,7 @@ namespace Cell_Tool_3
                 TabPages.zTrackBar.Panel.Visible = false;
                 BandC.panel.Visible = false;
                 Meta.panel.Visible = false;
-               // Segmentation.LibPanel.Visible = false;
+                // Segmentation.LibPanel.Visible = false;
                 Segmentation.DataPanel.Visible = false;
                 Segmentation.HistogramPanel.Visible = false;
                 Segmentation.tresholdsPanel.Visible = false;
@@ -383,7 +383,7 @@ namespace Cell_Tool_3
                 IDrawer.horizontalScrollBar.Visible = false;
                 TabPages.PropertiesBody.ResumeLayout();
                 TabPages.propertiesPanel.ResumeLayout();
-                
+
                 return;
             }
             bool turnOnRoiMan = false;
@@ -398,19 +398,19 @@ namespace Cell_Tool_3
             if (fi != null)
             {
                 //3D buttons set up
-               fi.tpTaskbar.Btn2D.Visible = false;
-               fi.tpTaskbar.Btn3D.Visible = false;
-                /*
-                if(fi.sizeZ == 1 && fi.tpTaskbar.Btn2D.Visible == true)
+                //fi.tpTaskbar.Btn2D.Visible = false;
+                //fi.tpTaskbar.Btn3D.Visible = false;
+
+                if (fi.sizeZ == 1 && fi.tpTaskbar.Btn2D.Visible == true)
                 {
                     fi.tpTaskbar.Btn2D.Visible = false;
                     fi.tpTaskbar.Btn3D.Visible = false;
                 }
-                else if(fi.sizeZ != 1 && fi.tpTaskbar.Btn2D.Visible == false)
+                else if (fi.sizeZ != 1 && fi.tpTaskbar.Btn2D.Visible == false)
                 {
                     fi.tpTaskbar.Btn2D.Visible = true;
                     fi.tpTaskbar.Btn3D.Visible = true;
-                }*/
+                }
 
                 if (IDrawer.imageDrawer_3D.isImage3D(fi))
                 {
@@ -460,12 +460,12 @@ namespace Cell_Tool_3
                 //Image Drawer
                 try
                 {
-                   IDrawer.DrawToScreen(toRecalculateImages,recalcChannel,  recalcMethod);
+                    IDrawer.DrawToScreen(toRecalculateImages, recalcChannel, recalcMethod);
                 }
                 catch { }
                 //Prop Panel settings
                 #region Raw Image
-                if (fi.selectedPictureBoxColumn == 0 & fi.cValue < fi.sizeC 
+                if (fi.selectedPictureBoxColumn == 0 & fi.cValue < fi.sizeC
                     & fi.tpTaskbar.ColorBtnList[fi.cValue].ImageIndex == 0
                     & fi.tpTaskbar.MethodsBtnList[0].ImageIndex == 0)
                 {
@@ -590,7 +590,7 @@ namespace Cell_Tool_3
                         Segmentation.HistogramPanel.Visible = true;
                         Segmentation.HistogramPanel.BringToFront();
                     }
-                    
+
                     if (Segmentation.DataPanel.Visible != true)
                     {
                         Segmentation.DataPanel.Visible = true;
@@ -625,7 +625,7 @@ namespace Cell_Tool_3
                     Tracking.panel.Visible = false;
                 }
                 #endregion Filtered image
-                
+
                 #region Chart
                 if (fi.selectedPictureBoxColumn == 2 & fi.cValue < fi.sizeC
                     & fi.tpTaskbar.ColorBtnList[fi.cValue].ImageIndex == 0 & fi.tpTaskbar.MethodsBtnList[2].ImageIndex == 0)
@@ -639,7 +639,7 @@ namespace Cell_Tool_3
                     {
                         chart.Properties.panel.Height = 90;
                     }
-                    
+
 
                     if (settings.CTChart_SeriesVis[TabPages.ActiveAccountIndex] != "y")
                     {
@@ -647,7 +647,7 @@ namespace Cell_Tool_3
                     }
                     else
                     {
-                        chart.Series.panel.Height =int.Parse(settings.CTChart_SeriesHeight[TabPages.ActiveAccountIndex]);
+                        chart.Series.panel.Height = int.Parse(settings.CTChart_SeriesHeight[TabPages.ActiveAccountIndex]);
                     }
 
                     if (chart.Properties.panel.Visible != true)
@@ -699,11 +699,11 @@ namespace Cell_Tool_3
             TabPages.PropertiesBody.ResumeLayout();
             TabPages.propertiesPanel.ResumeLayout();
         }
-        
+
         private void ChangeT(string Val)
         {
             TifFileInfo fi = TabPages.TabCollections[TabPages.SelectedIndex].tifFI;
-           
+
             int oldVal = fi.frame;
             fi.frame = int.Parse(Val);
             if (IsFrameAvaliable(fi) == false)
@@ -725,7 +725,7 @@ namespace Cell_Tool_3
         }
         private void ChangeZ(string Val)
         {
-             TifFileInfo fi = TabPages.TabCollections[TabPages.SelectedIndex].tifFI;
+            TifFileInfo fi = TabPages.TabCollections[TabPages.SelectedIndex].tifFI;
             int oldVal = fi.zValue;
             fi.zValue = int.Parse(Val);
             if (IsFrameAvaliable(fi) == false)
@@ -743,7 +743,7 @@ namespace Cell_Tool_3
                 TabPages.zTrackBar.TrackBar1.Value = fi.zValue + 1;
             }
             ReloadImages(true);
-            
+
         }
         private void ChangeC(string Val)
         {
@@ -765,7 +765,7 @@ namespace Cell_Tool_3
             //UnDoBtn.Enabled = true;
             //CheckSizeHistory(fi);
 
-            ReloadImages(true,fi.cValue,-1);
+            ReloadImages(true, fi.cValue, -1);
         }
         private void ChangeLUT(string val)
         {
@@ -776,11 +776,11 @@ namespace Cell_Tool_3
             Color col = ColorTranslator.FromHtml(val.Substring(sep + 1, val.Length - sep - 1));
             if (undo == false & redo == false)
             {
-               fi.History.Add("LUT(" + chanel.ToString() + "," +
-                    ColorTranslator.ToHtml(fi.LutList[chanel]).ToString() + ")");
+                fi.History.Add("LUT(" + chanel.ToString() + "," +
+                     ColorTranslator.ToHtml(fi.LutList[chanel]).ToString() + ")");
             }
             fi.LutList[chanel] = col;
-            
+
             if (IsFrameAvaliable(fi) == false)
             {
                 return;
@@ -819,7 +819,7 @@ namespace Cell_Tool_3
                 fi.tpTaskbar.ColorBtnList[fi.tpTaskbar.ColorBtnList.Count - 1].Focus();
             }
 
-            ReloadImages(true,chanel,-1);
+            ReloadImages(true, chanel, -1);
             MarkAsNotSaved();
         }
         private void enableColorChanel(string val)
@@ -834,7 +834,7 @@ namespace Cell_Tool_3
 
             var ctr = fi.tpTaskbar.ColorBtnList[chanel];
 
-            if(ctr.ImageIndex == index) return;
+            if (ctr.ImageIndex == index) return;
 
             ctr.ImageIndex = index;
             ctr.Focus();
@@ -858,10 +858,10 @@ namespace Cell_Tool_3
             }
 
             if (IsFrameAvaliable(fi) == false) return;
-            
+
             UnDoBtn.Enabled = true;
             CheckSizeHistory(fi);
-            ReloadImages(true,chanel,-1);
+            ReloadImages(true, chanel, -1);
             MarkAsNotSaved();
         }
         private void enableMethodView(string val)
@@ -903,7 +903,7 @@ namespace Cell_Tool_3
 
             UnDoBtn.Enabled = true;
             CheckSizeHistory(fi);
-            ReloadImages(true,-1,chanel);
+            ReloadImages(true, -1, chanel);
             MarkAsNotSaved();
         }
         private void segmentation_ChangeMethod(string val)
@@ -913,9 +913,9 @@ namespace Cell_Tool_3
             int sep = val.IndexOf(",");
             int chanel = Convert.ToInt32(val.Substring(0, sep));
             int index = Convert.ToInt32(val.Substring(sep + 1, val.Length - sep - 1));
-            
+
             if (fi.SegmentationCBoxIndex[chanel] == index) return;
-            
+
             if (undo == false & redo == false)
             {
                 fi.History.Add("segmentation.ChangeMethod(" + chanel.ToString() + ","
@@ -931,7 +931,7 @@ namespace Cell_Tool_3
 
             UnDoBtn.Enabled = true;
             CheckSizeHistory(fi);
-            ReloadImages(true,chanel,1);
+            ReloadImages(true, chanel, 1);
             MarkAsNotSaved();
         }
 
@@ -979,7 +979,7 @@ namespace Cell_Tool_3
             int index = Convert.ToInt32(vals[1]);
             int newVal = Convert.ToInt32(vals[2]);
 
-            if (fi.thresholdValues[chanel][index] == newVal 
+            if (fi.thresholdValues[chanel][index] == newVal
                 | index > fi.thresholds[fi.cValue]) return;
 
             if (undo == false & redo == false)
@@ -999,13 +999,13 @@ namespace Cell_Tool_3
 
             UnDoBtn.Enabled = true;
             CheckSizeHistory(fi);
-            ReloadImages(true,chanel,1);
+            ReloadImages(true, chanel, 1);
             MarkAsNotSaved();
         }
         private void segmentation_SetSpotDetector(string val)
         {
             TifFileInfo fi = TabPages.TabCollections[TabPages.SelectedIndex].tifFI;
-            
+
             string[] vals = val.Split(new string[] { "," }, StringSplitOptions.None);
             int cVal = Convert.ToInt32(vals[0]);
             int spotThresh = Convert.ToInt32(vals[1]);
@@ -1015,7 +1015,7 @@ namespace Cell_Tool_3
             int selectedSpotThresh = Convert.ToInt32(vals[5]);
             int typeSpotThresh = Convert.ToInt32(vals[6]);
 
-            if (fi.cValue == cVal & 
+            if (fi.cValue == cVal &
                 fi.SpotThresh[fi.cValue] == spotThresh &
                 fi.spotSensitivity[fi.cValue] == spotSensitivity &
                  fi.SpotColor[fi.cValue] == SpotColor &
@@ -1057,7 +1057,7 @@ namespace Cell_Tool_3
 
             UnDoBtn.Enabled = true;
             CheckSizeHistory(fi);
-            ReloadImages(true,cVal,1);
+            ReloadImages(true, cVal, 1);
             MarkAsNotSaved();
         }
         private void segmentation_SetColor(string val)
@@ -1082,16 +1082,16 @@ namespace Cell_Tool_3
             }
             GLControl1.Focus();
 
-            if(col != Color.Transparent)
+            if (col != Color.Transparent)
                 fi.RefThresholdColors[chanel][index] = col;
 
             fi.thresholdColors[chanel][index] = col;
-            
+
             if (IsFrameAvaliable(fi) == false) return;
 
             UnDoBtn.Enabled = true;
             CheckSizeHistory(fi);
-            ReloadImages(true,chanel,1);
+            ReloadImages(true, chanel, 1);
             MarkAsNotSaved();
         }
         private void ChangeBandC(string val)
@@ -1116,11 +1116,11 @@ namespace Cell_Tool_3
 
                 BandC.adjustBrightness(min, max, fi, chanel);
 
-                ReloadImages(true,chanel,-1);
-               // MarkAsNotSaved();
+                ReloadImages(true, chanel, -1);
+                // MarkAsNotSaved();
             }
         }
-       public bool IsFrameAvaliable(TifFileInfo fi)
+        public bool IsFrameAvaliable(TifFileInfo fi)
         {
             if (fi.available == true) { return true; }
             FrameCalculator FC = new FrameCalculator();
@@ -1170,7 +1170,7 @@ namespace Cell_Tool_3
             GLControl1.Focus();
 
             if (IsFrameAvaliable(fi) == false) return;
-            
+
             ReloadImages(false);
         }
         private void roi_delete(string val)
@@ -1224,8 +1224,8 @@ namespace Cell_Tool_3
                     foreach (ROI roi in roiList)
                         if (RoiID == roi.getID)
                         {
-                            
-                            if (undo == false && redo == false && 
+
+                            if (undo == false && redo == false &&
                                 fi.roiList[fi.cValue].IndexOf(roi) > -1)
                                 RoiMan.addToHistoryOldInfo(RoiMan.roi_getStat(roi, fi, stat), fi);
 
@@ -1236,7 +1236,7 @@ namespace Cell_Tool_3
                             if (undo == false && redo == false &&
                                 fi.roiList[fi.cValue].IndexOf(roi) > -1)
                                 RoiMan.addToHistoryNewInfo(RoiMan.roi_getStat(roi, fi, stat), fi);
-                            
+
                             GLControl1.Focus();
 
                             if (IsFrameAvaliable(fi) == false) return;
@@ -1273,7 +1273,7 @@ namespace Cell_Tool_3
 
                             roi.Width = W;
                             roi.Height = H;
-                            if(roi.Type == 1 &&(roi.Shape == 0|| roi.Shape == 1))
+                            if (roi.Type == 1 && (roi.Shape == 0 || roi.Shape == 1))
                             {
                                 Point p = roi.GetLocation(imageN)[0];
                                 roi.locationFromHist(LocStr, imageN);
@@ -1281,7 +1281,7 @@ namespace Cell_Tool_3
                                 int dX = p.X - p1.X;
                                 int dY = p.Y - p1.Y;
                                 Point[][] allP = roi.GetLocationAll();
-                                for(int i = fi.cValue; i< allP[0].Length; i+=fi.sizeC)
+                                for (int i = fi.cValue; i < allP[0].Length; i += fi.sizeC)
                                 {
                                     if (i == imageN) continue;
                                     allP[0][i].X -= dX;
@@ -1326,7 +1326,7 @@ namespace Cell_Tool_3
                 chart.Properties.AddXAxisTBToHistory(fi);
             }
 
-           // MessageBox.Show(index.ToString());
+            // MessageBox.Show(index.ToString());
             fi.xAxisTB = index;
 
             if (undo == false & redo == false)
@@ -1367,7 +1367,7 @@ namespace Cell_Tool_3
                 UpdateUndoBtns();
                 MarkAsNotSaved();
             }
-            
+
             CheckSizeHistory(fi);
             ReloadImages(false);
         }
@@ -1543,7 +1543,7 @@ namespace Cell_Tool_3
                         DeleteFromHistory();
                         roi_resize(Val);
                         break;
-                        
+
                     case "Chart.XAxisType":
                         DeleteFromHistory();
                         ChangeChart_xAxisType(Val);
@@ -1583,18 +1583,18 @@ namespace Cell_Tool_3
                 fi = TabPages.TabCollections[TabPages.SelectedIndex].tifFI;
             }
             catch { return; }
-            if(fi == null) { return; }
+            if (fi == null) { return; }
             //start task
             //var t = Task.Run(() => {
-                try
+            try
+            {
+                while (fi.available == false)
                 {
-                    while (fi.available == false)
-                    {
-                        Application.DoEvents();
-                        Thread.Sleep(10);
-                    }
+                    Application.DoEvents();
+                    Thread.Sleep(10);
                 }
-                catch { }
+            }
+            catch { }
             //});
             //wait the process to finish
             //t.Wait();

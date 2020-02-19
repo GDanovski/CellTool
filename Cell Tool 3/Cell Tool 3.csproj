@@ -189,7 +189,9 @@
     <Compile Include="ColorFractureRoiMeasure.cs" />
     <Compile Include="ConvexHull.cs" />
     <Compile Include="CTChart.cs" />
+    <Compile Include="CTChart_3D.cs" />
     <Compile Include="CTChart_Properties.cs" />
+    <Compile Include="CTChart_Properties_3D.cs" />
     <Compile Include="CTChart_Series.cs" />
     <Compile Include="CTFileBrowser.cs" />
     <Compile Include="CTHotKays.cs" />
