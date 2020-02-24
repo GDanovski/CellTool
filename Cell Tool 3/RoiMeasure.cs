@@ -27,10 +27,11 @@ namespace Cell_Tool_3
 {
     class RoiMeasure
     {
-        
+
         public static void Measure(ROI roi, TifFileInfo fi, int cVal, ImageAnalyser IA)
         {
-            try {
+            try
+            {
                 //return;
                 if (fi.loaded == false || fi.roiList == null || fi.roiList[cVal] == null ||
                     (!(fi.roiList[cVal].IndexOf(roi) > -1))) return;
@@ -80,7 +81,7 @@ namespace Cell_Tool_3
                             break;
                     }
             }
-           catch { }
+            catch { }
 
             IA.FileBrowser.StatusLabel.Text = "Ready";
         }
@@ -143,10 +144,11 @@ namespace Cell_Tool_3
             shablon = null;
             //measure frames
             roi.Results = new double[fi.imageCount][];
-            
-            Parallel.ForEach(SteppedRange(cVal, fi.imageCount, fi.sizeC), imageN => 
+
+            Parallel.ForEach(SteppedRange(cVal, fi.imageCount, fi.sizeC), imageN =>
             {
-                try {
+                try
+                {
                     double[] res = new double[rowSize];
                     int position = 0;
 
@@ -165,7 +167,8 @@ namespace Cell_Tool_3
                     }
 
                     roi.Results[imageN] = res;
-                } catch { return; }
+                }
+                catch { return; }
             });
         }
         private static void GetPointsInRectangleTracking(ROI roi, TifFileInfo fi, int cVal)
@@ -229,7 +232,8 @@ namespace Cell_Tool_3
 
             Parallel.ForEach(SteppedRange(cVal, fi.imageCount, fi.sizeC), imageN =>
             {
-                try {
+                try
+                {
                     Point p1 = roi.GetLocation(imageN)[0];
                     double[] res = new double[rowSize];
                     int dX = p.X - p1.X;
@@ -242,7 +246,7 @@ namespace Cell_Tool_3
                     position += tempRes.Length;
 
                     Point midP = new Point(p1.X + roi.Width / 2, p1.Y + roi.Height / 2);
-                    
+
                     for (int i = 0; i < roi.Stack; i++)
                     {
                         tempRes = CalculateStackResults(stackRoi[i], midP, fi, imageN, dX, dY);
@@ -293,7 +297,7 @@ namespace Cell_Tool_3
 
                     foreach (Point p in pList)
                     {
-                        
+
                         byte val = image[p.Y][p.X];
 
                         if (p.Y < midP.Y && p.X <= midP.X)
@@ -584,52 +588,52 @@ namespace Cell_Tool_3
         private static double[] CalculateMainResults(List<Point> pList, TifFileInfo fi, int imageN, int dX, int dY)
         {
             //try {
-                double area = 0;
-                double mean = 0;
-                double max = 0;
-                double min = 0;
+            double area = 0;
+            double mean = 0;
+            double max = 0;
+            double min = 0;
 
-                switch (fi.bitsPerPixel)
-                {
-                    case 8:
-                        byte[][] image = fi.image8bit[imageN];
-                        min = byte.MaxValue;
+            switch (fi.bitsPerPixel)
+            {
+                case 8:
+                    byte[][] image = fi.image8bit[imageN];
+                    min = byte.MaxValue;
 
-                        foreach (Point p in pList)
-                            if (p.Y - dY >= 0 && p.Y - dY < fi.sizeY && p.X - dX >= 0 && p.X - dX < fi.sizeX)
-                            {
-                                //image[p.Y - dY][p.X - dX] = 0;
-                                byte val = image[p.Y - dY][p.X - dX];
+                    foreach (Point p in pList)
+                        if (p.Y - dY >= 0 && p.Y - dY < fi.sizeY && p.X - dX >= 0 && p.X - dX < fi.sizeX)
+                        {
+                            //image[p.Y - dY][p.X - dX] = 0;
+                            byte val = image[p.Y - dY][p.X - dX];
 
-                                area++;
-                                mean += val;
-                                if (max < val) max = val;
-                                if (min > val) min = val;
-                            }
-                        break;
-                    case 16:
-                        ushort[][] image16 = fi.image16bit[imageN];
+                            area++;
+                            mean += val;
+                            if (max < val) max = val;
+                            if (min > val) min = val;
+                        }
+                    break;
+                case 16:
+                    ushort[][] image16 = fi.image16bit[imageN];
 
-                        min = ushort.MaxValue;
+                    min = ushort.MaxValue;
 
-                        foreach (Point p in pList)
-                            if (p.Y - dY >= 0 && p.Y - dY < fi.sizeY && p.X - dX >= 0 && p.X - dX < fi.sizeX)
-                            {
-                                //image16[p.Y - dY][p.X - dX] = 0;
-                                ushort val = image16[p.Y - dY][p.X - dX];
+                    foreach (Point p in pList)
+                        if (p.Y - dY >= 0 && p.Y - dY < fi.sizeY && p.X - dX >= 0 && p.X - dX < fi.sizeX)
+                        {
+                            //image16[p.Y - dY][p.X - dX] = 0;
+                            ushort val = image16[p.Y - dY][p.X - dX];
 
-                                area++;
-                                mean += val;
-                                if (max < val) max = val;
-                                if (min > val) min = val;
-                            }
-                        break;
-                }
+                            area++;
+                            mean += val;
+                            if (max < val) max = val;
+                            if (min > val) min = val;
+                        }
+                    break;
+            }
 
-                if (area > 0) mean /= area;
-                double[] res = new double[] { area, mean, min, max };
+            if (area > 0) mean /= area;
+            double[] res = new double[] { area, mean, min, max };
 
-                return res;
+            return res;
             //}
             //catch
             {
@@ -663,7 +667,7 @@ namespace Cell_Tool_3
                         pList.Add(new Point(curX, curY));
                     }
 
-           return pList;
+            return pList;
         }
 
         #endregion rectangles
@@ -731,26 +735,27 @@ namespace Cell_Tool_3
 
             Parallel.ForEach(SteppedRange(cVal, fi.imageCount, fi.sizeC), imageN =>
             {
-                try {
-                        double[] res = new double[rowSize];
-                        int position = 0;
+                try
+                {
+                    double[] res = new double[rowSize];
+                    int position = 0;
 
-                        double[] tempRes = CalculateMainResults(mainRoi, fi, imageN);
+                    double[] tempRes = CalculateMainResults(mainRoi, fi, imageN);
 
+                    Array.Copy(tempRes, 0, res, position, tempRes.Length);
+                    position += tempRes.Length;
+
+                    Point midP = new Point(p.X + roi.Width / 2, p.Y + roi.Height / 2);
+
+                    for (int i = 0; i < roi.Stack; i++)
+                    {
+                        tempRes = CalculateStackResults(stackRoi[i], midP, fi, imageN);
                         Array.Copy(tempRes, 0, res, position, tempRes.Length);
                         position += tempRes.Length;
+                    }
 
-                        Point midP = new Point(p.X + roi.Width / 2, p.Y + roi.Height / 2);
+                    roi.Results[imageN] = res;
 
-                        for (int i = 0; i < roi.Stack; i++)
-                        {
-                            tempRes = CalculateStackResults(stackRoi[i], midP, fi, imageN);
-                            Array.Copy(tempRes, 0, res, position, tempRes.Length);
-                            position += tempRes.Length;
-                        }
-
-                        roi.Results[imageN] = res;
-                    
                 }
                 catch { return; }
             });
@@ -758,7 +763,7 @@ namespace Cell_Tool_3
 
         private static void GetPointsInOvalTracking(ROI roi, TifFileInfo fi, int cVal)
         {
-            
+
             //FillEllipse(roi, fi, 0);
             //get the location of the first value
             Point p = roi.GetLocation(cVal)[0];
@@ -819,29 +824,30 @@ namespace Cell_Tool_3
 
             Parallel.ForEach(SteppedRange(cVal, fi.imageCount, fi.sizeC), imageN =>
             {
-                try {
-                        Point p1 = roi.GetLocation(imageN)[0];
-                        double[] res = new double[rowSize];
-                        int dX = p.X - p1.X;
-                        int dY = p.Y - p1.Y;
-                        int position = 0;
+                try
+                {
+                    Point p1 = roi.GetLocation(imageN)[0];
+                    double[] res = new double[rowSize];
+                    int dX = p.X - p1.X;
+                    int dY = p.Y - p1.Y;
+                    int position = 0;
 
-                        double[] tempRes = CalculateMainResults(mainRoi, fi, imageN, dX, dY);
+                    double[] tempRes = CalculateMainResults(mainRoi, fi, imageN, dX, dY);
+                    Array.Copy(tempRes, 0, res, position, tempRes.Length);
+                    position += tempRes.Length;
+
+                    //System.Windows.Forms.MessageBox.Show(string.Join("\t", tempRes));
+
+                    Point midP = new Point(p1.X + roi.Width / 2, p1.Y + roi.Height / 2);
+
+                    for (int i = 0; i < roi.Stack; i++)
+                    {
+                        tempRes = CalculateStackResults(stackRoi[i], midP, fi, imageN, dX, dY);
                         Array.Copy(tempRes, 0, res, position, tempRes.Length);
                         position += tempRes.Length;
+                    }
+                    roi.Results[imageN] = res;
 
-                        //System.Windows.Forms.MessageBox.Show(string.Join("\t", tempRes));
-
-                        Point midP = new Point(p1.X + roi.Width / 2, p1.Y + roi.Height / 2);
-
-                        for (int i = 0; i < roi.Stack; i++)
-                        {
-                            tempRes = CalculateStackResults(stackRoi[i], midP, fi, imageN, dX, dY);
-                            Array.Copy(tempRes, 0, res, position, tempRes.Length);
-                            position += tempRes.Length;
-                        }
-                        roi.Results[imageN] = res;
-                   
                 }
                 catch { return; }
             });
@@ -850,10 +856,10 @@ namespace Cell_Tool_3
         private static List<Point> CalculateEllipse(bool[,] shablon, int Xn, int Yn, int Wn, int Hn)
         {
             List<Point> pList = new List<Point>();
-            
+
             int left = Xn;
             int top = Yn;
-            int right = Xn+ Wn;
+            int right = Xn + Wn;
             int bottom = Yn + Hn;
 
             int a, b, x, y, temp;
@@ -917,7 +923,8 @@ namespace Cell_Tool_3
                     fn += fnn;
                     fnw += fnwn;
                 }
-                else {
+                else
+                {
                     x++;
                     d1 += fnw;
                     fn += fnnw;
@@ -936,7 +943,7 @@ namespace Cell_Tool_3
                 if (y != old_y) // prevent overdraw
                 {
                     DrawHorizontalOvalLine(left + x, right - x, top + y, shablon, pList);
-                    DrawHorizontalOvalLine(left + x, right - x, bottom - y, shablon,pList);
+                    DrawHorizontalOvalLine(left + x, right - x, bottom - y, shablon, pList);
                 }
 
                 old_y = y;
@@ -948,7 +955,8 @@ namespace Cell_Tool_3
                     fw += fwnw;
                     fnw += fnwnw;
                 }
-                else {
+                else
+                {
                     d2 += fw;
                     fw += fww;
                     fnw += fnww;
@@ -957,7 +965,7 @@ namespace Cell_Tool_3
 
             return pList;
         }
-        private static void DrawHorizontalOvalLine(int left, int right, int y,bool[,] shablon, List<Point> pList)
+        private static void DrawHorizontalOvalLine(int left, int right, int y, bool[,] shablon, List<Point> pList)
         {
             if (left < 0) left = 0;
             if (y < 0) y = 0;
@@ -971,7 +979,7 @@ namespace Cell_Tool_3
                 if (shablon[y, x] == false)
                 {
                     shablon[y, x] = true;
-                    pList.Add(new Point(x,y));
+                    pList.Add(new Point(x, y));
                 }
         }
 
@@ -1038,7 +1046,7 @@ namespace Cell_Tool_3
             List<Point>[] stackRoi = null;
             int rowSize = 4;
 
-            if(roi.Stack < 1)
+            if (roi.Stack < 1)
             {
                 mainRoi = GetPolygonPoints(points, fi);
             }
@@ -1057,7 +1065,7 @@ namespace Cell_Tool_3
                     for (int i = 0; i < roi.Stack; i++)
                     {
                         stackRoi[i] = GetPolygonPoints(
-                            Polygon_Layers(cVal,D,roi,new Rectangle(0,0,fi.sizeX,fi.sizeY)), fi, shablon);
+                            Polygon_Layers(cVal, D, roi, new Rectangle(0, 0, fi.sizeX, fi.sizeY)), fi, shablon);
 
                         rowSize += 16;
                         D += roi.D;
@@ -1067,7 +1075,7 @@ namespace Cell_Tool_3
                 {
                     {
 
-                        int D = roi.D*roi.Stack;
+                        int D = roi.D * roi.Stack;
                         //inner layer
                         mainRoi = GetPolygonPoints(
                                 Polygon_Layers(cVal, D, roi, new Rectangle(0, 0, fi.sizeX, fi.sizeY)), fi, shablon);
@@ -1160,7 +1168,7 @@ namespace Cell_Tool_3
                             for (int i = 0; i < roi.Stack; i++)
                             {
                                 tempRes = GetPolygonPoints(
-                                    Polygon_Layers(imageN, D, roi, new Rectangle(0, 0, fi.sizeX, fi.sizeY)).ToArray(), fi, imageN,shablon);
+                                    Polygon_Layers(imageN, D, roi, new Rectangle(0, 0, fi.sizeX, fi.sizeY)).ToArray(), fi, imageN, shablon);
                                 Array.Copy(tempRes, 0, res, position, tempRes.Length);
                                 position += 16;
                                 D += roi.D;
@@ -1404,7 +1412,7 @@ namespace Cell_Tool_3
                 {
                     case 8:
                         byte[][] image = fi.image8bit[imageN];
-                        
+
                         //find all points inside the bounds 2 by 2
                         for (i = 0; i < xList.Count; i += 2)
                         {
@@ -1432,7 +1440,7 @@ namespace Cell_Tool_3
                         break;
                     case 16:
                         ushort[][] image16 = fi.image16bit[imageN];
-                       
+
                         //find all points inside the bounds 2 by 2
                         for (i = 0; i < xList.Count; i += 2)
                         {
@@ -1527,7 +1535,7 @@ namespace Cell_Tool_3
                 {
                     case 8:
                         byte[][] image = fi.image8bit[imageN];
-                        
+
                         //find all points inside the bounds 2 by 2
                         for (i = 0; i < xList.Count; i += 2)
                         {
@@ -1553,7 +1561,7 @@ namespace Cell_Tool_3
                         break;
                     case 16:
                         ushort[][] image16 = fi.image16bit[imageN];
-                        
+
                         //find all points inside the bounds 2 by 2
                         for (i = 0; i < xList.Count; i += 2)
                         {

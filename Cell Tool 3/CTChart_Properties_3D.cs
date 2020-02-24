@@ -30,8 +30,8 @@ namespace Cell_Tool_3
         public List<int> MotionPathsStartIndices;
         public List<SphereROI> rois;
 
-        public CTChart_Properties_3D (Panel propertiesPanel, Panel PropertiesBody, ImageAnalyser IA, int maxSize,
-            ushort[] ImageProjection_1d, float[] Xdata, float[] Ydata, float[,] Zdata) 
+        public CTChart_Properties_3D(Panel propertiesPanel, Panel PropertiesBody, ImageAnalyser IA, int maxSize,
+            ushort[] ImageProjection_1d, float[] Xdata, float[] Ydata, float[,] Zdata, PropertiesPanel_Item PropPanel)
         {
             this.IA = IA;
             this.ImageProjection_1d = ImageProjection_1d;
@@ -39,12 +39,13 @@ namespace Cell_Tool_3
             this.Ydata = Ydata;
             this.Zdata = Zdata;
             this.maxSize = maxSize;
-            PropPanel = new PropertiesPanel_Item();
+            this.PropPanel = PropPanel;
             PropPanel_Initialize(propertiesPanel, PropertiesBody);
         }
 
         private void PropPanel_Initialize(Panel propertiesPanel, Panel PropertiesBody)
         {
+
             //PropPanel properties
             PropPanel.Initialize(propertiesPanel);
             PropPanel.TitleColor(Color.CornflowerBlue);
@@ -126,8 +127,9 @@ namespace Cell_Tool_3
                 Generate3Dplot(update: true);
             }
 
-            if (xyAxisSelectedIndex == 0) {
-                
+            if (xyAxisSelectedIndex == 0)
+            {
+
                 if (!zAxisTB.Items.Contains("Z")) zAxisTB.Items.Add("Z");
                 if (zAxisSelectedIndex == 4)
                 {
@@ -147,7 +149,8 @@ namespace Cell_Tool_3
                     PlotType = Plots.Ixy;
                     Generate2D_5(fi, update: true);
                 }
-            } else
+            }
+            else
             {
                 if (zAxisTB.Items.Contains("Z")) zAxisTB.Items.Remove("Z");
             }
@@ -205,7 +208,7 @@ namespace Cell_Tool_3
 
             data3d = new List<Point3d>();
             data3d_original = new List<Point3d>();
-            
+
             minX_chosen = 0; maxX_chosen = 2 * maxX;
             minY_chosen = 0; maxY_chosen = 2 * maxY;
             minZ_chosen = 0; maxZ_chosen = 2 * maxZ;

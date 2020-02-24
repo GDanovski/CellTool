@@ -2,7 +2,8 @@
  * Keep 3 orthogonal stacks, so that on every angle view, one is best to show. */
 
 using System;
-using System.ComponentModel;
+using System.Collections.Generic;
+using System.Drawing;
 using System.Threading.Tasks;
 
 namespace Cell_Tool_3
@@ -240,6 +241,72 @@ namespace Cell_Tool_3
                 newImage[i] = ResImage[i][0];
 
             return newImage;
+        }
+
+
+        public TifFileInfo DuplicateFI(TifFileInfo fi)
+        {
+            TifFileInfo newFi = new TifFileInfo();
+
+            newFi.LutList = new List<Color>();
+            foreach (Color col in fi.LutList)
+                newFi.LutList.Add(col);
+
+            newFi.Dir = fi.Dir;
+            newFi.seriesCount = fi.seriesCount;
+            newFi.imageCount = fi.imageCount;
+            newFi.sizeX = fi.sizeX;
+            newFi.sizeY = fi.sizeY;
+            newFi.sizeZ = fi.sizeZ;
+            newFi.umZ = fi.umZ;
+            newFi.umXY = fi.umXY;
+            newFi.sizeC = fi.sizeC;
+            newFi.sizeT = fi.sizeT;
+            newFi.bitsPerPixel = fi.bitsPerPixel;
+            newFi.dimensionOrder = fi.dimensionOrder;
+            newFi.pixelType = fi.pixelType;
+            newFi.FalseColored = fi.FalseColored;
+            newFi.isIndexed = fi.isIndexed;
+            newFi.MetadataComplete = fi.MetadataComplete;
+            newFi.DatasetStructureDescription = fi.DatasetStructureDescription;
+
+            newFi.TimeSteps = fi.TimeSteps;
+            newFi.Micropoint = fi.Micropoint;
+            newFi.xAxisTB = fi.xAxisTB;
+            newFi.yAxisTB = fi.yAxisTB;
+            //Metadata protocol info
+            newFi.FileDescription = fi.FileDescription;
+            newFi.xCompensation = fi.xCompensation;
+            newFi.yCompensation = fi.yCompensation;
+
+            //controls
+            newFi.DataSourceInd = fi.DataSourceInd;
+            newFi.SegmentationProtocol = fi.SegmentationProtocol;
+            newFi.SegmentationCBoxIndex = fi.SegmentationCBoxIndex;
+            newFi.thresholdsCBoxIndex = fi.thresholdsCBoxIndex;
+            newFi.sumHistogramChecked = fi.sumHistogramChecked;
+            //spotdetector controls
+            newFi.SpotThresh = fi.SpotThresh;
+            newFi.SpotColor = fi.SpotColor;
+            newFi.RefSpotColor = fi.RefSpotColor;
+            newFi.SelectedSpotThresh = fi.SelectedSpotThresh;
+            newFi.typeSpotThresh = fi.typeSpotThresh;
+            newFi.SpotTailType = fi.SpotTailType;
+            newFi.spotSensitivity = fi.spotSensitivity;
+            //specific values
+            newFi.thresholds = fi.thresholds;
+            newFi.thresholdValues = fi.thresholdValues;
+            newFi.thresholdColors = fi.thresholdColors;
+            newFi.RefThresholdColors = fi.RefThresholdColors;
+
+            //properties
+            newFi.histogramArray = fi.histogramArray;
+            newFi.MinBrightness = fi.MinBrightness;
+            newFi.MaxBrightness = fi.MaxBrightness;
+            newFi.adjustedLUT = fi.adjustedLUT;
+            newFi.newAdjustedLUT = fi.newAdjustedLUT;
+
+            return newFi;
         }
 
     }

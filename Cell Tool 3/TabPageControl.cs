@@ -1218,6 +1218,9 @@ namespace Cell_Tool_3
                     TabCollections.RemoveAt(i);
                     if (TabCollections.Count < 1) { IA.GLControl1.Visible = false; }
                     if (i < SelectedIndex & SelectedIndex > 0) { SelectedIndex--; }
+
+                    IA.IDrawer.imageDrawer_3D.ClearProgram(IA.GLControl1);
+
                     break;
                 }
             }
@@ -1253,6 +1256,8 @@ namespace Cell_Tool_3
             TabCollections.RemoveAt(i);
             if (TabCollections.Count < 1) { IA.GLControl1.Visible = false; }
             if (i < SelectedIndex & SelectedIndex > 0) { SelectedIndex--; }
+
+            IA.IDrawer.imageDrawer_3D.ClearProgram(IA.GLControl1);
         }
         public void SaveFile(object sender, EventArgs e)
         {
@@ -1466,6 +1471,8 @@ namespace Cell_Tool_3
                     //Delete tab page
                     TabCollections[i].Delete();
                     TabCollections.RemoveAt(i);
+
+                    IA.IDrawer.imageDrawer_3D.ClearProgram(IA.GLControl1);
                 }
             }
             startAt = 0;

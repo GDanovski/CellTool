@@ -555,7 +555,7 @@ namespace Cell_Tool_3
             saveFileDialog1.InitialDirectory = node.Tag.ToString().Substring(0, node.Tag.ToString().Length - (node.Text.Length + 1));
             saveFileDialog1.FileName = node.Text;
 
-            if(node.Text.LastIndexOf(".")>-1)
+            if (node.Text.LastIndexOf(".") > -1)
                 saveFileDialog1.FileName = node.Text.Substring(0, node.Text.LastIndexOf("."));
 
             saveFileDialog1.OverwritePrompt = true;
@@ -720,11 +720,11 @@ namespace Cell_Tool_3
             MenuItem sepMB00 = new MenuItem();
             sepMB00.Text = "-";
             menu.MenuItems.Add(sepMB00);
-            
+
             ConcatenateMI.Text = "Concatenate ROIs";
             menu.MenuItems.Add(ConcatenateMI);
             ConcatenateMI.Click += ConcatenateRoi_Click;
-            
+
             FractureMeasureMI.Text = "Export Color";
             menu.MenuItems.Add(FractureMeasureMI);
             ColorFractureRoiMeasure colFract = new ColorFractureRoiMeasure(IA);
@@ -746,11 +746,11 @@ namespace Cell_Tool_3
             UnCheckAllMI.Text = "Uncheck All";
             menu.MenuItems.Add(UnCheckAllMI);
             UnCheckAllMI.Click += ROI_CheckAll;
-            
+
             ShowLabelsMI.Text = "Show Labels";
             menu.MenuItems.Add(ShowLabelsMI);
             ShowLabelsMI.Click += ShowLabelsMI_Click;
-            
+
             AutoRoisMI.Text = "Auto find";
             menu.MenuItems.Add(AutoRoisMI);
             AutoRoisMI.Click += AutoRoisMI_Click;
@@ -758,16 +758,16 @@ namespace Cell_Tool_3
             MenuItem sepMB0 = new MenuItem();
             sepMB0.Text = "-";
             menu.MenuItems.Add(sepMB0);
-            
+
             BiggestWMI.Text = "Max Width";
             menu.MenuItems.Add(BiggestWMI);
             BiggestWMI.Click += BiggestWMI_Click;
-            
+
             BiggestHMI.Text = "Max Hight";
             menu.MenuItems.Add(BiggestHMI);
             BiggestHMI.Click += BiggestHMI_Click;
 
-           
+
             BiggestMI.Text = "Max Size";
             menu.MenuItems.Add(BiggestMI);
             BiggestMI.Click += BiggestMI_Click;
@@ -859,8 +859,8 @@ namespace Cell_Tool_3
             roiTV.MouseDown += new MouseEventHandler(
             delegate (object sender, MouseEventArgs e)
             {
-                    //retrive context
-                    ROI node = (ROI)roiTV.GetNodeAt(e.X, e.Y);
+                //retrive context
+                ROI node = (ROI)roiTV.GetNodeAt(e.X, e.Y);
 
                 if (node == null && e.Button != MouseButtons.Right)
                 {
@@ -874,8 +874,8 @@ namespace Cell_Tool_3
 
                 if (e.Button != MouseButtons.Right) return;
 
-                    //restore
-                    sepMB0.Visible = false;
+                //restore
+                sepMB0.Visible = false;
                 BiggestHMI.Visible = false;
                 BiggestWMI.Visible = false;
                 BiggestMI.Visible = false;
@@ -886,8 +886,8 @@ namespace Cell_Tool_3
                 CheckAllMI.Enabled = true;
                 UnCheckAllMI.Enabled = true;
                 PasteMI.Enabled = false;
-                    //configurate menu
-                    if (node == null)
+                //configurate menu
+                if (node == null)
                 {
                     CheckMI.Enabled = false;
                     DeleteMI.Enabled = false;
@@ -920,8 +920,8 @@ namespace Cell_Tool_3
                     ShowLabelsMI.Text = "Hide Labels";
                 else
                     ShowLabelsMI.Text = "Show Labels";
-                    //show menu
-                    menu.Show(roiTV, new Point(e.X, e.Y));
+                //show menu
+                menu.Show(roiTV, new Point(e.X, e.Y));
             });
         }
         private void AutoRoisMI_Click(object sender, EventArgs e)
@@ -1026,8 +1026,8 @@ namespace Cell_Tool_3
                         ROI roi = new ROI(fi.ROICounter, fi.imageCount, 1, 0, turnOnStackRoi);
                         fi.ROICounter++;
 
-                        roi.Width = int.Parse(values[2])-1;
-                        roi.Height = int.Parse(values[3])-1;
+                        roi.Width = int.Parse(values[2]) - 1;
+                        roi.Height = int.Parse(values[3]) - 1;
                         roi.FromT = 1;
                         roi.FromZ = 1;
                         roi.ToT = fi.sizeT;
@@ -1060,8 +1060,8 @@ namespace Cell_Tool_3
                         ROI roi = new ROI(fi.ROICounter, fi.imageCount, 0, 0, turnOnStackRoi);
                         fi.ROICounter++;
 
-                        roi.Width = int.Parse(values[2])-1;
-                        roi.Height = int.Parse(values[3])-1;
+                        roi.Width = int.Parse(values[2]) - 1;
+                        roi.Height = int.Parse(values[3]) - 1;
                         roi.FromT = 1;
                         roi.FromZ = 1;
                         roi.ToT = fi.sizeT;
@@ -1085,7 +1085,7 @@ namespace Cell_Tool_3
                 case "polygon":
                     {
                         List<Point> pList = new List<Point>();
-                        for (int x = 0, y = 1; y < values.Length; x+=2, y+=2)
+                        for (int x = 0, y = 1; y < values.Length; x += 2, y += 2)
                             pList.Add(new Point(int.Parse(values[x]), int.Parse(values[y])));
 
                         ROI roi = new ROI(fi.ROICounter, fi.imageCount, 2, 0, turnOnStackRoi);
@@ -1114,7 +1114,7 @@ namespace Cell_Tool_3
                 case "freehand":
                     {
                         List<Point> pList = new List<Point>();
-                        for (int x = 0, y = 1; y < values.Length; x+=2, y+=2)
+                        for (int x = 0, y = 1; y < values.Length; x += 2, y += 2)
                             pList.Add(new Point(int.Parse(values[x]), int.Parse(values[y])));
 
                         ROI roi = new ROI(fi.ROICounter, fi.imageCount, 3, 0, turnOnStackRoi);
@@ -2053,8 +2053,8 @@ namespace Cell_Tool_3
 
             if (current.Type == 1)
             {
-                int pXchange = val - (current.Width-1)/ 2;
-                
+                int pXchange = val - (current.Width - 1) / 2;
+
                 FrameCalculator FC = new FrameCalculator();
                 int frame = FC.Frame(fi);
 
@@ -2109,7 +2109,7 @@ namespace Cell_Tool_3
 
             if (current.Type == 1)
             {
-                int pYchange = val - (current.Height-1) / 2;
+                int pYchange = val - (current.Height - 1) / 2;
 
                 FrameCalculator FC = new FrameCalculator();
                 int frame = FC.Frame(fi);
@@ -2137,7 +2137,7 @@ namespace Cell_Tool_3
                 addToHistoryOldInfo(roi_getStat(current, fi, "H"), fi);
             //addToHistoryNewInfo(current.getStatus("W"), fi);
             #endregion History
-            
+
             current.Height = val;
 
             #region History
@@ -2414,19 +2414,19 @@ namespace Cell_Tool_3
                     {
                         w_tb.label.Text = "W:";
                         w_tb.label.Tag = "Width";
-                        w_tb.SetValue((current.Width+1).ToString());
+                        w_tb.SetValue((current.Width + 1).ToString());
                         h_tb.label.Text = "H:";
                         h_tb.label.Tag = "Height";
-                        h_tb.SetValue((current.Height+1).ToString());
+                        h_tb.SetValue((current.Height + 1).ToString());
                     }
                     else if (current.Type == 1)
                     {
                         w_tb.label.Text = "Rx:";
                         w_tb.label.Tag = "X axis radius";
-                        w_tb.SetValue((1+(current.Width - 1) / 2).ToString());
+                        w_tb.SetValue((1 + (current.Width - 1) / 2).ToString());
                         h_tb.label.Text = "Ry:";
                         h_tb.label.Tag = "Y axis radius";
-                        h_tb.SetValue((1+(current.Height - 1) / 2).ToString());
+                        h_tb.SetValue((1 + (current.Height - 1) / 2).ToString());
                     }
                 }
                 else
@@ -2526,7 +2526,7 @@ namespace Cell_Tool_3
             Point p = new Point(X, Y);
 
             for (int i = 0; i < fi.sizeC; i++)
-            {                
+            {
                 if (IA.IDrawer.coRect != null && IA.IDrawer.coRect[0] != null &&
                     (IA.IDrawer.coRect[0][i].Contains(p) == true &
                     fi.tpTaskbar.MethodsBtnList[0].ImageIndex == 0) |
@@ -2713,7 +2713,7 @@ namespace Cell_Tool_3
             FillRoiManagerList(fi);
             //Redraw
             IA.IDrawer.DrawToScreen(false);
-            
+
         }
         public void GLControl_MouseMove(object sender, MouseEventArgs e)
         {
@@ -2971,7 +2971,7 @@ namespace Cell_Tool_3
                 if (fi != null && fi.roiList[fi.cValue] != null && fi.roiList[fi.cValue].IndexOf(current) > -1)
                     HistBuf = current.getRoiResizeToHistory(fi.cValue, frame);
                 IA.GLControl1.Cursor = Cursors.Hand;
-                IA.IDrawer.DrawToScreen(false);              
+                IA.IDrawer.DrawToScreen(false);
             }
 
             return MoveCurrentRoi;
@@ -3923,10 +3923,10 @@ namespace Cell_Tool_3
                 for (int c = 0; c < fi.sizeC; c++)
                     if (fi.roiList[c] != null && fi.roiList[c].Count != 0)
                     {
-                        string dir1 = dir + "_Ch" + c +"_"+
-                        fi.LutList[c].ToString().Replace("Color [","").Replace("]","") +
+                        string dir1 = dir + "_Ch" + c + "_" +
+                        fi.LutList[c].ToString().Replace("Color [", "").Replace("]", "") +
                         ".txt";
-                        string dir2 = dir + "_Ch" + c + "_" + 
+                        string dir2 = dir + "_Ch" + c + "_" +
                         fi.LutList[c].ToString().Replace("Color [", "").Replace("]", "") +
                         "_Results.txt";
                         //calculate the size of the result row
@@ -4140,10 +4140,10 @@ namespace Cell_Tool_3
                         }
                     }
 
-            //((BackgroundWorker)o).ReportProgress(0);
+                //((BackgroundWorker)o).ReportProgress(0);
             }//);
 
-           // bgw.ProgressChanged += new ProgressChangedEventHandler(delegate (Object o, ProgressChangedEventArgs a)
+            // bgw.ProgressChanged += new ProgressChangedEventHandler(delegate (Object o, ProgressChangedEventArgs a)
             {
                 //if (a.ProgressPercentage == 0)
                 {
@@ -4154,7 +4154,7 @@ namespace Cell_Tool_3
                 //else
                 //{
                 //    MessageBox.Show("File is used by other program!");
-               // }
+                // }
             }//);
             //Start background worker
             //IA.FileBrowser.StatusLabel.Text = "Saving results...";
@@ -4190,7 +4190,7 @@ namespace Cell_Tool_3
             //select first selected ROI
             ROI firstROI = IA.RoiMan.SelectedROIsList[0];
 
-            if(firstROI.Checked == false)
+            if (firstROI.Checked == false)
             {
                 MessageBox.Show("Selected ROI is not checked!");
                 return;
@@ -4352,7 +4352,7 @@ namespace Cell_Tool_3
 
             if (roiTV.Nodes.IndexOf(secoundROI) > -1)
                 roiTV.Nodes.Remove(secoundROI);
-           
+
             #region History
             addToHistoryOldInfo(roi_new(fi.cValue, secoundROI), fi);
             addToHistoryNewInfo(roi_delete(fi.cValue, secoundROI.getID), fi);
@@ -4378,7 +4378,7 @@ namespace Cell_Tool_3
                 StaticToTrackingRoi(secoundROI.GetLocation(fi.cValue), factorW, factorH, secoundROI);
             }
             //fill the coordinates to the new roi
-            for (int frame = fi.cValue, t = 0, z = 0; frame < fi.imageCount; frame+=fi.sizeC, z++)
+            for (int frame = fi.cValue, t = 0, z = 0; frame < fi.imageCount; frame += fi.sizeC, z++)
             {
                 //z and t counter
                 if (z >= fi.sizeZ)
@@ -4437,9 +4437,9 @@ namespace Cell_Tool_3
         }
         private Point[] StaticToTrackingRoi(Point[] points, int factorW, int factorH, ROI secROI)
         {
-            if(secROI.Type == 0 && secROI.Shape < 2)
+            if (secROI.Type == 0 && secROI.Shape < 2)
             {
-                for(int i = 0; i < points.Length; i++)
+                for (int i = 0; i < points.Length; i++)
                 {
                     points[i].X += factorW;
                     points[i].Y += factorH;
@@ -4448,7 +4448,7 @@ namespace Cell_Tool_3
             return points;
         }
 
-        public void ExportRoiAsIJMacro1(object sender,EventArgs e)
+        public void ExportRoiAsIJMacro1(object sender, EventArgs e)
         {
             //Return if there is no opened image
             TifFileInfo fi = null;
@@ -4465,7 +4465,7 @@ namespace Cell_Tool_3
 
             result.Add("//CellTool3\n//roi macro for ImageJ\n//CopyRights Georgi Todorov Danovski, Bulgaria, 2016\n//https://www.facebook.com/georgi.danovski\n//e-mail: georgi_danovski@abv.bg\n\n");
 
-            result.Add("macro  \"Import_CT_RoiSet[q]\"\n{\nroiManager(\"reset\");\nopen(\"" + fi.Dir.Replace("\\","\\\\") + "\");\n");
+            result.Add("macro  \"Import_CT_RoiSet[q]\"\n{\nroiManager(\"reset\");\nopen(\"" + fi.Dir.Replace("\\", "\\\\") + "\");\n");
 
             foreach (ROI roi in fi.roiList[fi.cValue])
             {
@@ -4560,7 +4560,7 @@ namespace Cell_Tool_3
 
             MessageBox.Show("IJ macro exported!");
         }
-       
+
         #endregion Save Roi as IJ macro
     }
 }

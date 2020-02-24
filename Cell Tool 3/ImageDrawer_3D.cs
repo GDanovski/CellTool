@@ -31,6 +31,8 @@ namespace Cell_Tool_3
         bool DisplayROIs;
         bool initialized; // don't call Init more than once TODO
 
+        ushort[] rotated_image;
+
 
         GPU_Processing gpu; // rotation can be performed on the GPU
         ushort[] image1d_C0, image1d_C1; // the 1d representations of the 2 channel raw images
@@ -39,6 +41,8 @@ namespace Cell_Tool_3
         CTChart_3D plt;
         TifFileInfo fi;
 
+        // For the 3D plot options
+        public PropertiesPanel_Item PropPanel;
 
 
         private Image3DProjection proj3d; // holds configurations
@@ -55,6 +59,7 @@ namespace Cell_Tool_3
         {
             if (incoming_fi == null) return;
             if (this.fi == null) this.fi = incoming_fi; // proj3d.CopyFi(incoming_fi);
+            if (!initialized) initProgram(GLcontrol1, incoming_fi);
 
             if (fi.frame != this.time_frame)
             {
@@ -105,10 +110,31 @@ namespace Cell_Tool_3
             // Draw the plot
             if (fi.tpTaskbar.MethodsBtnList[2].ImageIndex == 0) DrawRotatedView(GLcontrol1, fi, 2);
 
+            if (CurrentSphereRoi != null && DisplayROIs == true)
+            {
+                CurrentSphereRoi.Display(shearX, shearY, leftMargin, topMargin, maxSize, -1);
+                /* Implementation in proress
+                
+                ushort[][] image = new ushort[maxSize][];
+                int idx = 0;
+
+                for (int y = 0; y < maxSize; y++)
+                {
+                    image[y] = new ushort[maxSize];
+                    Array.Copy(rotated_image, idx, image[y], 0, maxSize);
+                    idx += maxSize;
+                }
+                MagicWandRoi(image, fi.thresholdColors[0][1]);
+                */
+
+            }
+
             GL.Disable(EnableCap.DepthTest);
+
 
             GL.Flush();
             GLcontrol1.SwapBuffers();
+
         }
         private void DrawRotatedView(GLControl GLcontrol1, TifFileInfo incoming_fi, int numRectangle)
         {
@@ -184,38 +210,37 @@ namespace Cell_Tool_3
             GL.ClearColor(0.2f, 0.2f, 0.2f, 0.2f);
 
             UpdateRoiList();
-            if (DisplayROIs == true)
+            if (DisplayROIs == true && numRectangle == 0)
             {
                 LoadExistingRois();
-                PathColor Colors = new PathColor();
-                foreach (SphereROI roi in ROIs)
-                {
-                    if (roi != null)
-                    {
-                        roi.Display(shearX, shearY, leftMargin, topMargin, maxSize, fi.frame);
-
-                        // If a motion plot is chosen, display the ROI paths in the 3D plot regions;
-                        // else, display them on top of the raw image itself.
-                        if (plt.Properties3D.PlotType == Plots.Motion)
-                        {
-
-                            GL.Color3(Colors.NextColor());
-                            roi.DisplayPath(plt.rotationX, plt.rotationY,
-                                3 * leftMargin + 2 * maxSize, topMargin, maxSize, fi.frame);
-                        }
-                        else
-                            roi.DisplayPath(shearX, shearY, leftMargin, topMargin, maxSize, fi.frame);
-                    }
-                }
-            }
-
-
-            if (CurrentSphereRoi != null)
-            {
-                CurrentSphereRoi.Display(shearX, shearY, leftMargin, topMargin, maxSize, -1);
+                DisplayAllRoiPaths();
             }
 
             if (proj3d.drawPlane) drawPlane(zLimit, maxSize, leftMargin, topMargin);
+        }
+
+        private void DisplayAllRoiPaths()
+        {
+            PathColor Colors = new PathColor();
+            foreach (SphereROI roi in ROIs)
+            {
+                if (roi != null)
+                {
+                    roi.Display(shearX, shearY, leftMargin, topMargin, maxSize, fi.frame);
+
+                    // If a motion plot is chosen, display the ROI paths in the 3D plot regions;
+                    // else, display them on top of the raw image itself.
+                    if (plt.Properties3D.PlotType == Plots.Motion)
+                    {
+
+                        GL.Color3(Colors.NextColor());
+                        roi.DisplayPath(plt.rotationX, plt.rotationY,
+                            3 * leftMargin + 2 * maxSize, topMargin, maxSize, fi.frame);
+                    }
+                    else
+                        roi.DisplayPath(shearX, shearY, leftMargin, topMargin, maxSize, fi.frame);
+                }
+            }
         }
         public void LoadTexture(Bitmap bmp, bool NoAntiAliasing = false)
         {
@@ -224,6 +249,7 @@ namespace Cell_Tool_3
 
             GL.DeleteTexture(0);
             GL.BindTexture(TextureTarget.Texture2D, 0);
+            GL.Color3(Color.White);
 
             //Lock pixel data to memory and prepare for pass through
             BitmapData bitmap_data = texture_source.LockBits(
@@ -251,6 +277,8 @@ namespace Cell_Tool_3
 
             if (proj3d.gpu) image = RotateImage_GPU(rotation, 1, C);
             else image = RotateImage_CPU(rotation, 1, C);
+
+            this.rotated_image = image;
 
             //new bitmap
             Bitmap bmp = new Bitmap(maxSize, maxSize,
@@ -514,7 +542,7 @@ namespace Cell_Tool_3
 
 
             this.proj3d = new Image3DProjection(incoming_fi, downsample_factor);
-            if (this.fi == null) this.fi = incoming_fi; // proj3d.CopyFi(incoming_fi);
+            this.fi = incoming_fi; // proj3d.CopyFi(incoming_fi);
 
             //proj3d.ProjectionEvent(incoming_fi);
 
@@ -541,6 +569,7 @@ namespace Cell_Tool_3
             // initialize the 3D plot and the related properties
             Rectangle chartRegion = new Rectangle(
                     3 * leftMargin + 2 * maxSize, topMargin, maxSize, maxSize);
+
             plt = new CTChart_3D(IDrawer.IA, fi, maxSize);
             plt.rect = chartRegion;
 
@@ -553,18 +582,38 @@ namespace Cell_Tool_3
 
             double[,] identity = new double[3, 3] { { 1, 0, 0 }, { 0, 1, 0 }, { 0, 0, 1 } };
 
+            if (PropPanel == null) PropPanel = new PropertiesPanel_Item();
             plt.Properties3D = new CTChart_Properties_3D(IDrawer.IA.TabPages.propertiesPanel,
                 IDrawer.IA.TabPages.PropertiesBody, IDrawer.IA, maxSize,
-                RotateImage_CPU(identity, 1, 0), Xdata, Ydata, Zdata);
+                RotateImage_CPU(identity, 1, 0), Xdata, Ydata, Zdata, PropPanel);
+
 
         }
 
 
 
 
-
-        // TODO - what do we need to clean?
-        public void ClearProgram(GLControl GLcontrol1) { initialized = false; }
+        public void ClearProgram(GLControl GLcontrol1)
+        {
+            initialized = false;
+            proj3d = null;
+            shearX = 0; shearY = 0;
+            zLimit = 0;
+            downsample_factor = 1;
+            time_frame = 0;
+            leftMargin = 10;
+            topMargin = 10;
+            maxSize = 0;
+            cube1 = null;
+            CurrentSphereRoi = null;
+            ROIs = null;
+            DisplayROIs = false;
+            rotated_image = null;
+            gpu = null;
+            image1d_C0 = null; image1d_C1 = null;
+            //plt = null; Reuse the 3D plots
+            fi = null;
+        }
 
         public void GLControl1_DoubleClick(object sender, MouseEventArgs e)
         {
@@ -572,11 +621,11 @@ namespace Cell_Tool_3
             if (newP.X == -10000) return;
 
             //plt.FindClosestPointToClick(newP);
-
         }
         public void GLControl1_MouseClick(GLControl GLcontrol1, TifFileInfo original_fi, MouseEventArgs e)
         {
-
+            if (!initialized) initProgram(GLcontrol1, fi);
+            DisplayROIs = false;
             if (e.Button == MouseButtons.Right) { plt.AdjustOnClick(); return; }
 
             Point newP = IsPointInImage(e);
@@ -603,6 +652,7 @@ namespace Cell_Tool_3
         }
         public void GLControl1_MouseDown(GLControl GLcontrol1, TifFileInfo fi, MouseEventArgs e)
         {
+            if (!initialized) initProgram(GLcontrol1, fi);
             MousePosition.X = e.X;
             MousePosition.Y = e.Y;
             proj3d.factor = downsample_factor;
@@ -639,6 +689,7 @@ namespace Cell_Tool_3
         }
         public void GLControl1_MouseMove(GLControl GLcontrol1, TifFileInfo fi, MouseEventArgs e)
         {
+            if (!initialized) initProgram(GLcontrol1, fi);
             Move(GLcontrol1, new PointF(e.X, e.Y));
         }
 
@@ -685,11 +736,12 @@ namespace Cell_Tool_3
         }
         public void GLControl1_MouseUp(GLControl GLcontrol1, TifFileInfo fi, MouseEventArgs e)
         {
-            MousePosition = new Vector2(-1, -1);
+            if (!initialized) initProgram(GLcontrol1, fi);
             proj3d.factor = 1;
             DisplayROIs = true;
 
             StartDrawing(GLcontrol1, fi);
+            MousePosition = new Vector2(-1, -1);
         }
 
         private Point IsPointInImage(MouseEventArgs e)
@@ -728,6 +780,7 @@ namespace Cell_Tool_3
 
         private void AddNewSphereRoi(int currentI)
         {
+
             // Reconstruct the X, Y and Z from the 1D representation maxValueIndex
             // knowing that maxValueIndex = x + sizeX * (y + sizeY * z);
 
@@ -744,6 +797,9 @@ namespace Cell_Tool_3
             ROI current = new ROI(fi.ROICounter, fi.imageCount,
                 IDrawer.IA.RoiMan.RoiShape, IDrawer.IA.RoiMan.RoiType,
                 IDrawer.IA.RoiMan.turnOnStackRoi);
+            current.Width = (int)(CurrentSphereRoi.radius * fi.sizeX);
+            current.Height = (int)(CurrentSphereRoi.radius * fi.sizeY);
+
             fi.ROICounter++;
 
             // Maap the 3D ROI to the 2D ROI
@@ -760,13 +816,9 @@ namespace Cell_Tool_3
                 current.D = 3;
             }
 
-            int RoiSize = maxSize / 15;
-            current.Width = RoiSize;
-            current.Height = RoiSize;
-
             current.SetLocation(fi.frame, new Point[1] {
-                new Point(  (int)(maxSize * center.X - RoiSize/2),
-                            (int)(maxSize * center.Y - RoiSize/2)) });
+                new Point(  (int)(maxSize * center.X - current.Width/2),
+                            (int)(maxSize * center.Y - current.Height/2)) });
 
             IDrawer.IA.RoiMan.current = current;
             //Clear selected roi list
@@ -776,6 +828,10 @@ namespace Cell_Tool_3
 
             // Finally, add the ROI data to the 3D plot
             plt.Properties3D.Zdata = CurrentSphereRoi.Measure(IDrawer.IA, fi);
+
+
+
+
 
         }
 
@@ -804,6 +860,7 @@ namespace Cell_Tool_3
             {
                 PointF P = roi.GetMidPoint(fi.frame);
                 Point3d center = new Point3d(P.X / maxSize, P.Y / maxSize, 0);
+                float radius = (float)roi.Width / fi.sizeX;
 
                 // If a SphereRoi already exists for this, just update its X and Y
                 SphereROI existingRoi = SphereRoiExists(roi);
@@ -811,21 +868,81 @@ namespace Cell_Tool_3
 
                 if (existingRoi != null)
                 {
+                    existingRoi.radius = radius;
                     //existingRoi.UpdateLocation(center, false, fi.frame);
                 }
                 else if (CurrentSphereRoi != null && !ROIs.Contains(CurrentSphereRoi))
                 {
                     CurrentSphereRoi.ROI2d = roi;
+                    CurrentSphereRoi.radius = roi.Width / fi.sizeX;
                     ROIs.Add(CurrentSphereRoi);
                 }
                 else
                 {
-                    // TODO - add a new 3D ROI
-                    SphereROI mirrorRoi = new SphereROI(fi, maxSize, center, 0.02f, shearX, shearY, cube1);
+                    // add a new 3D ROI
+                    SphereROI mirrorRoi = new SphereROI(fi, maxSize, center, radius, shearX, shearY, cube1);
                     mirrorRoi.ROI2d = roi;
                     ROIs.Add(mirrorRoi);
                 }
             }
+        }
+
+        private void InitializeTrackingShablon(Color PointColor)
+        {
+            // Send this FI to the magin wand ROI function
+            IDrawer.IA.Tracking.shablon = new bool[maxSize, maxSize];
+            for (int y = 0; y < maxSize; y++)
+            {
+                for (int x = 0; x < maxSize; x++)
+                {
+                    ushort val = rotated_image[y * maxSize + x];
+                    Color col;
+                    int C = 0;
+
+                    if (val < fi.thresholdValues[C][1])
+                        col = fi.thresholdColors[C][0];
+                    else if (val < fi.thresholdValues[C][2])
+                        col = fi.thresholdColors[C][1];
+                    else if (val < fi.thresholdValues[C][3])
+                        col = fi.thresholdColors[C][2];
+                    else if (val < fi.thresholdValues[C][4])
+                        col = fi.thresholdColors[C][3];
+                    else
+                        col = fi.thresholdColors[C][fi.thresholds[C]];
+
+                    if (col == PointColor) IDrawer.IA.Tracking.shablon[y, x] = true;
+                }
+            }
+        }
+        private void MagicWandRoi(ushort[][] image, Color PointColor)
+        {
+            if (MousePosition.X == -1) return;
+
+            Point newP = new Point((int)((float)MousePosition.X / fi.zoom - maxSize - leftMargin * 2),
+                (int)((double)MousePosition.Y / fi.zoom - topMargin));
+
+
+            FrameCalculator FC = new FrameCalculator();
+
+            InitializeTrackingShablon(PointColor);
+
+            List<Point> MagicRoi = (List<Point>)(IDrawer.IA.Tracking.BordersOfObjectExactPolygon(
+                                                            fi,
+                                                            fi.cValue,
+                                                            FC.Frame(fi),
+                                                            image,
+                                                            newP,
+                                                            PointColor,
+                                                            scipShablon: true));
+            GL.Begin(PrimitiveType.LineLoop);
+            GL.Color4(1f, 1f, 0f, 1f);
+
+            foreach (Point P in MagicRoi) GL.Vertex2(leftMargin + P.X, topMargin + P.Y);
+
+            GL.End();
+
+
+
         }
     }
 
@@ -1012,7 +1129,7 @@ namespace Cell_Tool_3
     {
         public Point3d center, old_center; // keeping track of the old center to display the path
         public float radius;
-        Cube cube1;
+        public Cube cube1;
         public ROI ROI2d;
         public Point3d[] center_in_time;
         int originalT;
@@ -1047,6 +1164,7 @@ namespace Cell_Tool_3
                 center_in_time[frame] = FindMaxPixelInRegion(fi, frame, 1, center_in_time[frame + 1]);
             }
         }
+
 
         // For now, return the mean signal in 2D (x, y), dependent on Z and T
         public float[,] MeasureMaxPixel(TifFileInfo fi)
@@ -1161,7 +1279,7 @@ namespace Cell_Tool_3
                 .RotateY((angleX) * DEG2RAD);
             //rotatedP.Z = 0;
             GL.Begin(PrimitiveType.LineLoop);
-            GL.Color4(1f, 1f, 0f, 1f);
+            GL.Color4(1f, 0f, 0f, 1f);
 
             // Draw the sphere
             for (int i = 0; i < 360; i += 10)
@@ -1173,6 +1291,8 @@ namespace Cell_Tool_3
                         topMargin + maxSize * (0.5f + newY));
             }
             GL.End();
+            GL.Color3(Color.White);
+
         }
 
         public void DisplayPath(float angleX, float angleY, int leftMargin, int topMargin, int maxSize, int current_frame)

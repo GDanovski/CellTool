@@ -15,17 +15,17 @@ namespace Cell_Tool_3
      * Izt - the integrated intensity in a XY ROI, vs. Z and T
      * Motion - displaying the path of a moving object through x, y, z.
      */
-    public enum Plots { Ixy, Izt, Motion};
+    public enum Plots { Ixy, Izt, Motion };
 
     /* This class extends the CTChart, adding functionality specific for 3D. */
     class CTChart_3D : CTChart
     {
         // rotation angles in degrees of the plot - these are not the same as the image rotations
-        public int rotationX = 0, rotationY = 0; 
+        public int rotationX = 0, rotationY = 0;
 
         // Keep track of the mouse position, for rotation purposes
         private Vector2 MousePosition = new Vector2(-1, -1);
-              
+
         Cube cube1;          // The cube drawn around the plot, i.e. the axes of the plot.
         int maxSize;         // the max possible size when rotating the cube in 3D - equal to the diagonal of the cube
         float scale = 0.75f; // scale the plot
@@ -38,15 +38,15 @@ namespace Cell_Tool_3
         // Locations of the axes labels.
         Point3d LabelX = new Point3d(0.5, 0.5, -0.5);
         Point3d LabelY = new Point3d(0.5, 0.5, -0.5);
-        Point3d LabelZ = new Point3d(0.5, 0.5, 0.5); 
+        Point3d LabelZ = new Point3d(0.5, 0.5, 0.5);
 
-        public CTChart_3D(ImageAnalyser IA, TifFileInfo fi, int maxSize) : base(IA) {
+        public CTChart_3D(ImageAnalyser IA, TifFileInfo fi, int maxSize) : base(IA)
+        {
             this.fi = fi;
             this.maxSize = maxSize;
             cube1 = new Cube(scale, scale, scale);
-
         }
-         
+
         // Called upon mouse motion
         public void Rotate(PointF e)
         {
@@ -106,21 +106,21 @@ namespace Cell_Tool_3
         {
             // Now convert to bitmap
             if (Properties3D.yAxisLabel.Length < 6)
-                BitmapFromString(fi, Properties3D.yAxisLabel, 
-                    new PointF(0.5f * (1 - scale) * maxSize + rect.X + maxSize * scale * (float)(Py.X+0.5),
-                               0.5f * (1 - scale) * maxSize + rect.Y + maxSize * scale * (float)(Py.Y+0.5)), true,
+                BitmapFromString(fi, Properties3D.yAxisLabel,
+                    new PointF(0.5f * (1 - scale) * maxSize + rect.X + maxSize * scale * (float)(Py.X + 0.5),
+                               0.5f * (1 - scale) * maxSize + rect.Y + maxSize * scale * (float)(Py.Y + 0.5)), true,
                     labelBG: new SolidBrush(Color.FromArgb(255, 50, 50, 50)),
                     labelCol: Brushes.White);
             else
-                BitmapFromString(fi, Properties3D.yAxisLabel.Substring(0, 6), 
-                    new PointF(0.5f * (1 - scale) * maxSize + rect.X + maxSize * scale * (float)(Py.X+0.5),
-                               0.5f * (1 - scale) * maxSize + rect.Y + maxSize * scale * (float)(Py.Y+0.5)), true,
+                BitmapFromString(fi, Properties3D.yAxisLabel.Substring(0, 6),
+                    new PointF(0.5f * (1 - scale) * maxSize + rect.X + maxSize * scale * (float)(Py.X + 0.5),
+                               0.5f * (1 - scale) * maxSize + rect.Y + maxSize * scale * (float)(Py.Y + 0.5)), true,
                     labelBG: new SolidBrush(Color.FromArgb(255, 50, 50, 50)),
                     labelCol: Brushes.White);
 
-            BitmapFromString(fi, Properties3D.xAxisLabel, 
-                new PointF(0.5f * (1 - scale) * maxSize + rect.X + maxSize * scale * (float)(Px.X+0.5),
-                           0.5f * (1 - scale) * maxSize + rect.Y + maxSize * scale * (float)(Px.Y+0.5)), true,
+            BitmapFromString(fi, Properties3D.xAxisLabel,
+                new PointF(0.5f * (1 - scale) * maxSize + rect.X + maxSize * scale * (float)(Px.X + 0.5),
+                           0.5f * (1 - scale) * maxSize + rect.Y + maxSize * scale * (float)(Px.Y + 0.5)), true,
                     labelBG: new SolidBrush(Color.FromArgb(255, 50, 50, 50)),
                     labelCol: Brushes.White);
 
@@ -167,7 +167,7 @@ namespace Cell_Tool_3
             CalculateLabelPositions(ref Px, ref Py, ref Pz);
             renderChartArea(Rescale: Properties3D.PlotType == Plots.Motion);
             renderChartLabels(rect, fi, 0, 1, 1, Px, Py, Pz);
-            
+
             if (Properties3D.PlotType == Plots.Izt)
             {
                 drawPlane(maxSize, 10, 10, axis: 0);
@@ -264,7 +264,7 @@ namespace Cell_Tool_3
                 else flip = -1;
 
                 Point3d Px = new Point3d((float)x / maxSize - 0.5f, flip * 0.5f, -0.5f);
-                    
+
                 if (Rescale)
                 {
                     Px.X *= cube1.X;
@@ -276,9 +276,9 @@ namespace Cell_Tool_3
                 // Round the labels in case they are big
                 if (Properties3D.maxX_chosen <= 1) label = i.ToString("0.0");
                 else label = ((int)i).ToString();
-                BitmapFromString(fi, label, 
-                    new PointF(0.5f * (1 - scale) * maxSize + rect.X + maxSize * scale * (float)(Px.X+0.5),
-                               0.5f * (1 - scale) * maxSize + rect.Y + maxSize * scale * (float)(Px.Y+0.5)),
+                BitmapFromString(fi, label,
+                    new PointF(0.5f * (1 - scale) * maxSize + rect.X + maxSize * scale * (float)(Px.X + 0.5),
+                               0.5f * (1 - scale) * maxSize + rect.Y + maxSize * scale * (float)(Px.Y + 0.5)),
                     labelBG: new SolidBrush(Color.FromArgb(255, 50, 50, 50)),
                     labelCol: Brushes.White);
             }
@@ -300,7 +300,7 @@ namespace Cell_Tool_3
                     Py.Z *= cube1.Z;
                 }
                 Py = Py.RotateX(rotationY * DEG2RAD).RotateY(rotationX * DEG2RAD);
-                
+
                 // Round the labels in case they are big
                 if (Properties3D.maxY_chosen <= 1) label = i.ToString("0.0");
                 else label = ((int)i).ToString();
@@ -314,7 +314,7 @@ namespace Cell_Tool_3
             // Display the labels of the Z axis
             for (double z = 0, i = Properties3D.minZ_chosen; z <= microRect.Height; z += microRect.Height / stepZ, i += valZ)
             {
-                
+
                 if ((rotationX >= 0 && rotationX <= 90) || (rotationX >= 180 && rotationX <= 270))
                     flip = (rotationY > 180) ? -1 : 1;
                 else
@@ -328,7 +328,7 @@ namespace Cell_Tool_3
                     Pz.Z *= cube1.Z;
                 }
                 Pz = Pz.RotateX(rotationY * DEG2RAD).RotateY(rotationX * DEG2RAD);
-            
+
                 // Round the labels in case they are big
                 if (Properties3D.maxZ_chosen <= 1) label = i.ToString("0.0");
                 else label = ((int)i).ToString();
@@ -359,8 +359,8 @@ namespace Cell_Tool_3
             OkBtn.Location = new Point(50, 215);
             OptionForm.Controls.Add(OkBtn);
 
-            ConfigureScaleTB(OptionForm, new Point(15, 45),  new Point(85, 40),  "X minimum", Properties3D.minX_chosen, OkBtn, 0, true);
-            ConfigureScaleTB(OptionForm, new Point(15, 75),  new Point(85, 70),  "X maximum", Properties3D.maxX_chosen, OkBtn, 0, false);
+            ConfigureScaleTB(OptionForm, new Point(15, 45), new Point(85, 40), "X minimum", Properties3D.minX_chosen, OkBtn, 0, true);
+            ConfigureScaleTB(OptionForm, new Point(15, 75), new Point(85, 70), "X maximum", Properties3D.maxX_chosen, OkBtn, 0, false);
             ConfigureScaleTB(OptionForm, new Point(15, 105), new Point(85, 100), "Y minimum", Properties3D.minY_chosen, OkBtn, 1, true);
             ConfigureScaleTB(OptionForm, new Point(15, 135), new Point(85, 130), "Y maximum", Properties3D.maxY_chosen, OkBtn, 1, false);
             ConfigureScaleTB(OptionForm, new Point(15, 165), new Point(85, 160), "Z minimum", Properties3D.minZ_chosen, OkBtn, 2, true);
@@ -369,8 +369,8 @@ namespace Cell_Tool_3
             OptionForm.ShowDialog();
         }
 
-        private void ConfigureScaleTB(Form OptionForm, 
-            Point LabelLocation, Point TBLocation, 
+        private void ConfigureScaleTB(Form OptionForm,
+            Point LabelLocation, Point TBLocation,
             String TBname, float DefaultValue, Button OkBtn, int axis, bool IsMin)
         {
             TextBox tb = new TextBox();
@@ -400,7 +400,7 @@ namespace Cell_Tool_3
                     tb.Focus();
                     return;
                 }
-                
+
                 OptionForm.Close();
                 AdjustScale(axis: axis, IsMin: IsMin, value: value);
                 Properties3D.Rescale();
@@ -409,17 +409,17 @@ namespace Cell_Tool_3
 
         private void AdjustScale(int axis, bool IsMin, float value)
         {
-            
+
             switch (axis)
             {
                 case 0:
-                    if (IsMin) Properties3D.minX_chosen = value;    else Properties3D.maxX_chosen = value;      break;
+                    if (IsMin) Properties3D.minX_chosen = value; else Properties3D.maxX_chosen = value; break;
 
                 case 1:
-                    if (IsMin) Properties3D.minY_chosen = value;    else Properties3D.maxY_chosen = value;      break;
+                    if (IsMin) Properties3D.minY_chosen = value; else Properties3D.maxY_chosen = value; break;
 
                 case 2:
-                    if (IsMin) Properties3D.minZ_chosen = value;    else Properties3D.maxZ_chosen = value;      break;
+                    if (IsMin) Properties3D.minZ_chosen = value; else Properties3D.maxZ_chosen = value; break;
             }
             Render();
         }
@@ -454,7 +454,8 @@ namespace Cell_Tool_3
 
         }
 
-        private void ResetCubeScale() {
+        private void ResetCubeScale()
+        {
             cube1 = new Cube(scale, scale, scale);
             LabelX = new Point3d(0.6, 0.4, -0.5);
             LabelY = new Point3d(0.4, 0.5, -0.6);
@@ -464,11 +465,11 @@ namespace Cell_Tool_3
         private void drawPlane(int maxSize, int leftMargin, int topMargin, int axis)
         {
             // Find out which T and Z we are at
-            float fractionT = (float)fi.frame / (fi.sizeT-1);
-            float fractionZ = (float)fi.zValue / (fi.sizeZ-1);
+            float fractionT = (float)fi.frame / (fi.sizeT - 1);
+            float fractionZ = (float)fi.zValue / (fi.sizeZ - 1);
 
             GL.Color4(1f, 1f, 0f, 0.1f);
-            
+
             GL.BlendFunc(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.OneMinusSrcAlpha);
             GL.Enable(EnableCap.Blend);
             GL.DepthMask(false);
@@ -483,7 +484,7 @@ namespace Cell_Tool_3
             p2 = p2.RotateX(rotationY * Math.PI / 180f).RotateY(rotationX * Math.PI / 180f);
 
             Point3d p3 = (axis == 0) ? new Point3d(0.4, scale * (fractionT - 0.5f), 0.4) :
-                new Point3d(scale * (fractionZ - 0.5f), 0.4,  0.4);
+                new Point3d(scale * (fractionZ - 0.5f), 0.4, 0.4);
             p3 = p3.RotateX(rotationY * Math.PI / 180f).RotateY(rotationX * Math.PI / 180f);
 
             Point3d p4 = (axis == 0) ? new Point3d(0.4, scale * (fractionT - 0.5f), -0.4) :
