@@ -264,28 +264,6 @@ namespace Cell_Tool_3
                 GL.ClearColor(IA.FileBrowser.BackGround2Color1);
                 GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
 
-                //if the 3D is enabled - send to imageDrawer_3D
-                if (imageDrawer_3D.isImage3D(fi))
-                {
-                    //Set viewpoint
-                    GL.Viewport(0, 0, GLControl1.Width, GLControl1.Height);
-                    //scale the image
-                    if (oldScale != fi.zoom)
-                    {
-                        double factor = fi.zoom / oldScale;
-                        oldScale = fi.zoom;
-                        if (factor != 1)
-                        {
-                            GL.Scale(factor, factor, 1);
-                        }
-                    }
-
-                    //imageDrawer_3D.Calculate3Dfi(fi);
-                    imageDrawer_3D.StartDrawing(GLControl1, fi);
-
-                    return;
-                }
-
                 //GL.UseProgram(0); // Remove the shader program from the 3D view
 
                 //Prepare MatrixMode
@@ -301,9 +279,17 @@ namespace Cell_Tool_3
                 valY = 0;
 
                 //Set viewpoint
-                GL.Viewport(0, 0, GLControl1.Width, GLControl1.Height);
-                TranslationAndScale(fi, fieldRect, GLControl1);
+                GL.Viewport(0, 0, GLControl1.Width, GLControl1.Height);                
+                                
+                //if the 3D is enabled - send to imageDrawer_3D
+                if (imageDrawer_3D.isImage3D(fi))
+                {                    
+                    TranslationAndScale(fi, coRect_3D_calculate(fi), GLControl1);
+                    imageDrawer_3D.StartDrawing(GLControl1, fi);
+                    return;
+                }
 
+                TranslationAndScale(fi, fieldRect, GLControl1);
                 //make colors transparent
                 GL.BlendFunc(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.One);
                 SelectedImage_DrawBorder(fi);
@@ -371,6 +357,19 @@ namespace Cell_Tool_3
             }
             //catch { }
 
+        }
+        private Rectangle coRect_3D_calculate(TifFileInfo fi)
+        {
+            int Diagonale = imageDrawer_3D.maxSize;
+            int Height = Diagonale + 30;
+            int Width = Height;
+
+            if (fi.tpTaskbar.MethodsBtnList[0].ImageIndex == 0 && fi.tpTaskbar.MethodsBtnList[1].ImageIndex == 0)
+                Width += Diagonale + 15;
+            if(fi.tpTaskbar.MethodsBtnList[2].ImageIndex == 0)
+                Width += Diagonale + 15;
+
+            return new Rectangle(0, 0, Width, Height);
         }
         private void TranslationAndScale(TifFileInfo fi, Rectangle fieldRect, GLControl glcontrol1)
         {
@@ -697,7 +696,7 @@ namespace Cell_Tool_3
                     }
                 }
             }
-        }
+        }        
         public Rectangle coRect_Calculate(GLControl GLControl1)
         {
             TifFileInfo fi = IA.TabPages.TabCollections[IA.TabPages.SelectedIndex].tifFI;
@@ -1279,14 +1278,7 @@ namespace Cell_Tool_3
                 return;
             }
             if (fi == null) { return; }
-
-            //if the 3D is enabled - send to imageDrawer_3D
-            if (imageDrawer_3D.isImage3D(fi))
-            {
-                imageDrawer_3D.GLControl1_MouseDown((GLControl)sender, fi, e);
-                return;
-            }
-
+            
             if ((e.Button == MouseButtons.Right & Control.ModifierKeys == Keys.Control)
                 | e.Button == MouseButtons.Middle)
             {
@@ -1309,6 +1301,11 @@ namespace Cell_Tool_3
                     ((GLControl)sender).Cursor = Cursors.SizeNS;
                 }
             }
+            if (imageDrawer_3D.isImage3D(fi) && !fieldMove)
+            {
+                imageDrawer_3D.GLControl1_MouseDown((GLControl)sender, fi, e);
+
+            }
         }
         private void GLControl1_MouseMove(object sender, MouseEventArgs e)
         {
@@ -1322,14 +1319,11 @@ namespace Cell_Tool_3
                 return;
             }
             if (fi == null) { return; }
-
             //if the 3D is enabled - send to imageDrawer_3D
-            if (imageDrawer_3D.isImage3D(fi))
+            if (imageDrawer_3D.isImage3D(fi) && !fieldMove)
             {
                 imageDrawer_3D.GLControl1_MouseMove((GLControl)sender, fi, e);
-                return;
-            }
-
+             }
             if (fieldMove == true & (Control.ModifierKeys == Keys.Control | e.Button == MouseButtons.Middle))
             {
                 int X = oldX - e.X;
@@ -1384,7 +1378,11 @@ namespace Cell_Tool_3
             else
             {
                 fieldMove = false;
-                IA.RoiMan.GlControl_MouseMoveChangeCursor(sender, e);
+
+                if (imageDrawer_3D.isImage3D(fi))
+                    IA.GLControl1.Cursor = Cursors.Default;
+                else
+                    IA.RoiMan.GlControl_MouseMoveChangeCursor(sender, e);
             }
         }
         private void GLControl1_MouseUp(object sender, MouseEventArgs e)
@@ -1399,11 +1397,10 @@ namespace Cell_Tool_3
                 return;
             }
             if (fi == null) { return; }
-            //if the 3D is enabled - send to imageDrawer_3D
-            if (imageDrawer_3D.isImage3D(fi))
+
+            if (imageDrawer_3D.isImage3D(fi) && !fieldMove)
             {
                 imageDrawer_3D.GLControl1_MouseUp((GLControl)sender, fi, e);
-                return;
             }
 
             if (fieldMove == true)
@@ -1411,7 +1408,11 @@ namespace Cell_Tool_3
                 fieldMove = false;
                 oldX = 0;
                 oldY = 0;
-                IA.RoiMan.GlControl_MouseMoveChangeCursor(sender, e);
+
+                if(imageDrawer_3D.isImage3D(fi))
+                    IA.GLControl1.Cursor = Cursors.Default;
+                else
+                    IA.RoiMan.GlControl_MouseMoveChangeCursor(sender, e);
             }
 
         }

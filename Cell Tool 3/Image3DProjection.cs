@@ -137,15 +137,9 @@ namespace Cell_Tool_3
         public ushort[] GetSegmentedImage()
         {
             return Zstack_1d_segmented[fi.frame];
-
         }
-
-
-
         public void ProjectionEvent(TifFileInfo fi)
         {
-
-
             int final_ImageCount = fi.imageCount / fi.sizeZ;
             int ZC = (fi.sizeC * fi.sizeZ);
             switch (fi.bitsPerPixel)

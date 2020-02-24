@@ -381,9 +381,9 @@ namespace Cell_Tool_3
                 ReDoBtn.Enabled = false;
                 IDrawer.verticalScrollBar.Visible = false;
                 IDrawer.horizontalScrollBar.Visible = false;
+                if (IDrawer.imageDrawer_3D.PropPanel != null) IDrawer.imageDrawer_3D.PropPanel.Panel.Visible = false;
                 TabPages.PropertiesBody.ResumeLayout();
                 TabPages.propertiesPanel.ResumeLayout();
-
                 return;
             }
             bool turnOnRoiMan = false;
@@ -426,6 +426,10 @@ namespace Cell_Tool_3
                     fi.tpTaskbar.Btn3D.Enabled = true;
                     fi.tpTaskbar.Btn3D.BackColor = FileBrowser.BackGroundColor1;
                 }
+                if(IDrawer.imageDrawer_3D.isImage3D(fi))
+                    IDrawer.imageDrawer_3D.PropPanel.Panel.Visible = true;
+                else if (IDrawer.imageDrawer_3D.PropPanel!=null)
+                    IDrawer.imageDrawer_3D.PropPanel.Panel.Visible = false;
                 //Chart properties refresh
                 chart.Properties.LoadFI(fi);
                 chart.Series.LoadFI(fi);

@@ -1569,6 +1569,7 @@ namespace Cell_Tool_3
                     //start 3D viewer if 3D is enabled
                     if (IA.IDrawer.imageDrawer_3D.isImage3D(TabCollections[index].tifFI))
                     {
+                        IA.IDrawer.imageDrawer_3D.ClearProgram(IA.GLControl1);
                         IA.IDrawer.imageDrawer_3D.initProgram(IA.GLControl1, TabCollections[index].tifFI);
                         IA.ReloadImages(true);//for some reason we need to call this twice
                     }

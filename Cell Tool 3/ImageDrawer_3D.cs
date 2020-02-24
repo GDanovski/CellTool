@@ -24,7 +24,7 @@ namespace Cell_Tool_3
         int leftMargin = 10;
         int topMargin = 10;
         public ImageDrawer IDrawer;
-        int maxSize;
+        public int maxSize;
         Cube cube1;
         SphereROI CurrentSphereRoi = null;
         List<SphereROI> ROIs;
@@ -540,7 +540,6 @@ namespace Cell_Tool_3
             if (initialized) return;
             this.initialized = true;
 
-
             this.proj3d = new Image3DProjection(incoming_fi, downsample_factor);
             this.fi = incoming_fi; // proj3d.CopyFi(incoming_fi);
 
@@ -586,13 +585,7 @@ namespace Cell_Tool_3
             plt.Properties3D = new CTChart_Properties_3D(IDrawer.IA.TabPages.propertiesPanel,
                 IDrawer.IA.TabPages.PropertiesBody, IDrawer.IA, maxSize,
                 RotateImage_CPU(identity, 1, 0), Xdata, Ydata, Zdata, PropPanel);
-
-
         }
-
-
-
-
         public void ClearProgram(GLControl GLcontrol1)
         {
             initialized = false;
@@ -711,9 +704,9 @@ namespace Cell_Tool_3
                 StartDrawing(GLcontrol1, fi);
                 return;
             }
-
+            
             // If point is on the graph, rotate it
-            if (MousePosition.X > 2 * maxSize * fi.zoom)
+            if (MousePosition.X >( 2 * (maxSize + leftMargin) - fi.Xposition)*fi.zoom)
             {
                 plt.Rotate(e);
                 StartDrawing(GLcontrol1, fi);
