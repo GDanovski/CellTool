@@ -60,6 +60,7 @@ namespace Cell_Tool_3
             if (incoming_fi == null) return;
             if (this.fi == null) this.fi = incoming_fi; // proj3d.CopyFi(incoming_fi);
             if (!initialized) initProgram(GLcontrol1, incoming_fi);
+            if (proj3d == null) return;
 
             if (fi.frame != this.time_frame)
             {
@@ -622,7 +623,7 @@ namespace Cell_Tool_3
             if (e.Button == MouseButtons.Right) { plt.AdjustOnClick(); return; }
 
             Point newP = IsPointInImage(e);
-
+            
             int currentI = (newP.X) + maxSize * (newP.Y);
 
             if (currentI < 0) return;
@@ -712,7 +713,7 @@ namespace Cell_Tool_3
                 StartDrawing(GLcontrol1, fi);
                 return;
             }
-
+            
             if (Math.Abs(e.X - MousePosition.X) > Math.Abs(e.Y - MousePosition.Y))
                 // Mouse movement in X is bigger, rotate on X 
                 if (e.X > MousePosition.X) shearX += 5; else shearX -= 5;
@@ -739,8 +740,8 @@ namespace Cell_Tool_3
 
         private Point IsPointInImage(MouseEventArgs e)
         {
-            Point newP = new Point((int)((float)e.X / fi.zoom - maxSize - leftMargin * 2),
-                (int)((double)e.Y / fi.zoom - topMargin));
+            Point newP = new Point((int)((float)e.X / fi.zoom - maxSize + fi.Xposition - leftMargin * 2),
+                (int)((double)e.Y / fi.zoom + fi.Yposition - topMargin));
 
             if (fi.tpTaskbar.MethodsBtnList[1].ImageIndex == 0
                 && newP.X > 0 && newP.Y > 0 && newP.X < maxSize && newP.Y < maxSize)
@@ -756,8 +757,8 @@ namespace Cell_Tool_3
 
         private Point IsPointInPlot(MouseEventArgs e)
         {
-            Point newP = new Point((int)((float)e.X / fi.zoom - 2 * maxSize - leftMargin * 3),
-                (int)((double)e.Y / fi.zoom - topMargin));
+            Point newP = new Point((int)((float)e.X / fi.zoom + fi.Xposition - 2 * maxSize - leftMargin * 3),
+                (int)((double)e.Y / fi.zoom + fi.Yposition - topMargin));
 
             if (fi.tpTaskbar.MethodsBtnList[2].ImageIndex == 0
                 && newP.X > 0 && newP.Y > 0 && newP.X < maxSize && newP.Y < maxSize)
