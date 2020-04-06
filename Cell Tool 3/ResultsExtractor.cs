@@ -2554,10 +2554,27 @@ namespace Cell_Tool_3
                                 {
                                     if (i < dN.Series.Length)
                                     {
-                                        RawData[row].Add(dN.Series[i].ToString());
-                                        Mean[i] += dN.Series[i];
-                                        NormData[row].Add(dN.NormSeries[i].ToString());
-                                        nMean[i] += dN.NormSeries[i];
+                                        if (dN.Series.Length > row)
+                                        {
+                                            RawData[row].Add(dN.Series[i].ToString());
+                                            Mean[i] += dN.Series[i];
+                                        }
+                                        else
+                                        {
+                                            RawData[row].Add(0.ToString());
+                                            Mean[i] += 0;
+                                        }
+
+                                        if (dN.NormSeries.Length > row)
+                                        {
+                                            NormData[row].Add(dN.NormSeries[i].ToString());
+                                            nMean[i] += dN.NormSeries[i];
+                                        }
+                                        else
+                                        {
+                                            NormData[row].Add(0.ToString());
+                                            nMean[i] += 0;
+                                        }
                                     }
                                     else
                                     {
@@ -2607,7 +2624,8 @@ namespace Cell_Tool_3
                                     if (i < dN.Series.Length)
                                     {
                                         stDev[i] += Math.Pow(Mean[i] - dN.Series[i],2);
-                                        nStDev[i] += Math.Pow(nMean[i] - dN.NormSeries[i], 2);
+                                        if(i < dN.NormSeries.Length)
+                                            nStDev[i] += Math.Pow(nMean[i] - dN.NormSeries[i], 2);
                                     }
                             }
                     //Add Mean, StDev and Norm to the results
