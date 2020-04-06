@@ -32,8 +32,8 @@
     <PublisherName>Georgi Danovski</PublisherName>
     <SuiteName>CellTool</SuiteName>
     <AutorunEnabled>true</AutorunEnabled>
-    <ApplicationRevision>3</ApplicationRevision>
-    <ApplicationVersion>1.5.6.3</ApplicationVersion>
+    <ApplicationRevision>4</ApplicationRevision>
+    <ApplicationVersion>1.5.6.4</ApplicationVersion>
     <UseApplicationTrust>true</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
     <PublishWizardCompleted>true</PublishWizardCompleted>
@@ -410,6 +410,7 @@
     <Content Include="PlugIns\MultiCrop.CTPlugIn.dll">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="PlugIns\Plot_Profile.CTPlugIn.dll" />
     <None Include="Resources\MathNET_NumericsLicense.txt" />
     <None Include="Resources\AccordLicence.txt" />
     <None Include="Resources\G_R_done_1_ALL_rights_reserved1.png" />
