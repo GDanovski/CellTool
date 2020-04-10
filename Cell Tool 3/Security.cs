@@ -1,17 +1,14 @@
 ﻿/*
  CellTool - software for bio-image analysis
  Copyright (C) 2018  Georgi Danovski
-
  This program is free software: you can redistribute it and/or modify
  it under the terms of the GNU General Public License as published by
  the Free Software Foundation, either version 3 of the License, or
  (at your option) any later version.
-
  This program is distributed in the hope that it will be useful,
  but WITHOUT ANY WARRANTY; without even the implied warranty of
  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  GNU General Public License for more details.
-
  You should have received a copy of the GNU General Public License
  along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
@@ -55,7 +52,7 @@ namespace Cell_Tool_3
             IsTrialFinished();
             if (IsTrialActive() == false)
             {
-               TrialForm_Initialize();
+                TrialForm_Initialize();
             }
         }
         private void IsTrialFinished()
@@ -65,15 +62,15 @@ namespace Cell_Tool_3
                 settings.EndTrialDate = date.AddDays(31);
                 settings.Save();
             }
-            else if(DateTime.Compare(settings.EndTrialDate,date) == -1)
+            else if (DateTime.Compare(settings.EndTrialDate, date) == -1)
             {
                 // Initializes the variables to pass to the MessageBox.Show method.
                 string message = "Do you want to restart trial period?";
                 string caption = "Your trial version has expired!";
                 MessageBoxButtons buttons = MessageBoxButtons.YesNo;
                 DialogResult result;
-              // Displays the MessageBox.
-              result = MessageBox.Show(message, caption, buttons);
+                // Displays the MessageBox.
+                result = MessageBox.Show(message, caption, buttons);
 
                 if (result == System.Windows.Forms.DialogResult.Yes)
                 {
@@ -87,7 +84,7 @@ namespace Cell_Tool_3
                     Environment.Exit(0);
                 }
             }
-       }
+        }
         private Boolean isProgramBlocked()
         {
             //Check how many time wrong pass has been entered
@@ -123,13 +120,13 @@ namespace Cell_Tool_3
             {
                 answer = true;
             }
-             return answer;
-                        
+            return answer;
+
         }
         private void TrialForm_Initialize()
         {
             //Form properties
-           
+
             TrialForm.FormBorderStyle = FormBorderStyle.FixedDialog;
             TrialForm.Width = 390;
             TrialForm.Height = 119;
@@ -139,7 +136,7 @@ namespace Cell_Tool_3
             TrialForm.Icon = Properties.Resources.CT_done;
             TrialForm.FormClosed += new FormClosedEventHandler(TrialForm_Closing);
             //text box properties
-                       PassBox.Width = 350;
+            PassBox.Width = 350;
             PassBox.Height = 20;
             PassBox.UseSystemPasswordChar = true;
             PassBox.Location = new System.Drawing.Point(12, 12);
@@ -154,9 +151,9 @@ namespace Cell_Tool_3
             OkBtn.Click += new EventHandler(OkBtn_Click);
             TrialForm.Controls.Add(OkBtn);
             // Show dialog
-           PassBox_config();
-           TrialForm.ShowDialog();
-      }
+            PassBox_config();
+            TrialForm.ShowDialog();
+        }
         private void PassBox_config()
         {
             PassBox.Text = "";
@@ -174,7 +171,7 @@ namespace Cell_Tool_3
                 e.Handled = true;
                 e.SuppressKeyPress = true;
             }
-            
+
         }
         private void OkEvent()
         {
@@ -195,14 +192,14 @@ namespace Cell_Tool_3
                 MessageBox.Show("Wrong key!");
             }
         }
-              
+
         private void TrialForm_Closing(object sender, EventArgs e)
         {
             if (StartProgram == false)
             {
                 Environment.Exit(0);
             }
-         }
+        }
 
         //Accaunt settings
         private Form AccForm = new Form();
@@ -211,7 +208,7 @@ namespace Cell_Tool_3
         private Panel AccListPanel = new Panel();
 
         private Form ChangePassForm = new Form();
-           
+
         //Index of acc!!!
         public int AccIndex = -1;
         //login
@@ -237,23 +234,23 @@ namespace Cell_Tool_3
             AccForm.MinimizeBox = false;
             AccForm.StartPosition = FormStartPosition.CenterScreen;
             AccForm.WindowState = FormWindowState.Normal;
-            AccForm.Width = 200;
+            AccForm.Width = 210;
             AccForm.Height = 140;
             AccForm.Icon = Properties.Resources.CT_done;
             AccForm.FormClosing += new FormClosingEventHandler(AccForm_Closing);
-                       
+
             //PassPanel
             {
                 PassPanel.BackColor = Color.DimGray;
                 PassPanel.ForeColor = Color.White;
                 PassPanel.Dock = DockStyle.Fill;
                 AccForm.Controls.Add(PassPanel);
-            
+
                 //labels
                 Label accLabel = new Label();
                 accLabel.Text = "Account:";
                 accLabel.Width = 60;
-                accLabel.Location = new System.Drawing.Point(10,12);
+                accLabel.Location = new System.Drawing.Point(10, 12);
                 PassPanel.Controls.Add(accLabel);
 
                 Label passLabel = new Label();
@@ -264,27 +261,36 @@ namespace Cell_Tool_3
 
                 //text boxes
                 accTbox.Location = new System.Drawing.Point(70, 10);
-                accTbox.Width = 100;
+                accTbox.Width = 110;
                 accTbox.KeyDown += new KeyEventHandler(Login_EnterEvent);
                 PassPanel.Controls.Add(accTbox);
                 AutoComenceTbox();
 
                 passTbox.Location = new System.Drawing.Point(70, 40);
                 passTbox.UseSystemPasswordChar = true;
-                passTbox.Width = 100;
+                passTbox.Width = 110;
                 passTbox.KeyDown += new KeyEventHandler(Login_EnterEvent);
                 PassPanel.Controls.Add(passTbox);
-                
+
                 Button LoginAccBtn = new Button();
                 LoginAccBtn.FlatStyle = FlatStyle.Standard;
                 LoginAccBtn.BackColor = SystemColors.ButtonFace;
                 LoginAccBtn.ForeColor = Color.Black;
-                LoginAccBtn.Width = 80;
-                LoginAccBtn.Location = new System.Drawing.Point(50, 70);
+                LoginAccBtn.Width = 90;
+                LoginAccBtn.Location = new System.Drawing.Point(5, 70);
                 LoginAccBtn.Text = "Login";
                 LoginAccBtn.Click += new EventHandler(Login_Event);
                 PassPanel.Controls.Add(LoginAccBtn);
 
+                Button LoginAsGuestBtn = new Button();
+                LoginAsGuestBtn.FlatStyle = FlatStyle.Standard;
+                LoginAsGuestBtn.BackColor = SystemColors.ButtonFace;
+                LoginAsGuestBtn.ForeColor = Color.Black;
+                LoginAsGuestBtn.Width = 90;
+                LoginAsGuestBtn.Location = new System.Drawing.Point(LoginAccBtn.Width + 10, 70);
+                LoginAsGuestBtn.Text = "Login as Guest";
+                LoginAsGuestBtn.Click += LogInAsGuest_event;
+                PassPanel.Controls.Add(LoginAsGuestBtn);
             }
             //New Acc Panel
             {
@@ -297,36 +303,36 @@ namespace Cell_Tool_3
                 //labels
                 Label accLabel = new Label();
                 accLabel.Text = "Account:";
-                accLabel.Width = 60;
-                accLabel.Location = new System.Drawing.Point(10, 12);
+                accLabel.Width = 63;
+                accLabel.Location = new System.Drawing.Point(15, 12);
                 NewAccPanel.Controls.Add(accLabel);
 
                 Label passLabel = new Label();
                 passLabel.Text = "Password:";
-                passLabel.Width = 60;
-                passLabel.Location = new System.Drawing.Point(10, 42);
+                passLabel.Width = 63;
+                passLabel.Location = new System.Drawing.Point(15, 42);
                 NewAccPanel.Controls.Add(passLabel);
 
                 Label repassLabel = new Label();
                 repassLabel.Text = "Repeat:";
-                repassLabel.Width = 60;
-                repassLabel.Location = new System.Drawing.Point(10, 72);
+                repassLabel.Width = 63;
+                repassLabel.Location = new System.Drawing.Point(15, 72);
                 NewAccPanel.Controls.Add(repassLabel);
-               
+
                 //text boxes
-               
-                accTbox1.Location = new System.Drawing.Point(70, 10);
+
+                accTbox1.Location = new System.Drawing.Point(78, 10);
                 accTbox1.Width = 100;
                 accTbox1.KeyDown += new KeyEventHandler(create_EnterEvent);
                 NewAccPanel.Controls.Add(accTbox1);
 
-                passTbox1.Location = new System.Drawing.Point(70, 40);
+                passTbox1.Location = new System.Drawing.Point(78, 40);
                 passTbox1.UseSystemPasswordChar = true;
                 passTbox1.Width = 100;
                 passTbox1.KeyDown += new KeyEventHandler(create_EnterEvent);
                 NewAccPanel.Controls.Add(passTbox1);
 
-                RePassTbox.Location = new System.Drawing.Point(70, 70);
+                RePassTbox.Location = new System.Drawing.Point(78, 70);
                 RePassTbox.UseSystemPasswordChar = true;
                 RePassTbox.Width = 100;
                 RePassTbox.KeyDown += new KeyEventHandler(create_EnterEvent);
@@ -343,7 +349,7 @@ namespace Cell_Tool_3
                 BackBtn.BackColor = SystemColors.ButtonFace;
                 BackBtn.ForeColor = Color.Black;
                 BackBtn.Width = 70;
-                BackBtn.Location = new System.Drawing.Point(10, 120);
+                BackBtn.Location = new System.Drawing.Point(15, 120);
                 BackBtn.Text = "Back";
                 BackBtn.Click += new EventHandler(BackAdminBtn_click);
                 NewAccPanel.Controls.Add(BackBtn);
@@ -353,7 +359,7 @@ namespace Cell_Tool_3
                 LoginAccBtn.BackColor = SystemColors.ButtonFace;
                 LoginAccBtn.ForeColor = Color.Black;
                 LoginAccBtn.Width = 70;
-                LoginAccBtn.Location = new System.Drawing.Point(100, 120);
+                LoginAccBtn.Location = new System.Drawing.Point(105, 120);
                 LoginAccBtn.Text = "Create";
                 LoginAccBtn.Click += new EventHandler(create_Event);
                 NewAccPanel.Controls.Add(LoginAccBtn);
@@ -385,7 +391,7 @@ namespace Cell_Tool_3
                 BackBtn.BackColor = SystemColors.ButtonFace;
                 BackBtn.ForeColor = Color.Black;
                 BackBtn.Width = 50;
-                BackBtn.Location = new System.Drawing.Point(10, 110);
+                BackBtn.Location = new System.Drawing.Point(13, 113);
                 BackBtn.Text = "Back";
                 BackBtn.Click += new EventHandler(BackBtn_click);
                 AccListPanel.Controls.Add(BackBtn);
@@ -395,7 +401,7 @@ namespace Cell_Tool_3
                 DelBtn.BackColor = SystemColors.ButtonFace;
                 DelBtn.ForeColor = Color.Black;
                 DelBtn.Width = 50;
-                DelBtn.Location = new System.Drawing.Point(70, 110);
+                DelBtn.Location = new System.Drawing.Point(73, 113);
                 DelBtn.Text = "Delete";
                 DelBtn.Click += new EventHandler(DeleteAcc);
                 AccListPanel.Controls.Add(DelBtn);
@@ -405,7 +411,7 @@ namespace Cell_Tool_3
                 NewAccBtn.BackColor = SystemColors.ButtonFace;
                 NewAccBtn.ForeColor = Color.Black;
                 NewAccBtn.Width = 50;
-                NewAccBtn.Location = new System.Drawing.Point(130, 110);
+                NewAccBtn.Location = new System.Drawing.Point(133, 113);
                 NewAccBtn.Text = "Create";
                 NewAccBtn.Click += new EventHandler(newAccBtn_click);
                 AccListPanel.Controls.Add(NewAccBtn);
@@ -416,7 +422,7 @@ namespace Cell_Tool_3
                 AdminPassChangeBtn.BackColor = SystemColors.ButtonFace;
                 AdminPassChangeBtn.ForeColor = Color.Black;
                 AdminPassChangeBtn.Width = 170;
-                AdminPassChangeBtn.Location = new System.Drawing.Point(10, 85);
+                AdminPassChangeBtn.Location = new System.Drawing.Point(13, 90);
                 AdminPassChangeBtn.Text = "Change Admin password";
                 AdminPassChangeBtn.Click += new EventHandler(changeAdminPass_ShowDialog);
                 AccListPanel.Controls.Add(AdminPassChangeBtn);
@@ -431,7 +437,7 @@ namespace Cell_Tool_3
             ChangePassForm.Width = 200;
             ChangePassForm.Height = 180;
             ChangePassForm.Icon = Properties.Resources.CT_done;
-            
+
             //PassPanel
             {
                 Panel ChPassPanel = new Panel();
@@ -495,6 +501,20 @@ namespace Cell_Tool_3
 
             AccForm.ShowDialog();
         }
+        private void LogInAsGuest_event(object sender, EventArgs e)
+        {
+            //add acc and pass
+            if (!settings.AccList.Contains("Guest"))
+            {
+                settings.AccList.Add("Guest");
+                settings.AccPass.Add("");
+                AddSettings();
+                settings.Save();
+            }
+
+            AccIndex = settings.AccList.IndexOf("Guest");
+            AccForm.Close();
+        }
         private void Panel_VisibleChange(object sender, EventArgs e)
         {
             if (!((Panel)sender).Visible) return;
@@ -520,8 +540,8 @@ namespace Cell_Tool_3
             accTbox.AutoCompleteMode = AutoCompleteMode.Append;
             accTbox.AutoCompleteSource = AutoCompleteSource.CustomSource;
         }
-       
-        private void newAccBtn_click(object sender,EventArgs e)
+
+        private void newAccBtn_click(object sender, EventArgs e)
         {
             AccForm.Height = 200;
             AccForm.Text = "New";
@@ -529,7 +549,7 @@ namespace Cell_Tool_3
             AccListPanel.Visible = false;
             NewAccPanel.Visible = true;
         }
-        private void BackAdminBtn_click (object sender, EventArgs e)
+        private void BackAdminBtn_click(object sender, EventArgs e)
         {
             BackAdminBtn_click_Event();
         }
@@ -567,19 +587,19 @@ namespace Cell_Tool_3
             NewAccPanel.Visible = false;
             AccListPanel.Visible = false;
         }
-        private void Login_Event(object sender,EventArgs e)
+        private void Login_Event(object sender, EventArgs e)
         {
             LoginAcc();
         }
         private void Login_EnterEvent(object sender, KeyEventArgs e)
         {
-            if (e.KeyCode ==  Keys.Enter)
+            if (e.KeyCode == Keys.Enter)
             {
-            LoginAcc();
+                LoginAcc();
                 e.Handled = true;
                 e.SuppressKeyPress = true;
             }
-            
+
         }
         private void LoginAcc()
         {
@@ -603,7 +623,7 @@ namespace Cell_Tool_3
             MessageBox.Show("The account name or password are not correct!");
 
         }
-        
+
         private void Admin_Event()
         {
             AccForm.Text = "Admin";
@@ -620,43 +640,43 @@ namespace Cell_Tool_3
         private void CreateAccount()
         {
             //AccIndex - login number
-                //Check are the name and pass ok
-                if (accTbox1.Text == "")
+            //Check are the name and pass ok
+            if (accTbox1.Text == "")
+            {
+                MessageBox.Show("The account name is not correct!");
+                return;
+            }
+            //Check is the account already existing
+            foreach (string str in settings.AccList)
+            {
+                if (str.ToUpper() == accTbox1.Text.ToUpper())
                 {
-                    MessageBox.Show("The account name is not correct!");
+                    MessageBox.Show("The account name already exists!");
                     return;
                 }
-                //Check is the account already existing
-                foreach (string str in settings.AccList)
-                {
-                    if (str.ToUpper() == accTbox1.Text.ToUpper())
-                    {
-                        MessageBox.Show("The account name already exists!");
-                        return;
-                    }
-                }
-                //Check is the password correctly retyped
-                if (passTbox1.Text != RePassTbox.Text)
-                {
-                    MessageBox.Show("New password is not correctly retyped!");
-                    return;
-                }
-                //add acc and pass
-                settings.AccList.Add(accTbox1.Text);
-                settings.AccPass.Add(passTbox1.Text);
-                AddSettings();
-                settings.Save();
+            }
+            //Check is the password correctly retyped
+            if (passTbox1.Text != RePassTbox.Text)
+            {
+                MessageBox.Show("New password is not correctly retyped!");
+                return;
+            }
+            //add acc and pass
+            settings.AccList.Add(accTbox1.Text);
+            settings.AccPass.Add(passTbox1.Text);
+            AddSettings();
+            settings.Save();
 
-                //LogIn
-                for (int i = 0; i < settings.AccList.Count; i++)
+            //LogIn
+            for (int i = 0; i < settings.AccList.Count; i++)
+            {
+                if (settings.AccList[i] == accTbox1.Text)
                 {
-                    if (settings.AccList[i] == accTbox1.Text)
-                    {
-                        AccIndex = i;
-                        Admin_Event();
-                        return;
-                    }
+                    AccIndex = i;
+                    Admin_Event();
+                    return;
                 }
+            }
 
         }
         private void create_Event(object sender, EventArgs e)
@@ -671,7 +691,7 @@ namespace Cell_Tool_3
                 e.Handled = true;
                 e.SuppressKeyPress = true;
             }
-           
+
         }
         private void AccForm_Closing(object sender, FormClosingEventArgs e)
         {
@@ -702,13 +722,13 @@ namespace Cell_Tool_3
                         deleted = true;
                     }
                     i++;
-                 }
-             }
+                }
+            }
             //Refresh Acc List
             Admin_Event();
             AutoComenceTbox();
         }
-       
+
         public void LogOut_event(object sender, EventArgs e)
         {
             //Delete all settings
@@ -723,7 +743,7 @@ namespace Cell_Tool_3
             oldPassTextBox.Text = "";
             ChangePassForm.ShowDialog();
         }
-        private void ChangePassTBox_KeyDown(object sender,KeyEventArgs e)
+        private void ChangePassTBox_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Enter)
             {
@@ -731,7 +751,7 @@ namespace Cell_Tool_3
                 e.Handled = true;
                 e.SuppressKeyPress = true;
             }
-         
+
         }
         private void ChangePassBtn_click(object sender, EventArgs e)
         {
@@ -746,7 +766,7 @@ namespace Cell_Tool_3
         }
         private void ChangePass_Event()
         {
-           
+
             if (NewPassTextBox.Text == reNewPassTextBox.Text)
             {
                 if (oldPassTextBox.Text == settings.AccPass[0] & ChangeAdminPass == true)
@@ -760,9 +780,9 @@ namespace Cell_Tool_3
                 }
                 else if (oldPassTextBox.Text == settings.AccPass[AccIndex])
                 {
-                        settings.AccPass[AccIndex] = NewPassTextBox.Text;
-                        settings.Save();
-                        ChangePassForm_clear();
+                    settings.AccPass[AccIndex] = NewPassTextBox.Text;
+                    settings.Save();
+                    ChangePassForm_clear();
                 }
                 else
                 {
@@ -772,7 +792,7 @@ namespace Cell_Tool_3
             else
             {
                 MessageBox.Show("New password is not retyped correctly!");
-                
+
             }
         }
         private void DeleteSettings(int i)
@@ -874,7 +894,7 @@ namespace Cell_Tool_3
                 settings.HotKeys.Add(settings.HotKeys[0]);
                 settings.SmartBtns.Add(settings.SmartBtns[0]);
             }
-            catch {}
+            catch { }
             //Save Changes
             settings.Save();
         }
@@ -934,14 +954,14 @@ namespace Cell_Tool_3
             string val = vals[0];
             int count = 0;
 
-            while(count < index)
+            while (count < index)
             {
                 vals.Add(val);
                 count++;
             }
 
         }
-       public List<string> PrepareSettingsForExport()
+        public List<string> PrepareSettingsForExport()
         {
             List<string> vals = new List<string>();
             int i = AccIndex;
@@ -1112,5 +1132,5 @@ namespace Cell_Tool_3
             }
         }
     }
-   
+
 }

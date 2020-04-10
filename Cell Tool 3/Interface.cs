@@ -168,7 +168,7 @@ namespace Cell_Tool_3
             // Set Main Form settings
             MainForm.SuspendLayout();
             MainForm.Icon = Properties.Resources.CT_done;
-            MainForm.Text = "CellTool";
+            MainForm.Text = "CellTool " + System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString();
             MainForm.WindowState = FormWindowState.Maximized;
             
             //MainForm closing
