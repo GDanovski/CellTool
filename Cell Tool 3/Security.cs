@@ -237,7 +237,7 @@ namespace Cell_Tool_3
             AccForm.MinimizeBox = false;
             AccForm.StartPosition = FormStartPosition.CenterScreen;
             AccForm.WindowState = FormWindowState.Normal;
-            AccForm.Width = 200;
+            AccForm.Width = 210;
             AccForm.Height = 140;
             AccForm.Icon = Properties.Resources.CT_done;
             AccForm.FormClosing += new FormClosingEventHandler(AccForm_Closing);
@@ -264,14 +264,14 @@ namespace Cell_Tool_3
 
                 //text boxes
                 accTbox.Location = new System.Drawing.Point(70, 10);
-                accTbox.Width = 100;
+                accTbox.Width = 110;
                 accTbox.KeyDown += new KeyEventHandler(Login_EnterEvent);
                 PassPanel.Controls.Add(accTbox);
                 AutoComenceTbox();
 
                 passTbox.Location = new System.Drawing.Point(70, 40);
                 passTbox.UseSystemPasswordChar = true;
-                passTbox.Width = 100;
+                passTbox.Width = 110;
                 passTbox.KeyDown += new KeyEventHandler(Login_EnterEvent);
                 PassPanel.Controls.Add(passTbox);
                 
@@ -279,12 +279,21 @@ namespace Cell_Tool_3
                 LoginAccBtn.FlatStyle = FlatStyle.Standard;
                 LoginAccBtn.BackColor = SystemColors.ButtonFace;
                 LoginAccBtn.ForeColor = Color.Black;
-                LoginAccBtn.Width = 80;
-                LoginAccBtn.Location = new System.Drawing.Point(50, 70);
+                LoginAccBtn.Width = 90;
+                LoginAccBtn.Location = new System.Drawing.Point(5, 70);
                 LoginAccBtn.Text = "Login";
                 LoginAccBtn.Click += new EventHandler(Login_Event);
                 PassPanel.Controls.Add(LoginAccBtn);
 
+                Button LoginAsGuestBtn = new Button();
+                LoginAsGuestBtn.FlatStyle = FlatStyle.Standard;
+                LoginAsGuestBtn.BackColor = SystemColors.ButtonFace;
+                LoginAsGuestBtn.ForeColor = Color.Black;
+                LoginAsGuestBtn.Width = 90;
+                LoginAsGuestBtn.Location = new System.Drawing.Point(LoginAccBtn.Width + 10, 70);
+                LoginAsGuestBtn.Text = "Login as Guest";
+                LoginAsGuestBtn.Click += LogInAsGuest_event;
+                PassPanel.Controls.Add(LoginAsGuestBtn);
             }
             //New Acc Panel
             {
@@ -297,36 +306,36 @@ namespace Cell_Tool_3
                 //labels
                 Label accLabel = new Label();
                 accLabel.Text = "Account:";
-                accLabel.Width = 60;
-                accLabel.Location = new System.Drawing.Point(10, 12);
+                accLabel.Width = 63;
+                accLabel.Location = new System.Drawing.Point(15, 12);
                 NewAccPanel.Controls.Add(accLabel);
 
                 Label passLabel = new Label();
                 passLabel.Text = "Password:";
-                passLabel.Width = 60;
-                passLabel.Location = new System.Drawing.Point(10, 42);
+                passLabel.Width = 63;
+                passLabel.Location = new System.Drawing.Point(15, 42);
                 NewAccPanel.Controls.Add(passLabel);
 
                 Label repassLabel = new Label();
                 repassLabel.Text = "Repeat:";
-                repassLabel.Width = 60;
-                repassLabel.Location = new System.Drawing.Point(10, 72);
+                repassLabel.Width = 63;
+                repassLabel.Location = new System.Drawing.Point(15, 72);
                 NewAccPanel.Controls.Add(repassLabel);
                
                 //text boxes
                
-                accTbox1.Location = new System.Drawing.Point(70, 10);
+                accTbox1.Location = new System.Drawing.Point(78, 10);
                 accTbox1.Width = 100;
                 accTbox1.KeyDown += new KeyEventHandler(create_EnterEvent);
                 NewAccPanel.Controls.Add(accTbox1);
 
-                passTbox1.Location = new System.Drawing.Point(70, 40);
+                passTbox1.Location = new System.Drawing.Point(78, 40);
                 passTbox1.UseSystemPasswordChar = true;
                 passTbox1.Width = 100;
                 passTbox1.KeyDown += new KeyEventHandler(create_EnterEvent);
                 NewAccPanel.Controls.Add(passTbox1);
 
-                RePassTbox.Location = new System.Drawing.Point(70, 70);
+                RePassTbox.Location = new System.Drawing.Point(78, 70);
                 RePassTbox.UseSystemPasswordChar = true;
                 RePassTbox.Width = 100;
                 RePassTbox.KeyDown += new KeyEventHandler(create_EnterEvent);
@@ -343,7 +352,7 @@ namespace Cell_Tool_3
                 BackBtn.BackColor = SystemColors.ButtonFace;
                 BackBtn.ForeColor = Color.Black;
                 BackBtn.Width = 70;
-                BackBtn.Location = new System.Drawing.Point(10, 120);
+                BackBtn.Location = new System.Drawing.Point(15, 120);
                 BackBtn.Text = "Back";
                 BackBtn.Click += new EventHandler(BackAdminBtn_click);
                 NewAccPanel.Controls.Add(BackBtn);
@@ -353,7 +362,7 @@ namespace Cell_Tool_3
                 LoginAccBtn.BackColor = SystemColors.ButtonFace;
                 LoginAccBtn.ForeColor = Color.Black;
                 LoginAccBtn.Width = 70;
-                LoginAccBtn.Location = new System.Drawing.Point(100, 120);
+                LoginAccBtn.Location = new System.Drawing.Point(105, 120);
                 LoginAccBtn.Text = "Create";
                 LoginAccBtn.Click += new EventHandler(create_Event);
                 NewAccPanel.Controls.Add(LoginAccBtn);
@@ -385,7 +394,7 @@ namespace Cell_Tool_3
                 BackBtn.BackColor = SystemColors.ButtonFace;
                 BackBtn.ForeColor = Color.Black;
                 BackBtn.Width = 50;
-                BackBtn.Location = new System.Drawing.Point(10, 110);
+                BackBtn.Location = new System.Drawing.Point(13, 113);
                 BackBtn.Text = "Back";
                 BackBtn.Click += new EventHandler(BackBtn_click);
                 AccListPanel.Controls.Add(BackBtn);
@@ -395,7 +404,7 @@ namespace Cell_Tool_3
                 DelBtn.BackColor = SystemColors.ButtonFace;
                 DelBtn.ForeColor = Color.Black;
                 DelBtn.Width = 50;
-                DelBtn.Location = new System.Drawing.Point(70, 110);
+                DelBtn.Location = new System.Drawing.Point(73, 113);
                 DelBtn.Text = "Delete";
                 DelBtn.Click += new EventHandler(DeleteAcc);
                 AccListPanel.Controls.Add(DelBtn);
@@ -405,7 +414,7 @@ namespace Cell_Tool_3
                 NewAccBtn.BackColor = SystemColors.ButtonFace;
                 NewAccBtn.ForeColor = Color.Black;
                 NewAccBtn.Width = 50;
-                NewAccBtn.Location = new System.Drawing.Point(130, 110);
+                NewAccBtn.Location = new System.Drawing.Point(133, 113);
                 NewAccBtn.Text = "Create";
                 NewAccBtn.Click += new EventHandler(newAccBtn_click);
                 AccListPanel.Controls.Add(NewAccBtn);
@@ -416,10 +425,10 @@ namespace Cell_Tool_3
                 AdminPassChangeBtn.BackColor = SystemColors.ButtonFace;
                 AdminPassChangeBtn.ForeColor = Color.Black;
                 AdminPassChangeBtn.Width = 170;
-                AdminPassChangeBtn.Location = new System.Drawing.Point(10, 85);
+                AdminPassChangeBtn.Location = new System.Drawing.Point(13, 90);
                 AdminPassChangeBtn.Text = "Change Admin password";
                 AdminPassChangeBtn.Click += new EventHandler(changeAdminPass_ShowDialog);
-                AccListPanel.Controls.Add(AdminPassChangeBtn);
+                AccListPanel.Controls.Add(AdminPassChangeBtn);                
             }
             //Change Pass Form
             ChangePassForm.Text = "Login";
@@ -494,6 +503,20 @@ namespace Cell_Tool_3
             NewAccPanel.VisibleChanged += Panel_VisibleChange;
 
             AccForm.ShowDialog();
+        }
+        private void LogInAsGuest_event(object sender,EventArgs e)
+        {
+            //add acc and pass
+            if (!settings.AccList.Contains("Guest"))
+            {
+                settings.AccList.Add("Guest");
+                settings.AccPass.Add("");
+                AddSettings();
+                settings.Save();
+            }
+
+            AccIndex = settings.AccList.IndexOf("Guest");
+            AccForm.Close();
         }
         private void Panel_VisibleChange(object sender, EventArgs e)
         {

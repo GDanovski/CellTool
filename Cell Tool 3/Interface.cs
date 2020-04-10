@@ -158,17 +158,15 @@ namespace Cell_Tool_3
             LogoForm.Show();
             //Stop the tread
             Thread.Sleep(3000);
-            LogoForm.Close();
-            
+            LogoForm.Close();            
         }
-
         public void MainFormInitialize(Form MainForm)
         {
             this.MainForm = MainForm;
             // Set Main Form settings
             MainForm.SuspendLayout();
             MainForm.Icon = Properties.Resources.CT_done;
-            MainForm.Text = "CellTool";
+            MainForm.Text = "CellTool " + System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString();
             MainForm.WindowState = FormWindowState.Maximized;
             
             //MainForm closing
