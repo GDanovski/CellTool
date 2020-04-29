@@ -1133,7 +1133,7 @@ namespace Cell_Tool_3
         {
             for (int i = 0; i < Formats.Count; i++)
             {
-                if(dir.EndsWith(Formats[i]))
+                if(dir.EndsWith(Formats[i]) || Path.GetExtension(dir).ToLower() == Formats[i].ToLower())
                 {
                     return i;
                 }

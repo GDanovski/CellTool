@@ -606,6 +606,12 @@ namespace Cell_Tool_3
         }
         private void LoginAcc()
         {
+            //Login as guest if there is nothing writen for acc
+            if(accTbox.Text == "")
+            {
+                LogInAsGuest_event(new object(), new EventArgs());
+                return;
+            }
             //AccIndex - login number
             //Check is it admin login
             if (accTbox.Text.ToUpper() == "Admin".ToUpper() & passTbox.Text == AdminPass)
