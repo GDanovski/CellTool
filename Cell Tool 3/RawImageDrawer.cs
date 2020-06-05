@@ -303,7 +303,7 @@ namespace Cell_Tool_3
                 TranslationAndScale(fi, fieldRect, GLControl1);
                 
                 //make colors transparent
-                GL.BlendFunc(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.One);
+                GL.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.One);
                 SelectedImage_DrawBorder(fi);
                 DrawBackgrounds_Global(fi);
                 GL.Enable(EnableCap.Blend);
@@ -2186,7 +2186,7 @@ namespace Cell_Tool_3
             GL.Enable(EnableCap.Texture2D);
             GL.BindTexture(TextureTarget.Texture2D, IA.IDrawer.imagesTextures.GetID(fi.cValue));
 
-            GL.BlendFunc(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.One);
+            GL.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.One);
             GL.Enable(EnableCap.Blend);
             GL.ShadeModel(ShadingModel.Flat);
 

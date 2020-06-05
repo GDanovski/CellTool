@@ -241,7 +241,7 @@ namespace Cell_Tool_3
                     {
                         
                        DrawSeriesSingleColor(ser, Color.Black);
-                        GL.BlendFunc(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.One);
+                        GL.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.One);
                         if (!ser.UseGradientStyle)
                             DrawSeriesSingleColor(ser, ser.Color);
                         else

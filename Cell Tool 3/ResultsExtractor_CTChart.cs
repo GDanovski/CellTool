@@ -282,7 +282,7 @@ namespace Cell_Tool_3
                     else
                     {
                         GL.Enable(EnableCap.Blend);
-                        GL.BlendFunc(BlendingFactorSrc.SrcAlpha, BlendingFactorDest.OneMinusSrcAlpha);
+                        GL.BlendFunc(BlendingFactor.SrcAlpha, BlendingFactor.OneMinusSrcAlpha);
                         
                         PointF p;
                         double dev, Ydown, Yup, X;
