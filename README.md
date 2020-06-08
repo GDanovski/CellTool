@@ -1,4 +1,29 @@
 # CellTool
-CellTool is a stand-alone open source software with Graphical User Interface that combines image analysis and real time data visualization. It has implemented algorithms for fast automatic segmentation of big time-lapse image stacks. This software is designed to process noisy images and is optimized for tracking objects such as cell nuclei and DNA repair foci over time. It has a plugin engine and an integrated file browser for fast and easy access to the images. The data obtained from the image analysis is dynamically displayed on a chart which allows the user to observe the results simultaneously with the image processing. Custom functions can be applied to the image processing which saves time and eliminates most of the post-processing steps of the measured data. With the “Results Extractor” plugin in CellTool, the summarized results from the analysis of the image series can be graphically presented and fitted to a custom or predefined mathematical model. CellTool possesses intuitive graphical interface, implements multiple image processing algorithms and is capable of simultaneous data processing and data visualization greatly facilitating the efficiency of the image analysis. It is perfect for rapid and robust live cell image data analysis providing an all-in-one solution to numerous demanding tasks. That and the feature for simultaneous visualization of the results makes CellTool a very useful and user-friendly software for microscopy imaging facilities. For more information, visit our [web site](https://dnarepair.bas.bg/software/CellTool/)
+CellTool is a stand-alone open source software with a Graphical User Interface for image analysis, optimized for measurements of time-lapse microscopy images. Complex image analysis workflows often require multiple software packages and constant feedback between data processing and results presentation. To solve this problem and to streamline the image analysis process, we combined data management, image processing, mathematical modeling and graphical presentation of data in a single package.</br>
 
-CellTool can be build from source code by using Visual Studio 2017 (Add all .dll files from the "References" folder to the project and sign the application with your sertificate).
+</t>Software website: [https://dnarepair.bas.bg/software/CellTool/](https://dnarepair.bas.bg/software/CellTool/)</br>
+</t>Associated preprint: [https://www.biorxiv.org/content/10.1101/454256v1](https://www.biorxiv.org/content/10.1101/454256v1)</br>
+</t>Source code: [https://github.com/GDanovski/CellTool](https://github.com/GDanovski/CellTool)</br>
+</t>Video overview: [https://www.youtube.com/watch?v=omkshInRKKE&feature=youtu.be&t=641](https://www.youtube.com/watch?v=omkshInRKKE&feature=youtu.be&t=641)</br>
+
+## How to build the application from source code
+
+1.	Download [Microsoft Visual Studio](https://visualstudio.microsoft.com/)
+2.	Clone or download [CellTool repository](https://github.com/GDanovski/CellTool)
+3.	Open the project file “Cell Tool 3.sln”
+4.	Add reference to [CellToolDK library](https://github.com/GDanovski/CellToolDK) located in the “References” folder of the project 
+5.	Build and start the application
+
+## Dependences
+-	[Accord.NET](http://accord-framework.net/)
+-	[BioFormats.Net](https://github.com/GDanovski/BioFormats.Net)
+-	[LibTiff.Net](https://bitmiracle.com/libtiff/)
+-	[Cloo.clSharp](https://www.nuget.org/packages/Cloo.clSharp/)
+-	[IKVM](http://www.ikvm.net/)
+-	[MathNet.Numerics](https://numerics.mathdotnet.com/)
+-	[Microsoft.Solver.Foundation](https://www.nuget.org/packages/Microsoft.Solver.Foundation)
+-	[NCalc](https://github.com/sheetsync/NCalc)
+-	[OpenTK](https://github.com/opentk/opentk)
+
+## How to test the application
+Detailed [user guide](https://github.com/GDanovski/CellTool/blob/master/docs/CellTool_UserGuide.pdf) and examples of usage are available in the repository “docs” folder. [Test images files](https://github.com/GDanovski/CellTool/tree/master/test) can be found in the repository “test” folder. Protocol for analysis of this images is available [here](https://dnarepair.bas.bg/software/CellTool/tutorials.html#pf1f). Video overview of CellTool analysis and mathematical modelling software is available at URL: [https://www.youtube.com/watch?v=omkshInRKKE&feature=youtu.be&t=641](https://www.youtube.com/watch?v=omkshInRKKE&feature=youtu.be&t=641)
