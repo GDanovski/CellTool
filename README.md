@@ -19,7 +19,7 @@ CellTool is software written in c# for .NET Framework 4.5. It is available as [C
 4.	Add reference to [CellToolDK library](https://github.com/GDanovski/CellToolDK) located in the “References” folder of the project 
 5.	Build and start the application
 
-## Dependences
+## Dependencies
 -	[Accord.NET](http://accord-framework.net/)
 -	[BioFormats.Net](https://github.com/GDanovski/BioFormats.Net)
 -	[LibTiff.Net](https://bitmiracle.com/libtiff/)
