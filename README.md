@@ -1,10 +1,15 @@
 # CellTool
+
 CellTool is a stand-alone open source software with a Graphical User Interface for image analysis, optimized for measurements of time-lapse microscopy images. Complex image analysis workflows often require multiple software packages and constant feedback between data processing and results presentation. To solve this problem and to streamline the image analysis process, we combined data management, image processing, mathematical modeling and graphical presentation of data in a single package.</br>
 
 </t>Software website: [https://dnarepair.bas.bg/software/CellTool/](https://dnarepair.bas.bg/software/CellTool/)</br>
 </t>Associated preprint: [https://www.biorxiv.org/content/10.1101/454256v1](https://www.biorxiv.org/content/10.1101/454256v1)</br>
 </t>Source code: [https://github.com/GDanovski/CellTool](https://github.com/GDanovski/CellTool)</br>
 </t>Video overview: [https://www.youtube.com/watch?v=omkshInRKKE&feature=youtu.be&t=641](https://www.youtube.com/watch?v=omkshInRKKE&feature=youtu.be&t=641)</br>
+
+## How to install the application
+
+CellTool is software written in c# for .NET Framework 4.5. It is available as OneClick application and can be downloaded and installed from our [website](https://dnarepair.bas.bg/software/CellTool/downloads.html). Precompiled version of the program can be found in the “[build](https://github.com/GDanovski/CellTool/tree/master/build)” folder of the project.
 
 ## How to build the application from source code
 
