@@ -13,9 +13,9 @@ CellTool is software written in c# for .NET Framework 4.5. It is available as [C
 
 ## How to build the application from source code
 
-1.	Download [Microsoft Visual Studio](https://visualstudio.microsoft.com/)
+1.	Download and install [Microsoft Visual Studio](https://visualstudio.microsoft.com/)
 2.	Clone or download [CellTool repository](https://github.com/GDanovski/CellTool)
-3.	Open the project file “Cell Tool 3.sln”
+3.	Open the project file “Cell Tool 3.sln” in Microsoft Visual Studio
 4.	Add reference to [CellToolDK library](https://github.com/GDanovski/CellToolDK) located in the “References” folder of the project 
 5.	Build and start the application
 
