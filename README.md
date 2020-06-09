@@ -9,7 +9,7 @@ CellTool is a stand-alone open source software with a Graphical User Interface f
 
 ## How to install the application
 
-CellTool is software written in c# for .NET Framework 4.5. It is available as [ClickOnce](https://en.wikipedia.org/wiki/ClickOnce) application and can be downloaded and installed from our [website](https://dnarepair.bas.bg/software/CellTool/downloads.html). Precompiled version of the program can be found in the “[build](https://github.com/GDanovski/CellTool/tree/master/build)” folder of the project.
+CellTool is Windows Forms application written in c# for .NET Framework 4.5. It is available as [ClickOnce](https://en.wikipedia.org/wiki/ClickOnce) application and can be downloaded and installed from our [website](https://dnarepair.bas.bg/software/CellTool/downloads.html). Precompiled version of the program can be found in the “[build](https://github.com/GDanovski/CellTool/tree/master/build)” folder of the project.
 
 ## How to build the application from source code
 
