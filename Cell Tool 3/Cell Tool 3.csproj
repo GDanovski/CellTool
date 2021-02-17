@@ -32,8 +32,8 @@
     <PublisherName>Georgi Danovski</PublisherName>
     <SuiteName>CellTool</SuiteName>
     <AutorunEnabled>true</AutorunEnabled>
-    <ApplicationRevision>3</ApplicationRevision>
-    <ApplicationVersion>1.6.0.3</ApplicationVersion>
+    <ApplicationRevision>4</ApplicationRevision>
+    <ApplicationVersion>1.6.0.4</ApplicationVersion>
     <UseApplicationTrust>true</UseApplicationTrust>
     <CreateDesktopShortcut>true</CreateDesktopShortcut>
     <PublishWizardCompleted>true</PublishWizardCompleted>
@@ -82,10 +82,10 @@
     <GenerateManifests>false</GenerateManifests>
   </PropertyGroup>
   <PropertyGroup>
-    <ManifestCertificateThumbprint>B3ED880AFEB421130E7A7F8ED0B9F5D69DF0FD57</ManifestCertificateThumbprint>
+    <ManifestCertificateThumbprint>751B4442A6F7A818024459C0CD7813D725DE146A</ManifestCertificateThumbprint>
   </PropertyGroup>
   <PropertyGroup>
-    <ManifestKeyFile>Cell Tool 3_TemporaryKey.pfx</ManifestKeyFile>
+    <ManifestKeyFile>IMB_BAS_cert.pfx</ManifestKeyFile>
   </PropertyGroup>
   <PropertyGroup>
     <SignManifests>false</SignManifests>
@@ -338,6 +338,7 @@
     <None Include="app.manifest" />
     <None Include="Cell Tool 3_TemporaryKey.pfx" />
     <None Include="IMBMyCodeSigningCertificates2.p12" />
+    <None Include="IMB_BAS_cert.pfx" />
     <None Include="OpenTK.dll.config" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
