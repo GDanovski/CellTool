@@ -1388,7 +1388,7 @@ namespace Cell_Tool_3
                 ToolStripStatusLabel AuthorLabel = new ToolStripStatusLabel();
                 
                 AuthorLabel.Alignment = ToolStripItemAlignment.Right;
-                AuthorLabel.Text = "Copyright © <2018> Georgi Danovski";
+                AuthorLabel.Text = "Copyright © <2023> Georgi Danovski";
                 MainStatusBar.Items.Add(AuthorLabel);
             }
         }
